@@ -1,0 +1,64 @@
+# Arcwell
+# Development Compose Config
+
+name: "arcwell"
+
+volumes:
+  pgdata:
+
+networks:
+  application:
+  data:
+
+
+services:
+  api:
+    image: arcwell_api
+    build:
+      context: ./api
+    env_file:
+      - ./arcwell.dev.env
+    depends_on:
+      - db
+    networks:
+      - application
+      - data
+    ports:
+      - '8000:8000'
+
+  admin:
+    image: arcwell_admin
+    build:
+      context: ./admin
+    env_file:
+      - ./arcwell.dev.env
+    networks:
+      - application
+    ports:
+      - '80:4200'
+    
+  db:
+    image: postgres:16-bookworm
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: arcwell
+      POSTGRES_USER: arcwell
+      POSTGRES_PASSWORD: arcwell
+    networks:
+      - data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./support/postgres/init_test.sql:/docker-entrypoint-initdb.d/init_test.sql
+
+  redis:
+    image: redis:7-bookworm
+    restart: always
+    #command: redis-server --requirepass arcwell    
+    ports:
+      - '6379:6379'
+    networks:
+      - data
+    volumes:
+      - ./support/redis/redis.conf:/usr/local/etc/redis/redis.conf

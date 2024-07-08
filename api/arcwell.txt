@@ -1,0 +1,1 @@
+This folder orchestrates the Arcwell server, contained within /packages/arcwell-server
