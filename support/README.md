@@ -14,12 +14,12 @@ Document support assets, below.
 
 | Path | Product | Notes |
 |------|---------|-------|
-| postgres | [PostgreSQL database](1) | Initializer scripts, configuration |
-| redis    | [Redis cache](2) | Configuration for Redis in local dev |
-| medplum  | [Medplum FHIR service](3) | Custom Docker configuration for local dev |
+| postgres | [PostgreSQL database][psql] | Initializer scripts, configuration |
+| redis    | [Redis cache][redis] | Configuration for Redis in local dev |
+| medplum  | [Medplum FHIR service][medplum] | Custom Docker configuration for local dev |
 
 
 
-[1]: https://www.postgresql.org/
-[2]: https://redis.io/
-[3]: https://www.medplum.com/
+[psql]: https://www.postgresql.org/
+[redis]: https://redis.io/
+[medplum]: https://www.medplum.com/
