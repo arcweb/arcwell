@@ -1,6 +1,8 @@
+# Stub application booter (delete once working app is in place)
+
 FROM debian:bookworm-slim
 
-LABEL project='Arcwell'
+LABEL project='Arcwell Admin'
 LABEL version='1'
 LABEL vendor='Arcweb Technologies <https://arcwebtech.com>'
 

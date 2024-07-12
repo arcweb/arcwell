@@ -1,0 +1,10 @@
+{
+  "/api/**": {
+    "target": "http://api:3333",
+    "secure": false,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api" : ""
+    }
+  }
+}

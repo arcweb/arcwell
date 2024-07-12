@@ -1,1 +1,0 @@
-This folder orchestrates the Arcwell Admin, contained within /packages/arcwell-admin

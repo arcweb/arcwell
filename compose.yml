@@ -12,10 +12,11 @@ networks:
 
 
 services:
-  api:
-    image: arcwell_api
+  server:
+    image: arcwell_server
     build:
-      context: ./api
+      context: ./packages/server
+      dockerfile: Dockerfile.stub
     env_file:
       - ./arcwell.dev.env
     depends_on:
@@ -29,7 +30,8 @@ services:
   admin:
     image: arcwell_admin
     build:
-      context: ./admin
+      context: ./packages/admin
+      dockerfile: Dockerfile.stub
     env_file:
       - ./arcwell.dev.env
     networks:

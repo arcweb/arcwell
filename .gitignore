@@ -1,1 +1,15 @@
+
+# Build tools specific
+npm-debug.log
+yarn-error.log
+
+# Editors specific
+.fleet
+.idea
+.vscode
+
+# System files
 .DS_Store
+Thumbs.db
+
+
