@@ -1,5 +1,5 @@
-import type {HttpContext} from '@adonisjs/core/http'
-import Product from "#models/product";
+import type { HttpContext } from '@adonisjs/core/http'
+import Product from '#models/product'
 
 export default class ProductsController {
   /**
@@ -7,12 +7,12 @@ export default class ProductsController {
    */
   async index({}: HttpContext) {
     const products = await Product.all()
-    console.log('test2')
+    console.log('Products loaded.')
     return {
-      "status": "success",
-      "data": {
-        "products": products
-      }
+      status: 'success',
+      data: {
+        products: products,
+      },
     }
   }
 
