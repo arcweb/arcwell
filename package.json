@@ -1,26 +1,32 @@
 {
-  "name": "arcwell",
-  "version": "0.0.0",
-  "description": "Arcwell Digital Medicine Platform",
+  "name": "arcwell-root",
+  "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "main": "index.js",
-  "directories": {
-    "doc": "doc"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Arcwell Digital Medicine Platform",
+  "homepage": "https://github.com/arcweb/arcwell#readme",
+  "bugs": {
+    "url": "https://github.com/arcweb/arcwell/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arcweb/arcwell.git"
   },
-  "author": "Arcweb Technologies, LLC <hello@arcwebtech.com>",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/arcweb/arcwell/issues"
+  "author": "Arcweb Technologies, LLC <hello@arcwebtech.com>",
+  "directories": {
+    "doc": "doc"
   },
-  "homepage": "https://github.com/arcweb/arcwell#readme"
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "sort-package-json": "^2.10.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
 }
