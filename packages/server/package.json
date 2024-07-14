@@ -24,7 +24,7 @@
   },
   "scripts": {
     "build": "node ace build",
-    "dev": "node ace serve --hmr",
+    "dev": "node ace serve --watch",
     "format": "prettier --write .",
     "lint": "eslint .",
     "start": "node bin/server.js",
