@@ -8,11 +8,12 @@
 */
 
 import router from '@adonisjs/core/services/router'
-import ProductsController from "#controllers/products_controller";
+const ProductsController = () => import('#controllers/products_controller')
 
 router.get('/', async () => {
   return {
     hello: 'world',
+    bacon: ['delicious', 'salty'],
   }
 })
 
