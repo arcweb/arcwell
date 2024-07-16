@@ -4,6 +4,8 @@
 name: "arcwell"
 
 volumes:
+  api-exclude:
+  admin-exclude:
   pgdata:
 
 networks:
@@ -31,13 +33,16 @@ services:
     image: arcwell_admin
     build:
       context: ./packages/admin
-      dockerfile: Dockerfile.stub
+      dockerfile: Dockerfile
     env_file:
       - ./arcwell.dev.env
     networks:
       - application
     ports:
       - '80:4200'
+    volumes:
+      - ./packages/admin:/usr/src/app
+      - admin-exclude:/usr/src/app/node_modules
     
   db:
     image: postgres:16-bookworm
