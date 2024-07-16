@@ -4,7 +4,7 @@
 name: "arcwell"
 
 volumes:
-  api-exclude:
+  server-exclude:
   admin-exclude:
   pgdata:
 
@@ -18,16 +18,19 @@ services:
     image: arcwell_server
     build:
       context: ./packages/server
-      dockerfile: Dockerfile.stub
+      dockerfile: Dockerfile
     env_file:
       - ./arcwell.dev.env
+    volumes:
+      - ./packages/server:/home/node/app/
+      - server-exclude:/home/node/app/node_modules/
     depends_on:
       - db
     networks:
       - application
       - data
     ports:
-      - '8000:8000'
+      - '3333:3333'
 
   admin:
     image: arcwell_admin
@@ -43,7 +46,7 @@ services:
     volumes:
       - ./packages/admin:/usr/src/app
       - admin-exclude:/usr/src/app/node_modules
-    
+
   db:
     image: postgres:16-bookworm
     restart: always
@@ -62,7 +65,7 @@ services:
   redis:
     image: redis:7-bookworm
     restart: always
-    #command: redis-server --requirepass arcwell    
+    #command: redis-server --requirepass arcwell
     ports:
       - '6379:6379'
     networks:
