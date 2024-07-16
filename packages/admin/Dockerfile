@@ -43,15 +43,15 @@ COPY package.json .
 #RUN chmod +x ./scripts/tests-headless.sh
 #RUN chmod +x ./scripts/tests-start.sh
 
-RUN #./scripts/install.sh
 RUN echo "node version $(node -v); npm version $(npm -v)"
 
 RUN npm install -g @angular/cli@18
 RUN ng version
 
-RUN npm install --no-fund
 
 COPY . .
+
+RUN npm install --no-fund
 
 #ARG CI_VERSION=1.0.LOCAL_DEV
 #RUN mkdir /etc/lvfiles
