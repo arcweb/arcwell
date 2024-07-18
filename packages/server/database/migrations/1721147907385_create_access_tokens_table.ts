@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       // table.increments('id')
-      table.string('id').primary().defaultTo(this.raw('gen_random_uuid()'))
+      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
       // table
       //   .integer('tokenable_id')
       //   .notNullable()
@@ -15,12 +15,7 @@ export default class extends BaseSchema {
       //   .inTable('users')
       //   .onDelete('CASCADE')
 
-      table
-        .string('tokenable_id')
-        .notNullable()
-        .references('id')
-        .inTable('users')
-        .onDelete('CASCADE')
+      table.uuid('tokenable_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
 
       table.string('type').notNullable()
       table.string('name').nullable()
