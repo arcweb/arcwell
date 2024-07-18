@@ -48,7 +48,7 @@ I'm still working on reesponses, but a successful message will look something li
 {
     "status": "success",
     "data": {
-        "id": 4,
+        "id": "db5ce10a-dcfb-491a-bc64-6fbc0b5289a5",
         "name": "Mini Guest3",
         "createdAt": "2024-07-17T19:42:26.931+00:00",
         "updatedAt": "2024-07-17T19:42:26.931+00:00"
@@ -77,4 +77,3 @@ Error messages are also a work in progress.  You should receive an status = erro
     }
 }
 ```
-

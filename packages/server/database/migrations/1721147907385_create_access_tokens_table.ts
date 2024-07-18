@@ -5,11 +5,19 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      // table.increments('id')
+      table.string('id').primary().defaultTo(this.raw('gen_random_uuid()'))
+      // table
+      //   .integer('tokenable_id')
+      //   .notNullable()
+      //   .unsigned()
+      //   .references('id')
+      //   .inTable('users')
+      //   .onDelete('CASCADE')
+
       table
-        .integer('tokenable_id')
+        .string('tokenable_id')
         .notNullable()
-        .unsigned()
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')
