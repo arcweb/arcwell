@@ -9,10 +9,19 @@ export default class SessionController {
     const { email, password } = request.only(['email', 'password'])
     const user = await User.verifyCredentials(email, password)
 
-    console.log('user verified successfully->', user.serialize())
-
     /**
      * Now login the user or create a token for them
      */
+    const token = await User.accessTokens.create(user)
+    return {
+      status: 'success',
+      data: {
+        token: {
+          type: 'bearer',
+          value: token.value!.release(),
+          expiresAt: token.expiresAt,
+        },
+      },
+    }
   }
 }

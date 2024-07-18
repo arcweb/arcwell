@@ -31,8 +31,11 @@ export default class RolesController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) {
+  async store({ request, auth }: HttpContext) {
     try {
+      // Check that a valid Bearer token was passed in the header
+      const user = await auth.authenticate()
+
       await request.validateUsing(createRoleValidator)
       const role = await Role.create(request.body())
       return {
