@@ -1,30 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import Role from '#models/role'
+import User from '#models/user'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 
-export default class RolesController {
+export default class UsersController {
   /**
    * Display a list of resource
    */
   async index({}: HttpContext) {
-    const roles = await Role.all()
+    // const users = await User.all()
+    const users = await User.query().preload('role')
     return {
       status: 'success',
       data: {
-        roles: roles,
+        users: users,
       },
-    }
-  }
-
-  /**
-   * Show individual record
-   */
-  async show({ params }: HttpContext) {
-    try {
-      const role = await Role.findOrFail(params.id)
-      return { status: 'success', data: { role: role } }
-    } catch (error) {
-      return { status: 'error', message: error }
     }
   }
 
@@ -35,15 +24,30 @@ export default class RolesController {
     try {
       // Check that a valid Bearer token was passed in the header
       await auth.authenticate()
-
       await request.validateUsing(createRoleValidator)
-      const role = await Role.create(request.body())
+      const user = await User.create(request.body())
       return {
         status: 'success',
         data: {
-          role: role,
+          user: user,
         },
       }
+    } catch (error) {
+      return { status: 'error', message: error }
+    }
+  }
+  /**
+   * Show individual record
+   */
+  async show({ params }: HttpContext) {
+    try {
+      // TODO: Handle an invalid uuid with a better message
+      const user = await User.query().where('id', params.id).preload('role')
+      if (user.length <= 0) {
+        return { status: 'error', data: { message: 'No user found.' } }
+      }
+      // console.log('user: ', user[0])
+      return { status: 'success', data: { user: user } }
     } catch (error) {
       return { status: 'error', message: error }
     }
@@ -55,11 +59,11 @@ export default class RolesController {
   async update({ params, request }: HttpContext) {
     try {
       await request.validateUsing(updateRoleValidator)
-      const role = await Role.findOrFail(params.id)
+      const user = await User.findOrFail(params.id)
       // TODO: If you pass in an id in request.body(), it will be ignored, but the updatedRole will have that id, but it wasn't updated in the database
       // TODO: Figure out a better way besides merge.
-      const updateRole = await role.merge(request.body()).save()
-      return { status: 'success', data: { role: updateRole } }
+      const updatedUser = await user.merge(request.body()).save()
+      return { status: 'success', data: { user: updatedUser } }
     } catch (error) {
       return { status: 'error', message: error }
     }
@@ -70,8 +74,8 @@ export default class RolesController {
    */
   async destroy({ params }: HttpContext) {
     try {
-      const role = await Role.findOrFail(params.id)
-      await role.delete()
+      const user = await User.findOrFail(params.id)
+      await user.delete()
       return { status: 'success' }
     } catch (error) {
       return { status: 'error', message: error }
