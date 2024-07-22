@@ -35,7 +35,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   @belongsTo(() => Role)
-  declare role: BelongsTo<typeof User>
+  declare role: BelongsTo<typeof Role>
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
     expiresIn: '30 days',
