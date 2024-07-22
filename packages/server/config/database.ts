@@ -2,6 +2,7 @@ import env from '#start/env'
 import { defineConfig } from '@adonisjs/lucid'
 
 const dbConfig = defineConfig({
+  prettyPrintDebugQueries: true, // This along with the debug: true below will log the sql run
   connection: 'postgres',
   connections: {
     postgres: {
@@ -17,6 +18,7 @@ const dbConfig = defineConfig({
         naturalSort: true,
         paths: ['database/migrations'],
       },
+      debug: true,
     },
   },
 })
