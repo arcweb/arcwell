@@ -8,10 +8,11 @@
 */
 
 import router from '@adonisjs/core/services/router'
-import SessionController from '#controllers/session_controller'
-import RolesController from '#controllers/roles_controller'
-import UsersController from '#controllers/users_controller'
-import GetAllFullUsersController from '#controllers/full_user_controller'
+const AuthController = () => import('#controllers/auth_controller')
+import { middleware } from '#start/kernel'
+const RolesController = () => import('#controllers/roles_controller')
+const UsersController = () => import('#controllers/users_controller')
+const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 
 router.get('/', async () => {
   return {
@@ -19,7 +20,11 @@ router.get('/', async () => {
   }
 })
 
-router.resource('auth', SessionController)
+router.post('/register', [AuthController, 'register']).as('auth.register')
+router.post('/login', [AuthController, 'login']).as('auth.login')
+router.delete('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
+router.get('/me', [AuthController, 'me']).as('auth.me')
+
 router.resource('roles', RolesController)
 router.get('users/full', [GetAllFullUsersController])
 router.resource('users', UsersController)
