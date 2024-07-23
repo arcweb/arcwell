@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
+import string from '@adonisjs/core/helpers/string'
 
 export default class UsersController {
   /**
@@ -8,6 +9,10 @@ export default class UsersController {
    */
   async index({}: HttpContext) {
     // const users = await User.all()
+
+    const testStt = 'policies'
+    console.log('singular->??:???', string.singular(testStt))
+
     const users = await User.query().preload('role')
     return {
       status: 'success',

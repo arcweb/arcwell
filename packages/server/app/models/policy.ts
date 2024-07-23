@@ -1,15 +1,17 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
-import User from '#models/user'
-import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
-import Policy from '#models/policy'
+import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import Role from '#models/role'
 
-export default class Role extends BaseModel {
+export default class Policy extends BaseModel {
   @column({ isPrimary: true })
-  declare id: string
+  declare id: number
 
   @column()
   declare name: string
+
+  @column()
+  declare capabilities: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -17,17 +19,14 @@ export default class Role extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @hasMany(() => User)
-  declare users: HasMany<typeof User>
-
-  @manyToMany(() => Policy, {
+  @manyToMany(() => Role, {
     pivotTable: 'policy_role',
     // pivotColumns: ['can_have_other_columns'],
     pivotTimestamps: true,
     // localKey: 'id', // TODO: Likely don't need this or anything below because current fields follow convention
     // relatedKey: 'id',
-    // pivotForeignKey: 'policy_id',
-    // pivotRelatedForeignKey: 'role_id'
+    // pivotForeignKey: 'role_id',
+    // pivotRelatedForeignKey: 'policy_id'
   })
-  declare policies: ManyToMany<typeof Policy>
+  declare roles: ManyToMany<typeof Role>
 }
