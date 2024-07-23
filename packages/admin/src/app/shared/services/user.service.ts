@@ -52,6 +52,10 @@ export class UserService {
           throw new Error(response.message);
         }
       }),
+      map((response: UserResponseType) =>
+        // validate the date we received is of the correct schema
+        UserResponseSchema.parse(response),
+      ),
       map(
         (response: UserResponseType) =>
           response.data.user && deserializeUser(response.data.user[0]),
@@ -88,6 +92,10 @@ export class UserService {
             throw new Error(response.message);
           }
         }),
+        map((response: UserResponseType) =>
+          // validate the date we received is of the correct schema
+          UserResponseSchema.parse(response),
+        ),
         map(
           (response: UserResponseType) =>
             response.data.user && deserializeUser(response.data.user[0]),
