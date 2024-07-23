@@ -20,8 +20,10 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "luxon": "^3.4.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "zod": "^3.23.8",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
@@ -29,6 +31,7 @@
     "@angular/cli": "^18.1.0",
     "@angular/compiler-cli": "^18.1.0",
     "@types/jasmine": "~5.1.0",
+    "@types/luxon": "^3.4.2",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
