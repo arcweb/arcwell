@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { SerializedUserType } from '../schemas/user.schema';
+import { UserType } from '../schemas/user.schema';
 import { RoleModel } from './role.model';
 
 export class UserModel {
@@ -11,7 +11,7 @@ export class UserModel {
   public updatedAt: DateTime;
   public role?: RoleModel;
 
-  constructor(data: SerializedUserType) {
+  constructor(data: UserType) {
     this.id = data.id;
     this.fullName = data.fullName;
     this.email = data.email;

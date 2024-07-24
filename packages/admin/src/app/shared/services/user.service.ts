@@ -3,7 +3,7 @@ import {
   deserializeUser,
   UsersResponseType,
   UsersResponseSchema,
-  SerializedUserType,
+  UserType,
   UserResponseType,
   UserResponseSchema,
   UserUpdateType,
@@ -37,7 +37,7 @@ export class UserService {
       ),
       map((response: UsersResponseType) => ({
         // deserialize the data
-        users: response.data.users.map((user: SerializedUserType) =>
+        users: response.data.users.map((user: UserType) =>
           deserializeUser(user),
         ),
         count: response.data.users.length,

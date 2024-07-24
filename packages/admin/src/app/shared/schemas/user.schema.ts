@@ -3,6 +3,8 @@ import { UserModel } from '../models/user.model';
 import { RoleSchema } from './role.schema';
 import { StatusEnum } from './error.schema';
 
+// validate data coming from API or sending to API for create
+// TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
 export const UserSchema: any = z
   .object({
     id: z.string().uuid().optional(),
@@ -15,15 +17,16 @@ export const UserSchema: any = z
   })
   .strict();
 
-// TODO: Figure out if this is how we want to handle these slim types
-export const UserUpdateSchema = z.object({
+// TODO: This shouldn't be needed, up for discussion
+// const SerializedUserSchema = UserSchema.extend({});
+
+// Validate data going to the API for update
+export const UserUpdateSchema = UserSchema.extend({
   id: z.string().uuid(),
   fullName: z.string().optional(),
   email: z.string().optional(),
   roleId: z.string().uuid().optional(),
-});
-
-const SerializedUserSchema = UserSchema.extend({});
+}).strict();
 
 // Responses
 
@@ -36,6 +39,7 @@ export const UsersResponseSchema = z.object({
 });
 
 // Single User
+// TODO: Do we want to return an array of users or just a single user?
 export const UserResponseSchema = z.object({
   status: StatusEnum,
   data: z.object({
@@ -46,16 +50,15 @@ export const UserResponseSchema = z.object({
 // export types
 export type UserType = z.infer<typeof UserSchema>;
 export type UserUpdateType = z.infer<typeof UserUpdateSchema>;
-export type SerializedUserType = z.infer<typeof SerializedUserSchema>;
 export type UsersResponseType = z.infer<typeof UsersResponseSchema>;
 export type UserResponseType = z.infer<typeof UserResponseSchema>;
 
 // Deserializer / Serializer
-export const deserializeUser = (data: SerializedUserType): UserModel => {
+export const deserializeUser = (data: UserType): UserModel => {
   return new UserModel(data);
 };
 
-export const serializeUser = (data: UserModel): SerializedUserType => {
+export const serializeUser = (data: UserModel): UserType => {
   return {
     ...data,
     createdAt: data.createdAt.toISO(),

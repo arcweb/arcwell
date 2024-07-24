@@ -1,13 +1,16 @@
 import {
   Component,
+  computed,
   inject,
   OnInit,
+  Signal,
   signal,
   WritableSignal,
 } from '@angular/core';
 import { UserService } from '@shared/services/user.service';
 import { UserModel } from '@app/shared/models/user.model';
-import { mergeMap } from 'rxjs';
+import { combineLatest, mergeMap, Observable, of, switchMap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-dashboard',
@@ -16,34 +19,28 @@ import { mergeMap } from 'rxjs';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   private userService: UserService = inject(UserService);
-  users: WritableSignal<UserModel[]> = signal([]);
-  user: WritableSignal<UserModel | null> = signal(null);
+
+  // TODO: do we want to handle splitting signals from https calls like this?
+  private users$: Observable<[UserModel[], UserModel | null]> = this.userService
+    .getAllUsers()
+    .pipe(
+      switchMap((response) =>
+        combineLatest([
+          of(response.users),
+          this.userService.getUser(response.users[0].id || ''),
+        ]),
+      ),
+    );
+
+  usersCombined = toSignal(this.users$, {
+    initialValue: [[], null],
+    rejectErrors: true,
+  });
+
+  users: Signal<UserModel[]> = computed(() => this.usersCombined()[0]);
+  user: Signal<UserModel | null> = computed(() => this.usersCombined()[1]);
 
   constructor() {}
-
-  ngOnInit() {
-    // testing to show the services work and we are getting data from the backend
-    // TODO: remove at any point
-    this.userService
-      .getAllUsers()
-      .pipe(
-        mergeMap((response: { users: UserModel[]; count: number }) => {
-          this.users.set(response.users);
-          return this.userService.getUser(this.users()[0].id || '');
-        }),
-      )
-      .subscribe({
-        next: (response: UserModel | null) => {
-          if (response) {
-            this.user.set(response);
-          }
-        },
-        error: (error: any) => {
-          // TODO: we need to create a toast service to show this error to the user
-          console.error('Error fetching user data', error);
-        },
-      });
-  }
 }
