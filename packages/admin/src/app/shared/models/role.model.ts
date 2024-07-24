@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { SerializedUserType } from '../schemas/user.schema';
+import { UserType} from '../schemas/user.schema';
 import { UserModel } from './user.model';
 
 export class RoleModel {
@@ -15,7 +15,7 @@ export class RoleModel {
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.users = data.users
-      ? data.users.map((user: SerializedUserType) => new UserModel(user))
+      ? data.users.map((user: UserType) => new UserModel(user))
       : undefined;
   }
 
