@@ -1,1 +1,18 @@
-<p>Dashboard works!</p>
+<div>
+  @if (users()) {
+    @for (user of users(); track user) {
+      <h2>Get All Users</h2>
+      <h3>{{ user.fullName }}</h3>
+      <p>{{ user.email }}</p>
+      <p>{{ user.roleId }}</p>
+    }
+  }
+</div>
+<hr />
+
+<div>
+  <h2>Get User</h2>
+  <h3>{{ user()?.fullName }}</h3>
+  <p>{{ user()?.email }}</p>
+  <p>{{ user()?.roleId }}</p>
+</div>

@@ -21,8 +21,18 @@
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
-      "dom"
-    ]
+      "dom",
+      "es5", 
+      "es6", 
+      "dom.iterable"
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@feature/*": ["app/feature/*"],
+      "@shared/*": ["app/shared/*"],
+      "@styles/*": ["app/styles/*"],
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
