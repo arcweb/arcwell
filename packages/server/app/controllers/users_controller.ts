@@ -1,13 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { createRoleValidator, updateRoleValidator } from '#validators/role'
 
 export default class UsersController {
   /**
    * Display a list of resource
    */
   async index({}: HttpContext) {
-    // const users = await User.all()
     const users = await User.query().preload('role')
     return {
       status: 'success',
@@ -24,7 +22,6 @@ export default class UsersController {
     try {
       // Check that a valid Bearer token was passed in the header
       await auth.authenticate()
-      await request.validateUsing(createRoleValidator)
       const user = await User.create(request.body())
       return {
         status: 'success',
@@ -58,7 +55,6 @@ export default class UsersController {
    */
   async update({ params, request }: HttpContext) {
     try {
-      await request.validateUsing(updateRoleValidator)
       const user = await User.findOrFail(params.id)
       // TODO: If you pass in an id in request.body(), it will be ignored, but the updatedRole will have that id, but it wasn't updated in the database
       // TODO: Figure out a better way besides merge.
