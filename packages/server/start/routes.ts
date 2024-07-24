@@ -20,11 +20,16 @@ router.get('/', async () => {
   }
 })
 
-router.post('/register', [AuthController, 'register']).as('auth.register')
-router.post('/login', [AuthController, 'login']).as('auth.login')
-router.delete('/logout', [AuthController, 'logout']).as('auth.logout').use(middleware.auth())
-router.get('/me', [AuthController, 'me']).as('auth.me')
+router
+  .group(() => {
+    router.post('/register', [AuthController, 'register']).as('register')
+    router.post('/login', [AuthController, 'login']).as('login')
+    router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
+    router.get('/me', [AuthController, 'me']).as('me')
+  })
+  .as('auth')
+  .prefix('auth')
 
 router.resource('roles', RolesController)
-router.get('users/full', [GetAllFullUsersController])
+router.get('users/full', [GetAllFullUsersController]).as('users.full')
 router.resource('users', UsersController)
