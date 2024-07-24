@@ -15,6 +15,14 @@ export const UserSchema: any = z
   })
   .strict();
 
+// TODO: Figure out if this is how we want to handle these slim types
+export const UserUpdateSchema = z.object({
+  id: z.string().uuid(),
+  fullName: z.string().optional(),
+  email: z.string().optional(),
+  roleId: z.string().uuid().optional(),
+});
+
 const SerializedUserSchema = UserSchema.extend({});
 
 // Responses
@@ -37,6 +45,7 @@ export const UserResponseSchema = z.object({
 
 // export types
 export type UserType = z.infer<typeof UserSchema>;
+export type UserUpdateType = z.infer<typeof UserUpdateSchema>;
 export type SerializedUserType = z.infer<typeof SerializedUserSchema>;
 export type UsersResponseType = z.infer<typeof UsersResponseSchema>;
 export type UserResponseType = z.infer<typeof UserResponseSchema>;

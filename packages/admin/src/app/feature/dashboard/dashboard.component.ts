@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { UserService } from '@shared/services/user.service';
 import { UserModel } from '@app/shared/models/user.model';
-import { forkJoin, merge, mergeMap } from 'rxjs';
+import { mergeMap } from 'rxjs';
 
 @Component({
   selector: 'aw-dashboard',
@@ -24,6 +24,8 @@ export class DashboardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    // testing to show the services work and we are getting data from the backend
+    // TODO: remove at any point
     this.userService
       .getAllUsers()
       .pipe(
@@ -39,6 +41,7 @@ export class DashboardComponent implements OnInit {
           }
         },
         error: (error: any) => {
+          // TODO: we need to create a toast service to show this error to the user
           console.error('Error fetching user data', error);
         },
       });

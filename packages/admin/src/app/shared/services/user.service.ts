@@ -6,10 +6,11 @@ import {
   SerializedUserType,
   UserResponseType,
   UserResponseSchema,
+  UserUpdateType,
 } from '../schemas/user.schema';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
-import { UserModel, UserUpdateModel } from '../models/user.model';
+import { UserModel } from '../models/user.model';
 import { ErrorResponseType } from '../schemas/error.schema';
 
 const apiUrl = 'http://localhost:3333';
@@ -82,7 +83,7 @@ export class UserService {
     );
   }
 
-  patchUser(user: UserUpdateModel): Observable<UserModel | null> {
+  patchUser(user: UserUpdateType): Observable<UserModel | null> {
     return this.http
       .patch<UserResponseType>(`${apiUrl}/users/${user.id}`, user)
       .pipe(

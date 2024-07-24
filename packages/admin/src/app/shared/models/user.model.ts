@@ -23,18 +23,3 @@ export class UserModel {
 
   // add helper methods here
 }
-
-// TODO: Figure out if we want to do update models like this
-export class UserUpdateModel {
-  public id: string;
-  public fullName?: string | null;
-  public email?: string;
-  public roleId?: string;
-
-  constructor(data: any) {
-    this.id = data.id;
-    this.fullName = data.fullName;
-    this.email = data.email;
-    this.roleId = data.roleId;
-  }
-}
