@@ -1,15 +1,7 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  Signal,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { UserService } from '@shared/services/user.service';
 import { UserModel } from '@app/shared/models/user.model';
-import { combineLatest, mergeMap, Observable, of, switchMap } from 'rxjs';
+import { combineLatest, Observable, of, switchMap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -30,8 +22,8 @@ export class DashboardComponent {
         combineLatest([
           of(response.users),
           this.userService.getUser(response.users[0].id || ''),
-        ]),
-      ),
+        ])
+      )
     );
 
   usersCombined = toSignal(this.users$, {
@@ -41,6 +33,4 @@ export class DashboardComponent {
 
   users: Signal<UserModel[]> = computed(() => this.usersCombined()[0]);
   user: Signal<UserModel | null> = computed(() => this.usersCombined()[1]);
-
-  constructor() {}
 }

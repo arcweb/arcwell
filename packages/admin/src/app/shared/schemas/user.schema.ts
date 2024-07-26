@@ -4,8 +4,7 @@ import { RoleSchema } from './role.schema';
 import { StatusEnum } from './error.schema';
 
 // validate data coming from API or sending to API for create
-// TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
-export const UserSchema: any = z
+export const UserSchema = z
   .object({
     id: z.string().uuid().optional(),
     fullName: z.string().nullable(),
@@ -16,9 +15,6 @@ export const UserSchema: any = z
     role: RoleSchema.optional(),
   })
   .strict();
-
-// TODO: This shouldn't be needed, up for discussion
-// const SerializedUserSchema = UserSchema.extend({});
 
 // Validate data going to the API for update
 export const UserUpdateSchema = UserSchema.extend({
@@ -39,7 +35,7 @@ export const UsersResponseSchema = z.object({
 });
 
 // Single User
-// TODO: Do we want to return an array of users or just a single user?
+// TODO: Do we want to return an array of users or just a single user?  No, this was a mistake, format will change
 export const UserResponseSchema = z.object({
   status: StatusEnum,
   data: z.object({

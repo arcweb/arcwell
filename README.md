@@ -49,6 +49,49 @@ After starting a new angular project the following steps were taken to install M
   - https://material.angular.io/guide/theming
 - note that the component api for adding the `color` attribute to material components does not work with Material v3. We need to create custom classes to theme components. Always do this at a mixin level and not a component level when adding a style which will apply to multiple components.
 
+## steps for enabling linting with eslint/stylistic and codeformatting with the prettier-eslint plugin
+
+The packages/admin angular application of this repository utilizes 3 tools and their associated plugins for linting and codeformatting:
+
+- Eslint: Lintings tools/rules for Typescript / Javascript
+- Stylelint: Linting tools/rules for css and scss
+- Prettier: Code formatting, autocorrect
+
+In addtion to installing the above packages when building the application, you will have to install the associated plugins for your IDE.  After the plugin are installed you may also have to configure your IDE for autoformatting on save.  Here is an example user level configuration for VSCode:
+```
+"[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true
+},
+"[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true
+},
+"eslint.format.enable": true,
+"[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.stylelint": "explicit"
+    },
+    "editor.formatOnSave": true
+},
+"stylelint.validate": [
+    "css",
+    "scss"
+]
+  ```
+
+For more information on eslint, stylistic and prettier please refer to the official documentation:
+- [ESLint](https://eslint.org/)
+- [Prettier](https://prettier.io/)
+- [Stylelint](https://stylelint.io/)
+
 ## Quickstart
 
 ```

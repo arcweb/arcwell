@@ -9,7 +9,6 @@ node_modules/
 # Editors specific
 .fleet
 .idea
-.vscode
 
 # System files
 .DS_Store

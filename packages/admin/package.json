@@ -7,7 +7,9 @@
     "ng": "ng",
     "start": "ng serve",
     "test": "ng test",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "fix-code": "prettier-eslint --write 'src/**/*.{js,jsx,ts}'",
+    "fix-styles": "prettier-stylelint --write 'src/**/*.{css,scss}'"
   },
   "dependencies": {
     "@angular/animations": "^18.1.0",
@@ -30,14 +32,24 @@
     "@angular-devkit/build-angular": "^18.1.0",
     "@angular/cli": "^18.1.0",
     "@angular/compiler-cli": "^18.1.0",
+    "@eslint/js": "^9.7.0",
     "@types/jasmine": "~5.1.0",
     "@types/luxon": "^3.4.2",
+    "angular-eslint": "18.1.0",
+    "eslint": "^9.6.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-unused-imports": "^4.0.1",
+    "globals": "^15.8.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "prettier": "3.3.3",
+    "stylelint": "^16.7.0",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "typescript": "~5.4.2",
+    "typescript-eslint": "8.0.0-alpha.38"
   }
 }
