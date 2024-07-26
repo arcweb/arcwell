@@ -4,8 +4,8 @@
 name: "arcwell"
 
 volumes:
-  server-exclude:
-  admin-exclude:
+  excluded_server:
+  excluded_admin:
   pgdata:
 
 networks:
@@ -18,12 +18,11 @@ services:
     image: arcwell_server
     build:
       context: ./packages/server
-      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+        PORT: '3333'
     env_file:
-      - ./arcwell.dev.env
-    volumes:
-      - ./packages/server:/home/node/app/
-      - server-exclude:/home/node/app/node_modules/
+      - ./packages/server/.env.development
     depends_on:
       - db
     networks:
@@ -31,21 +30,27 @@ services:
       - data
     ports:
       - '3333:3333'
+      - '5173:5173'
+    volumes:
+      - ./packages/server:/home/node/app
+      # Exclude host node_modules from mounting within container; host-installed
+      # packages will not conflict with in-container /opt/node/node_modules:
+      - excluded_server:/home/node/app/node_modules
 
   admin:
     image: arcwell_admin
     build:
       context: ./packages/admin
-      dockerfile: Dockerfile
-    env_file:
-      - ./arcwell.dev.env
+      args:
+        NODE_ENV: development
+        PORT: '4200'
     networks:
       - application
     ports:
       - '80:4200'
     volumes:
-      - ./packages/admin:/usr/src/app
-      - admin-exclude:/usr/src/app/node_modules
+      - ./packages/admin:/home/node/app
+      - excluded_admin:/home/node/app/node_modules
 
   db:
     image: postgres:16-bookworm
