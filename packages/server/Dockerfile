@@ -24,7 +24,7 @@ COPY --chown=node:node package.json package-lock.json* ./
 RUN npm ci && npm cache clean --force
 
 # Check every 30s to ensure this service returns HTTP 200
-# HEALTHCHECK --interval=30s CMD node healthcheck.js
+HEALTHCHECK --interval=60s CMD node healthcheck.js
 
 # Add source code last (it changes the most), as node user:
 WORKDIR /home/node/app

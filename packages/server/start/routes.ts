@@ -15,6 +15,9 @@ const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
 const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 
+const HealthChecksController = () => import('#controllers/health_checks_controller')
+router.get('/health', [HealthChecksController])
+
 router.get('/', async () => {
   return {
     arcwell: {
