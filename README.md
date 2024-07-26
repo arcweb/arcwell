@@ -16,6 +16,12 @@ Arcwell itself is composed of:
 - **Arcwell Client Libraries** – SDKs for developers to leverage when integrating Arcwell in their applications
 - **Embedded EHR** – FHIR-compliant electronic health record system for cache, local record, and integration with health systems
 
+## Quickstart
+
+```
+docker compose up --build
+```
+
 ## Steps made to setup Angular and Material
 
 After starting a new angular project the following steps were taken to install Material UI and set up themeing for the Material v3 design system:
@@ -92,11 +98,7 @@ For more information on eslint, stylistic and prettier please refer to the offic
 - [Prettier](https://prettier.io/)
 - [Stylelint](https://stylelint.io/)
 
-## Quickstart
 
-```
-docker compose up --build
-```
 
 ## Additional Documentation
 
