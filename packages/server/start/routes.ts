@@ -7,6 +7,7 @@
 |
 */
 
+import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
@@ -14,8 +15,16 @@ const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
 const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 
+const HealthChecksController = () => import('#controllers/health_checks_controller')
+router.get('/health', [HealthChecksController])
+
 router.get('/', async () => {
   return {
+    arcwell: {
+      node: env.get('ARCWELL_NODE'),
+      key: env.get('ARCWELL_KEY'),
+      server: true,
+    },
     hello: 'world',
   }
 })

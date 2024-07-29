@@ -6,6 +6,7 @@
     "build": "ng build",
     "ng": "ng",
     "start": "ng serve",
+    "dev": "ng serve --host 0.0.0.0 --proxy-config proxy-config-docker.json --disable-host-check",
     "test": "ng test",
     "watch": "ng build --watch --configuration development"
   },

@@ -1,4 +1,8 @@
 
+# Secrets
+.env*
+!.env.example
+
 # Build tools specific
 npm-debug.log
 yarn-error.log
@@ -10,6 +14,7 @@ node_modules/
 .fleet
 .idea
 .vscode
+.editorconfig
 
 # System files
 .DS_Store
