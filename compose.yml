@@ -44,9 +44,12 @@ services:
       args:
         NODE_ENV: development
         PORT: '4200'
+    env_file:
+      - ./packages/admin/.env.development
     networks:
       - application
     ports:
+      - '4200:4200'
       - '80:4200'
     volumes:
       - ./packages/admin:/home/node/app

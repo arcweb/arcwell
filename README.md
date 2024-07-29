@@ -16,48 +16,80 @@ Arcwell itself is composed of:
 - **Arcwell Client Libraries** – SDKs for developers to leverage when integrating Arcwell in their applications
 - **Embedded EHR** – FHIR-compliant electronic health record system for cache, local record, and integration with health systems
 
-## Steps made to setup Angular and Material
-
-After starting a new angular project the following steps were taken to install Material UI and set up themeing for the Material v3 design system:
-
-- ran `ng add @angular/material`
-- selected a Material v3 theme as well as imported animations
-- ran the following schematic with Arcweb blue color `ng generate @angular/material:m3-theme` and added the output to the `styles/_theme.scss` file
-- in the styles.scss file, added the following:
-
-```
-  @include mat.core();
-
-
-  html {
-    @include mat.core-theme(theme.$light-theme);
-    @include mat.all-component-themes(theme.$light-theme);
-    @include mat.system-level-colors(theme.$light-theme);  // required for references to system level colors such as 'on-primary'
-    @include mat.system-level-typography(theme.$light-theme);
-    @include mat.strong-focus-indicators(theme.$light-theme); // accessibility
-
-    //custom, component level mixins
-    @include mixins.button-theme(theme.$light-theme);
-    @include mixins.toolbar-theme(theme.$light-theme);
-  }
-```
-
-- added `_toolbar.scss` and `_button.scss` as examples for the mixin folder structure and variable references
-- make sure to reference theme colors when possible using system level variables, refer to the `_toolbar.scss` file for how to do this.
-- please check out the following 2 guides for more information no themeing material with v3 of their design spec:
-  - https://angular-material.dev/articles/angular-material-theming-css-vars
-  - https://material.angular.io/guide/theming
-- note that the component api for adding the `color` attribute to material components does not work with Material v3. We need to create custom classes to theme components. Always do this at a mixin level and not a component level when adding a style which will apply to multiple components.
 
 ## Quickstart
+
+### 1. Expand local dev environment files
+
+Out-of-the-box, the **Server** and **Admin** applications both require
+a `.env.development` file be in place with common configuration. You can
+hyrdate an example from `.env.example` in each directory by running a
+top-level bootstrap script:
+
+```
+./scripts/bootstrap.sh
+```
+☝️ This script convention in Arcweb projects searches sub-packages for their 
+own `scripts/bootstrap.sh` and runs each. The scripts are non-destructive and
+can be run multiple times in most cases.
+
+You can confirm that the configuration is now set by checking for two env
+files with starter config:
+* /packages/server/.env.development
+* /packages/admin/.env.development
+
+You can also double-check that things are good by confirming the Docker
+Compose configuration is now working. If this command displays configuration
+and exists successfully, you are good to go:
+
+```
+docker compose config
+```
+
+### 2. Start up services in Docker
+
+Once you've verified that the configuration is in place, you can start the
+Docker service containers. The first time through, you'll want to ensure the
+new Arcwell containers get built:
 
 ```
 docker compose up --build
 ```
 
+On subsequent runs, you can just bring them up:
+
+```
+docker compose up
+```
+
+### 3. Visit Server and Admin in browser
+
+Arcwell Server:
+* Confirm the Arcwell Server is up by visiting http://localhost:3333
+* Check the healthcheck endpoint at http://localhost:3333/health
+
+Arcwell Admin:
+* Browse to the root of the admin at http://localhost:4200
+
+
+## Docker Services
+
+In local development, a handful of services are orchestrated for you
+within Docker and a relationship is configured in the `/compose.yml`
+[Compose](https://docs.docker.com/compose/) File. These services are:
+
+* **Arcwell Server** as server, defined in `packages/server/Dockerfile`
+* **Arcwell Admin** as admin, defined in `packages/admin/Dockerfile`
+* **PostgreSQL Database** as db, pulled from [postgres:16-bookworm](https://hub.docker.com/_/postgres/)
+* **Redis Cache** as redis, pulled from [redis:7-bookworm](https://hub.docker.com/_/redis)
+
+Arcwell software is designed to also be run on your local host
+machine (i.e., without Docker); support instructions TODO.
+
+
 ## Additional Documentation
 
-Documentation [further fleshed out within](./doc).
+Documentation [expands within](./doc).
 
 [Apache 2.0 License](./LICENSE)  
 (C) 2024 Copyright Arcweb Technologies, LLC

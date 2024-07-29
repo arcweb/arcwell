@@ -21,7 +21,8 @@ WORKDIR /home/node/app
 
 # Copy in package defs first and install dependencies:
 COPY --chown=node:node package.json package-lock.json* ./
-RUN npm ci && npm cache clean --force
+##RUN npm ci && npm cache clean --force
+RUN npm install && npm cache clean --force
 
 # Check every 30s to ensure this service returns HTTP 200
 HEALTHCHECK --interval=60s CMD node healthcheck.js
@@ -30,6 +31,5 @@ HEALTHCHECK --interval=60s CMD node healthcheck.js
 WORKDIR /home/node/app
 COPY --chown=node:node . .
 
-# CMD ["sleep", "3600"]
 CMD ["npm", "run", "dev"]
 

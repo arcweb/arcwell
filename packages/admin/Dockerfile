@@ -43,7 +43,7 @@ WORKDIR /home/node/app
 
 # Copy in package defs first and install dependencies:
 COPY --chown=node:node package.json package-lock.json* ./
-RUN npm i && npm cache clean --force
+RUN npm install && npm cache clean --force
 
 #COPY ng .
 
@@ -80,5 +80,4 @@ COPY --chown=node:node . .
 
 #CMD "./scripts/entrypoint.sh"
 
-#CMD ["ng", "serve", "--host", "0.0.0.0", "--proxy-config", "proxy-config-docker.json", "--disable-host-check"]
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
