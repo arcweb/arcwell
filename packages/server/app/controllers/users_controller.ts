@@ -1,5 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import { updateUserValidator } from '#validators/user'
 
 export default class UsersController {
   /**
@@ -37,16 +38,8 @@ export default class UsersController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
-    try {
-      // TODO: Handle an invalid uuid with a better message
-      const user = await User.query().where('id', params.id).preload('role')
-      if (user.length <= 0) {
-        return { status: 'error', data: { message: 'No user found.' } }
-      }
-      // console.log('user: ', user[0])
-      return { status: 'success', data: { user: user } }
-    } catch (error) {
-      return { status: 'error', message: error }
+    return {
+      data: await User.query().where('id', params.id).preload('role').firstOrFail(),
     }
   }
 
@@ -54,15 +47,12 @@ export default class UsersController {
    * Handle form submission for the edit action
    */
   async update({ params, request }: HttpContext) {
-    try {
-      const user = await User.findOrFail(params.id)
-      // TODO: If you pass in an id in request.body(), it will be ignored, but the updatedRole will have that id, but it wasn't updated in the database
-      // TODO: Figure out a better way besides merge.
-      const updatedUser = await user.merge(request.body()).save()
-      return { status: 'success', data: { user: updatedUser } }
-    } catch (error) {
-      return { status: 'error', message: error }
-    }
+    await request.validateUsing(updateUserValidator)
+    const user = await User.findOrFail(params.id)
+    // TODO: If you pass in an id in request.body(), it will be ignored, but the updatedRole will have that id, but it wasn't updated in the database
+    // TODO: Figure out a better way besides merge.
+    const updatedUser = await user.merge(request.body()).save()
+    return { data: updatedUser }
   }
 
   /**
