@@ -2,9 +2,9 @@ import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
 import { errors as vineErrors } from '@vinejs/vine'
 import { errors as adonisCoreErrors } from '@adonisjs/core'
-import { errors as bouncerErrors } from '@adonisjs/bouncer'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as lucidErrors } from '@adonisjs/lucid'
+// import { errors as bouncerErrors } from '@adonisjs/bouncer'
 
 interface ValidationFrameworkError {
   message: string
@@ -95,8 +95,14 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       return
     }
 
-    if (error instanceof bouncerErrors.E_AUTHORIZATION_FAILURE) {
-      console.log('TODO: handle bouncer routing errors.') // TODO return proper format
+    if (error instanceof authErrors.E_UNAUTHORIZED_ACCESS) {
+      const newError = this.transformGenericErrors([
+        {
+          title: 'Unauthorized',
+        },
+      ])
+      ctx.response.status(401).send(newError)
+      return
     }
 
     if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
@@ -125,6 +131,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       ctx.response.status(error.status ? error.status : 500).send(newError)
       return
     }
+
+    // if (error instanceof bouncerErrors.E_AUTHORIZATION_FAILURE) {
+    // TODO: handle bouncer routing errors. when implemented
+    // }
 
     const newError = this.transformGenericErrors([
       {

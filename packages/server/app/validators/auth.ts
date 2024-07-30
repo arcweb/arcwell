@@ -1,7 +1,7 @@
 import vine from '@vinejs/vine'
 
 //TODO: Improve this with actual password rule validation
-const passwordValidation = vine.string().minLength(8)
+export const passwordValidation = vine.string().minLength(8)
 
 export const registerValidator = vine.compile(
   vine.object({

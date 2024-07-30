@@ -62,9 +62,7 @@ export default class AuthController {
       const user = auth.user!
       await User.accessTokens.delete(user, user.currentAccessToken.identifier)
 
-      return {
-        status: 'success',
-      }
+      return {}
     } catch (error) {
       return {
         status: 'error',
