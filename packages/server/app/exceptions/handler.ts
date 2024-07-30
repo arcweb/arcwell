@@ -15,7 +15,7 @@ interface ValidationFrameworkError {
   }
 }
 
-interface CustomError {
+export interface CustomError {
   title: string
   detail?: string
   code?: string
@@ -50,7 +50,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     return { errors: customErrors }
   }
 
-  private transformGenericErrorErrors(customErrors: CustomError[]): {
+  private transformGenericErrors(customErrors: CustomError[]): {
     errors: CustomError[]
   } {
     return { errors: customErrors }
@@ -74,11 +74,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     }
 
     if (error instanceof adonisCoreErrors.E_ROUTE_NOT_FOUND) {
-      const newError = this.transformGenericErrorErrors([
+      const newError = this.transformGenericErrors([
         {
           title: 'Route not Found',
           code: error.code ? error.code : 'E_ROUTE_NOT_FOUND',
-          detail: 'Route not Found',
         },
       ])
       ctx.response.status(404).send(newError)
@@ -86,19 +85,14 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     }
 
     if (error instanceof lucidErrors.E_ROW_NOT_FOUND) {
-      const newError = this.transformGenericErrorErrors([
+      const newError = this.transformGenericErrors([
         {
           title: 'Row not Found',
           code: error.code ? error.code : 'E_ROW_NOT_FOUND',
-          detail: 'Row not Found',
         },
       ])
       ctx.response.status(404).send(newError)
       return
-    }
-
-    if (error instanceof adonisCoreErrors.E_HTTP_EXCEPTION) {
-      console.log('TODO: handle http exception core errors.') // TODO return proper format
     }
 
     if (error instanceof bouncerErrors.E_AUTHORIZATION_FAILURE) {
@@ -106,17 +100,35 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     }
 
     if (error instanceof authErrors.E_INVALID_CREDENTIALS) {
-      console.log('TODO: handle auth errors.') // TODO return proper format
+      const newError = this.transformGenericErrors([
+        {
+          title: 'Invalid credentials',
+          code: error.code ? error.code : 'E_INVALID_CREDENTIALS',
+        },
+      ])
+      ctx.response.status(404).send(newError)
+      return
     }
 
-    // TODO: Check all others from https://docs.adonisjs.com/guides/references/exceptions
+    if (error instanceof adonisCoreErrors.E_HTTP_EXCEPTION) {
+      console.log('TODO: handle intentionally thrown exceptions.', error)
+      const customError: CustomError = {
+        title: error && error.body.title ? error.body.title : 'Unspecified error',
+        code: error && error.body.code ? error.body.code : 'E_HTTP_EXCEPTION',
+      }
 
-    // console.error('UNHANDLED ERROR: TODO: Add a catch-all generic exception', error)
+      if (error.body && error.body.detail) {
+        customError.detail = error.body.detail
+      }
 
-    const newError = this.transformGenericErrorErrors([
+      const newError = this.transformGenericErrors([customError])
+      ctx.response.status(error.status ? error.status : 500).send(newError)
+      return
+    }
+
+    const newError = this.transformGenericErrors([
       {
         title: 'Unknown Exception',
-        detail: 'Unknown Exception',
       },
     ])
     ctx.response.status(500).send(newError)
@@ -131,7 +143,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * @note You should not attempt to send a response from this method.
    */
   async report(error: unknown, ctx: HttpContext) {
-    console.log('I AM REPORTING********************************************', error)
+    console.log('I CAN REPORT THIS SOMEWHERE!!!!!!', error)
     return super.report(error, ctx)
   }
 }
