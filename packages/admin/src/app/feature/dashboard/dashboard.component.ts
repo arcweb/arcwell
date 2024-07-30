@@ -28,8 +28,8 @@ export class DashboardComponent {
     .pipe(
       switchMap((response) =>
         combineLatest([
-          of(response.users),
-          this.userService.getUser(response.users[0].id || ''),
+          of(response),
+          this.userService.getUser(response[0].id || ''),
         ]),
       ),
     );

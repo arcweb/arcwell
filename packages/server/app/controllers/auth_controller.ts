@@ -10,17 +10,19 @@ export default class AuthController {
    */
   async register({ request }: HttpContext) {
     const data = await request.validateUsing(registerValidator)
+
+    //TODO: For now, this only adds Guest roles, change to the actual requirements
     const role = await Role.findBy({ name: 'Guest' })
     if (!role) {
       throwCustomHttpError(
         {
           title: 'Missing guest role',
           code: 'E_AUTHORIZATION_FAILURE',
-          detail: 'Unable to register new user as guest role',
+          detail: 'Unable to register new user with guest role because none exists',
         },
         500
       )
-      return // TODO: required since typescript doesn't know that the above function throws an exception and won't continue
+      return // TODO: required since typescript doesn't believe that the above function throws an exception
     }
     const user = await User.create({ ...data, roleId: role.id })
 
@@ -57,42 +59,29 @@ export default class AuthController {
     }
   }
 
-  async logout({ auth }: HttpContext) {
-    try {
-      const user = auth.user!
-      await User.accessTokens.delete(user, user.currentAccessToken.identifier)
+  async logout({ auth, response }: HttpContext) {
+    const user = auth.user!
+    await User.accessTokens.delete(user, user.currentAccessToken.identifier)
 
-      return {}
-    } catch (error) {
-      return {
-        status: 'error',
-        message: error,
-      }
-    }
+    response.status(204).send('')
   }
 
   async me({ auth }: HttpContext) {
-    try {
-      await auth.check()
+    await auth.check()
 
-      if (!auth.user) {
-        return {
-          status: 'error',
-          message: 'User token is invalid',
-        }
-      }
-
-      return {
-        status: 'success',
-        data: {
-          user: auth.user,
+    if (!auth.user) {
+      throwCustomHttpError(
+        {
+          title: 'User token is invalid',
+          code: 'E_INVALID_TOKEN',
         },
-      }
-    } catch (error) {
-      return {
-        status: 'error',
-        message: error,
-      }
+        401
+      )
+      return // TODO: This feels like it shouldn't be needed, but confirm
+    }
+
+    return {
+      data: auth.user,
     }
   }
 }
