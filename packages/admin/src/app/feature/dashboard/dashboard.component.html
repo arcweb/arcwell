@@ -1,18 +1,25 @@
 <div>
+  <h2>Get All Users</h2>
   @if (users()) {
     @for (user of users(); track user) {
-      <h2>Get All Users</h2>
-      <h3>{{ user.fullName }}</h3>
-      <p>{{ user.email }}</p>
-      <p>{{ user.roleId }}</p>
+      <button (click)="loadUser(user.id)" style="cursor: pointer;">
+        <h3>{{ user.fullName ? user.fullName : 'No FullName' }}</h3>
+        <p>{{ user.email }}</p>
+        <p>{{ user.roleId }}</p>
+      </button>
+
     }
   }
 </div>
 <hr />
 
-<div>
-  <h2>Get User</h2>
-  <h3>{{ user()?.fullName }}</h3>
-  <p>{{ user()?.email }}</p>
-  <p>{{ user()?.roleId }}</p>
-</div>
+@if (user()) {
+  <div>
+    <h3>Click another user to load another</h3>
+    <h3>{{ user()?.fullName }}</h3>
+    <p>{{ user()?.email }}</p>
+    <p>{{ user()?.roleId }}</p>
+  </div>
+} @else {
+  <h3>Click a user above to display a user</h3>
+}

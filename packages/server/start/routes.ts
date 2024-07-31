@@ -39,6 +39,6 @@ router
   .as('auth')
   .prefix('auth')
 
-router.resource('roles', RolesController)
+router.resource('roles', RolesController).apiOnly()
 router.get('users/full', [GetAllFullUsersController]).as('users.full')
-router.resource('users', UsersController)
+router.resource('users', UsersController).apiOnly()

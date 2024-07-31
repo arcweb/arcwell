@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { StatusEnum } from './error.schema';
 import { RoleSchema } from './role.schema';
 
 import { UserModel } from '../models/user.model';
@@ -34,19 +33,12 @@ export const UserUpdateSchema = UserSchema.extend({
 
 //  Multiple Users
 export const UsersResponseSchema = z.object({
-  status: StatusEnum,
-  data: z.object({
-    users: z.array(UserSchema),
-  }),
+  data: z.array(UserSchema),
 });
 
 // Single User
-// TODO: Do we want to return an array of users or just a single user?
 export const UserResponseSchema = z.object({
-  status: StatusEnum,
-  data: z.object({
-    user: z.array(UserSchema),
-  }),
+  data: UserSchema,
 });
 
 // export types

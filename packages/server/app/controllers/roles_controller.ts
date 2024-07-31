@@ -6,75 +6,48 @@ export default class RolesController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    const roles = await Role.all()
-    return {
-      status: 'success',
-      data: {
-        roles: roles,
-      },
-    }
+  async index({ auth }: HttpContext) {
+    await auth.authenticate()
+    return { data: await Role.all() }
   }
 
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
-    try {
-      const role = await Role.findOrFail(params.id)
-      return { status: 'success', data: { role: role } }
-    } catch (error) {
-      return { status: 'error', message: error }
-    }
+  async show({ params, auth }: HttpContext) {
+    await auth.authenticate()
+    return { data: await Role.findOrFail(params.id) }
   }
 
   /**
-   * Handle form submission for the create action
+   * Handle form submission for the creation action
    */
-  async store({ request, auth }: HttpContext) {
-    try {
-      // Check that a valid Bearer token was passed in the header
-      await auth.authenticate()
-
-      await request.validateUsing(createRoleValidator)
-      const role = await Role.create(request.body())
-      return {
-        status: 'success',
-        data: {
-          role: role,
-        },
-      }
-    } catch (error) {
-      return { status: 'error', message: error }
-    }
+  async store({ request, auth, response }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(createRoleValidator)
+    const newRole = await Role.create(request.body())
+    response.status(201).send({ data: newRole })
   }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {
-    try {
-      await request.validateUsing(updateRoleValidator)
-      const role = await Role.findOrFail(params.id)
-      // TODO: If you pass in an id in request.body(), it will be ignored, but the updatedRole will have that id, but it wasn't updated in the database
-      // TODO: Figure out a better way besides merge.
-      const updateRole = await role.merge(request.body()).save()
-      return { status: 'success', data: { role: updateRole } }
-    } catch (error) {
-      return { status: 'error', message: error }
-    }
+  async update({ params, auth, request }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(updateRoleValidator)
+    const role = await Role.findOrFail(params.id)
+    const cleanRequest = request.only(['name'])
+    const updateRole = await role.merge(cleanRequest).save()
+    return { data: updateRole }
   }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {
-    try {
-      const role = await Role.findOrFail(params.id)
-      await role.delete()
-      return { status: 'success' }
-    } catch (error) {
-      return { status: 'error', message: error }
-    }
+  async destroy({ params, auth, response }: HttpContext) {
+    await auth.authenticate()
+    const role = await Role.findOrFail(params.id)
+    await role.delete()
+    response.status(204).send('')
   }
 }
