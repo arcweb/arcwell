@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
+import { ZodError } from 'zod';
 
 import { UserModel } from '../models/user.model';
 import { ErrorResponseType } from '../schemas/error.schema';
@@ -8,16 +9,10 @@ import {
   deserializeUser,
   UserResponseSchema,
   UserResponseType,
-  UsersResponseSchema,
   UsersResponseType,
   UserType,
   UserUpdateType,
 } from '../schemas/user.schema';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
-import { UserModel } from '../models/user.model';
-import { ErrorResponseType } from '../schemas/error.schema';
-import { ZodError } from 'zod';
 
 const apiUrl = 'http://localhost:3333';
 
