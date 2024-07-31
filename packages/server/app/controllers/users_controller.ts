@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
-import Role from '#models/role'
 
 export default class UsersController {
   /**
