@@ -36,7 +36,7 @@ export const UsersResponseSchema = z.object({
 
 // Single User
 export const UserResponseSchema = z.object({
-  data: z.object(UserSchema),
+  data: UserSchema,
 });
 
 // export types
