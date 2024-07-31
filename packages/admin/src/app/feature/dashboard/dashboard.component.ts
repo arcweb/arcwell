@@ -23,8 +23,8 @@ export class DashboardComponent {
         combineLatest([
           of(response.users),
           this.userService.getUser(response.users[0].id || ''),
-        ])
-      )
+        ]),
+      ),
     );
 
   usersCombined = toSignal(this.users$, {

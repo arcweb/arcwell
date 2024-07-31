@@ -13,7 +13,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./feature/dashboard/dashboard.component').then(
-            m => m.DashboardComponent
+            m => m.DashboardComponent,
           ),
       },
     ],

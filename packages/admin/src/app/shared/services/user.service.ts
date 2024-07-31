@@ -34,15 +34,15 @@ export class UserService {
       }),
       map((response: UsersResponseType) =>
         // validate the date we received is of the correct schema
-        UsersResponseSchema.parse(response)
+        UsersResponseSchema.parse(response),
       ),
       map((response: UsersResponseType) => ({
         // deserialize the data
         users: response.data.users.map((user: UserType) =>
-          deserializeUser(user)
+          deserializeUser(user),
         ),
         count: response.data.users.length,
-      }))
+      })),
     );
   }
   // TODO: test this oncce we get auth working
@@ -56,12 +56,12 @@ export class UserService {
       }),
       map((response: UserResponseType) =>
         // validate the date we received is of the correct schema
-        UserResponseSchema.parse(response)
+        UserResponseSchema.parse(response),
       ),
       map(
         (response: UserResponseType) =>
-          response.data.user && deserializeUser(response.data.user[0])
-      )
+          response.data.user && deserializeUser(response.data.user[0]),
+      ),
     );
   }
 
@@ -75,12 +75,12 @@ export class UserService {
       }),
       map((response: UserResponseType) =>
         // validate the date we received is of the correct schema
-        UserResponseSchema.parse(response)
+        UserResponseSchema.parse(response),
       ),
       map(
         (response: UserResponseType) =>
-          response.data.user && deserializeUser(response.data.user[0])
-      )
+          response.data.user && deserializeUser(response.data.user[0]),
+      ),
     );
   }
 
@@ -96,12 +96,12 @@ export class UserService {
         }),
         map((response: UserResponseType) =>
           // validate the date we received is of the correct schema
-          UserResponseSchema.parse(response)
+          UserResponseSchema.parse(response),
         ),
         map(
           (response: UserResponseType) =>
-            response.data.user && deserializeUser(response.data.user[0])
-        )
+            response.data.user && deserializeUser(response.data.user[0]),
+        ),
       );
   }
 }
