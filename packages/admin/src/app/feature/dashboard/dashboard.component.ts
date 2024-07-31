@@ -1,16 +1,9 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  Signal,
-  signal,
-  WritableSignal,
-} from '@angular/core';
-import { UserService } from '@shared/services/user.service';
-import { UserModel } from '@app/shared/models/user.model';
-import { combineLatest, mergeMap, Observable, of, switchMap } from 'rxjs';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, Observable, of, switchMap } from 'rxjs';
+
+import { UserModel } from '@app/shared/models/user.model';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'aw-dashboard',
@@ -26,12 +19,12 @@ export class DashboardComponent {
   private users$: Observable<[UserModel[], UserModel | null]> = this.userService
     .getAllUsers()
     .pipe(
-      switchMap((response) =>
+      switchMap(response =>
         combineLatest([
           of(response.users),
           this.userService.getUser(response.users[0].id || ''),
-        ]),
-      ),
+        ])
+      )
     );
 
   usersCombined = toSignal(this.users$, {

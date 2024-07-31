@@ -3,21 +3,22 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "skipLibCheck": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
+    "module": "es2020",
+    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
@@ -26,12 +27,11 @@
       "es6", 
       "dom.iterable"
     ],
-    "baseUrl": "src",
     "paths": {
-      "@app/*": ["app/*"],
-      "@feature/*": ["app/feature/*"],
-      "@shared/*": ["app/shared/*"],
-      "@styles/*": ["app/styles/*"],
+      "@app/*": ["src/app/*"],
+      "@feature/*": ["src/app/feature/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@styles/*": ["src/app/styles/*"],
     },
   },
   "angularCompilerOptions": {
@@ -39,5 +39,8 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "exclude": [
+    "./node_modules/*"
+  ]
 }

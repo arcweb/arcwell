@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-prettier/recommended",
+    "stylelint-config-standard-scss"
+  ],
+  "plugins": [
+    "stylelint-scss"
+  ],
+  "rules": {
+    "color-no-invalid-hex": true,
+    "scss/dollar-variable-pattern": [
+      "^[_]?[a-z]+([a-z0-9-]+[a-z0-9]+)?$"
+    ],
+    "no-empty-source": null
+  }
+}

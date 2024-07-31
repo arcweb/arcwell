@@ -1,17 +1,18 @@
-import { Injectable, inject } from '@angular/core';
-import {
-  deserializeUser,
-  UsersResponseType,
-  UsersResponseSchema,
-  UserType,
-  UserResponseType,
-  UserResponseSchema,
-  UserUpdateType,
-} from '../schemas/user.schema';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable, tap } from 'rxjs';
+
 import { UserModel } from '../models/user.model';
 import { ErrorResponseType } from '../schemas/error.schema';
+import {
+  deserializeUser,
+  UserResponseSchema,
+  UserResponseType,
+  UsersResponseSchema,
+  UsersResponseType,
+  UserType,
+  UserUpdateType,
+} from '../schemas/user.schema';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -33,15 +34,15 @@ export class UserService {
       }),
       map((response: UsersResponseType) =>
         // validate the date we received is of the correct schema
-        UsersResponseSchema.parse(response),
+        UsersResponseSchema.parse(response)
       ),
       map((response: UsersResponseType) => ({
         // deserialize the data
         users: response.data.users.map((user: UserType) =>
-          deserializeUser(user),
+          deserializeUser(user)
         ),
         count: response.data.users.length,
-      })),
+      }))
     );
   }
   // TODO: test this oncce we get auth working
@@ -55,12 +56,12 @@ export class UserService {
       }),
       map((response: UserResponseType) =>
         // validate the date we received is of the correct schema
-        UserResponseSchema.parse(response),
+        UserResponseSchema.parse(response)
       ),
       map(
         (response: UserResponseType) =>
-          response.data.user && deserializeUser(response.data.user[0]),
-      ),
+          response.data.user && deserializeUser(response.data.user[0])
+      )
     );
   }
 
@@ -74,12 +75,12 @@ export class UserService {
       }),
       map((response: UserResponseType) =>
         // validate the date we received is of the correct schema
-        UserResponseSchema.parse(response),
+        UserResponseSchema.parse(response)
       ),
       map(
         (response: UserResponseType) =>
-          response.data.user && deserializeUser(response.data.user[0]),
-      ),
+          response.data.user && deserializeUser(response.data.user[0])
+      )
     );
   }
 
@@ -95,12 +96,12 @@ export class UserService {
         }),
         map((response: UserResponseType) =>
           // validate the date we received is of the correct schema
-          UserResponseSchema.parse(response),
+          UserResponseSchema.parse(response)
         ),
         map(
           (response: UserResponseType) =>
-            response.data.user && deserializeUser(response.data.user[0]),
-        ),
+            response.data.user && deserializeUser(response.data.user[0])
+        )
       );
   }
 }

@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon';
-import { UserType } from '../schemas/user.schema';
+
 import { RoleModel } from './role.model';
+
+import { UserType } from '../schemas/user.schema';
 
 export class UserModel {
   public id?: string;

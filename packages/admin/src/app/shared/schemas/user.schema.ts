@@ -1,7 +1,9 @@
 import { z } from 'zod';
-import { UserModel } from '../models/user.model';
-import { RoleSchema } from './role.schema';
+
 import { StatusEnum } from './error.schema';
+import { RoleSchema } from './role.schema';
+
+import { UserModel } from '../models/user.model';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?

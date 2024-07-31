@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { UserSchema } from './user.schema';
 
 export const RoleSchema: any = z
