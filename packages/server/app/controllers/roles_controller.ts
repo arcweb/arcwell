@@ -8,7 +8,7 @@ export default class RolesController {
    */
   async index({ auth }: HttpContext) {
     await auth.authenticate()
-    return { date: await Role.all() }
+    return { data: await Role.all() }
   }
 
   /**
@@ -16,7 +16,7 @@ export default class RolesController {
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
-    return { date: await Role.findOrFail(params.id) }
+    return { data: await Role.findOrFail(params.id) }
   }
 
   /**
