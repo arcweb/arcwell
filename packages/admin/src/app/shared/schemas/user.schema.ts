@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { UserModel } from '../models/user.model';
 import { RoleSchema } from './role.schema';
-import { StatusEnum } from './error.schema';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
@@ -32,19 +31,12 @@ export const UserUpdateSchema = UserSchema.extend({
 
 //  Multiple Users
 export const UsersResponseSchema = z.object({
-  status: StatusEnum,
-  data: z.object({
-    users: z.array(UserSchema),
-  }),
+  data: z.array(UserSchema),
 });
 
 // Single User
-// TODO: Do we want to return an array of users or just a single user?
 export const UserResponseSchema = z.object({
-  status: StatusEnum,
-  data: z.object({
-    user: z.array(UserSchema),
-  }),
+  data: UserSchema,
 });
 
 // export types
