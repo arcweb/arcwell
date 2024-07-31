@@ -22,12 +22,11 @@ export default class RolesController {
   /**
    * Handle form submission for the creation action
    */
-  async store({ request, auth }: HttpContext) {
+  async store({ request, auth, response }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
-    return {
-      date: await Role.create(request.body()),
-    }
+    const newRole = await Role.create(request.body())
+    response.status(201).send({ data: newRole })
   }
 
   /**
