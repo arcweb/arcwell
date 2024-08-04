@@ -8,7 +8,8 @@
     "start": "ng serve",
     "dev": "ng serve --host 0.0.0.0 --proxy-config proxy-config-docker.json --disable-host-check",
     "test": "ng test",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "lint": "ng lint"
   },
   "dependencies": {
     "@angular/animations": "^18.1.0",
@@ -33,12 +34,18 @@
     "@angular/compiler-cli": "^18.1.0",
     "@types/jasmine": "~5.1.0",
     "@types/luxon": "^3.4.2",
+    "angular-eslint": "18.2.0",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "prettier": "3.3.3",
+    "typescript": "~5.4.2",
+    "typescript-eslint": "8.0.0"
   }
 }

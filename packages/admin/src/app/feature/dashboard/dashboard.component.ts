@@ -1,15 +1,7 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  Signal,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { UserService } from '@shared/services/user.service';
 import { UserModel } from '@app/shared/models/user.model';
-import { combineLatest, mergeMap, Observable, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -27,13 +19,11 @@ export class DashboardComponent {
   users = toSignal(this.users$, { initialValue: [], rejectErrors: true });
   user = signal<UserModel | null>(null);
 
-  constructor() {}
-
   loadUser(id: string | undefined) {
     if (id) {
       this.userService
         .getUser(id)
-        .subscribe((response) => this.user.set(response));
+        .subscribe(response => this.user.set(response));
     }
   }
 }

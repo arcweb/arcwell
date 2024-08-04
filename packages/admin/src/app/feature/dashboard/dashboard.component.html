@@ -2,12 +2,11 @@
   <h2>Get All Users</h2>
   @if (users()) {
     @for (user of users(); track user) {
-      <button (click)="loadUser(user.id)" style="cursor: pointer;">
+      <button (click)="loadUser(user.id)" style="cursor: pointer">
         <h3>{{ user.fullName ? user.fullName : 'No FullName' }}</h3>
         <p>{{ user.email }}</p>
         <p>{{ user.roleId }}</p>
       </button>
-
     }
   }
 </div>
