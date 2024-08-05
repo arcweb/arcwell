@@ -2,12 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import {
   deserializeUser,
   UsersResponseType,
-  UsersResponseSchema,
   UserType,
   UserResponseType,
   UserResponseSchema,
   UserUpdateType,
 } from '../schemas/user.schema';
+
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, tap } from 'rxjs';
 import { UserModel } from '../models/user.model';
@@ -21,8 +21,6 @@ const apiUrl = 'http://localhost:3333';
 })
 export class UserService {
   private http: HttpClient = inject(HttpClient);
-
-  constructor() {}
 
   getAllUsers(): Observable<UserModel[]> {
     return this.http.get<UsersResponseType>(`${apiUrl}/users`).pipe(

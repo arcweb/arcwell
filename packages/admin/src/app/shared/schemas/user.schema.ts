@@ -4,7 +4,7 @@ import { RoleSchema } from './role.schema';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
-export const UserSchema: any = z
+export const UserSchema = z
   .object({
     id: z.string().uuid().optional(),
     fullName: z.string().nullable(),

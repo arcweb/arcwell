@@ -35,6 +35,9 @@ EXPOSE $PORT
 # Prevent Angular from collecting analytics:
 ENV NG_CLI_ANALYTICS ci
 
+# Install specific major version of the angular cli
+RUN npm install -g @angular/cli@18
+
 # Unprivileged node user
 USER node
 
@@ -70,6 +73,7 @@ WORKDIR /home/node/app
 COPY --chown=node:node . .
 
 # RUN npm install --no-fund
+RUN npm install --no-fund
 
 #ARG CI_VERSION=1.0.LOCAL_DEV
 #RUN mkdir /etc/lvfiles
