@@ -9,7 +9,9 @@
     "dev": "ng serve --host 0.0.0.0 --proxy-config proxy-config-docker.json --disable-host-check",
     "test": "ng test",
     "watch": "ng build --watch --configuration development",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "lint-styles": "stylelint 'src/**/*.scss'",
+    "styles-fix": "stylelint --fix 'src/**/*.scss'"
   },
   "dependencies": {
     "@angular/animations": "^18.1.0",
@@ -45,6 +47,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "prettier": "3.3.3",
+    "stylelint": "^16.8.1",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-prettier": "^5.0.2",
     "typescript": "~5.4.2",
     "typescript-eslint": "8.0.0"
   }
