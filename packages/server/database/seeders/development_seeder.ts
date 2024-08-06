@@ -17,22 +17,22 @@ export default class extends BaseSeeder {
 
     await User.createMany([
       {
-        fullName: 'Super Admin Bob',
         email: 'dev-admin@email.com',
         password: 'Password12345!',
         roleId: superAdminRole.id,
+        personId: (await PersonFactory.create()).id,
       },
       {
-        fullName: 'Limited Admin Barry',
         email: 'dev-limited-admin@email.com',
         password: 'Password12345!',
         roleId: limitedAdminRole.id,
+        personId: (await PersonFactory.create()).id,
       },
       {
-        fullName: 'Guest Billy',
         email: 'dev-guest@email.com',
         password: 'Password12345!',
         roleId: guestRole.id,
+        personId: (await PersonFactory.create()).id,
       },
     ])
 
