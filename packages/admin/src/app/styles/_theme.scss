@@ -8,7 +8,7 @@
 // Note: Color palettes are generated from primary: #0465b5
 $_palettes: (
   primary: (
-    0: #000000,
+    0: #000,
     10: #001c39,
     20: #00315d,
     25: #003c70,
@@ -23,10 +23,10 @@ $_palettes: (
     95: #ebf1ff,
     98: #f8f9ff,
     99: #fdfcff,
-    100: #ffffff,
+    100: #fff,
   ),
   secondary: (
-    0: #000000,
+    0: #000,
     10: #111c2b,
     20: #263141,
     25: #313c4c,
@@ -41,10 +41,10 @@ $_palettes: (
     95: #ebf1ff,
     98: #f8f9ff,
     99: #fdfcff,
-    100: #ffffff,
+    100: #fff,
   ),
   tertiary: (
-    0: #000000,
+    0: #000,
     10: #271430,
     20: #3d2946,
     25: #483452,
@@ -59,10 +59,10 @@ $_palettes: (
     95: #fdebff,
     98: #fff7fc,
     99: #fffbff,
-    100: #ffffff,
+    100: #fff,
   ),
   neutral: (
-    0: #000000,
+    0: #000,
     10: #1a1c1e,
     20: #2f3033,
     25: #3a3b3e,
@@ -77,7 +77,7 @@ $_palettes: (
     95: #f1f0f4,
     98: #faf9fd,
     99: #fdfcff,
-    100: #ffffff,
+    100: #fff,
     4: #0d0e11,
     6: #121316,
     12: #1e2022,
@@ -90,7 +90,7 @@ $_palettes: (
     96: #f4f3f7,
   ),
   neutral-variant: (
-    0: #000000,
+    0: #000,
     10: #181c22,
     20: #2d3138,
     25: #383c43,
@@ -105,10 +105,10 @@ $_palettes: (
     95: #eef0fa,
     98: #f8f9ff,
     99: #fdfcff,
-    100: #ffffff,
+    100: #fff,
   ),
   error: (
-    0: #000000,
+    0: #000,
     10: #410002,
     20: #690005,
     25: #7e0007,
@@ -123,40 +123,46 @@ $_palettes: (
     95: #ffedea,
     98: #fff8f7,
     99: #fffbff,
-    100: #ffffff,
+    100: #fff,
   ),
 );
-
 $_rest: (
   secondary: map.get($_palettes, secondary),
   neutral: map.get($_palettes, neutral),
-  neutral-variant: map.get($_palettes,  neutral-variant),
+  neutral-variant: map.get($_palettes, neutral-variant),
   error: map.get($_palettes, error),
 );
 $_primary: map.merge(map.get($_palettes, primary), $_rest);
 $_tertiary: map.merge(map.get($_palettes, tertiary), $_rest);
-
-$light-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: $_primary,
-    tertiary: $_tertiary,
-    use-system-variables: true,
-  ),
-  typography: (
-    use-system-variables: true,
-  ),
-  density: ( scale: -1 )
-));
-$dark-theme: mat.define-theme((
-  color: (
-    theme-type: dark,
-    primary: $_primary,
-    tertiary: $_tertiary,
-    use-system-variables: true,
-  ),
-  typography: (
-    use-system-variables: true,
-  ),
-    density: (scale: -1)
-));
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: $_primary,
+      tertiary: $_tertiary,
+      use-system-variables: true,
+    ),
+    typography: (
+      use-system-variables: true,
+    ),
+    density: (
+      scale: -1,
+    ),
+  )
+);
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: $_primary,
+      tertiary: $_tertiary,
+      use-system-variables: true,
+    ),
+    typography: (
+      use-system-variables: true,
+    ),
+    density: (
+      scale: -1,
+    ),
+  )
+);

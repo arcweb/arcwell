@@ -7,19 +7,18 @@
   $secondary: mat.get-theme-color($theme, secondary);
   $on-secondary: mat.get-theme-color($theme, on-secondary);
   $error: mat.get-theme-color($theme, error);
+
   // add toolbar styles here
 
   .mat-toolbar {
-
     &.header {
       background: $primary;
-      color: $on-primary
+      color: $on-primary;
     }
 
     &.footer {
       background: $secondary;
-      color: $on-secondary
+      color: $on-secondary;
     }
   }
-
 }
