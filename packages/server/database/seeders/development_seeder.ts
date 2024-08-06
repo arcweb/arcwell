@@ -1,6 +1,7 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import User from '#models/user'
 import Role from '#models/role'
+import { PersonFactory } from '#database/factories/person_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'testing']
@@ -34,5 +35,7 @@ export default class extends BaseSeeder {
         roleId: guestRole.id,
       },
     ])
+
+    await PersonFactory.createMany(10)
   }
 }

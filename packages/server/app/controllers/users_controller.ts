@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
+import Person from '#models/person'
 
 export default class UsersController {
   /**
@@ -8,7 +9,7 @@ export default class UsersController {
    */
   async index({}: HttpContext) {
     // await auth.authenticate() // TODO: Add authentication in when client login is working
-    return { data: await User.query().preload('role') }
+    return { data: await User.query().preload('role').preload('person') }
   }
 
   /**
@@ -17,7 +18,7 @@ export default class UsersController {
   async show({ params }: HttpContext) {
     // await auth.authenticate() // TODO: Add authentication in when client login is working
     return {
-      data: await User.query().where('id', params.id).preload('role').firstOrFail(),
+      data: await User.query().where('id', params.id).preload('role').preload('person').firstOrFail(),
     }
   }
 
@@ -27,8 +28,20 @@ export default class UsersController {
   async store({ request, auth, response }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
-    const newUser = User.create(request.body())
-    response.status(201).send({ data: newUser })
+    // check if a perosnId was provided 
+    const personId = request.only(['personId'])
+    let newUser
+    if (personId.personId != null) {
+      newUser = User.create(request.body())
+    } else {
+      const personInfo = request.only(['familyName', 'givenName'])
+      const newPerson = await Person.create(personInfo)
+      // const person = Person.firstOrCreate(personInfo)
+
+      const userInfo = request.only(['email','password','roleId'])
+      newUser = User.create({...userInfo, personId: newPerson.id})
+    }
+    response.status(201).send({ data: (await newUser).serialize() })
   }
 
   /**
@@ -37,7 +50,7 @@ export default class UsersController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateUserValidator)
-    const cleanRequest = request.only(['fullName', 'email'])
+    const cleanRequest = request.only(['email'])
     const user = await User.findOrFail(params.id)
     const updatedUser = await user.merge(cleanRequest).save()
     return { data: updatedUser }

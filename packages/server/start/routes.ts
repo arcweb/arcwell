@@ -14,6 +14,7 @@ import { middleware } from '#start/kernel'
 const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
 const GetAllFullUsersController = () => import('#controllers/full_user_controller')
+const PeopleController = () => import('#controllers/people_controller')
 
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 router.get('/health', [HealthChecksController])
@@ -42,3 +43,4 @@ router
 router.resource('roles', RolesController).apiOnly()
 router.get('users/full', [GetAllFullUsersController]).as('users.full')
 router.resource('users', UsersController).apiOnly()
+router.resource('people', PeopleController).apiOnly()
