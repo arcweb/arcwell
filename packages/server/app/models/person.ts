@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { HasOne } from '@adonisjs/lucid/types/relations'
-import PeopleType from '#models/people_type'
+import PersonType from '#models/person_type'
 
 export default class Person extends BaseModel {
   @column({ isPrimary: true })
@@ -17,8 +17,8 @@ export default class Person extends BaseModel {
   @column()
   declare tags: string[]
 
-  @hasOne(() => PeopleType)
-  declare type: HasOne<typeof PeopleType>
+  @hasOne(() => PersonType)
+  declare type: HasOne<typeof PersonType>
 
   @hasOne(() => User)
   declare user: HasOne<typeof User>

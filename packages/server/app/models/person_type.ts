@@ -3,7 +3,7 @@ import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 
-export default class PeopleType extends BaseModel {
+export default class PersonType extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 
