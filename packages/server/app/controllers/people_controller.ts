@@ -7,7 +7,7 @@ export default class PeopleController {
    * Display a list of resource
    */
   async index({}: HttpContext) {
-    return { data: await Person.query() }
+    return { data: await Person.query().preload('user').preload('type') }
   }
 
   /**
@@ -25,7 +25,7 @@ export default class PeopleController {
    */
   async show({ params }: HttpContext) {
     return {
-      data: await Person.query().where('id', params.id).preload('user').firstOrFail(),
+      data: await Person.query().where('id', params.id).preload('user').preload('type').firstOrFail(),
     }
   }
 
@@ -34,7 +34,7 @@ export default class PeopleController {
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
-    //await request.validateUsing(updatePersonValidator)
+    await request.validateUsing(updatePersonValidator)
     const cleanRequest = request.only(['givenName', 'familyName'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()

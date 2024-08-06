@@ -20,6 +20,17 @@ export default class extends BaseSchema {
 
       table.foreign('person_id').references('people.id')
     })
+
+    this.schema.createTable('people_types', (table) => {
+      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
+      table.string('key').unique()
+      table.string('name')
+      table.jsonb('info')
+      table.jsonb('tags').defaultTo('[]').notNullable()
+
+      table.timestamp('created_at')
+      table.timestamp('updated_at')
+    })
   }
 
   async down() {
