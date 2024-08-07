@@ -259,7 +259,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"dev-admin@email.com\",\n    \"password\": \"Password12345!\"\n}",
+					"raw": "{\n    \"email\": \"{{Auth_Email}}\",\n    \"password\": \"{{Auth_Password}}\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

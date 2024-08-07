@@ -16,8 +16,8 @@ export default class PeopleController {
   async store({ request, auth, response }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
-    const newPerson = Person.create(request.body())
-    return { data: (await newPerson).serialize() }
+    const newPerson = await Person.create(request.body())
+    return { data: newPerson }
   }
 
   /**
@@ -25,7 +25,11 @@ export default class PeopleController {
    */
   async show({ params }: HttpContext) {
     return {
-      data: await Person.query().where('id', params.id).preload('user').preload('type').firstOrFail(),
+      data: await Person.query()
+        .where('id', params.id)
+        .preload('user')
+        .preload('type')
+        .firstOrFail(),
     }
   }
 
