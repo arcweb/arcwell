@@ -41,5 +41,5 @@ export const configureSuite: Config['configureSuite'] = (suite) => {
  * Configure the reporter to summarize the tests run
  */
 export const reporters: Config['reporters'] = {
-  activated: ['spec']
+  activated: ['spec'],
 }
