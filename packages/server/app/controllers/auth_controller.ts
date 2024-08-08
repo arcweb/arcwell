@@ -4,6 +4,7 @@ import User from '#models/user'
 import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import Person from '#models/person'
+import PersonType from '#models/person_type'
 
 export default class AuthController {
   /**
@@ -26,6 +27,20 @@ export default class AuthController {
       return // TODO: required since typescript doesn't believe that the above function throws an exception
     }
 
+    // TDOD: For now, only adds temp persontype
+    const persontype = await PersonType.findBy('key', 'Temp')
+    if (!persontype) {
+      throwCustomHttpError(
+        {
+          title: 'Missing temp person type',
+          code: 'E_AUTHORIZATION_FAILURE',
+          detail: 'Unable to register new user with temp person type because none exists',
+        },
+        500
+      )
+      return
+    }
+
     // check if a perosnId was provided
     const personId = request.only(['personId'])
     let newUser
@@ -33,7 +48,7 @@ export default class AuthController {
       newUser = await User.create({ ...data })
     } else {
       const personInfo = request.only(['familyName', 'givenName'])
-      const newPerson = await Person.create(personInfo)
+      const newPerson = await Person.create({ ...personInfo, personTypeId: persontype.id })
       // const person = Person.firstOrCreate(personInfo)
 
       const userInfo = request.only(['email', 'password'])

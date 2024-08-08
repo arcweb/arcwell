@@ -29,5 +29,6 @@ export default class extends BaseSeeder {
 
     await PersonTypeFactory.merge({ key: 'Patient', name: 'Patient' }).create()
     await PersonTypeFactory.merge({ key: 'Staff', name: 'Staff' }).create()
+    await PersonTypeFactory.merge({ key: 'Temp', name: 'Temp' }).create()
   }
 }
