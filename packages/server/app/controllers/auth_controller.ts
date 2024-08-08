@@ -3,6 +3,7 @@ import { loginValidator, registerValidator } from '#validators/auth'
 import User from '#models/user'
 import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import Person from '#models/person'
 
 export default class AuthController {
   /**
@@ -24,9 +25,22 @@ export default class AuthController {
       )
       return // TODO: required since typescript doesn't believe that the above function throws an exception
     }
-    const user = await User.create({ ...data, roleId: role.id })
 
-    const token = await User.accessTokens.create(user, ['*'], {
+    // check if a perosnId was provided
+    const personId = request.only(['personId'])
+    let newUser
+    if (personId.personId !== null) {
+      newUser = await User.create({ ...data })
+    } else {
+      const personInfo = request.only(['familyName', 'givenName'])
+      const newPerson = await Person.create(personInfo)
+      // const person = Person.firstOrCreate(personInfo)
+
+      const userInfo = request.only(['email', 'password'])
+      newUser = await User.create({ ...userInfo, personId: newPerson.id, roleId: role.id })
+    }
+
+    const token = await User.accessTokens.create(newUser, ['*'], {
       expiresIn: '30 days',
     })
 
@@ -37,7 +51,7 @@ export default class AuthController {
           value: token.value!.release(),
           expiresAt: token.expiresAt,
         },
-        user,
+        newUser,
       },
     }
   }
