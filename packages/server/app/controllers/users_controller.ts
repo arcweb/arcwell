@@ -35,7 +35,7 @@ export default class UsersController {
       {
         title: 'Wrong Endpoint',
         code: 'E_USER_STORE_FAILURE',
-        detail: 'Please use /auth/register to create users'
+        detail: 'Please use /auth/register to create users',
       },
       400
     )

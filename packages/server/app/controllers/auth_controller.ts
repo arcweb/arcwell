@@ -48,7 +48,7 @@ export default class AuthController {
       newUser = await User.create({ ...data })
     } else {
       const personInfo = request.only(['familyName', 'givenName'])
-      const newPerson = await Person.create({ ...personInfo, personTypeId: persontype.id })
+      const newPerson = await Person.create({ ...personInfo, typeId: persontype.id })
       // const person = Person.firstOrCreate(personInfo)
 
       const userInfo = request.only(['email', 'password'])

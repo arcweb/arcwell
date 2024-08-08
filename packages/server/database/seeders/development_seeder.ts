@@ -28,22 +28,22 @@ export default class extends BaseSeeder {
         email: 'dev-admin@email.com',
         password: 'Password12345!',
         roleId: superAdminRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeId: staffPersonType.id }).create()).id,
       },
       {
         email: 'dev-limited-admin@email.com',
         password: 'Password12345!',
         roleId: limitedAdminRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeId: staffPersonType.id }).create()).id,
       },
       {
         email: 'dev-guest@email.com',
         password: 'Password12345!',
         roleId: guestRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeId: staffPersonType.id }).create()).id,
       },
     ])
 
-    await PersonFactory.merge({ personTypeId: patientPersonType.id }).createMany(5)
+    await PersonFactory.merge({ typeId: patientPersonType.id }).createMany(5)
   }
 }

@@ -15,13 +15,13 @@ export default class Person extends BaseModel {
   declare givenName: string
 
   @column()
-  declare personTypeId: string
+  declare typeId: string
 
   @column()
   declare tags: string[]
 
   @belongsTo(() => PersonType)
-  declare personType: BelongsTo<typeof PersonType>
+  declare type: BelongsTo<typeof PersonType>
 
   @hasOne(() => User)
   declare user: HasOne<typeof User>

@@ -7,7 +7,7 @@ export default class PeopleController {
    * Display a list of resource
    */
   async index({}: HttpContext) {
-    return { data: await Person.query().preload('user').preload('personType') }
+    return { data: await Person.query().preload('user').preload('type') }
   }
 
   /**
@@ -28,7 +28,7 @@ export default class PeopleController {
       data: await Person.query()
         .where('id', params.id)
         .preload('user')
-        .preload('personType')
+        .preload('type')
         .firstOrFail(),
     }
   }
