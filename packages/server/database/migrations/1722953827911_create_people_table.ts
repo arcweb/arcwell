@@ -20,8 +20,8 @@ export default class extends BaseSchema {
       table.string('family_name').notNullable()
       table.string('given_name').notNullable()
 
-      table.uuid('type_id').notNullable()
-      table.foreign('type_id').references('person_types.id')
+      table.uuid('person_type_id').notNullable()
+      table.foreign('person_type_id').references('person_types.id')
 
       table.jsonb('tags').defaultTo('[]').notNullable()
       table.index(['family_name', 'given_name'], 'full_name_index')
