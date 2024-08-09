@@ -32,4 +32,15 @@ test.group('People', (group) => {
     ctx.assert.equal(newPerson.givenName, 'Bob')
     ctx.assert.equal(newPerson.personTypeId, pTypeT?.id)
   })
+
+  test('update test', async ({ assert }) => {
+    const person = await Person.first()
+    const newData = {
+      givenName: 'NewPerson',
+    }
+
+    person?.merge(newData).save()
+
+    assert.equal(person?.givenName, 'NewPerson')
+  })
 })
