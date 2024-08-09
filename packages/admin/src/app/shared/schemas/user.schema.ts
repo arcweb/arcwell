@@ -16,9 +16,6 @@ export const UserSchema = z
   })
   .strict();
 
-// TODO: This shouldn't be needed, up for discussion
-// const SerializedUserSchema = UserSchema.extend({});
-
 // Validate data going to the API for update
 export const UserUpdateSchema = UserSchema.extend({
   id: z.string().uuid(),
