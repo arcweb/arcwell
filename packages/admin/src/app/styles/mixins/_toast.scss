@@ -1,0 +1,65 @@
+@use '@angular/material' as mat;
+
+@mixin toast-theme($theme) {
+  $primary: mat.get-theme-color($theme, primary);
+  $on-primary: mat.get-theme-color($theme, on-primary);
+  $secondary: mat.get-theme-color($theme, secondary);
+  $error: mat.get-theme-color($theme, error);
+  $on-error: mat.get-theme-color($theme, on-error);
+
+  .toast-container {
+    z-index: 99999999;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    bottom: 10px;
+    width: 100%;
+    row-gap: 10px;
+  }
+
+  .toast-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 655px;
+    padding: 12px 24px;
+    box-shadow: 0 3px 5px 0 #0003;
+    letter-spacing: 0.25px;
+
+    .message-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 1;
+      margin: auto;
+    }
+  }
+
+  .button-dismiss {
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1.25px;
+    margin-left: 20px;
+  }
+
+  .toast-info {
+    background-color: mat.get-theme-color($theme, primary, 70);
+    color: $on-primary;
+    border: 0;
+  }
+
+  .toast-error {
+    background-color: $error;
+    color: $on-error;
+    border: 0;
+  }
+
+  .toast-success {
+    background-color: $primary;
+    color: $on-primary;
+    border: 0;
+  }
+}

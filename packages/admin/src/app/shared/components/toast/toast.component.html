@@ -1,0 +1,30 @@
+<div class="toast-container">
+  @for (m of messages; track m; let i = $index) {
+    @if (m.message) {
+      <div
+        class="toast-body"
+        [ngClass]="{
+          'toast-info': m.level === 'info',
+          'toast-error': m.level === 'error',
+          'toast-success': m.level === 'success',
+        }"
+      >
+        <div class="message-info">
+          @if (m.heading) {
+            <div>
+              <strong>{{ m.heading }}</strong>
+            </div>
+          }
+          @if (m.message) {
+            <div>
+              {{ m.message }}
+            </div>
+          }
+        </div>
+        <div class="button-dismiss" (click)="deleteMsg(m.timeStamp)">
+          Dismiss
+        </div>
+      </div>
+    }
+  }
+</div>
