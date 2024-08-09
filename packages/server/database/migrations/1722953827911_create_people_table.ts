@@ -21,7 +21,7 @@ export default class extends BaseSchema {
       table.string('given_name').notNullable()
 
       table.uuid('person_type_id').notNullable()
-      table.foreign('person_type_id').references('person_types.id').onDelete('CASCADE')
+      table.foreign('person_type_id').references('person_types.id')
 
       table.jsonb('tags').defaultTo('[]').notNullable()
       table.index(['family_name', 'given_name'], 'full_name_index')
@@ -33,7 +33,7 @@ export default class extends BaseSchema {
     this.schema.alterTable('users', (table) => {
       table.uuid('person_id').notNullable()
 
-      table.foreign('person_id').references('people.id').onDelete('CASCADE')
+      table.foreign('person_id').references('people.id')
     })
   }
 

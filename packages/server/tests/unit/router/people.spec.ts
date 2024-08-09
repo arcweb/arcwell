@@ -69,17 +69,9 @@ test.group('Router people', () => {
     assert.equal(data.data.personTypeId, newPerson.personTypeId)
     assert.equal(data.data.familyName, newPerson.familyName)
     assert.equal(data.data.givenName, newPerson.givenName)
+  }).setup(async () => {
+    await PersonType.create({ key: 'Tester', name: 'Tester' })
   })
-    .setup(async () => {
-      await PersonType.create({ key: 'Tester', name: 'Tester' })
-    })
-    .teardown(async () => {
-      // clean up test data
-      const pTypeT = await PersonType.findBy('key', 'Tester')
-      if (pTypeT) {
-        pTypeT.delete()
-      }
-    })
 
   test('destroy test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
