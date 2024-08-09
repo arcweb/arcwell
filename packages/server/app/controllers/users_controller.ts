@@ -40,22 +40,6 @@ export default class UsersController {
       400
     )
     return
-    // await auth.authenticate()
-    // await request.validateUsing(createUserValidator)
-    // // check if a perosnId was provided
-    // const personId = request.only(['personId'])
-    // let newUser
-    // if (personId.personId != null) {
-    //   newUser = User.create(request.body())
-    // } else {
-    //   const personInfo = request.only(['familyName', 'givenName'])
-    //   const newPerson = await Person.create(personInfo)
-    //   // const person = Person.firstOrCreate(personInfo)
-
-    //   const userInfo = request.only(['email', 'password', 'roleId'])
-    //   newUser = User.create({ ...userInfo, personId: newPerson.id })
-    // }
-    // response.status(201).send({ data: (await newUser).serialize() })
   }
 
   /**
