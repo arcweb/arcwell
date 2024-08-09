@@ -23,7 +23,7 @@ test.group('People', (group) => {
     const personInfo = {
       givenName: 'Bob',
       familyName: 'Test',
-      typeId: pTypeT?.id,
+      personTypeId: pTypeT?.id,
     }
 
     const newPerson = await Person.create(personInfo)

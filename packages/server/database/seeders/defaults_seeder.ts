@@ -3,7 +3,7 @@ import { RoleFactory } from '#database/factories/role_factory'
 import { PersonTypeFactory } from '#database/factories/person_type_factory'
 
 export default class extends BaseSeeder {
-  static environment = ['development', 'testing', 'production']
+  static environment = ['development', 'test', 'production']
 
   async run() {
     await RoleFactory.merge({ name: 'Super Admin' })

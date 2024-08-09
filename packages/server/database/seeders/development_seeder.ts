@@ -5,7 +5,7 @@ import { PersonFactory } from '#database/factories/person_factory'
 import PersonType from '#models/person_type'
 
 export default class extends BaseSeeder {
-  static environment = ['development', 'testing']
+  static environment = ['development', 'test']
 
   async run() {
     const superAdminRole = await Role.findBy('name', 'Super Admin')
