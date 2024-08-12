@@ -3,6 +3,8 @@
   "compilerOptions": {
     "rootDir": "./",
     "outDir": "./build",
+    "moduleResolution": "bundler",
+    "module": "ES2022",
     "paths": {
       "#controllers/*": ["./app/controllers/*.js"],
       "#exceptions/*": ["./app/exceptions/*.js"],

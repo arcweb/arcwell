@@ -1,8 +1,9 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import { RoleFactory } from '#database/factories/role_factory'
+import { PersonTypeFactory } from '#database/factories/person_type_factory'
 
 export default class extends BaseSeeder {
-  static environment = ['development', 'testing', 'production']
+  static environment = ['development', 'test', 'production']
 
   async run() {
     await RoleFactory.merge({ name: 'Super Admin' })
@@ -25,5 +26,9 @@ export default class extends BaseSeeder {
       .create()
 
     await RoleFactory.merge({ name: 'Guest' }).create()
+
+    await PersonTypeFactory.merge({ key: 'Patient', name: 'Patient' }).create()
+    await PersonTypeFactory.merge({ key: 'Staff', name: 'Staff' }).create()
+    await PersonTypeFactory.merge({ key: 'Temp', name: 'Temp' }).create()
   }
 }

@@ -6,7 +6,6 @@ import { passwordValidation } from '#validators/auth'
  */
 export const createUserValidator = vine.compile(
   vine.object({
-    fullName: vine.string().trim().minLength(3),
     email: vine.string().email().normalizeEmail(),
     password: passwordValidation,
     roleId: vine.string().trim().uuid(),
@@ -18,7 +17,6 @@ export const createUserValidator = vine.compile(
  */
 export const updateUserValidator = vine.compile(
   vine.object({
-    fullName: vine.string().trim().minLength(3),
     email: vine.string().email().normalizeEmail(),
   })
 )

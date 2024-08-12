@@ -11,6 +11,8 @@
 */
 
 process.env.NODE_ENV = 'test'
+process.env.DB_DATABASE = 'arcwell_test'
+process.env.SESSION_DRIVER = 'memory'
 
 import 'reflect-metadata'
 import { Ignitor, prettyPrintError } from '@adonisjs/core'
