@@ -1,0 +1,8 @@
+<div class="items-container">
+  @for (t of menuItems.data; track t; let i = $index) {
+    <div class="menuItem" (click)="menuClick()">
+      <mat-icon aria-label="{{ t.key }}" fontIcon="{{ t.icon }}"></mat-icon>
+      <a class="featureLabel">{{ t.value }}</a>
+    </div>
+  }
+</div>
