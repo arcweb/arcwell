@@ -1,0 +1,23 @@
+<mat-toolbar class="top-bar__container">
+  <div class="info-container">
+    <img [src]="arcwellLogo" alt="logo" class="logo__arcwell" />
+    <a class="server-instance__name">
+      @if (instanceName) {
+        {{ instanceName }}
+      }
+    </a>
+  </div>
+
+  <div class="button-container">
+    <div class="button_project-managment" (click)="manageProject()">
+      Project Managment
+    </div>
+    <div class="button_server-settings" (click)="serverSettings()">
+      Server Settings
+    </div>
+    <div class="user_avatar" (click)="goToUser()">
+      Account
+      <img [src]="userImg" alt="avatar" class="user__avatar" />
+    </div>
+  </div>
+</mat-toolbar>
