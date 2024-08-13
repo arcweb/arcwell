@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import ResourceType from './resource_type'
+import ResourceType from '#models/resource_type'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Resource extends BaseModel {
