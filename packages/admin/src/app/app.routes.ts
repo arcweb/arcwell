@@ -6,16 +6,17 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'people',
         pathMatch: 'full',
       },
       {
-        path: 'dashboard',
+        path: 'people',
         loadComponent: () =>
-          import('./feature/dashboard/dashboard.component').then(
-            m => m.DashboardComponent,
+          import('./feature/people/people.component').then(
+            m => m.PeopleComponent,
           ),
       },
+      // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],
   },
 ];

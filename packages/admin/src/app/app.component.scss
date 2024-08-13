@@ -1,5 +1,13 @@
-@use './styles/layout.scss' as layout;
+@use 'layout.scss' as layout;
 
-.content-container {
-  min-height: layout.$content-height;
+.app-content-container {
+  display: flex;
+  height: layout.$content-height;
+
+  .route-content-container {
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    overflow-y: auto;
+  }
 }

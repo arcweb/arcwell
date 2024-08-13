@@ -29,12 +29,17 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              }, "src/assets"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/app/styles"
+              ]
+            },
             "scripts": []
           },
           "configurations": {

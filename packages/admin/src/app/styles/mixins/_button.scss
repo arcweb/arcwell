@@ -1,3 +1,4 @@
+// use shortened path names configured in the angular.json file for imports
 @use '@angular/material' as mat;
 
 @mixin button-theme($theme) {
@@ -6,4 +7,8 @@
   $error: mat.get-theme-color($theme, error);
 
   // add button styles here
+  .feature-button-active {
+    color: $primary;
+    background: mat.get-theme-color($theme, 'primary', 90);
+  }
 }

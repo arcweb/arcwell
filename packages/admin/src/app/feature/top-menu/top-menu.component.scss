@@ -1,32 +1,40 @@
-.top-bar__container,
+$image-size: 40px;
+$spacing: 12px;
+
+.top-bar-container,
 .info-container,
 .button-container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-.top-bar__container {
-    justify-content: space-between;
-    height: 65px;
-    background-color: aqua;
-    border-bottom: 1px solid black;
+.top-bar-container {
+  justify-content: space-between;
+  height: 65px;
+  border-bottom: 1px solid black;
+
+  .logo {
+    width: $image-size;
+    height: unset;
+  }
 }
 
 .info-container,
 .button-container {
-    gap: 12px;
-    * {
-        padding: 0 10px;
-    }
+  gap: $spacing;
 }
 
-.user__avatar {
-    border-radius: 50%;
-    height: 56px;
-    width: 56px;
+.user-avatar {
+  border-radius: 50%;
+  height: $image-size;
+  width: $image-size;
 }
 
-.button_server-settings{
-    border-left: 2px solid black;
-    border-right: 2px solid black;
+.top-bar-button:not(:nth-child(3)) {
+  &::after {
+    content: '';
+    margin-left: $spacing;
+    border-right: 1px solid black;
+  }
 }
