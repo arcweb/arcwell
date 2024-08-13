@@ -45,4 +45,9 @@ router.resource('roles', RolesController).apiOnly()
 router.get('users/full', [GetAllFullUsersController]).as('users.full')
 router.resource('users', UsersController).apiOnly()
 router.resource('people', PeopleController).apiOnly()
-router.resource('person_types', PersonTypesController).apiOnly()
+router.group(() => {
+  router.resource('person_types', PersonTypesController).apiOnly()
+  router
+    .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
+    .as('person_tpye.showWithPeople')
+})

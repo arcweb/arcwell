@@ -6,8 +6,23 @@ export default class PeopleController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    return { data: await Person.query().preload('user').preload('personType') }
+  async index({ request }: HttpContext) {
+    const queryData = request.qs()
+    const personTypeId = queryData['personTypeId']
+    const limit = queryData['limit']
+
+    let query = Person.query().preload('user').preload('personType')
+
+    if (personTypeId) {
+      query.where('personTypeId', personTypeId)
+    }
+    if (limit) {
+      query.limit(limit)
+    }
+
+    return {
+      data: await query,
+    }
   }
 
   /**
