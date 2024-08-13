@@ -5,7 +5,7 @@ import type { HasMany } from '@adonisjs/lucid/types/relations'
 
 export default class ResourceType extends BaseModel {
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
 
   @column()
   declare key: string
