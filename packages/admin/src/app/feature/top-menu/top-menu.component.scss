@@ -1,0 +1,32 @@
+.top-bar__container,
+.info-container,
+.button-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.top-bar__container {
+    justify-content: space-between;
+    height: 65px;
+    background-color: aqua;
+    border-bottom: 1px solid black;
+}
+
+.info-container,
+.button-container {
+    gap: 12px;
+    * {
+        padding: 0 10px;
+    }
+}
+
+.user__avatar {
+    border-radius: 50%;
+    height: 56px;
+    width: 56px;
+}
+
+.button_server-settings{
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
