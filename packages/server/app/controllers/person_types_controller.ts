@@ -30,6 +30,15 @@ export default class PersonTypesController {
   }
 
   /**
+   * Show record with related people
+   */
+  async showWithPeople({ params }: HttpContext) {
+    return {
+      data: await PersonType.query().preload('people').where('id', params.id).firstOrFail(),
+    }
+  }
+
+  /**
    * Handle form submission for the edit action
    */
   async update({ params, request, auth }: HttpContext) {
