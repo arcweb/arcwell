@@ -1,0 +1,37 @@
+<form [formGroup]="loginForm" (ngSubmit)="login.emit(loginForm.getRawValue())">
+  <mat-form-field appearance="fill">
+    <mat-label>email</mat-label>
+    <input
+      matNativeControl
+      formControlName="email"
+      type="email"
+      placeholder="email"
+    />
+    <mat-icon matPrefix>mail</mat-icon>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>password</mat-label>
+    <input
+      matNativeControl
+      formControlName="password"
+      type="password"
+      placeholder="password"
+    />
+    <mat-icon matPrefix>lock</mat-icon>
+  </mat-form-field>
+
+  @if (loginStatus() === 'error') {
+    <mat-error>Could not log you in with those credentials.</mat-error>
+  } @else if (loginStatus() === 'authenticating') {
+    <mat-spinner diameter="50"></mat-spinner>
+  }
+
+  <button
+    mat-stroked-button
+    color="accent"
+    type="submit"
+    [disabled]="loginStatus() === 'authenticating'"
+  >
+    Login
+  </button>
+</form>

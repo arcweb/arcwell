@@ -1,25 +1,26 @@
 import { z } from 'zod';
-import { UserModel } from '../models/user.model';
+import { UserModel } from '@shared/models';
 import { RoleSchema } from './role.schema';
+import { PersonSchema } from '@shared/schemas/person.schema';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
 export const UserSchema = z
   .object({
     id: z.string().uuid().optional(),
-    fullName: z.string().nullable(),
     email: z.string(),
     roleId: z.string().uuid(),
+    personId: z.string().uuid(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
     role: RoleSchema.optional(),
+    person: PersonSchema.optional(),
   })
   .strict();
 
 // Validate data going to the API for update
 export const UserUpdateSchema = UserSchema.extend({
   id: z.string().uuid(),
-  fullName: z.string().optional(),
   email: z.string().optional(),
   roleId: z.string().uuid().optional(),
 }).strict();
