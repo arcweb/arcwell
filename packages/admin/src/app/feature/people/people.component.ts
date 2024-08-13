@@ -5,13 +5,13 @@ import { Observable } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'aw-dashboard',
+  selector: 'aw-people',
   standalone: true,
   imports: [],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  templateUrl: './people.component.html',
+  styleUrl: './people.component.scss',
 })
-export class DashboardComponent {
+export class PeopleComponent {
   private userService: UserService = inject(UserService);
 
   private users$: Observable<UserModel[]> = this.userService.getAllUsers();

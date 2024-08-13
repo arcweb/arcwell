@@ -1,0 +1,138 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "name": "People",
+      "path": "people",
+      "icon": "people",
+      "createdAt": "2021-07-01T00:00:00.000Z",
+      "updatedAt": "2021-07-01T00:00:00.000Z",
+      "subFeatures": [
+        {
+          "id": "1",
+          "name": "Staff",
+          "path": "staff",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "name": "Students",
+          "path": "students",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Resources",
+      "path": "resources",
+      "icon": "collections_bookmark",
+      "createdAt": "2021-07-01T00:00:00.000Z",
+      "updatedAt": "2021-07-01T00:00:00.000Z",
+      "subFeatures": [
+        {
+          "id": "1",
+          "name": "Books",
+          "path": "books",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "name": "Articles",
+          "path": "articles",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "3",
+          "name": "Videos",
+          "path": "videos",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Events",
+      "path": "events",
+      "icon": "event",
+      "createdAt": "2021-07-01T00:00:00.000Z",
+      "updatedAt": "2021-07-01T00:00:00.000Z",
+      "subFeatures": [
+        {
+          "id": "1",
+          "name": "Conferences",
+          "path": "conferences",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "name": "Workshops",
+          "path": "workshops",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "3",
+          "name": "Seminars",
+          "path": "seminars",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Facts",
+      "path": "facts",
+      "icon": "fact_check",
+      "createdAt": "2021-07-01T00:00:00.000Z",
+      "updatedAt": "2021-07-01T00:00:00.000Z",
+      "subFeatures": [
+        {
+          "id": "1",
+          "name": "Statistics",
+          "path": "statistics",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "name": "Reports",
+          "path": "reports",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Tags",
+      "path": "tags",
+      "icon": "sell",
+      "createdAt": "2021-07-01T00:00:00.000Z",
+      "updatedAt": "2021-07-01T00:00:00.000Z",
+      "subFeatures": [
+        {
+          "id": "1",
+          "name": "Categories",
+          "path": "categories",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        },
+        {
+          "id": "2",
+          "name": "Labels",
+          "path": "labels",
+          "createdAt": "2021-07-01T00:00:00.000Z",
+          "updatedAt": "2021-07-01T00:00:00.000Z"
+        }
+      ]
+    }
+  ]
+}

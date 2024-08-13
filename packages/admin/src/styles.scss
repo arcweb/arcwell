@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-@use './app/styles/mixins/index.scss' as mixins;
-@use './app/styles/fonts' as fonts;
-@use './app/styles/theme' as theme;
+@use 'mixins/index.scss' as mixins;
+@use 'fonts' as fonts;
+@use 'theme' as theme;
 @include mat.core;
 
 html {
@@ -10,15 +10,18 @@ html {
   @include mat.all-component-themes(theme.$light-theme);
   @include mat.system-level-colors(
     theme.$light-theme
-  ); // required for references to system leve colors such as on-primary
+  ); // required for references to system level colors such as on-primary
 
   @include mat.system-level-typography(theme.$light-theme);
-  @include mat.strong-focus-indicators(theme.$light-theme); // accessibility
 
   // custom, component level mixins
   @include mixins.button-theme(theme.$light-theme);
   @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html,

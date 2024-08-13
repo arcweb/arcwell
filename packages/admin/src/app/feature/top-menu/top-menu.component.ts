@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ClickDirective } from '@app/shared/directives/click.directive';
+import { MatIconModule } from '@angular/material/icon';
 import { UserModel } from '@app/shared/models';
 
 import { BrandService } from '@app/shared/services/brand.service';
@@ -10,7 +11,7 @@ import { UserService } from '@app/shared/services/user.service';
 @Component({
   selector: 'aw-topbar',
   standalone: true,
-  imports: [MatToolbarModule, ClickDirective],
+  imports: [MatToolbarModule, ClickDirective, MatIconModule],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.scss',
 })

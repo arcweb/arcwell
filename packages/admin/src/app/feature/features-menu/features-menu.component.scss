@@ -1,0 +1,40 @@
+// use shortened path names configured in the angular.json file for imports
+@use '@angular/material' as mat;
+@use 'layout' as layout;
+@use 'theme' as theme;
+
+$light-theme: theme.$light-theme;
+$secondary-70: mat.get-theme-color($light-theme, secondary, 70);
+$spacing: 1em;
+
+.feature-menu-container {
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing;
+  border-right: 2px solid $secondary-70;
+  align-items: center;
+  padding: $spacing;
+
+  .feature-button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 0.7em;
+
+    .feature-button {
+      z-index: 1;
+      height: 50px;
+      width: 50px;
+      text-align: center;
+      padding-bottom: 0;
+
+      .material-icons {
+        transform: scale(1.4);
+      }
+    }
+  }
+}
