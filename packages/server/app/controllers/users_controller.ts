@@ -1,23 +1,22 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { createUserValidator, updateUserValidator } from '#validators/user'
-import Person from '#models/person'
+import { updateUserValidator } from '#validators/user'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class UsersController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    // await auth.authenticate() // TODO: Add authentication in when client login is working
+  async index({ auth }: HttpContext) {
+    await auth.authenticate()
     return { data: await User.query().preload('role').preload('person') }
   }
 
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
-    // await auth.authenticate() // TODO: Add authentication in when client login is working
+  async show({ params, auth }: HttpContext) {
+    await auth.authenticate()
     return {
       data: await User.query()
         .where('id', params.id)
@@ -30,7 +29,12 @@ export default class UsersController {
   /**
    * Handle form submission for the creation action
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({}: HttpContext) {
+    // TODO: Add create user functionality back in...
+    // await auth.authenticate()
+    // await request.validateUsing(createUserValidator)
+    // const newUser = User.create(request.body())
+    // response.status(201).send({ data: newUser })
     throwCustomHttpError(
       {
         title: 'Wrong Endpoint',

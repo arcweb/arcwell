@@ -1,0 +1,11 @@
+<div class="container gradient-bg">
+  @if (authStore.currentUser() === null) {
+    <aw-login-form
+      [loginStatus]="authStore.loginStatus()"
+      (login)="loginNow($event)"
+    ></aw-login-form>
+    <a routerLink="/auth/register">Create account</a>
+  } @else {
+    <mat-spinner diameter="50" />
+  }
+</div>

@@ -41,14 +41,14 @@ export default class AuthController {
       return
     }
 
-    // check if a perosnId was provided
+    // check if a personId was provided
     const personId = request.only(['personId'])
     let newUser
     if (personId.personId !== null) {
       newUser = await User.create({ ...data })
     } else {
       const personInfo = request.only(['familyName', 'givenName'])
-      const newPerson = await Person.create({ ...personInfo, typeId: persontype.id })
+      const newPerson = await Person.create({ ...personInfo, personTypeId: persontype.id })
       // const person = Person.firstOrCreate(personInfo)
 
       const userInfo = request.only(['email', 'password'])
@@ -66,7 +66,7 @@ export default class AuthController {
           value: token.value!.release(),
           expiresAt: token.expiresAt,
         },
-        newUser,
+        user: newUser.serialize(),
       },
     }
   }
@@ -81,9 +81,12 @@ export default class AuthController {
 
     return {
       data: {
-        type: 'bearer',
-        value: token.value!.release(),
-        expiresAt: token.expiresAt,
+        token: {
+          type: 'bearer',
+          value: token.value!.release(),
+          expiresAt: token.expiresAt,
+        },
+        user: user.serialize(),
       },
     }
   }
@@ -110,7 +113,7 @@ export default class AuthController {
     }
 
     return {
-      data: auth.user,
+      data: auth.user.serialize(),
     }
   }
 }

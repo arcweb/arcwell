@@ -13,7 +13,7 @@ export default class PersonTypesController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonTypeValidator)
     const newPersonType = await PersonType.create(request.body())
