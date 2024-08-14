@@ -6,19 +6,19 @@ import { test } from '@japa/runner'
 test.group('Model resource', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
   group.setup(async () => {
-    await ResourceType.create({ key: 'Tester', name: 'Tester' })
+    await ResourceType.create({ key: 'tester', name: 'Tester' })
   })
 
   group.teardown(async () => {
     // clean up test data
-    const rTypeT = await ResourceType.findBy('key', 'Tester')
+    const rTypeT = await ResourceType.findBy('key', 'tester')
     if (rTypeT) {
       rTypeT.delete()
     }
   })
 
   test('resource create test', async ({ assert }) => {
-    const rTypeT = await ResourceType.findBy('key', 'Tester')
+    const rTypeT = await ResourceType.findBy('key', 'tester')
     const resourceInfo = {
       name: 'Object',
       resourceTypeId: rTypeT?.id,

@@ -1,7 +1,9 @@
 import ResourceType from '#models/resource_type'
+import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 
 test.group('Model resource type', (group) => {
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
   test('resource type create test', async ({ assert }) => {
     const resourceTypeInfo = {
       key: 'TEST',

@@ -1,7 +1,9 @@
 import PersonType from '#models/person_type'
+import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 
 test.group('Model person type', (group) => {
+  group.each.setup(() => testUtils.db().withGlobalTransaction())
   test('person type create test', async ({ assert }) => {
     const personTypeInfo = {
       key: 'TEST',

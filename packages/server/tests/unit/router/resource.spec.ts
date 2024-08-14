@@ -48,7 +48,7 @@ test.group('Router resource', () => {
 
   test('resource store test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
-    const type = await ResourceType.findBy('key', 'Tester')
+    const type = await ResourceType.findBy('key', 'tester')
 
     const newRresource = {
       resourceTypeId: type!.id,
@@ -65,9 +65,20 @@ test.group('Router resource', () => {
     assert.exists(data.data.id)
     assert.equal(data.data.resourceTypeId, newRresource.resourceTypeId)
     assert.equal(data.data.name, newRresource.name)
-  }).setup(async () => {
-    await ResourceType.create({ key: 'Tester', name: 'Tester' })
   })
+    .setup(async () => {
+      await ResourceType.create({ key: 'tester', name: 'Tester' })
+    })
+    .teardown(async () => {
+      const resource = await Resource.findBy('name', 'Object')
+      if (resource) {
+        resource.delete()
+      }
+      const rTypeT = await ResourceType.findBy('key', 'tester')
+      if (rTypeT) {
+        rTypeT.delete()
+      }
+    })
 
   test('resource destroy test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
@@ -76,7 +87,7 @@ test.group('Router resource', () => {
     const response = await client.delete(`${RESOURCE_URL}/${resource?.id}`).loginAs(adminUser!)
     response.assertStatus(204)
   }).setup(async () => {
-    const type = await ResourceType.findBy('key', 'Tester')
+    const type = await ResourceType.findBy('key', 'dme')
 
     const newRresource = {
       resourceTypeId: type!.id,
