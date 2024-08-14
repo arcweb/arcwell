@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
-import { updateUserValidator } from '#validators/user'
+import { createUserValidator, updateUserValidator } from '#validators/user'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class UsersController {
@@ -29,21 +29,12 @@ export default class UsersController {
   /**
    * Handle form submission for the creation action
    */
-  async store({}: HttpContext) {
+  async store({ request, auth }: HttpContext) {
     // TODO: Add create user functionality back in...
-    // await auth.authenticate()
-    // await request.validateUsing(createUserValidator)
-    // const newUser = User.create(request.body())
-    // response.status(201).send({ data: newUser })
-    throwCustomHttpError(
-      {
-        title: 'Wrong Endpoint',
-        code: 'E_USER_STORE_FAILURE',
-        detail: 'Please use /auth/register to create users',
-      },
-      400
-    )
-    return
+    await auth.authenticate()
+    await request.validateUsing(createUserValidator)
+    const newUser = await User.create(request.body())
+    return { data: newUser }
   }
 
   /**

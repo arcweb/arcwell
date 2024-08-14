@@ -7,6 +7,7 @@ export const createPersonValidator = vine.compile(
   vine.object({
     familyName: vine.string().trim(),
     givenName: vine.string().trim(),
+    personTypeId: vine.string().trim().uuid(),
   })
 )
 
