@@ -10,6 +10,7 @@ export default class PeopleController {
     const queryData = request.qs()
     const personTypeId = queryData['personTypeId']
     const limit = queryData['limit']
+    const offset = queryData['offset']
 
     let query = Person.query().preload('user').preload('personType')
 
@@ -18,6 +19,9 @@ export default class PeopleController {
     }
     if (limit) {
       query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
     }
 
     return {

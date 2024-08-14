@@ -6,8 +6,21 @@ export default class ResourceTypesController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    return { data: await ResourceType.query() }
+  async index({ request }: HttpContext) {
+    const queryData = request.qs()
+    const limit = queryData['limit']
+    const offset = queryData['offset']
+
+    let query = ResourceType.query()
+
+    if (limit) {
+      query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
+    }
+
+    return { data: await query }
   }
 
   /**
