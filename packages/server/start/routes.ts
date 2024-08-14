@@ -54,4 +54,9 @@ router.group(() => {
     .as('person_types.showWithPeople')
 })
 router.resource('resources', ResourcesController).apiOnly()
-router.resource('resource_types', ResourceTypesController).apiOnly()
+router.group(() => {
+  router.resource('resource_types', ResourceTypesController).apiOnly()
+  router
+    .get('resource_types/:id/resources', [ResourceTypesController, 'showWithResources'])
+    .as('resource_types.showWithResources')
+})

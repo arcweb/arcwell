@@ -30,6 +30,15 @@ export default class ResourceTypesController {
   }
 
   /**
+   * SHow record with related resources
+   */
+  async showWithResources({ params }: HttpContext) {
+    return {
+      data: await ResourceType.query().preload('resources').where('id', params.id).firstOrFail(),
+    }
+  }
+
+  /**
    * Handle form submission for the edit action
    */
   async update({ params, request, auth }: HttpContext) {

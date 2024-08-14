@@ -27,6 +27,20 @@ test.group('Router resource type', () => {
     assert.equal(data.data.name, resourceType?.name)
   })
 
+  test('resource type show test', async ({ assert, client }) => {
+    const resourceType = await ResourceType.findBy('key', 'device')
+
+    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`)
+
+    response.assertStatus(200)
+
+    const data = response.body()
+    assert.equal(data.data.id, resourceType?.id)
+    assert.equal(data.data.key, resourceType?.key)
+    assert.equal(data.data.name, resourceType?.name)
+    assert.equal(data.data.resources.length, 5)
+  })
+
   test('resource type update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const resourceType = await ResourceType.first()
