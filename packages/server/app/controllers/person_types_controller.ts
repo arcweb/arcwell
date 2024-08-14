@@ -6,8 +6,21 @@ export default class PersonTypesController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    return { data: await PersonType.query() }
+  async index({ request }: HttpContext) {
+    const queryData = request.qs()
+    const limit = queryData['limit']
+    const offset = queryData['offset']
+
+    let query = PersonType.query()
+
+    if (limit) {
+      query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
+    }
+
+    return { data: await query }
   }
 
   /**

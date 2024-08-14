@@ -10,6 +10,7 @@ export default class ResourcesController {
     const queryData = request.qs()
     const resourceTypeId = queryData['resourceTypeId']
     const limit = queryData['limit']
+    const offset = queryData['offset']
 
     let query = Resource.query().preload('resourceType')
 
@@ -18,6 +19,9 @@ export default class ResourcesController {
     }
     if (limit) {
       query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
     }
 
     return {
