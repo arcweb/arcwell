@@ -10,6 +10,7 @@ export default class EventsController {
     const queryData = request.qs()
     const eventTypeId = queryData['eventTypeId']
     const limit = queryData['limit']
+    const offset = queryData['offset']
 
     let query = Event.query().preload('eventType')
 
@@ -18,6 +19,9 @@ export default class EventsController {
     }
     if (limit) {
       query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
     }
 
     return {
