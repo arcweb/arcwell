@@ -7,9 +7,22 @@ export default class UsersController {
   /**
    * Display a list of resource
    */
-  async index({ auth }: HttpContext) {
+  async index({ auth, request }: HttpContext) {
     await auth.authenticate()
-    return { data: await User.query().preload('role').preload('person') }
+    const queryData = request.qs()
+    const limit = queryData['limit']
+    const offset = queryData['offset']
+
+    let query = User.query().preload('role').preload('person')
+
+    if (limit) {
+      query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
+    }
+
+    return { data: await query }
   }
 
   /**
