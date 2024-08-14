@@ -16,6 +16,8 @@ const UsersController = () => import('#controllers/users_controller')
 const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 const PeopleController = () => import('#controllers/people_controller')
 const PersonTypesController = () => import('#controllers/person_types_controller')
+const ResourcesController = () => import('#controllers/resources_controller')
+const ResourceTypesController = () => import('#controllers/resource_types_controller')
 
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 router.get('/health', [HealthChecksController])
@@ -50,4 +52,11 @@ router.group(() => {
   router
     .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
     .as('person_types.showWithPeople')
+})
+router.resource('resources', ResourcesController).apiOnly()
+router.group(() => {
+  router.resource('resource_types', ResourceTypesController).apiOnly()
+  router
+    .get('resource_types/:id/resources', [ResourceTypesController, 'showWithResources'])
+    .as('resource_types.showWithResources')
 })

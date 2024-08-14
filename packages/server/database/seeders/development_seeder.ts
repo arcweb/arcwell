@@ -3,6 +3,8 @@ import User from '#models/user'
 import Role from '#models/role'
 import { PersonFactory } from '#database/factories/person_factory'
 import PersonType from '#models/person_type'
+import ResourceType from '#models/resource_type'
+import { ResourceFactory } from '#database/factories/resource_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -15,12 +17,19 @@ export default class extends BaseSeeder {
     const patientPersonType = await PersonType.findBy('key', 'Patient')
     const staffPersonType = await PersonType.findBy('key', 'Staff')
 
+    const deviceResourceType = await ResourceType.findBy('key', 'device')
+    const dmeResourceType = await ResourceType.findBy('key', 'dme')
+
     if (!superAdminRole || !limitedAdminRole || !guestRole) {
       throw new Error('A role not found.  Run the defaults seeder first')
     }
 
     if (!patientPersonType || !staffPersonType) {
       throw new Error('A person type not found.  Run the defaults seeder first')
+    }
+
+    if (!deviceResourceType || !dmeResourceType) {
+      throw new Error('A resource type not found. Run the default seeder first')
     }
 
     await User.createMany([
@@ -45,5 +54,7 @@ export default class extends BaseSeeder {
     ])
 
     await PersonFactory.merge({ personTypeId: patientPersonType.id }).createMany(5)
+
+    await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).createMany(5)
   }
 }
