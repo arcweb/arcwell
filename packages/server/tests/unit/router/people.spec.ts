@@ -6,7 +6,7 @@ import { test } from '@japa/runner'
 const PEOPLE_URL = '/people'
 
 test.group('Router people', () => {
-  test('index test', async ({ assert, client }) => {
+  test('people index test', async ({ assert, client }) => {
     const response = await client.get(PEOPLE_URL)
 
     response.assertStatus(200)
@@ -15,7 +15,7 @@ test.group('Router people', () => {
     assert.equal(data.data.length, 8)
   })
 
-  test('show test', async ({ assert, client }) => {
+  test('people show test', async ({ assert, client }) => {
     // get a valid person for id for request
     const person = await Person.first()
 
@@ -29,7 +29,7 @@ test.group('Router people', () => {
     assert.equal(data.data.givenName, person?.givenName)
   })
 
-  test('update test', async ({ assert, client }) => {
+  test('people update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     // get a valid person for id for request
     const person = await Person.first()
@@ -49,7 +49,7 @@ test.group('Router people', () => {
     assert.equal(data.data.givenName, newData.givenName)
   })
 
-  test('store test', async ({ assert, client }) => {
+  test('people store test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const type = await PersonType.findBy('key', 'Tester')
 
@@ -73,7 +73,7 @@ test.group('Router people', () => {
     await PersonType.create({ key: 'Tester', name: 'Tester' })
   })
 
-  test('destroy test', async ({ assert, client }) => {
+  test('people destroy test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const person = await Person.findBy('familyName', 'Newman')
 

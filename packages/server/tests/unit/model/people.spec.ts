@@ -4,7 +4,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import Person from '#models/person'
 import PersonType from '#models/person_type'
 
-test.group('People', (group) => {
+test.group('Model people', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
   group.setup(async () => {
     await PersonType.create({ key: 'Tester', name: 'Tester' })
@@ -18,7 +18,7 @@ test.group('People', (group) => {
     }
   })
 
-  test('create test', async (ctx) => {
+  test('people create test', async (ctx) => {
     const pTypeT = await PersonType.findBy('key', 'Tester')
     const personInfo = {
       givenName: 'Bob',
@@ -33,7 +33,7 @@ test.group('People', (group) => {
     ctx.assert.equal(newPerson.personTypeId, pTypeT?.id)
   })
 
-  test('update test', async ({ assert }) => {
+  test('people update test', async ({ assert }) => {
     const person = await Person.first()
     const newData = {
       givenName: 'NewPerson',

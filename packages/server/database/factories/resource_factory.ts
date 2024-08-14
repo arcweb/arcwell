@@ -4,7 +4,7 @@ import factory from '@adonisjs/lucid/factories'
 export const ResourceFactory = factory
   .define(Resource, async ({ faker }) => {
     return {
-      name: faker.person.fullName(),
+      name: faker.commerce.product(),
     }
   })
   .build()
