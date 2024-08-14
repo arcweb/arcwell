@@ -24,7 +24,7 @@ export default class extends BaseSchema {
       table.foreign('event_type_id').references('event_types.id')
 
       table.jsonb('tags').defaultTo('[]').notNullable()
-      table.index(['name'], 'name_index')
+      table.index(['name'], 'event_name_index')
 
       table.timestamp('occurred_at')
       table.timestamp('created_at')
