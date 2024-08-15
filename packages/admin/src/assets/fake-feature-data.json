@@ -3,7 +3,7 @@
     {
       "id": "1",
       "name": "People",
-      "path": "people",
+      "path": "dashboard/people",
       "icon": "people",
       "createdAt": "2021-07-01T00:00:00.000Z",
       "updatedAt": "2021-07-01T00:00:00.000Z",

@@ -1,41 +1,62 @@
-import { Component, effect, inject, signal } from '@angular/core';
-import { UserService } from '@shared/services/user.service';
-import { UserModel } from '@app/shared/models/user.model';
-import { Observable } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthStore } from '@shared/store/auth.store';
-import { Router } from '@angular/router';
+import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
+import { PeopleStore } from '@feature/people/people.store';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource,
+} from '@angular/material/table';
+import { PersonModel } from '@shared/models/person.model';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'aw-people',
   standalone: true,
-  imports: [JsonPipe],
+  imports: [
+    JsonPipe,
+    MatTable,
+    MatColumnDef,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatCellDef,
+    MatHeaderCellDef,
+    MatRow,
+    MatCell,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatPaginator,
+  ],
+  providers: [PeopleStore],
   templateUrl: './people.component.html',
   styleUrl: './people.component.scss',
 })
 export class PeopleComponent {
-  private userService: UserService = inject(UserService);
-  private users$: Observable<UserModel[]> = this.userService.getAllUsers();
-  readonly authStore = inject(AuthStore);
-  private router = inject(Router);
+  readonly peopleStore = inject(PeopleStore);
 
-  users = toSignal(this.users$, { initialValue: [], rejectErrors: true });
-  user = signal<UserModel | null>(null);
+  pageSizes = [10, 20, 50];
+
+  dataSource = new MatTableDataSource<PersonModel>();
+
+  // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
+  displayedColumns: string[] = [
+    'id',
+    'familyName',
+    'givenName',
+    'personTypeId',
+    'tags',
+  ];
 
   constructor() {
     effect(() => {
-      if (!this.authStore.currentUser()) {
-        this.router.navigate(['auth', 'login']);
-      }
+      this.dataSource.data = this.peopleStore.people();
     });
-  }
-
-  loadUser(id: string | undefined) {
-    if (id) {
-      this.userService
-        .getUser(id)
-        .subscribe(response => this.user.set(response));
-    }
   }
 }

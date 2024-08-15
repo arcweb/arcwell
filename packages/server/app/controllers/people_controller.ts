@@ -1,6 +1,7 @@
 import Person from '#models/person'
 import { createPersonValidator, updatePersonValidator } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class PeopleController {
   /**
@@ -11,6 +12,8 @@ export default class PeopleController {
     const personTypeId = queryData['personTypeId']
     const limit = queryData['limit']
     const offset = queryData['offset']
+
+    const queryCount = await db.from('people').count('*')
 
     let query = Person.query().preload('user').preload('personType')
 
@@ -26,13 +29,16 @@ export default class PeopleController {
 
     return {
       data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
     }
   }
 
   /**
    * Handle form submission for the create action
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
     const newPerson = await Person.create(request.body())

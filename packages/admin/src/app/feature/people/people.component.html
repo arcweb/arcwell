@@ -1,28 +1,20 @@
-<div>
-  <h2>Get All Users</h2>
-  @if (users()) {
-    @for (user of users(); track user) {
-      <button (click)="loadUser(user.id)" style="cursor: pointer">
-        <p>{{ user.email }}</p>
-        <p>{{ user.roleId }}</p>
-      </button>
-    }
+<!--@if (peopleStore.isFulfilled()) {-->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  @for (column of displayedColumns; track column) {
+    <ng-container [matColumnDef]="column">
+      <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+      <td mat-cell *matCellDef="let emp">{{ emp[column] }}</td>
+    </ng-container>
   }
-</div>
-<hr />
-
-@if (user()) {
-  <div>
-    <h3>Click another user to load another</h3>
-    <p>{{ user()?.email }}</p>
-    <p>{{ user()?.roleId }}</p>
-  </div>
-} @else {
-  <h3>Click a user above to display a user</h3>
-}
-
-<hr />
-
-<h2>Token</h2>
-<div>{{ authStore.token() }}</div>
-<div>{{ authStore.currentUser() | json }}</div>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+<!--}-->
+<mat-paginator
+  [length]="peopleStore.totalData()"
+  [pageSizeOptions]="pageSizes"
+  [pageSize]="peopleStore.limit()"
+  [pageIndex]="peopleStore.pageIndex()"
+  (page)="this.peopleStore.loadPage($event)"
+  showFirstLastButtons="true"
+></mat-paginator>
