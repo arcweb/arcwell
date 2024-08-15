@@ -13,6 +13,18 @@ test.group('Router people', () => {
 
     const data = response.body()
     assert.equal(data.data.length, 103)
+    assert.equal(data.meta.count, 103)
+  })
+
+  test('people index filtered test', async ({ assert, client }) => {
+    const pType = await PersonType.findBy('key', 'Staff')
+    const response = await client.get(`${PEOPLE_URL}?personTypeId=${pType?.id}`)
+
+    response.assertStatus(200)
+
+    const data = response.body()
+    assert.equal(data.data.length, 3)
+    assert.equal(data.meta.count, 3)
   })
 
   test('people show test', async ({ assert, client }) => {

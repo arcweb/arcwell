@@ -13,12 +13,14 @@ export default class PeopleController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
-    const queryCount = await db.from('people').count('*')
+    let countQuery = db.from('people')
 
     let query = Person.query().preload('user').preload('personType')
 
     if (personTypeId) {
       query.where('personTypeId', personTypeId)
+      // DB contex use sql column names
+      countQuery.where('person_type_id', personTypeId)
     }
     if (limit) {
       query.limit(limit)
@@ -26,6 +28,8 @@ export default class PeopleController {
     if (offset) {
       query.offset(offset)
     }
+
+    const queryCount = await countQuery.count('*')
 
     return {
       data: await query,
