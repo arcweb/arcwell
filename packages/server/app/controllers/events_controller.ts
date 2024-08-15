@@ -1,6 +1,7 @@
 import Event from '#models/event'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class EventsController {
   /**
@@ -12,10 +13,12 @@ export default class EventsController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
+    let countQuery = db.from('events')
     let query = Event.query().preload('eventType')
 
     if (eventTypeId) {
       query.where('eventTypeId', eventTypeId)
+      countQuery.where('event_type_id', eventTypeId)
     }
     if (limit) {
       query.limit(limit)
@@ -24,8 +27,13 @@ export default class EventsController {
       query.offset(offset)
     }
 
+    const queryCount = await countQuery.count('*')
+
     return {
       data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
     }
   }
 

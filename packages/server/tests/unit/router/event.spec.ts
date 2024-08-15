@@ -15,6 +15,17 @@ test.group('Router event', () => {
     assert.equal(data.data.length, 10)
   })
 
+  test('event index filtered test', async ({ assert, client }) => {
+    const eType = await EventType.findBy('key', 'appt')
+    const response = await client.get(`${EVENT_URL}?eventTypeId=${eType?.id}`)
+
+    response.assertStatus(200)
+
+    const data = response.body()
+    assert.equal(data.data.length, 5)
+    assert.equal(data.meta.count, 5)
+  })
+
   test('event show test', async ({ assert, client }) => {
     const event = await Event.first()
 
