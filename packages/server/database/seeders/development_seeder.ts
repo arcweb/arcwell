@@ -5,6 +5,8 @@ import { PersonFactory } from '#database/factories/person_factory'
 import PersonType from '#models/person_type'
 import ResourceType from '#models/resource_type'
 import { ResourceFactory } from '#database/factories/resource_factory'
+import EventType from '#models/event_type'
+import { EventFactory } from '#database/factories/event_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -20,6 +22,9 @@ export default class extends BaseSeeder {
     const deviceResourceType = await ResourceType.findBy('key', 'device')
     const dmeResourceType = await ResourceType.findBy('key', 'dme')
 
+    const apptEventType = await EventType.findBy('key', 'appt')
+    const surgeryEventType = await EventType.findBy('key', 'surgery')
+
     if (!superAdminRole || !limitedAdminRole || !guestRole) {
       throw new Error('A role not found.  Run the defaults seeder first')
     }
@@ -30,6 +35,10 @@ export default class extends BaseSeeder {
 
     if (!deviceResourceType || !dmeResourceType) {
       throw new Error('A resource type not found. Run the default seeder first')
+    }
+
+    if (!apptEventType || !surgeryEventType) {
+      throw new Error('A event type not found. Run the default seeder first')
     }
 
     await User.createMany([
@@ -56,5 +65,8 @@ export default class extends BaseSeeder {
     await PersonFactory.merge({ personTypeId: patientPersonType.id }).createMany(5)
 
     await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).createMany(5)
+
+    await EventFactory.merge({ eventTypeId: apptEventType.id, source: 'doctor' }).createMany(5)
+    await EventFactory.merge({ eventTypeId: surgeryEventType.id, source: 'epic' }).createMany(5)
   }
 }

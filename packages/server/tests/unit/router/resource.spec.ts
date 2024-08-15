@@ -50,21 +50,21 @@ test.group('Router resource', () => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const type = await ResourceType.findBy('key', 'tester')
 
-    const newRresource = {
+    const newResource = {
       resourceTypeId: type!.id,
       name: 'Object',
     }
     const response = await client
       .post(`${RESOURCE_URL}`)
-      .json({ ...newRresource })
+      .json({ ...newResource })
       .loginAs(adminUser!)
 
     response.assertStatus(200)
 
     const data = response.body()
     assert.exists(data.data.id)
-    assert.equal(data.data.resourceTypeId, newRresource.resourceTypeId)
-    assert.equal(data.data.name, newRresource.name)
+    assert.equal(data.data.resourceTypeId, newResource.resourceTypeId)
+    assert.equal(data.data.name, newResource.name)
   })
     .setup(async () => {
       await ResourceType.create({ key: 'tester', name: 'Tester' })
@@ -89,10 +89,10 @@ test.group('Router resource', () => {
   }).setup(async () => {
     const type = await ResourceType.findBy('key', 'dme')
 
-    const newRresource = {
+    const newResource = {
       resourceTypeId: type!.id,
       name: 'Object',
     }
-    await Resource.create(newRresource)
+    await Resource.create(newResource)
   })
 })

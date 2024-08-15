@@ -27,7 +27,7 @@ test.group('Router resource type', () => {
     assert.equal(data.data.name, resourceType?.name)
   })
 
-  test('resource type show test', async ({ assert, client }) => {
+  test('resource type show with resources test', async ({ assert, client }) => {
     const resourceType = await ResourceType.findBy('key', 'device')
 
     const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`)

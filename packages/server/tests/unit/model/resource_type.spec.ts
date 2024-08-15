@@ -16,7 +16,7 @@ test.group('Model resource type', (group) => {
     assert.equal(newResourceType.name, resourceTypeInfo.name)
   })
 
-  test('resource type update test', async({ assert }) => {
+  test('resource type update test', async ({ assert }) => {
     const resourceType = await ResourceType.first()
     const newData = {
       name: 'TEST',
