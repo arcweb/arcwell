@@ -1,6 +1,7 @@
 import Resource from '#models/resource'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class ResourcesController {
   /**
@@ -12,10 +13,13 @@ export default class ResourcesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
+    let countQuery = db.from('resources')
+
     let query = Resource.query().preload('resourceType')
 
     if (resourceTypeId) {
       query.where('resourceTypeId', resourceTypeId)
+      countQuery.where('resource_type_id', resourceTypeId)
     }
     if (limit) {
       query.limit(limit)
@@ -24,8 +28,13 @@ export default class ResourcesController {
       query.offset(offset)
     }
 
+    const queryCount = await countQuery.count('*')
+
     return {
       data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
     }
   }
 

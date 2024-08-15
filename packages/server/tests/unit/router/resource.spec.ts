@@ -12,7 +12,18 @@ test.group('Router resource', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 5)
+    assert.equal(data.data.length, 12)
+  })
+
+  test('resource index filtered test', async ({ assert, client }) => {
+    const rType = await ResourceType.findBy('key', 'dme')
+    const response = await client.get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`)
+
+    response.assertStatus(200)
+
+    const data = response.body()
+    assert.equal(data.data.length, 7)
+    assert.equal(data.meta.count, 7)
   })
 
   test('resource show test', async ({ assert, client }) => {

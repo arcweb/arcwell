@@ -65,6 +65,7 @@ export default class extends BaseSeeder {
     await PersonFactory.merge({ personTypeId: patientPersonType.id }).createMany(100)
 
     await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).createMany(5)
+    await ResourceFactory.merge({ resourceTypeId: dmeResourceType.id }).createMany(7)
 
     await EventFactory.merge({ eventTypeId: apptEventType.id, source: 'doctor' }).createMany(5)
     await EventFactory.merge({ eventTypeId: surgeryEventType.id, source: 'epic' }).createMany(5)
