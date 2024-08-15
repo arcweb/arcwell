@@ -80,24 +80,22 @@ export const AuthStore = signalStore(
   }),
   withHooks({
     onInit(store) {
-      console.log('token=', store.token());
-      // store.load({
-      //   email: 'dev-admin@email.com',
-      //   password: 'Password12345!',
-      // });
       effect(() => {
         // 👇 The effect is re-executed on state change.
         if (store.token() && !store.currentUser()) {
-          console.log('CALL ME!!!!');
+          console.log(
+            'Have a token, but no currentUser.  Should call /me endpoint, but here?',
+          );
         }
-        // const state = getState(store);
-        // console.log('counter state', state);
       });
     },
   }),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage
     autoSync: true, // read from storage on init and write on state changes - `true` by default
+
+    // TODO: Commenting out this select temporarily, so that currentUser is loaded from localstorage.
+    //  Only the token should be stored, but calling /me endpoint isn't working yet
     select: (state: AuthState): Partial<AuthState> => {
       return { token: state.token };
     }, // projection to keep specific slices in sync
