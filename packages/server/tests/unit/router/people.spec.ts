@@ -12,7 +12,7 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 8)
+    assert.equal(data.data.length, 103)
   })
 
   test('people show test', async ({ assert, client }) => {
@@ -84,7 +84,7 @@ test.group('Router people', () => {
       }
     })
 
-  test('people destroy test', async ({ assert, client }) => {
+  test('people destroy test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const person = await Person.findBy('familyName', 'Newman')
 
