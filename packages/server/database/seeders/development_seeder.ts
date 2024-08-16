@@ -7,6 +7,7 @@ import ResourceType from '#models/resource_type'
 import { ResourceFactory } from '#database/factories/resource_factory'
 import EventType from '#models/event_type'
 import { EventFactory } from '#database/factories/event_factory'
+import Tag from '#models/tag'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -69,5 +70,11 @@ export default class extends BaseSeeder {
 
     await EventFactory.merge({ eventTypeId: apptEventType.id, source: 'doctor' }).createMany(5)
     await EventFactory.merge({ eventTypeId: surgeryEventType.id, source: 'epic' }).createMany(5)
+
+    await Tag.createMany([
+      { pathname: 'top/middle', parent: 'top', basename: 'middle' },
+      { pathname: 'top/left', parent: 'top', basename: 'left' },
+      { pathname: 'top/right', parent: 'top', basename: 'right' },
+    ])
   }
 }
