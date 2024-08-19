@@ -1,4 +1,4 @@
-<mat-toolbar class="top-bar-container">
+<mat-toolbar class="top-bar-container top-bar">
   <div class="info-container">
     <mat-icon class="logo" svgIcon="arcwell-logo"></mat-icon>
     <a class="server-instance__name">
@@ -11,12 +11,14 @@
   <div class="button-container">
     <div
       class="top-bar-button button-project-managment"
-      (click)="manageProject()">
+      (click)="manageProject()"
+    >
       Project Managment
     </div>
     <div
       class="top-bar-button button-server-settings"
-      (click)="serverSettings()">
+      (click)="serverSettings()"
+    >
       Server Settings
     </div>
     <div class="top-bar-button button-account" (click)="goToUser()">

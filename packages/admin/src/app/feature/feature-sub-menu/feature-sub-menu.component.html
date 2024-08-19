@@ -1,1 +1,19 @@
-<p>feature-sub-menu works!</p>
+@if (featureStore.currentSubFeaturePath()) {
+  <div class="feature-sub-menu-container">
+    @for (
+      subFeature of featureStore.currentFeature()?.subFeatures;
+      track subFeature.id
+    ) {
+      <button
+        mat-button
+        [routerLink]="
+          featureStore.currentFeature()?.path + '/' + subFeature.path
+        "
+        routerLinkActive="subfeature-button-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        {{ subFeature.name }}
+      </button>
+    }
+  </div>
+}

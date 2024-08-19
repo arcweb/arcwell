@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 
+//  in order to use color role syntax (such as on-primary), @include mat.system-level-colors($theme) must be called in styles.scss
 @mixin toolbar-theme($theme) {
-  // in order to use color role syntax, @include mat.system-level-colors($theme) must be called in the global styles
   $primary: mat.get-theme-color($theme, primary);
   $on-primary: mat.get-theme-color($theme, on-primary);
   $secondary: mat.get-theme-color($theme, secondary);
@@ -11,14 +11,9 @@
   // add toolbar styles here
 
   .mat-toolbar {
-    &.header {
+    &.top-bar {
       background: $primary;
       color: $on-primary;
-    }
-
-    &.footer {
-      background: $secondary;
-      color: $on-secondary;
     }
   }
 }

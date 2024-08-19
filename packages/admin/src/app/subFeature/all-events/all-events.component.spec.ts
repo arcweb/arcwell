@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidenavComponent } from './features-menu.component';
+import { AllEventsComponent } from './all-events.component';
 
-describe('SidenavComponent', () => {
-  let component: SidenavComponent;
-  let fixture: ComponentFixture<SidenavComponent>;
+describe('AllEventsComponent', () => {
+  let component: AllEventsComponent;
+  let fixture: ComponentFixture<AllEventsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidenavComponent],
+      imports: [AllEventsComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SidenavComponent);
+    fixture = TestBed.createComponent(AllEventsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
