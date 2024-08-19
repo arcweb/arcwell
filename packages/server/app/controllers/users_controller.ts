@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
-import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { paramsUUIDValidator } from '#validators/common'
 
 export default class UsersController {
   /**
@@ -30,6 +30,7 @@ export default class UsersController {
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     return {
       data: await User.query()
         .where('id', params.id)
@@ -56,6 +57,7 @@ export default class UsersController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateUserValidator)
+    await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['email'])
     const user = await User.findOrFail(params.id)
     const updatedUser = await user.merge(cleanRequest).save()
@@ -67,6 +69,7 @@ export default class UsersController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const user = await User.findOrFail(params.id)
     await user.delete()
     response.status(204).send('')

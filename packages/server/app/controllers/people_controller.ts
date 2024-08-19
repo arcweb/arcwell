@@ -1,4 +1,5 @@
 import Person from '#models/person'
+import { paramsUUIDValidator } from '#validators/common'
 import { createPersonValidator, updatePersonValidator } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
@@ -53,6 +54,7 @@ export default class PeopleController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await Person.query()
         .where('id', params.id)
@@ -68,6 +70,7 @@ export default class PeopleController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updatePersonValidator)
+    await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['givenName', 'familyName'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
@@ -79,6 +82,7 @@ export default class PeopleController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const person = await Person.findOrFail(params.id)
     await person.delete()
     response.status(204).send('')

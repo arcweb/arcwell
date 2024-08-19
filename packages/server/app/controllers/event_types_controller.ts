@@ -1,4 +1,5 @@
 import EventType from '#models/event_type'
+import { paramsUUIDValidator } from '#validators/common'
 import { createEventTypeValidator } from '#validators/event_type'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -37,6 +38,7 @@ export default class EventTypesController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await EventType.query().where('id', params.id).firstOrFail(),
     }
@@ -46,6 +48,7 @@ export default class EventTypesController {
    * Show record with related events
    */
   async showWithEvents({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await EventType.query().preload('events').where('id', params.id).firstOrFail(),
     }
@@ -57,6 +60,7 @@ export default class EventTypesController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
+    await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     const updatedEventType = await eventType.merge(request.body()).save()
     return { data: updatedEventType }
@@ -67,6 +71,7 @@ export default class EventTypesController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     await eventType.delete()
     response.status(204).send('')
