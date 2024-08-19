@@ -59,4 +59,8 @@ export class AllPeopleComponent {
       this.dataSource.data = this.peopleStore.people();
     });
   }
+
+  handleClick(row: PersonModel) {
+    console.log('row=', row);
+  }
 }

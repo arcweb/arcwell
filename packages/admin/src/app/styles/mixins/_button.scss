@@ -1,5 +1,6 @@
 // use shortened path names configured in the angular.json file for imports
 @use '@angular/material' as mat;
+@use 'colors' as colors;
 
 @mixin button-theme($theme) {
   $primary: mat.get-theme-color($theme, primary);
@@ -9,7 +10,7 @@
   // add button styles here
   %feature-button-active-state {
     color: $primary;
-    background: mat.get-theme-color($theme, 'primary', 90);
+    background: colors.$primary-90;
   }
 
   .feature-button-active {
