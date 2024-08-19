@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'colors' as colors;
 
 @mixin toast-theme($theme) {
   $primary: mat.get-theme-color($theme, primary);
@@ -25,7 +26,7 @@
     align-items: center;
     width: 655px;
     padding: 12px 24px;
-    box-shadow: 0 3px 5px 0 #0003;
+    box-shadow: colors.$black;
     letter-spacing: 0.25px;
 
     .message-info {
@@ -46,7 +47,7 @@
   }
 
   .toast-info {
-    background-color: mat.get-theme-color($theme, primary, 70);
+    background-color: colors.$blue-70;
     color: $on-primary;
     border: 0;
   }

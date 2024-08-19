@@ -12,8 +12,6 @@ import { ErrorResponseType } from '../schemas/error.schema';
 export class FeatureService {
   private http: HttpClient = inject(HttpClient);
 
-  constructor() {}
-
   getFeatures(): Observable<FeatureModel[]> {
     return this.http
       .get<FeatureResponseType>('assets/fake-feature-data.json')
@@ -24,11 +22,12 @@ export class FeatureService {
             throw new Error(response.message);
           }
         }),
-        map((response: FeatureResponseType) =>
-          // deserialize the data
-          response.data.map(
-            (feature: FeatureType) => new FeatureModel(feature),
-          ),
+        map(
+          (response: FeatureResponseType) =>
+            // deserialize the data
+            response.data.map(
+              (feature: FeatureType) => new FeatureModel(feature),
+            ) || [],
         ),
       );
   }

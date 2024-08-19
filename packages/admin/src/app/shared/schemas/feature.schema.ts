@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { FeatureModel } from '../models/feature.model';
+import { SubFeatureSchema } from './sub-feature.schema';
 
-const FeatureSchemaBase: any = z
+export const FeatureSchemaBase: any = z
   .object({
     id: z.string().uuid().optional(),
     name: z.string(),
@@ -12,10 +13,6 @@ const FeatureSchemaBase: any = z
   })
   .strict();
 
-export const SubFeatureSchema = FeatureSchemaBase.extend({
-  icon: z.string().optional(),
-});
-
 export const FeatureSchema = FeatureSchemaBase.extend({
   subFeatures: z.array(SubFeatureSchema).optional(),
 });
@@ -25,7 +22,6 @@ export const FeatureResponseSchema = z.object({
 });
 
 export type FeatureType = z.infer<typeof FeatureSchema>;
-export type SubFeatureType = z.infer<typeof SubFeatureSchema>;
 export type FeatureResponseType = z.infer<typeof FeatureResponseSchema>;
 
 export const deserializeFeature = (data: FeatureType): FeatureModel => {

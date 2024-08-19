@@ -1,3 +1,7 @@
+@use '@angular/material' as mat;
+@use 'theme' as theme;
+@use 'colors' as colors;
+
 $image-size: 40px;
 $spacing: 12px;
 
@@ -12,7 +16,7 @@ $spacing: 12px;
 .top-bar-container {
   justify-content: space-between;
   height: 65px;
-  border-bottom: 1px solid black;
+  border-bottom: colors.$black;
 
   .logo {
     width: $image-size;
@@ -35,6 +39,6 @@ $spacing: 12px;
   &::after {
     content: '';
     margin-left: $spacing;
-    border-right: 1px solid black;
+    border-right: 1px solid colors.$on-primary;
   }
 }

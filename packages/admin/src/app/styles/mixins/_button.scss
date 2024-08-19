@@ -7,8 +7,18 @@
   $error: mat.get-theme-color($theme, error);
 
   // add button styles here
-  .feature-button-active {
+  %feature-button-active-state {
     color: $primary;
     background: mat.get-theme-color($theme, 'primary', 90);
+  }
+
+  .feature-button-active {
+    @extend %feature-button-active-state;
+  }
+
+  .subfeature-button-active {
+    @extend %feature-button-active-state;
+
+    border-radius: 0;
   }
 }

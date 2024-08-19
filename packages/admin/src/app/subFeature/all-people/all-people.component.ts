@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { PeopleStore } from '@feature/people/people.store';
+import { PeopleStore } from '@subFeature/all-people/people.store';
 import {
   MatCell,
   MatCellDef,
@@ -18,7 +18,7 @@ import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: 'aw-people',
+  selector: 'aw-all-people',
   standalone: true,
   imports: [
     JsonPipe,
@@ -35,10 +35,10 @@ import { MatPaginator } from '@angular/material/paginator';
     MatPaginator,
   ],
   providers: [PeopleStore],
-  templateUrl: './people.component.html',
-  styleUrl: './people.component.scss',
+  templateUrl: './all-people.component.html',
+  styleUrl: './all-people.component.scss',
 })
-export class PeopleComponent {
+export class AllPeopleComponent {
   readonly peopleStore = inject(PeopleStore);
 
   pageSizes = [10, 20, 50];
