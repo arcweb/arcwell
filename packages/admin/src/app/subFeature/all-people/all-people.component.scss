@@ -1,0 +1,19 @@
+@use 'colors' as colors;
+
+// TODO: Move this to a mix-in when complete
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
+
+.mat-mdc-row:nth-child(odd) {
+  background-color: colors.$gray-94;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: colors.$primary-90;
+}
+
+.mat-mdc-paginator {
+  padding-top: 10px;
+}
