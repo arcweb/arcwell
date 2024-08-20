@@ -3,7 +3,7 @@ import {
   provideZoneChangeDetection,
   isDevMode,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { Settings } from 'luxon';
 
 import { routes } from './app.routes';
@@ -16,7 +16,7 @@ import { HeaderInterceptor } from '@shared/interceptors/header.interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([HeaderInterceptor])),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),

@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
-import { FeatureStore } from '../project-management/feature.store';
+import { FeatureStore } from '@shared/store/feature.store';
 
 @Component({
   selector: 'aw-features-menu',

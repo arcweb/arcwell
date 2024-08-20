@@ -7,6 +7,8 @@ import { PersonModel } from '@shared/models/person.model';
 import {
   deserializePerson,
   PeopleResponseType,
+  PersonResponseSchema,
+  PersonResponseType,
   PersonType,
 } from '@shared/schemas/person.schema';
 
@@ -53,6 +55,34 @@ export class PersonService {
         })),
       );
   }
+
+  getPerson(id: string): Observable<PersonModel | null> {
+    return this.http.get<PersonResponseType>(`${apiUrl}/people/${id}`).pipe(
+      tap((response: PersonResponseType | ErrorResponseType) => {
+        // validate response is success
+        if (response.errors && response.errors.length > 0) {
+          // TODO: Refactor this to handle error status codes and errors array
+          throw new Error(response.message);
+        }
+      }),
+      map((response: PersonResponseType) => {
+        try {
+          const parsedResponse = PersonResponseSchema.parse(response);
+          return parsedResponse.data
+            ? deserializePerson(parsedResponse.data)
+            : null;
+        } catch (error) {
+          if (error instanceof ZodError) {
+            console.error('Zod validation error:', error.errors);
+          } else {
+            console.error('Unexpected error during validation:', error);
+          }
+          throw error;
+        }
+      }),
+    );
+  }
+
   // // TODO: test this once we get auth working
   // postUser(user: UserModel): Observable<UserModel | null> {
   //   return this.http.post<UserResponseType>(`${apiUrl}/users`, user).pipe(
@@ -74,33 +104,6 @@ export class PersonService {
   //   );
   // }
 
-  // getUser(id: string): Observable<UserModel | null> {
-  //   return this.http.get<UserResponseType>(`${apiUrl}/users/${id}`).pipe(
-  //     tap((response: UserResponseType | ErrorResponseType) => {
-  //       // validate response is success
-  //       if (response.errors && response.errors.length > 0) {
-  //         // TODO: Refactor this to handle error status codes and errors array
-  //         throw new Error(response.message);
-  //       }
-  //     }),
-  //     map((response: UserResponseType) => {
-  //       try {
-  //         const parsedResponse = UserResponseSchema.parse(response);
-  //         return parsedResponse.data
-  //           ? deserializeUser(parsedResponse.data)
-  //           : null;
-  //       } catch (error) {
-  //         if (error instanceof ZodError) {
-  //           console.error('Zod validation error:', error.errors);
-  //         } else {
-  //           console.error('Unexpected error during validation:', error);
-  //         }
-  //         throw error;
-  //       }
-  //     }),
-  //   );
-  // }
-  //
   // patchUser(user: UserUpdateType): Observable<UserModel | null> {
   //   return this.http
   //     .patch<UserResponseType>(`${apiUrl}/users/${user.id}`, user)

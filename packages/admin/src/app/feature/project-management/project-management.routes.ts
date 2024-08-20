@@ -1,10 +1,11 @@
 import { Route } from '@angular/router';
-import { AllEventsComponent } from '@app/subFeature/all-events/all-events.component';
-import { AllResourcesComponent } from '@app/subFeature/all-resources/all-resources.component';
-import { PeopleTypesComponent } from '@app/subFeature/people-types/people-types.component';
-import { PlaceholderComponent } from '@app/subFeature/placeholder/placeholder.component';
+import { AllEventsComponent } from '@feature/project-management/all-events/all-events.component';
+import { AllResourcesComponent } from '@feature/project-management/all-resources/all-resources.component';
+import { PeopleTypesComponent } from '@feature/project-management/people-types/people-types.component';
+import { PlaceholderComponent } from '@feature/project-management/placeholder/placeholder.component';
 import { ProjectManagementComponent } from './project-management.component';
-import { AllPeopleComponent } from '@subFeature/all-people/all-people.component';
+import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
+import { PersonComponent } from '@feature/project-management/person/person.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -15,6 +16,10 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'people/all-people',
         component: AllPeopleComponent,
+      },
+      {
+        path: 'people/all-people/:personId',
+        component: PersonComponent,
       },
       {
         path: 'people/people-types',

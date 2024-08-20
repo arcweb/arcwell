@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { PeopleStore } from '@subFeature/all-people/people.store';
+import { PeopleStore } from '@feature/project-management/all-people/people.store';
 import {
   MatCell,
   MatCellDef,
@@ -16,6 +16,7 @@ import {
 } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'aw-all-people',
@@ -40,6 +41,7 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class AllPeopleComponent {
   readonly peopleStore = inject(PeopleStore);
+  private router = inject(Router);
 
   pageSizes = [10, 20, 50];
 
@@ -62,5 +64,11 @@ export class AllPeopleComponent {
 
   handleClick(row: PersonModel) {
     console.log('row=', row);
+    this.router.navigate([
+      'project-management',
+      'people',
+      'all-people',
+      row.id,
+    ]);
   }
 }
