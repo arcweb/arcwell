@@ -6,7 +6,7 @@
       } @else {
         <mat-icon class="account-icon">account_circle</mat-icon>
       }
-      <div>{{ currentUser?.email }}</div>
+      <div>{{ authStore.currentUser()?.email }}</div>
     </div>
     <a class="change-password-link">Change Password</a>
   </mat-card>

@@ -12,6 +12,5 @@ import { AuthStore } from '@app/shared/store/auth.store';
 })
 export class AccountManagementComponent {
   readonly authStore = inject(AuthStore);
-  currentUser = this.authStore.currentUser();
   userAvatar = '';
 }
