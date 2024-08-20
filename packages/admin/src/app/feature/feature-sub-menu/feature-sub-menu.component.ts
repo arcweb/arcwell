@@ -1,6 +1,6 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FeatureStore } from '../dashboard/feature.store';
+import { FeatureStore } from '../project-management/feature.store';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

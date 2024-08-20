@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast.component';
-import { TopBarComponent } from './feature/top-menu/top-menu.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FeaturesMenuComponent } from './feature/features-menu/features-menu.component';
 import { FeatureSubMenuComponent } from './feature/feature-sub-menu/feature-sub-menu.component';
+import { TopMenuComponent } from './feature/top-menu/top-menu.component';
 
 @Component({
   selector: 'aw-app-root',
@@ -13,9 +13,9 @@ import { FeatureSubMenuComponent } from './feature/feature-sub-menu/feature-sub-
   imports: [
     RouterOutlet,
     ToastComponent,
-    TopBarComponent,
     FeaturesMenuComponent,
     FeatureSubMenuComponent,
+    TopMenuComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

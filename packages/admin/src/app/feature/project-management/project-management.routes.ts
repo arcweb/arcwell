@@ -3,13 +3,13 @@ import { AllEventsComponent } from '@app/subFeature/all-events/all-events.compon
 import { AllResourcesComponent } from '@app/subFeature/all-resources/all-resources.component';
 import { PeopleTypesComponent } from '@app/subFeature/people-types/people-types.component';
 import { PlaceholderComponent } from '@app/subFeature/placeholder/placeholder.component';
-import { DashboardComponent } from '@feature/dashboard/dashboard.component';
+import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@subFeature/all-people/all-people.component';
 
-export const DASHBOARD_ROUTES: Route[] = [
+export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
     path: '',
-    component: DashboardComponent,
+    component: ProjectManagementComponent,
     children: [
       // TODO: Move these child routes into their own routing config
       {

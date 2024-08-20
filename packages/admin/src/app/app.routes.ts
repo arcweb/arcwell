@@ -11,11 +11,11 @@ export const routes: Routes = [
           import('./feature/auth/auth.routes').then(m => m.AUTH_ROUTES),
       },
       {
-        path: 'dashboard',
+        path: 'project-management',
         canActivate: [isAuthenticatedGuard()],
         loadChildren: () =>
-          import('./feature/dashboard/dashboard.routes').then(
-            m => m.DASHBOARD_ROUTES,
+          import('./feature/project-management/project-management.routes').then(
+            m => m.PROJECT_MANAGEMENT_ROUTES,
           ),
       },
       {
@@ -23,6 +23,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./feature/home/home.component').then(m => m.HomeComponent),
         pathMatch: 'full',
+      },
+      {
+        path: 'account-management',
+        canActivate: [isAuthenticatedGuard()],
+        loadComponent: () =>
+          import(
+            './feature/account-management/account-management.component'
+          ).then(m => m.AccountManagementComponent),
       },
       // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],
