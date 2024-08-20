@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
+import { DbExceptionParser } from '#exceptions/db_execptions'
 
 export default class UsersController {
   /**
@@ -71,7 +72,12 @@ export default class UsersController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     const user = await User.findOrFail(params.id)
-    await user.delete()
-    response.status(204).send('')
+
+    try {
+      await user.delete()
+      response.status(204).send('')
+    } catch (err) {
+      DbExceptionParser(err)
+    }
   }
 }

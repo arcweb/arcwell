@@ -4,6 +4,7 @@ import { errors as vineErrors } from '@vinejs/vine'
 import { errors as adonisCoreErrors } from '@adonisjs/core'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as lucidErrors } from '@adonisjs/lucid'
+import DbForeignKeyConstrainException from '#exceptions/db_execptions'
 // import { errors as bouncerErrors } from '@adonisjs/bouncer'
 
 interface ValidationFrameworkError {
@@ -135,6 +136,23 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     // if (error instanceof bouncerErrors.E_AUTHORIZATION_FAILURE) {
     // TODO: handle bouncer routing errors. when implemented
     // }
+
+    /**
+     * Custom Exceptions handle logic
+     */
+
+    if (error instanceof DbForeignKeyConstrainException) {
+      console.log('\n\n\n\nForeign key issue', error, '\n\n\n\n')
+      const customError: CustomError = {
+        title: DbForeignKeyConstrainException.type,
+        code: error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT',
+        detail: error.message,
+      }
+
+      const newError = this.transformGenericErrors([customError])
+      ctx.response.status(error.status ? error.status : 500).send(newError)
+      return
+    }
 
     const newError = this.transformGenericErrors([
       {
