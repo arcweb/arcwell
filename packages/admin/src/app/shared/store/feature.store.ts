@@ -14,8 +14,8 @@ import {
 } from '@shared/store/request-status.feature';
 import { computed, inject } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { FeatureModel } from '@app/shared/models/feature.model';
-import { FeatureService } from '@app/shared/services/feature.service';
+import { FeatureModel } from '@shared/models/feature.model';
+import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
 
 interface FeatureState {

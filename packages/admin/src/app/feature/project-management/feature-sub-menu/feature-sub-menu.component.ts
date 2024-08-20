@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FeatureStore } from '../project-management/feature.store';
+import { FeatureStore } from '@shared/store/feature.store';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

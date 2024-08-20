@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { PersonModel } from '@shared/models/person.model';
+import { UserSchema } from '@shared/schemas/user.schema';
 
 export const PersonSchema: any = z
   .object({
@@ -8,6 +9,8 @@ export const PersonSchema: any = z
     givenName: z.string(),
     personTypeId: z.string().uuid().optional(),
     tags: z.array(z.any()).optional(),
+    user: z.any().optional(), //TODO: this should be UserSchema.optional() but throws error
+    personType: z.any().optional(), //TODO: Need to create personType schema
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
   })
@@ -33,14 +36,14 @@ export const PeopleResponseSchema = z.object({
 });
 
 // Single Person
-export const UserResponseSchema = z.object({
+export const PersonResponseSchema = z.object({
   data: PersonSchema,
 });
 
 export type PersonType = z.infer<typeof PersonSchema>;
 export type PersonUpdateType = z.infer<typeof PersonUpdateSchema>;
 export type PeopleResponseType = z.infer<typeof PeopleResponseSchema>;
-export type PersonResponseType = z.infer<typeof UserResponseSchema>;
+export type PersonResponseType = z.infer<typeof PersonResponseSchema>;
 
 // Deserializer / Serializer
 export const deserializePerson = (data: PersonType): PersonModel => {
