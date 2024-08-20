@@ -1,9 +1,9 @@
-import { Component, Signal, effect, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { AuthStore } from '@shared/store/auth.store';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FeatureSubMenuComponent } from '@feature/feature-sub-menu/feature-sub-menu.component';
 import { FeaturesMenuComponent } from '@feature/features-menu/features-menu.component';
-import { TopBarComponent } from '@feature/top-menu/top-menu.component';
+import { TopMenuComponent } from '@feature/top-menu/top-menu.component';
 
 @Component({
   selector: 'aw-home',
@@ -13,12 +13,12 @@ import { TopBarComponent } from '@feature/top-menu/top-menu.component';
     FeatureSubMenuComponent,
     FeaturesMenuComponent,
     RouterOutlet,
-    TopBarComponent,
+    TopMenuComponent,
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  templateUrl: './project-management.component.html',
+  styleUrl: './project-management.component.scss',
 })
-export class DashboardComponent {
+export class ProjectManagementComponent {
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
 

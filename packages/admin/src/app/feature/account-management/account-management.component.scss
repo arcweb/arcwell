@@ -1,0 +1,23 @@
+$padding: 2em;
+
+.account-management-container {
+  padding: $padding;
+
+  .account-management-card {
+    display: flex;
+    flex-direction: row;
+    padding: $padding;
+    gap: $padding;
+    justify-content: space-between;
+
+    .account-info-container {
+      display: flex;
+      flex-direction: row;
+      gap: $padding;
+
+      .account-icon {
+        transform: scale(2);
+      }
+    }
+  }
+}
