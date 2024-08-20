@@ -16,6 +16,7 @@ import {
 } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
+import { FeatureStore } from '@app/feature/project-management/feature.store';
 
 @Component({
   selector: 'aw-all-people',

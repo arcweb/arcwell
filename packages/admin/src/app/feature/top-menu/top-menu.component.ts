@@ -7,10 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { BrandService } from '@app/shared/services/brand.service';
 import { AuthStore } from '@app/shared/store/auth.store';
+import { FeatureStore } from '../project-management/feature.store';
 
 interface TopMenuNavLink {
   name: string;
   path: string;
+  featurePath?: string;
 }
 
 @Component({
@@ -23,11 +25,16 @@ interface TopMenuNavLink {
 export class TopMenuComponent {
   private brandService: BrandService = inject(BrandService);
   public authStore = inject(AuthStore);
+  public featureStore = inject(FeatureStore);
   instanceName = this.brandService.getInstanceName(4);
 
   userAvatar = '';
   navLinks: TopMenuNavLink[] = [
-    { name: 'Project Management', path: '/project-management' },
+    {
+      name: 'Project Management',
+      path: '/project-management',
+      featurePath: 'people',
+    },
     { name: 'Server Settings', path: '/server-settings' },
     { name: 'Account Management', path: '/account-management' },
   ];
