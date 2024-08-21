@@ -146,7 +146,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       let code
       const detail = error && error.message ? error.message : 'No Further Information'
 
-      console.log('\n\n\nCODE', error.code)
       switch (error.code) {
         case '23503': {
           title = error && error.type ? error.type : 'Database Error'
