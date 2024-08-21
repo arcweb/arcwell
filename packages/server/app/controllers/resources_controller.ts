@@ -1,4 +1,5 @@
 import Resource from '#models/resource'
+import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
@@ -52,6 +53,7 @@ export default class ResourcesController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await Resource.query().where('id', params.id).preload('resourceType').firstOrFail(),
     }
@@ -63,6 +65,7 @@ export default class ResourcesController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateResourceValidator)
+    await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['name'])
     const resource = await Resource.findOrFail(params.id)
     const updatedResource = await resource.merge(cleanRequest).save()
@@ -74,6 +77,7 @@ export default class ResourcesController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const resource = await Resource.findOrFail(params.id)
     await resource.delete()
     response.status(204).send('')

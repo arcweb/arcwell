@@ -1,4 +1,5 @@
 import ResourceType from '#models/resource_type'
+import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator } from '#validators/resource_type'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -37,6 +38,7 @@ export default class ResourceTypesController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await ResourceType.query().where('id', params.id).firstOrFail(),
     }
@@ -46,6 +48,7 @@ export default class ResourceTypesController {
    * SHow record with related resources
    */
   async showWithResources({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await ResourceType.query().preload('resources').where('id', params.id).firstOrFail(),
     }
@@ -57,6 +60,7 @@ export default class ResourceTypesController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
+    await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     const updatedResourceType = await resourceType.merge(request.body()).save()
     return { data: updatedResourceType }
@@ -67,6 +71,7 @@ export default class ResourceTypesController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     await resourceType.delete()
     response.status(204).send('')

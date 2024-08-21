@@ -1,4 +1,5 @@
 import Event from '#models/event'
+import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
@@ -51,6 +52,7 @@ export default class EventsController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await Event.query().where('id', params.id).preload('eventType').firstOrFail(),
     }
@@ -62,6 +64,7 @@ export default class EventsController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateEventValidator)
+    await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['name'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
@@ -73,6 +76,7 @@ export default class EventsController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const event = await Event.findOrFail(params.id)
     await event.delete()
     response.status(204).send('')
