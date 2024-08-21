@@ -1,18 +1,22 @@
+@use '@angular/material' as mat;
+@use 'theme' as theme;
+@use 'colors' as colors;
+
 $image-size: 40px;
 $spacing: 12px;
 
-.top-bar-container,
+.top-menu-container,
 .info-container,
-.button-container {
+.link-container {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.top-bar-container {
+.top-menu-container {
   justify-content: space-between;
   height: 65px;
-  border-bottom: 1px solid black;
+  border-bottom: colors.$black;
 
   .logo {
     width: $image-size;
@@ -21,20 +25,36 @@ $spacing: 12px;
 }
 
 .info-container,
-.button-container {
+.link-container {
   gap: $spacing;
+}
+
+.top-menu-link {
+  cursor: pointer;
+  height: 100%;
+  padding-bottom: 6px;
+}
+
+.top-menu-nav-link-active {
+  border-bottom: 2px solid colors.$white;
+}
+
+.top-menu-link:not(:nth-child(3)) {
+  &::after {
+    content: '';
+    margin-left: $spacing;
+    border-right: 1px solid colors.$on-primary;
+  }
 }
 
 .user-avatar {
   border-radius: 50%;
   height: $image-size;
   width: $image-size;
+  margin-left: $spacing;
 }
 
-.top-bar-button:not(:nth-child(3)) {
-  &::after {
-    content: '';
-    margin-left: $spacing;
-    border-right: 1px solid black;
-  }
+.user-icon {
+  transform: scale(1.4);
+  margin-left: $spacing;
 }

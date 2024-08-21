@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { deserializeSubFeature } from '../schemas/sub-feature.schema';
 
 export class FeatureModel {
   public id?: string;
@@ -17,7 +18,7 @@ export class FeatureModel {
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.subFeatures = data.subFeatures
-      ? data.subFeatures.map((feature: any) => new FeatureModel(feature))
+      ? data.subFeatures.map((feature: any) => deserializeSubFeature(feature))
       : [];
   }
 

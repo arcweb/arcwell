@@ -1,37 +1,42 @@
 import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ClickDirective } from '@app/shared/directives/click.directive';
 import { MatIconModule } from '@angular/material/icon';
-import { UserModel } from '@app/shared/models';
 
 import { BrandService } from '@app/shared/services/brand.service';
-import { UserService } from '@app/shared/services/user.service';
+import { AuthStore } from '@app/shared/store/auth.store';
+import { FeatureStore } from '@shared/store/feature.store';
+
+interface TopMenuNavLink {
+  name: string;
+  path: string;
+  featurePath?: string;
+}
 
 @Component({
-  selector: 'aw-topbar',
+  selector: 'aw-top-menu',
   standalone: true,
-  imports: [MatToolbarModule, ClickDirective, MatIconModule],
+  imports: [MatToolbarModule, ClickDirective, MatIconModule, RouterModule],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.scss',
 })
-export class TopBarComponent {
+export class TopMenuComponent {
   private brandService: BrandService = inject(BrandService);
-  arcwellLogo = 'some_svg';
+  public authStore = inject(AuthStore);
+  public featureStore = inject(FeatureStore);
+
   instanceName = this.brandService.getInstanceName(4);
 
-  //   private userService: UserService = inject(UserService);
-  //   user: UserModel = this.userService.getUser('1');
-
-  userImg = 'uer_svg';
-
-  manageProject() {
-    throw new Error('Method not implemented.');
-  }
-  serverSettings() {
-    throw new Error('Method not implemented.');
-  }
-  goToUser() {
-    throw new Error('Method not implemented.');
-  }
+  userAvatar = '';
+  navLinks: TopMenuNavLink[] = [
+    {
+      name: 'Project Management',
+      path: '/project-management',
+      featurePath: 'people',
+    },
+    { name: 'Server Settings', path: '/server-settings' },
+    { name: 'Account Management', path: '/account-management' },
+  ];
 }

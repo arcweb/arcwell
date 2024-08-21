@@ -1,0 +1,49 @@
+@if (personStore.isFulfilled()) {
+  <form [formGroup]="personForm">
+    <mat-form-field class="example-full-width">
+      <mat-label>Family Name</mat-label>
+      <input matInput placeholder="Name" formControlName="familyName" />
+      @if (personForm.controls.familyName.hasError('required')) {
+        <mat-error>
+          Family Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Given Name</mat-label>
+      <input matInput placeholder="Name" formControlName="givenName" />
+      @if (personForm.controls.givenName.hasError('required')) {
+        <mat-error>
+          Given Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Person Type Id</mat-label>
+      <input
+        matInput
+        placeholder="Person Type Id"
+        formControlName="personTypeId"
+      />
+      @if (personForm.controls.personTypeId.hasError('required')) {
+        <mat-error>
+          Person Type Id is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-button type="reset" class="default-form-clear-button">
+        Clear
+      </button>
+      <button mat-flat-button type="submit" class="default-form-submit-button">
+        Save
+      </button>
+    </div>
+  </form>
+}

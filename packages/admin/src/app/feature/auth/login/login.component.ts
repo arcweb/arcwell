@@ -21,7 +21,7 @@ export class LoginComponent {
   constructor() {
     effect(() => {
       if (this.authStore.currentUser()) {
-        this.router.navigate(['dashboard']);
+        this.router.navigate(['project-management']);
       }
     });
   }

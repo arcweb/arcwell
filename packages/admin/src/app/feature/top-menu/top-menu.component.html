@@ -1,4 +1,4 @@
-<mat-toolbar class="top-bar-container">
+<mat-toolbar class="top-menu-container top-menu">
   <div class="info-container">
     <mat-icon class="logo" svgIcon="arcwell-logo"></mat-icon>
     <a class="server-instance__name">
@@ -8,22 +8,31 @@
     </a>
   </div>
 
-  <div class="button-container">
-    <div
-      class="top-bar-button button-project-managment"
-      (click)="manageProject()">
-      Project Managment
-    </div>
-    <div
-      class="top-bar-button button-server-settings"
-      (click)="serverSettings()">
-      Server Settings
-    </div>
-    <div class="top-bar-button button-account" (click)="goToUser()">
-      Account
-    </div>
-    <div>
-      <img [src]="userImg" alt="avatar" class="user-avatar" />
-    </div>
+  <div class="link-container">
+    <!-- only show nav links if there is a current user -->
+    @if (authStore.currentUser()) {
+      @for (navLink of navLinks; track navLink.name) {
+        <a
+          class="top-menu-link"
+          [routerLink]="navLink.path"
+          routerLinkActive="top-menu-nav-link-active"
+          (click)="
+            navLink.featurePath
+              ? featureStore.setCurrentFeature(navLink.featurePath)
+              : null
+          "
+        >
+          {{ navLink.name }}
+        </a>
+      }
+      <div>
+        <!-- user icon -->
+        @if (userAvatar) {
+          <img [src]="userAvatar" alt="avatar" class="user-avatar" />
+        } @else {
+          <mat-icon class="user-icon">account_circle</mat-icon>
+        }
+      </div>
+    }
   </div>
 </mat-toolbar>

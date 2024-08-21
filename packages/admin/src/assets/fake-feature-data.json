@@ -3,22 +3,22 @@
     {
       "id": "1",
       "name": "People",
-      "path": "dashboard/people",
+      "path": "people",
       "icon": "people",
       "createdAt": "2021-07-01T00:00:00.000Z",
       "updatedAt": "2021-07-01T00:00:00.000Z",
       "subFeatures": [
         {
           "id": "1",
-          "name": "Staff",
-          "path": "staff",
+          "name": "People Types",
+          "path": "people-types",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         },
         {
           "id": "2",
-          "name": "Students",
-          "path": "students",
+          "name": "All People",
+          "path": "all-people",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         }
@@ -34,22 +34,15 @@
       "subFeatures": [
         {
           "id": "1",
-          "name": "Books",
-          "path": "books",
+          "name": "Resource Types",
+          "path": "resource-types",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         },
         {
           "id": "2",
-          "name": "Articles",
-          "path": "articles",
-          "createdAt": "2021-07-01T00:00:00.000Z",
-          "updatedAt": "2021-07-01T00:00:00.000Z"
-        },
-        {
-          "id": "3",
-          "name": "Videos",
-          "path": "videos",
+          "name": "All Resources",
+          "path": "all-resources",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         }
@@ -65,22 +58,15 @@
       "subFeatures": [
         {
           "id": "1",
-          "name": "Conferences",
-          "path": "conferences",
+          "name": "Event Types",
+          "path": "event-types",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         },
         {
           "id": "2",
-          "name": "Workshops",
-          "path": "workshops",
-          "createdAt": "2021-07-01T00:00:00.000Z",
-          "updatedAt": "2021-07-01T00:00:00.000Z"
-        },
-        {
-          "id": "3",
-          "name": "Seminars",
-          "path": "seminars",
+          "name": "All Events",
+          "path": "all-events",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         }
@@ -96,15 +82,15 @@
       "subFeatures": [
         {
           "id": "1",
-          "name": "Statistics",
-          "path": "statistics",
+          "name": "Fact Types",
+          "path": "fact-types",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         },
         {
           "id": "2",
-          "name": "Reports",
-          "path": "reports",
+          "name": "All Facts",
+          "path": "all-facts",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         }
@@ -120,15 +106,15 @@
       "subFeatures": [
         {
           "id": "1",
-          "name": "Categories",
-          "path": "categories",
+          "name": "Tag Types",
+          "path": "tag-types",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         },
         {
           "id": "2",
-          "name": "Labels",
-          "path": "labels",
+          "name": "All Tags",
+          "path": "all-tags",
           "createdAt": "2021-07-01T00:00:00.000Z",
           "updatedAt": "2021-07-01T00:00:00.000Z"
         }

@@ -1,0 +1,13 @@
+@use 'layout.scss' as layout;
+
+.project-management-content-container {
+  display: flex;
+  height: layout.$content-height;
+
+  .route-content-container {
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    overflow-y: auto;
+  }
+}

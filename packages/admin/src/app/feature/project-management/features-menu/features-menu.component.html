@@ -1,0 +1,17 @@
+<div class="feature-menu-container">
+  @for (feature of featureStore.features(); track feature.id) {
+    <div class="feature-button-container">
+      <button
+        class="feature-button"
+        mat-icon-button
+        [attr.aria-label]="feature.name"
+        (click)="featureStore.setCurrentFeature(feature.path)"
+        [routerLink]="feature.path"
+        routerLinkActive="feature-button-active"
+      >
+        <mat-icon>{{ feature.icon }}</mat-icon>
+      </button>
+      {{ feature.name }}
+    </div>
+  }
+</div>

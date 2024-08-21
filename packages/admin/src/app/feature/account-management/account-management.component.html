@@ -1,0 +1,13 @@
+<div class="account-management-container">
+  <mat-card class="account-management-card">
+    <div class="account-info-container">
+      @if (userAvatar) {
+        <img [src]="userAvatar" alt="avatar" class="account-avatar" />
+      } @else {
+        <mat-icon class="account-icon">account_circle</mat-icon>
+      }
+      <div>{{ authStore.currentUser()?.email }}</div>
+    </div>
+    <a class="change-password-link">Change Password</a>
+  </mat-card>
+</div>
