@@ -146,14 +146,21 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       let code
       const detail = error && error.message ? error.message : 'No Further Information'
 
-      if (error.code === '23503') {
-        title = error && error.type ? error.type : 'Database Error'
-        code =  error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT'
-      }
-
-      if (error.code === '22P02') {
-        title = error && error.type ? error.type : 'Database Error'
-        code = error && error.code ? error.code : 'DB_INVALID_UUID'
+      console.log('\n\n\nCODE', error.code)
+      switch (error.code) {
+        case '23503': {
+          title = error && error.type ? error.type : 'Database Error'
+          code = error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT'
+          break
+        }
+        case '22P02': {
+          title = error && error.type ? error.type : 'Database Error'
+          code = error && error.code ? error.code : 'DB_INVALID_UUID'
+          break
+        }
+        default: {
+          break
+        }
       }
 
       const customError: CustomError = {
