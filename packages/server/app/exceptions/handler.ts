@@ -141,9 +141,10 @@ export default class HttpExceptionHandler extends ExceptionHandler {
      * Custom Exceptions handle logic
      */
 
-    if (error instanceof Object) {
+    if (error instanceof DbForeignKeyConstrainException) {
+      console.log('\n\n\n\nForeign key issue', error, '\n\n\n\n')
       const customError: CustomError = {
-        title: error && error.type ?error.type : 'Database Error',
+        title: DbForeignKeyConstrainException.type,
         code: error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT',
         detail: error.message,
       }
@@ -152,6 +153,18 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       ctx.response.status(error.status ? error.status : 500).send(newError)
       return
     }
+
+    // if (error instanceof Object) {
+    //   const customError: CustomError = {
+    //     title: error && error.type ?error.type : 'Database Error',
+    //     code: error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT',
+    //     detail: error.message,
+    //   }
+
+    //   const newError = this.transformGenericErrors([customError])
+    //   ctx.response.status(error.status ? error.status : 500).send(newError)
+    //   return
+    // }
 
     const newError = this.transformGenericErrors([
       {

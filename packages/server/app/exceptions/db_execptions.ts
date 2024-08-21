@@ -24,10 +24,11 @@ export interface DbError {
   file?: string
   line?: string
   routine?: string
+  message?: string
 }
 
 export function DbExceptionParser(err: DbError) {
   if (err.code === '23503') {
-    throw new DbForeignKeyConstraintException()
+    throw new DbForeignKeyConstraintException(err.message)
   }
 }

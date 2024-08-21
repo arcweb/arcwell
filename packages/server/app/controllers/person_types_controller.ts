@@ -1,3 +1,4 @@
+import { DbExceptionParser } from '#exceptions/db_execptions'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonTypeValidator, updatePersonTypeValidator } from '#validators/person_type'
@@ -73,7 +74,11 @@ export default class PersonTypesController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
-    await personType.delete()
-    response.status(204).send('')
+    try {
+      await personType.delete()
+      response.status(204).send('')
+    } catch (e) {
+      DbExceptionParser(e)
+    }
   }
 }
