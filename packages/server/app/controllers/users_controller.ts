@@ -72,12 +72,7 @@ export default class UsersController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     const user = await User.findOrFail(params.id)
-
-    try {
-      await user.delete()
-      response.status(204).send('')
-    } catch (err) {
-      DbExceptionParser(err)
-    }
+    await user.delete()
+    response.status(204).send('')
   }
 }
