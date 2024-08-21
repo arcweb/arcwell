@@ -74,11 +74,7 @@ export default class PersonTypesController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
-    try {
-      await personType.delete()
-      response.status(204).send('')
-    } catch (e) {
-      DbExceptionParser(e)
-    }
+    await personType.delete()
+    response.status(204).send('')
   }
 }

@@ -141,30 +141,31 @@ export default class HttpExceptionHandler extends ExceptionHandler {
      * Custom Exceptions handle logic
      */
 
-    if (error instanceof DbForeignKeyConstrainException) {
-      console.log('\n\n\n\nForeign key issue', error, '\n\n\n\n')
+    if (error instanceof Object) {
+      let title
+      let code
+      const detail = error && error.message ? error.message : 'No Further Information'
+
+      if (error.code === '23503') {
+        title = error && error.type ? error.type : 'Database Error'
+        code =  error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT'
+      }
+
+      if (error.code === '22P02') {
+        title = error && error.type ? error.type : 'Database Error'
+        code = error && error.code ? error.code : 'DB_INVALID_UUID'
+      }
+
       const customError: CustomError = {
-        title: DbForeignKeyConstrainException.type,
-        code: error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT',
-        detail: error.message,
+        title: title,
+        code: code,
+        detail: detail,
       }
 
       const newError = this.transformGenericErrors([customError])
       ctx.response.status(error.status ? error.status : 500).send(newError)
       return
     }
-
-    // if (error instanceof Object) {
-    //   const customError: CustomError = {
-    //     title: error && error.type ?error.type : 'Database Error',
-    //     code: error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT',
-    //     detail: error.message,
-    //   }
-
-    //   const newError = this.transformGenericErrors([customError])
-    //   ctx.response.status(error.status ? error.status : 500).send(newError)
-    //   return
-    // }
 
     const newError = this.transformGenericErrors([
       {
