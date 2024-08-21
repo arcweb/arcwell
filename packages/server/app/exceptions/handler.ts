@@ -4,7 +4,6 @@ import { errors as vineErrors } from '@vinejs/vine'
 import { errors as adonisCoreErrors } from '@adonisjs/core'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as lucidErrors } from '@adonisjs/lucid'
-import DbForeignKeyConstrainException from '#exceptions/db_execptions'
 // import { errors as bouncerErrors } from '@adonisjs/bouncer'
 
 interface ValidationFrameworkError {
