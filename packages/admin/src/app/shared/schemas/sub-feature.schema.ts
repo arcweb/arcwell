@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { SubFeatureModel } from '../models/sub-feature.model';
-import { FeatureSchemaBase } from './feature.schema';
+import { FeatureSchema } from './feature.schema';
 
-export const SubFeatureSchema = FeatureSchemaBase.extend({
+export const SubFeatureSchema = FeatureSchema.extend({
   icon: z.string().optional(),
 });
 

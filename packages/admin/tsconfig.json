@@ -27,6 +27,7 @@
       "@feature/*": ["app/feature/*"],
       "@subFeature/*": ["app/subFeature/*"],
       "@shared/*": ["app/shared/*"],
+      "@schemas/*": ["app/shared/schemas/*"],
       "@styles/*": ["app/styles/*"]
     }
   },

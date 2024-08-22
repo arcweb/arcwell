@@ -60,15 +60,13 @@ export class PersonComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.personId) {
-      this.personStore.load(this.personId).then(resp => {
-        this.personForm.patchValue({
-          familyName: this.personStore.person()?.familyName,
-          givenName: this.personStore.person()?.givenName,
-          personTypeId: this.personStore.person()?.personTypeId,
-        });
+    this.personStore.load(this.personId).then(resp => {
+      this.personForm.patchValue({
+        familyName: this.personStore.person()?.familyName,
+        givenName: this.personStore.person()?.givenName,
+        personTypeId: this.personStore.person()?.personTypeId,
       });
-    }
+    });
 
     this.personForm.events.subscribe(event => {
       if (event instanceof FormSubmittedEvent) {

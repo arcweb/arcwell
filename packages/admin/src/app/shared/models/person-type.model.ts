@@ -12,9 +12,9 @@ export class PersonTypeModel {
 
   constructor(data: PersonType) {
     this.id = data.id;
-    this.key = data.familyName;
-    this.name = data.givenName;
-    this.info = data.personTypeId;
+    this.key = data.key;
+    this.name = data.name;
+    this.info = data.info;
     this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);

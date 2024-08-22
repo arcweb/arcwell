@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { PersonModel } from '@shared/models/person.model';
 import { UserSchema } from '@shared/schemas/user.schema';
+import { PersonTypeSchema } from './person-type.schema';
 
 export const PersonSchema: any = z
   .object({
@@ -10,7 +11,7 @@ export const PersonSchema: any = z
     personTypeId: z.string().uuid().optional(),
     tags: z.array(z.any()).optional(),
     user: z.any().optional(), //TODO: this should be UserSchema.optional() but throws error
-    personType: z.any().optional(), //TODO: Need to create personType schema
+    personType: z.lazy(() => PersonTypeSchema).optional(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
   })
