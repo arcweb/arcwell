@@ -25,4 +25,16 @@ test.group('Model event type', (group) => {
     eventType?.merge(newData).save()
     assert.equal(eventType?.name, newData.name)
   })
+
+  test('event type tagging test', async ({ assert }) => {
+    const eventTypeInfo = {
+      key: 'TEST',
+      name: 'TEST',
+      tags: { ...['first/list'] },
+    }
+
+    const newEventType = await EventType.create(eventTypeInfo)
+
+    assert.equal(newEventType.tags, eventTypeInfo.tags)
+  })
 })

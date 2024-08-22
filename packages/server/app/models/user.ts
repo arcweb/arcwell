@@ -29,6 +29,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare personId: string
 
+  @column()
+  declare tags: string[]
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
