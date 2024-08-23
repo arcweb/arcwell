@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { PersonType } from '@shared/schemas/person.schema';
+import { PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeModel } from '@shared/models/person-type.model';
 
 // Base interface with common properties
@@ -34,7 +34,7 @@ export class PersonModel {
   public updatedAt: DateTime;
   public personType?: PersonTypeModel;
 
-  constructor(data: PersonType) {
+  constructor(data: PersonUpdateType) {
     this.id = data.id;
     this.familyName = data.familyName;
     this.givenName = data.givenName;

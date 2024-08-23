@@ -15,6 +15,7 @@ export const UserSchema = z
     updatedAt: z.string().datetime({ offset: true }),
     role: RoleSchema.optional(),
     person: PersonSchema.optional(),
+    tags: z.array(z.any()).optional(),
   })
   .strict();
 

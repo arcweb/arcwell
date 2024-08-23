@@ -1,4 +1,3 @@
-import { DbExceptionParser } from '#exceptions/db_execptions'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonTypeValidator, updatePersonTypeValidator } from '#validators/person_type'
