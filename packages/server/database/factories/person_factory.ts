@@ -6,7 +6,7 @@ export const PersonFactory = factory
     return {
       family_name: faker.person.lastName(),
       given_name: faker.person.firstName(),
-      tags: JSON.stringify(['first']),
+      tags: JSON.stringify(['diagnosis/diabetes/type1']),
     }
   })
   .build()
