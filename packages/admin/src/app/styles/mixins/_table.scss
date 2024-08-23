@@ -1,0 +1,21 @@
+// use shortened path names configured in the angular.json file for imports
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+
+@mixin table-theme($theme) {
+  $primary: mat.get-theme-color($theme, primary);
+  $secondary: mat.get-theme-color($theme, secondary);
+  $error: mat.get-theme-color($theme, error);
+
+  .mat-mdc-row:nth-child(odd) {
+    background-color: colors.$gray-94;
+  }
+
+  .mat-mdc-row:hover .mat-mdc-cell {
+    background-color: colors.$primary-90;
+  }
+
+  .mat-mdc-paginator {
+    padding-top: 10px;
+  }
+}

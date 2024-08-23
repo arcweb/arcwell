@@ -11,7 +11,7 @@ export const PersonSchema: any = z
     personTypeId: z.string().uuid().optional(),
     tags: z.array(z.any()).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
-    personType: z.lazy(() => PersonTypeSchema).optional(),
+    personType: PersonTypeSchema.optional(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
   })
