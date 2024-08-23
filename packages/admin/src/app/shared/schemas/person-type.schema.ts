@@ -7,7 +7,7 @@ export const PersonTypeSchema = z
     id: z.string().optional(),
     key: z.string(),
     name: z.string(),
-    info: z.string(),
+    info: z.string().nullable(),
     tags: z.array(z.string()),
     people: z.array(PersonSchema).optional(),
     createdAt: z.string().datetime({ offset: true }),
