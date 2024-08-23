@@ -11,7 +11,7 @@ export default class EventType extends BaseModel {
   declare key: string
 
   @column()
-  declare name: string
+  declare name: string | null
 
   @column()
   declare tags: string[]
