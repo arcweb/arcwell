@@ -15,6 +15,7 @@ import {
 } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { PersonTypeModel } from '@app/shared/models/person-type.model';
+import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 
 @Component({
   selector: 'aw-person-types',
@@ -30,6 +31,7 @@ import { PersonTypeModel } from '@app/shared/models/person-type.model';
     MatCell,
     MatHeaderCell,
     MatHeaderRow,
+    ErrorContainerComponent,
   ],
   providers: [PersonTypesStore],
   templateUrl: './person-types.component.html',
