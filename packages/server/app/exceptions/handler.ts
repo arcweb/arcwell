@@ -136,6 +136,42 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     // TODO: handle bouncer routing errors. when implemented
     // }
 
+    /**
+     * Custom Exceptions handle logic
+     */
+
+    if (error instanceof Object) {
+      let title
+      let code
+      const detail = error && error.message ? error.message : 'No Further Information'
+
+      switch (error.code) {
+        case '23503': {
+          title = error && error.type ? error.type : 'Database Error'
+          code = error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT'
+          break
+        }
+        case '22P02': {
+          title = error && error.type ? error.type : 'Database Error'
+          code = error && error.code ? error.code : 'DB_INVALID_UUID'
+          break
+        }
+        default: {
+          break
+        }
+      }
+
+      const customError: CustomError = {
+        title: title,
+        code: code,
+        detail: detail,
+      }
+
+      const newError = this.transformGenericErrors([customError])
+      ctx.response.status(error.status ? error.status : 500).send(newError)
+      return
+    }
+
     const newError = this.transformGenericErrors([
       {
         title: 'Unknown Exception',

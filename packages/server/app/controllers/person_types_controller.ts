@@ -1,4 +1,5 @@
 import PersonType from '#models/person_type'
+import { paramsUUIDValidator } from '#validators/common'
 import { createPersonTypeValidator, updatePersonTypeValidator } from '#validators/person_type'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -37,6 +38,7 @@ export default class PersonTypesController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await PersonType.query().where('id', params.id).firstOrFail(),
     }
@@ -46,6 +48,7 @@ export default class PersonTypesController {
    * Show record with related people
    */
   async showWithPeople({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await PersonType.query().preload('people').where('id', params.id).firstOrFail(),
     }
@@ -57,6 +60,7 @@ export default class PersonTypesController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updatePersonTypeValidator)
+    await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
     const updatedpersonType = await personType.merge(request.body()).save()
     return { data: updatedpersonType }
@@ -67,6 +71,7 @@ export default class PersonTypesController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
     await personType.delete()
     response.status(204).send('')

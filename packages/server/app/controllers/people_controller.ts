@@ -1,4 +1,5 @@
 import Person from '#models/person'
+import { paramsUUIDValidator } from '#validators/common'
 import { createPersonValidator, updatePersonValidator } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
@@ -15,11 +16,15 @@ export default class PeopleController {
 
     let countQuery = db.from('people')
 
-    let query = Person.query().preload('user').preload('personType')
+    let query = Person.query()
+      .orderBy('familyName', 'asc')
+      .orderBy('givenName', 'asc')
+      .preload('user')
+      .preload('personType')
 
     if (personTypeId) {
       query.where('personTypeId', personTypeId)
-      // DB contex use sql column names
+      // DB context use sql column names
       countQuery.where('person_type_id', personTypeId)
     }
     if (limit) {
@@ -53,6 +58,7 @@ export default class PeopleController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
     return {
       data: await Person.query()
         .where('id', params.id)
@@ -68,7 +74,8 @@ export default class PeopleController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updatePersonValidator)
-    const cleanRequest = request.only(['givenName', 'familyName'])
+    await paramsUUIDValidator.validate(params)
+    const cleanRequest = request.only(['givenName', 'familyName', 'personTypeId', 'tags'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
     return { data: updatedPerson }
@@ -79,6 +86,7 @@ export default class PeopleController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const person = await Person.findOrFail(params.id)
     await person.delete()
     response.status(204).send('')

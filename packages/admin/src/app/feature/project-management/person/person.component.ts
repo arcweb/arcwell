@@ -1,12 +1,10 @@
-import { Component, inject, Input, input, OnInit } from '@angular/core';
+import { Component, effect, inject, Input, OnInit } from '@angular/core';
 import {
+  ControlEvent,
   FormControl,
   FormGroup,
-  FormResetEvent,
   FormSubmittedEvent,
-  PristineChangeEvent,
   ReactiveFormsModule,
-  TouchedChangeEvent,
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
@@ -59,27 +57,32 @@ export class PersonComponent implements OnInit {
     ),
   });
 
-  ngOnInit(): void {
-    this.personStore.load(this.personId).then(resp => {
-      this.personForm.patchValue({
-        familyName: this.personStore.person()?.familyName,
-        givenName: this.personStore.person()?.givenName,
-        personTypeId: this.personStore.person()?.personTypeId,
-      });
+  constructor() {
+    effect(() => {
+      if (this.personStore.inEditMode()) {
+        this.personForm.enable();
+      } else {
+        this.personForm.disable();
+      }
     });
+  }
+
+  ngOnInit(): void {
+    if (this.personId) {
+      this.personStore.initialize(this.personId).then(() => {
+        this.personForm.patchValue({
+          familyName: this.personStore.person()?.familyName,
+          givenName: this.personStore.person()?.givenName,
+          personTypeId: this.personStore.person()?.personTypeId,
+        });
+      });
+    }
 
     this.personForm.events.subscribe(event => {
-      if (event instanceof FormSubmittedEvent) {
-        console.log('Form: Submitted changed=', event);
-      } else if (event instanceof FormResetEvent) {
-        console.log('Form: Reset', event);
-      } else if (event instanceof TouchedChangeEvent) {
-        console.log('TouchedChangeEvent', event.touched);
-      } else if (event instanceof PristineChangeEvent) {
-        console.log('PristineChangeEvent', event.pristine);
+      if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+        this.personStore.update(this.personForm.value);
       } else if (event instanceof ValueChangeEvent) {
-        console.log('familyName changed=', event.value.familyName);
-        console.log('givenName changed=', event.value.givenName);
+        // This is here for an example.  Also, there are other events that can be caught
       }
     });
   }

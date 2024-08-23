@@ -1,3 +1,7 @@
+@use 'colors' as colors;
+
+// TODO: Move any of this to a mix-in when complete
+
 form {
   display: flex;
   flex-direction: column;
@@ -10,10 +14,22 @@ form {
     margin-bottom: 16px;
   }
 
-  .button-container {
+  .form-button-container {
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-top: 16px;
   }
+
+  .edit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+}
+
+.error-text {
+  color: colors.$error;
 }

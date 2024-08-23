@@ -10,7 +10,7 @@ export const PersonSchema: any = z
     givenName: z.string(),
     personTypeId: z.string().uuid().optional(),
     tags: z.array(z.any()).optional(),
-    user: z.any().optional(), //TODO: this should be UserSchema.optional() but throws error
+    user: z.lazy(() => UserSchema.optional().nullable()),
     personType: z.lazy(() => PersonTypeSchema).optional(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
@@ -24,6 +24,8 @@ export const PersonUpdateSchema = PersonSchema.extend({
   givenName: z.string().optional(),
   personTypeId: z.string().uuid().optional(),
   tags: z.array(z.any()).optional(),
+  createdAt: z.string().datetime({ offset: true }).optional(),
+  updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
 
 //  Multiple People

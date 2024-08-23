@@ -9,6 +9,7 @@ export default class TagsController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
+    const parentStr = queryData['parentStr']
     const limit = queryData['limit']
     const offset = queryData['offset']
 
@@ -16,6 +17,10 @@ export default class TagsController {
 
     let query = Tag.query()
 
+    if (parentStr) {
+      query.where('parent', parentStr)
+      countQuery.where('parent', parentStr)
+    }
     if (limit) {
       query.limit(limit)
     }

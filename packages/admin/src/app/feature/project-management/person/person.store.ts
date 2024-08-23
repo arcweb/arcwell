@@ -10,18 +10,23 @@ import {
   withRequestStatus,
   setPending,
   setFulfilled,
+  setErrors,
 } from '@shared/store/request-status.feature';
 import { PersonService } from '@shared/services/person.service';
 import { inject } from '@angular/core';
-import { PersonModel } from '@shared/models/person.model';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 
 interface PersonState {
-  person: PersonModel | null;
+  person: PersonType | null;
+  inEditMode: boolean;
+  isReady: boolean;
 }
 
 const initialState: PersonState = {
   person: null,
+  inEditMode: false,
+  isReady: false,
 };
 
 export const PersonStore = signalStore(
@@ -29,12 +34,41 @@ export const PersonStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(personId: string) {
+    async initialize(personId: string) {
       patchState(store, setPending());
-      const resp: PersonModel | null = await lastValueFrom(
-        personService.getPerson(personId),
+      const resp = await firstValueFrom(personService.getPerson(personId));
+      if (resp.errors) {
+        patchState(store, { isReady: true }, setErrors(resp.errors));
+      } else {
+        patchState(store, { person: resp.data, isReady: true }, setFulfilled());
+      }
+    },
+    async loadPersonTypes() {
+      // TODO: Add person types when available
+    },
+    async toggleEditMode() {
+      patchState(store, { inEditMode: !store.inEditMode() });
+    },
+    async update(updatePersonFormData: PersonUpdateType) {
+      patchState(store, setPending());
+      updatePersonFormData.id = store.person().id;
+      const resp = await firstValueFrom(
+        personService.update(updatePersonFormData),
       );
-      patchState(store, { person: resp }, setFulfilled());
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(
+          store,
+          { person: resp.data, inEditMode: false },
+          setFulfilled(),
+        );
+      }
     },
   })),
+  withHooks({
+    onInit(store) {
+      store.loadPersonTypes();
+    },
+  }),
 );

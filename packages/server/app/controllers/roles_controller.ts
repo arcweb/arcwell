@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
+import { paramsUUIDValidator } from '#validators/common'
 
 export default class RolesController {
   /**
@@ -29,6 +30,7 @@ export default class RolesController {
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     return { data: await Role.findOrFail(params.id) }
   }
 
@@ -48,6 +50,7 @@ export default class RolesController {
   async update({ params, auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateRoleValidator)
+    await paramsUUIDValidator.validate(params)
     const role = await Role.findOrFail(params.id)
     const cleanRequest = request.only(['name'])
     const updateRole = await role.merge(cleanRequest).save()
@@ -59,6 +62,7 @@ export default class RolesController {
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
     const role = await Role.findOrFail(params.id)
     await role.delete()
     response.status(204).send('')
