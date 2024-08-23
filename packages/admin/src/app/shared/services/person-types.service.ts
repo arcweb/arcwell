@@ -7,8 +7,8 @@ import {
 } from '../schemas/person-type.schema';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { map, tap } from 'rxjs/operators';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { catchError, map } from 'rxjs/operators';
+import { defaultErrorResponseHandler } from '../helpers/error-response-formatter.helper';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -20,12 +20,6 @@ export class PersonTypesService {
 
   getPersonTypes(): Observable<{ data: PersonTypeModel[]; meta: any }> {
     return this.http.get<PersonTypeResponseType>(`${apiUrl}/person_types`).pipe(
-      tap((response: PersonTypeResponseType | ErrorResponseType) => {
-        // validate response is success
-        if (response.errors && response.errors.length > 0) {
-          throw new Error(response.message);
-        }
-      }),
       map((response: PersonTypeResponseType) => ({
         // deserialize the data
         data: response.data.map((personType: PersonTypeType) =>
@@ -33,6 +27,9 @@ export class PersonTypesService {
         ),
         meta: response.meta,
       })),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
     );
   }
 }
