@@ -1,5 +1,24 @@
-@if (personStore.isFulfilled()) {
+@if (personStore.isReady()) {
   <form [formGroup]="personForm">
+    <div class="edit-button-container">
+      <button
+        mat-flat-button
+        type="button"
+        (click)="personStore.toggleEditMode()"
+        class="default-button"
+        [disabled]="personStore.inEditMode()"
+      >
+        Edit
+      </button>
+    </div>
+
+    @if (personStore.isErrored()) {
+      <div>
+        @for (error of personStore.errors(); track error.title) {
+          <h3 class="error-text">Error: {{ error.title }}</h3>
+        }
+      </div>
+    }
     <mat-form-field class="example-full-width">
       <mat-label>Family Name</mat-label>
       <input matInput placeholder="Name" formControlName="familyName" />
@@ -37,11 +56,24 @@
       }
     </mat-form-field>
 
-    <div class="button-container">
-      <button mat-button type="reset" class="default-form-clear-button">
-        Clear
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="personStore.toggleEditMode()"
+        class="default-button"
+        [disabled]="!personStore.inEditMode()"
+      >
+        Cancel
       </button>
-      <button mat-flat-button type="submit" class="default-form-submit-button">
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !personStore.inEditMode() || !personForm.valid || !personForm.dirty
+        "
+      >
         Save
       </button>
     </div>

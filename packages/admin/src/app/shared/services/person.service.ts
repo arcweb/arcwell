@@ -1,16 +1,18 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ErrorResponseType } from '../schemas/error.schema';
-import { ZodError } from 'zod';
-import { PersonModel } from '@shared/models/person.model';
 import {
   deserializePerson,
+  PeopleResponseSchema,
   PeopleResponseType,
   PersonResponseSchema,
   PersonResponseType,
   PersonType,
+  PersonUpdateType,
 } from '@shared/schemas/person.schema';
+import { catchError } from 'rxjs/operators';
+import { defaultErrorResponseHandler } from '@shared/helpers/error-response-formatter.helper';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -23,7 +25,7 @@ export class PersonService {
   getAllPeople(
     limit?: number,
     offset?: number,
-  ): Observable<{ data: PersonModel[]; meta: any }> {
+  ): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
     if (limit !== undefined) {
@@ -36,93 +38,79 @@ export class PersonService {
     return this.http
       .get<PeopleResponseType>(`${apiUrl}/people`, { params })
       .pipe(
-        tap((response: PeopleResponseType | ErrorResponseType) => {
-          // validate response is success
-          if (response.errors && response.errors.length > 0) {
-            // TODO: Refactor this to handle error status codes and errors array
-            throw new Error(response.message);
-          }
+        map((response: PeopleResponseType) => {
+          PeopleResponseSchema.parse(response);
+
+          return {
+            data: response.data.map((person: PersonType) =>
+              deserializePerson(person),
+            ),
+            meta: response.meta,
+          };
         }),
-        // map((response: UsersResponseType) =>
-        //   // validate the date we received is of the correct schema
-        //   UsersResponseSchema.parse(response),
-        // ),
-        map((response: PeopleResponseType) => ({
-          data: response.data.map((person: PersonType) =>
-            deserializePerson(person),
-          ),
-          meta: response.meta, // Add the meta field to the returned object
-        })),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
       );
   }
 
-  getPerson(id: string): Observable<PersonModel | null> {
+  getPerson(id: string): Observable<PersonResponseType | ErrorResponseType> {
     return this.http.get<PersonResponseType>(`${apiUrl}/people/${id}`).pipe(
-      tap((response: PersonResponseType | ErrorResponseType) => {
-        // validate response is success
-        if (response.errors && response.errors.length > 0) {
-          // TODO: Refactor this to handle error status codes and errors array
-          throw new Error(response.message);
-        }
-      }),
       map((response: PersonResponseType) => {
-        try {
-          const parsedResponse = PersonResponseSchema.parse(response);
-          return parsedResponse.data
-            ? deserializePerson(parsedResponse.data)
-            : null;
-        } catch (error) {
-          if (error instanceof ZodError) {
-            console.error('Zod validation error:', error.errors);
-          } else {
-            console.error('Unexpected error during validation:', error);
-          }
-          throw error;
-        }
+        const parsedResponse = PersonResponseSchema.parse(response);
+        return { data: deserializePerson(parsedResponse.data) };
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
       }),
     );
   }
 
-  // // TODO: test this once we get auth working
-  // postUser(user: UserModel): Observable<UserModel | null> {
-  //   return this.http.post<UserResponseType>(`${apiUrl}/users`, user).pipe(
-  //     tap((response: UserResponseType | ErrorResponseType) => {
+  update(
+    person: PersonUpdateType,
+  ): Observable<PersonResponseType | ErrorResponseType> {
+    return this.http
+      .patch<PersonResponseType>(`${apiUrl}/people/${person.id}`, person)
+      .pipe(
+        map((response: PersonResponseType) => {
+          const parsedResponse = PersonResponseSchema.parse(response);
+          return { data: deserializePerson(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  // TODO: Work in progress, refactor   - tgetz
+  // save(person: PersonModel): Observable<PersonModel | null> {
+  //   return this.http.post<PersonResponseType>(`${apiUrl}/people`, person).pipe(
+  //     tap((response: PersonResponseType | ErrorResponseType) => {
   //       // validate response is success
   //       if (response.errors && response.errors.length > 0) {
   //         // TODO: Refactor this to handle error status codes and errors array
   //         throw new Error(response.message);
   //       }
   //     }),
-  //     map((response: UserResponseType) =>
+  //     map((response: PersonResponseType) =>
   //       // validate the date we received is of the correct schema
-  //       UserResponseSchema.parse(response),
+  //       PersonResponseSchema.parse(response.data),
   //     ),
-  //     map(
-  //       (response: UserResponseType) =>
-  //         response.user && deserializeUser(response.user),
-  //     ),
-  //   );
-  // }
-
-  // patchUser(user: UserUpdateType): Observable<UserModel | null> {
-  //   return this.http
-  //     .patch<UserResponseType>(`${apiUrl}/users/${user.id}`, user)
-  //     .pipe(
-  //       tap((response: UserResponseType | ErrorResponseType) => {
-  //         // validate response is success
-  //         if (response.errors && response.errors.length > 0) {
-  //           // TODO: Refactor this to handle error status codes and errors array
-  //           throw new Error(response.message);
+  //     map((response: PersonResponseType) => {
+  //       try {
+  //         const parsedResponse = PersonResponseSchema.parse(response);
+  //         return parsedResponse.data
+  //           ? deserializePerson(parsedResponse.data)
+  //           : null;
+  //       } catch (error) {
+  //         if (error instanceof ZodError) {
+  //           console.error('Zod validation error:', error.errors);
+  //         } else {
+  //           console.error('Unexpected error during validation:', error);
   //         }
-  //       }),
-  //       map((response: UserResponseType) =>
-  //         // validate the date we received is of the correct schema
-  //         UserResponseSchema.parse(response),
-  //       ),
-  //       map(
-  //         (response: UserResponseType) =>
-  //           response.data && deserializeUser(response.data),
-  //       ),
-  //     );
+  //         throw error;
+  //       }
+  //     }),
+  //   );
   // }
 }

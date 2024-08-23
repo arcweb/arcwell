@@ -14,7 +14,7 @@ import {
 import { PersonService } from '@shared/services/person.service';
 import { inject } from '@angular/core';
 import { PersonModel } from '@shared/models/person.model';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 
 interface PersonState {
@@ -41,7 +41,7 @@ export const PeopleStore = signalStore(
     async load(limit: number, offset: number) {
       patchState(store, setPending());
       const resp: { data: PersonModel[]; meta: { count: number } } =
-        await lastValueFrom(personService.getAllPeople(limit, offset));
+        await firstValueFrom(personService.getAllPeople(limit, offset));
       patchState(
         store,
         { people: resp.data, totalData: resp.meta.count },
@@ -60,7 +60,7 @@ export const PeopleStore = signalStore(
         setPending(),
       );
       const resp: { data: PersonModel[]; meta: { count: number } } =
-        await lastValueFrom(
+        await firstValueFrom(
           personService.getAllPeople(store.limit(), store.offset()),
         );
       patchState(

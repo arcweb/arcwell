@@ -16,11 +16,15 @@ export default class PeopleController {
 
     let countQuery = db.from('people')
 
-    let query = Person.query().preload('user').preload('personType')
+    let query = Person.query()
+      .orderBy('familyName', 'asc')
+      .orderBy('givenName', 'asc')
+      .preload('user')
+      .preload('personType')
 
     if (personTypeId) {
       query.where('personTypeId', personTypeId)
-      // DB contex use sql column names
+      // DB context use sql column names
       countQuery.where('person_type_id', personTypeId)
     }
     if (limit) {
@@ -71,7 +75,7 @@ export default class PeopleController {
     await auth.authenticate()
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['givenName', 'familyName'])
+    const cleanRequest = request.only(['givenName', 'familyName', 'personTypeId', 'tags'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
     return { data: updatedPerson }
