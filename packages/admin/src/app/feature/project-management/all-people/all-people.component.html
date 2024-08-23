@@ -1,3 +1,7 @@
+@if (peopleStore.isErrored()) {
+  <aw-error-container [errors]="peopleStore.errors()" />
+}
+
 <!--@if (peopleStore.isFulfilled()) {-->
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
   @for (column of displayedColumns; track column) {

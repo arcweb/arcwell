@@ -12,6 +12,7 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { PersonStore } from '@feature/project-management/person/person.store';
+import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 
 @Component({
   selector: 'aw-person',
@@ -23,6 +24,7 @@ import { PersonStore } from '@feature/project-management/person/person.store';
     MatFormField,
     MatButton,
     MatError,
+    ErrorContainerComponent,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',

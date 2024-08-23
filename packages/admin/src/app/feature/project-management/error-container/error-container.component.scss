@@ -1,0 +1,7 @@
+// use shortened path names configured in the angular.json file for imports
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+
+.error-text {
+  color: colors.$error;
+}
