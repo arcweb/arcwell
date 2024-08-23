@@ -77,3 +77,16 @@ Error messages are also a work in progress.  You should receive an status = erro
     }
 }
 ```
+
+## Developer Notes
+
+The tagging structure in use is a JSONB column on the DB, due to the way KNEX works, string and string array data will need to be stringify'd before it is passed into the DB.
+
+```
+knex
+  .table('users')
+  .where({ id: 1 })
+  .update({ json_data: JSON.stringify(mightBeAnArray) });
+```
+
+for more info on this [KNEX Doc](https://knexjs.org/guide/schema-builder.html#jsonb)

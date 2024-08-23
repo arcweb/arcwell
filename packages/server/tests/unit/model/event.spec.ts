@@ -41,4 +41,18 @@ test.group('Model event', (group) => {
 
     assert.equal(event?.name, 'New Object')
   })
+
+  test('event tagging test', async ({ assert }) => {
+    const eTypeT = await EventType.findBy('key', 'tester')
+    const eventInfo = {
+      name: 'TEST',
+      eventTypeId: eTypeT?.id,
+      tags: JSON.stringify(['first/list']),
+      source: 'epic',
+    }
+
+    const newEvent = await Event.create(eventInfo)
+
+    assert.equal(newEvent.tags, eventInfo.tags)
+  })
 })

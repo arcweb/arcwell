@@ -25,4 +25,16 @@ test.group('Model resource type', (group) => {
     resourceType?.merge(newData).save()
     assert.equal(resourceType?.name, newData.name)
   })
+
+  test('resource type tagging test', async ({ assert }) => {
+    const resourceTypeInfo = {
+      key: 'TEST',
+      name: 'TEST',
+      tags: JSON.stringify(['first/list']),
+    }
+
+    const newResourceType = await ResourceType.create(resourceTypeInfo)
+
+    assert.equal(newResourceType.tags, resourceTypeInfo.tags)
+  })
 })

@@ -14,7 +14,7 @@ export default class Event extends BaseModel {
   declare source: string
 
   @column()
-  declare meta: JSON
+  declare meta: Object | null
 
   @column()
   declare eventTypeId: string

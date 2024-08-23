@@ -3,7 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 
 import Tag from '#models/tag'
 
-test.group('Model people', (group) => {
+test.group('Model tag', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
   test('tag create test', async (ctx) => {
@@ -16,7 +16,7 @@ test.group('Model people', (group) => {
     ctx.assert.equal(newTag.basename, tagInfo.basename)
   })
 
-  test('people update test', async ({ assert }) => {
+  test('tag update test', async ({ assert }) => {
     const tag = await Tag.first()
     const newData = {
       basename: 'NewTag',
