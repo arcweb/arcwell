@@ -30,7 +30,7 @@ test.group('Model event type', (group) => {
     const eventTypeInfo = {
       key: 'TEST',
       name: 'TEST',
-      tags: { ...['first/list'] },
+      tags: JSON.stringify(['first/list']),
     }
 
     const newEventType = await EventType.create(eventTypeInfo)

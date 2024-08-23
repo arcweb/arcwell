@@ -39,4 +39,17 @@ test.group('Model resource', (group) => {
 
     assert.equal(resource?.name, 'New Object')
   })
+
+  test('resource tagging test', async ({ assert }) => {
+    const rTypeT = await ResourceType.findBy('key', 'tester')
+    const resourceInfo = {
+      name: 'TEST',
+      resourceTypeId: rTypeT?.id,
+      tags: JSON.stringify(['first/list']),
+    }
+
+    const newResource = await Resource.create(resourceInfo)
+
+    assert.equal(newResource.tags, resourceInfo.tags)
+  })
 })

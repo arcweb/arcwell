@@ -43,4 +43,18 @@ test.group('Model people', (group) => {
 
     assert.equal(person?.givenName, 'NewPerson')
   })
+
+  test('people tagging test', async ({ assert }) => {
+    const pTypeT = await PersonType.findBy('key', 'Tester')
+    const personInfo = {
+      familyName: 'TEST',
+      givenName: 'TEST',
+      personTypeId: pTypeT?.id,
+      tags: JSON.stringify(['first/list']),
+    }
+
+    const newPerson = await Person.create(personInfo)
+
+    assert.equal(newPerson.tags, personInfo.tags)
+  })
 })
