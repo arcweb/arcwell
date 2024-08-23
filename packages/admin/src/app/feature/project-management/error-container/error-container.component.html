@@ -1,0 +1,22 @@
+<div>
+  @for (error of errors(); track $index) {
+    <p class="error-text">
+      Error:
+      @if (error.code) {
+        {{ error.code }}
+      }
+      @if (error.title) {
+        @if (error.code) {
+          -
+        }
+        {{ error.title }}
+      }
+      @if (error.detail) {
+        @if (error.code || error.title) {
+          -
+        }
+        {{ error.detail }}
+      }
+    </p>
+  }
+</div>

@@ -10,6 +10,7 @@ import {
   withRequestStatus,
   setPending,
   setFulfilled,
+  setErrors,
 } from '@shared/store/request-status.feature';
 import { PersonService } from '@shared/services/person.service';
 import { inject } from '@angular/core';
@@ -40,13 +41,18 @@ export const PeopleStore = signalStore(
   withMethods((store, personService = inject(PersonService)) => ({
     async load(limit: number, offset: number) {
       patchState(store, setPending());
-      const resp: { data: PersonModel[]; meta: { count: number } } =
-        await firstValueFrom(personService.getAllPeople(limit, offset));
-      patchState(
-        store,
-        { people: resp.data, totalData: resp.meta.count },
-        setFulfilled(),
+      const resp = await firstValueFrom(
+        personService.getAllPeople(limit, offset),
       );
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(
+          store,
+          { people: resp.data, totalData: resp.meta.count },
+          setFulfilled(),
+        );
+      }
     },
     async loadPage(event: PageEvent) {
       const newOffset = event.pageIndex * event.pageSize;
@@ -59,15 +65,19 @@ export const PeopleStore = signalStore(
         },
         setPending(),
       );
-      const resp: { data: PersonModel[]; meta: { count: number } } =
-        await firstValueFrom(
-          personService.getAllPeople(store.limit(), store.offset()),
-        );
-      patchState(
-        store,
-        { people: resp.data, totalData: resp.meta.count },
-        setFulfilled(),
+      const resp = await firstValueFrom(
+        personService.getAllPeople(store.limit(), store.offset()),
       );
+
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(
+          store,
+          { people: resp.data, totalData: resp.meta.count },
+          setFulfilled(),
+        );
+      }
     },
   })),
   withHooks({

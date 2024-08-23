@@ -17,6 +17,7 @@ import {
 import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 
 @Component({
   selector: 'aw-all-people',
@@ -34,6 +35,7 @@ import { Router } from '@angular/router';
     MatHeaderCell,
     MatHeaderRow,
     MatPaginator,
+    ErrorContainerComponent,
   ],
   providers: [PeopleStore],
   templateUrl: './all-people.component.html',

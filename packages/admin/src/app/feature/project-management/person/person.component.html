@@ -13,11 +13,7 @@
     </div>
 
     @if (personStore.isErrored()) {
-      <div>
-        @for (error of personStore.errors(); track error.title) {
-          <h3 class="error-text">Error: {{ error.title }}</h3>
-        }
-      </div>
+      <aw-error-container [errors]="personStore.errors()" />
     }
     <mat-form-field class="example-full-width">
       <mat-label>Family Name</mat-label>

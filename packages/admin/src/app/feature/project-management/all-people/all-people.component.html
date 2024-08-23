@@ -1,4 +1,7 @@
-<!--@if (peopleStore.isFulfilled()) {-->
+@if (peopleStore.isErrored()) {
+  <aw-error-container [errors]="peopleStore.errors()" />
+}
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
   @for (column of displayedColumns; track column) {
     <ng-container [matColumnDef]="column">
@@ -6,13 +9,14 @@
       <td mat-cell *matCellDef="let emp">{{ emp[column] }}</td>
     </ng-container>
   }
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr
     mat-row
     *matRowDef="let row; columns: displayedColumns"
     (click)="handleClick(row)"
   ></tr>
 </table>
-<!--}-->
+
 <mat-paginator
   [length]="peopleStore.totalData()"
   [pageSizeOptions]="pageSizes"

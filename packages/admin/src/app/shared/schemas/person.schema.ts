@@ -8,7 +8,7 @@ export const PersonSchema: any = z
     id: z.string().uuid().optional(),
     familyName: z.string(),
     givenName: z.string(),
-    personTypeId: z.string().uuid().optional(),
+    personTypeId: z.string().uuid(),
     tags: z.array(z.any()).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
     personType: PersonTypeSchema.optional(),

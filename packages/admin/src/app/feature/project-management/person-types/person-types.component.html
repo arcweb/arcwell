@@ -1,4 +1,7 @@
-<!--@if (peopleStore.isFulfilled()) {-->
+@if (personTypesStore.isErrored()) {
+  <aw-error-container [errors]="personTypesStore.errors()" />
+}
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
   @for (column of displayedColumns; track column) {
     <ng-container [matColumnDef]="column">
@@ -9,4 +12,3 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
-<!--}-->
