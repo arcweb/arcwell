@@ -1,7 +1,7 @@
 import { Route } from '@angular/router';
 import { AllEventsComponent } from '@feature/project-management/all-events/all-events.component';
 import { AllResourcesComponent } from '@feature/project-management/all-resources/all-resources.component';
-import { PeopleTypesComponent } from '@feature/project-management/people-types/people-types.component';
+import { PersonTypesComponent } from '@app/feature/project-management/person-types/person-types.component';
 import { PlaceholderComponent } from '@feature/project-management/placeholder/placeholder.component';
 import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
@@ -22,8 +22,8 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         component: PersonComponent,
       },
       {
-        path: 'people/people-types',
-        component: PeopleTypesComponent,
+        path: 'people/person-types',
+        component: PersonTypesComponent,
       },
       {
         path: 'people',

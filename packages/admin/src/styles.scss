@@ -16,6 +16,7 @@ html {
 
   // custom, component level mixins
   @include mixins.button-theme(theme.$light-theme);
+  @include mixins.table-theme(theme.$light-theme);
   @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
 }

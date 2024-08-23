@@ -2,7 +2,8 @@ import { z } from 'zod';
 import { FeatureModel } from '../models/feature.model';
 import { SubFeatureSchema } from './sub-feature.schema';
 
-export const FeatureSchemaBase: any = z
+// TODO: Look at using z.lazy() to avoid circular dependency and define subfeatures without using FeatureSchemaBase
+export const FeatureSchema: any = z
   .object({
     id: z.string().uuid().optional(),
     name: z.string(),
@@ -10,12 +11,9 @@ export const FeatureSchemaBase: any = z
     icon: z.string(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
+    subFeatures: z.array(SubFeatureSchema).optional(),
   })
   .strict();
-
-export const FeatureSchema = FeatureSchemaBase.extend({
-  subFeatures: z.array(SubFeatureSchema).optional(),
-});
 
 export const FeatureResponseSchema = z.object({
   data: z.array(FeatureSchema),
