@@ -11,7 +11,7 @@ export default class Resource extends BaseModel {
   declare name: string
 
   @column()
-  declare meta: JSON
+  declare meta: Object
 
   @column()
   declare resourceTypeId: string

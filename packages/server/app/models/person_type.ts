@@ -14,7 +14,7 @@ export default class PersonType extends BaseModel {
   declare name: string
 
   @column()
-  declare info: JSON
+  declare info: Object
 
   @column()
   declare tags: string[]
