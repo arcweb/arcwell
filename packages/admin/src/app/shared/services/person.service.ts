@@ -12,7 +12,7 @@ import {
   PersonUpdateType,
 } from '@shared/schemas/person.schema';
 import { catchError } from 'rxjs/operators';
-import { defaultErrorResponseHandler } from '@shared/helpers/error-response-formatter.helper';
+import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 
 const apiUrl = 'http://localhost:3333';
 

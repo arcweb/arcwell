@@ -18,6 +18,7 @@ import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'aw-all-people',
@@ -36,6 +37,7 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
     MatHeaderRow,
     MatPaginator,
     ErrorContainerComponent,
+    MatIcon,
   ],
   providers: [PeopleStore],
   templateUrl: './all-people.component.html',
@@ -54,8 +56,9 @@ export class AllPeopleComponent {
     'id',
     'familyName',
     'givenName',
-    'personTypeId',
+    'personType',
     'tags',
+    'user',
   ];
 
   constructor() {

@@ -8,7 +8,9 @@ import {
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
-import { defaultErrorResponseHandler } from '../helpers/error-response-formatter.helper';
+import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
+import { PersonResponseType } from '@schemas/person.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -18,7 +20,7 @@ const apiUrl = 'http://localhost:3333';
 export class PersonTypesService {
   private http: HttpClient = inject(HttpClient);
 
-  getPersonTypes(): Observable<{ data: PersonTypeModel[]; meta: any }> {
+  getPersonTypes(): Observable<PersonResponseType[] | ErrorResponseType> {
     return this.http.get<PersonTypeResponseType>(`${apiUrl}/person_types`).pipe(
       map((response: PersonTypeResponseType) => ({
         // deserialize the data

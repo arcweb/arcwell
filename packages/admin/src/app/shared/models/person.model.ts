@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon';
 import { PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeModel } from '@shared/models/person-type.model';
+import { UserModel } from '@shared/models/user.model';
+import { UserType } from '@schemas/user.schema';
 
 // Base interface with common properties
 interface PersonBase {
@@ -11,6 +13,7 @@ interface PersonBase {
   createdAt: DateTime;
   updatedAt: DateTime;
   personType?: PersonTypeModel;
+  user?: UserType;
 }
 
 // TODO: WIP.  This might be a decent way make id required after saving
@@ -33,6 +36,7 @@ export class PersonModel {
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public personType?: PersonTypeModel;
+  public user?: UserModel;
 
   constructor(data: PersonUpdateType) {
     this.id = data.id;
@@ -45,6 +49,7 @@ export class PersonModel {
     this.personType = data.personType
       ? new PersonTypeModel(data.personType)
       : undefined;
+    this.user = data.user ? new UserModel(data.user) : undefined;
   }
 
   // add helper methods here
