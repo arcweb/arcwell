@@ -5,7 +5,7 @@ import { PersonSchema } from '@shared/schemas/person.schema';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
-export const UserSchema = z
+export const UserSchema: any = z
   .object({
     id: z.string().uuid().optional(),
     email: z.string(),
@@ -13,8 +13,8 @@ export const UserSchema = z
     personId: z.string().uuid(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
-    role: RoleSchema.optional(),
-    person: PersonSchema.optional(),
+    role: z.lazy(() => RoleSchema),
+    person: z.lazy(() => PersonSchema),
     tags: z.array(z.any()).optional(),
   })
   .strict();
@@ -31,6 +31,11 @@ export const UserUpdateSchema = UserSchema.extend({
 //  Multiple Users
 export const UsersResponseSchema = z.object({
   data: z.array(UserSchema),
+  meta: z
+    .object({
+      count: z.number(),
+    })
+    .optional(),
 });
 
 // Single User

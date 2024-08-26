@@ -6,13 +6,15 @@ import {
   UserResponseType,
   UserResponseSchema,
   UserUpdateType,
+  UsersResponseSchema,
 } from '../schemas/user.schema';
 
-import { HttpClient } from '@angular/common/http';
-import { Observable, map, tap } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, catchError, map, tap } from 'rxjs';
 import { UserModel } from '../models/user.model';
 import { ErrorResponseType } from '../schemas/error.schema';
 import { ZodError } from 'zod';
+import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -22,23 +24,31 @@ const apiUrl = 'http://localhost:3333';
 export class UserService {
   private http: HttpClient = inject(HttpClient);
 
-  getAllUsers(): Observable<UserModel[]> {
-    return this.http.get<UsersResponseType>(`${apiUrl}/users`).pipe(
-      tap((response: UsersResponseType | ErrorResponseType) => {
-        // validate response is success
-        if (response.errors && response.errors.length > 0) {
-          // TODO: Refactor this to handle error status codes and errors array
-          throw new Error(response.message);
-        }
+  getAllUsers(
+    limit?: number,
+    offset?: number,
+  ): Observable<UserResponseType[] | ErrorResponseType> {
+    let params = new HttpParams();
+
+    if (limit !== undefined) {
+      params = params.set('limit', limit.toString());
+    }
+    if (offset !== undefined) {
+      params = params.set('offset', offset.toString());
+    }
+
+    return this.http.get<UsersResponseType>(`${apiUrl}/users`, { params }).pipe(
+      map((response: UsersResponseType) => {
+        UsersResponseSchema.parse(response);
+
+        return {
+          data: response.data.map((user: UserType) => deserializeUser(user)),
+          meta: response.meta,
+        };
       }),
-      // map((response: UsersResponseType) =>
-      //   // validate the date we received is of the correct schema
-      //   UsersResponseSchema.parse(response),
-      // ),
-      map((response: UsersResponseType) =>
-        // deserialize the data
-        response.data.map((user: UserType) => deserializeUser(user)),
-      ),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
     );
   }
   // // TODO: test this once we get auth working
