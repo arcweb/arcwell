@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 import {
   deserializePerson,
   PeopleResponseSchema,
@@ -82,35 +82,17 @@ export class PersonService {
       );
   }
 
-  // TODO: Work in progress, refactor   - tgetz
-  // save(person: PersonModel): Observable<PersonModel | null> {
-  //   return this.http.post<PersonResponseType>(`${apiUrl}/people`, person).pipe(
-  //     tap((response: PersonResponseType | ErrorResponseType) => {
-  //       // validate response is success
-  //       if (response.errors && response.errors.length > 0) {
-  //         // TODO: Refactor this to handle error status codes and errors array
-  //         throw new Error(response.message);
-  //       }
-  //     }),
-  //     map((response: PersonResponseType) =>
-  //       // validate the date we received is of the correct schema
-  //       PersonResponseSchema.parse(response.data),
-  //     ),
-  //     map((response: PersonResponseType) => {
-  //       try {
-  //         const parsedResponse = PersonResponseSchema.parse(response);
-  //         return parsedResponse.data
-  //           ? deserializePerson(parsedResponse.data)
-  //           : null;
-  //       } catch (error) {
-  //         if (error instanceof ZodError) {
-  //           console.error('Zod validation error:', error.errors);
-  //         } else {
-  //           console.error('Unexpected error during validation:', error);
-  //         }
-  //         throw error;
-  //       }
-  //     }),
-  //   );
-  // }
+  create(
+    person: PersonType,
+  ): Observable<PersonResponseType | ErrorResponseType> {
+    return this.http.post<PersonResponseType>(`${apiUrl}/people`, person).pipe(
+      map((response: PersonResponseType) => {
+        const parsedResponse = PersonResponseSchema.parse(response);
+        return { data: deserializePerson(parsedResponse.data) };
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
 }

@@ -16,7 +16,7 @@ import {
 } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 
@@ -38,6 +38,7 @@ import { MatIcon } from '@angular/material/icon';
     MatPaginator,
     ErrorContainerComponent,
     MatIcon,
+    RouterLink,
   ],
   providers: [PeopleStore],
   templateUrl: './all-people.component.html',
@@ -68,7 +69,6 @@ export class AllPeopleComponent {
   }
 
   handleClick(row: PersonModel) {
-    console.log('row=', row);
     this.router.navigate([
       'project-management',
       'people',

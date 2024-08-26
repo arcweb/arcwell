@@ -16,12 +16,15 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { PersonTypeType } from '@schemas/person-type.schema';
+import { Router, RouterLink } from '@angular/router';
+import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 
 @Component({
   selector: 'aw-person',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     MatInput,
     MatLabel,
     MatFormField,
@@ -37,6 +40,7 @@ import { PersonTypeType } from '@schemas/person-type.schema';
 })
 export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
+  private router = inject(Router);
 
   @Input() personId!: string;
 
@@ -76,22 +80,38 @@ export class PersonComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.personId) {
-      this.personStore.initialize(this.personId).then(() => {
-        this.personForm.patchValue({
-          familyName: this.personStore.person()?.familyName,
-          givenName: this.personStore.person()?.givenName,
-          personType: this.personStore.person()?.personType,
+      if (this.personId === CREATE_PARTIAL_URL) {
+        this.personStore.initializeForCreate();
+      } else {
+        this.personStore.initialize(this.personId).then(() => {
+          this.personForm.patchValue({
+            familyName: this.personStore.person()?.familyName,
+            givenName: this.personStore.person()?.givenName,
+            personType: this.personStore.person()?.personType,
+          });
         });
-      });
+      }
     }
 
     this.personForm.events.subscribe(event => {
       if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-        this.personStore.update(this.personForm.value);
+        if (this.personStore.inCreateMode()) {
+          this.personStore.create(this.personForm.value);
+        } else {
+          this.personStore.update(this.personForm.value);
+        }
       } else if (event instanceof ValueChangeEvent) {
         // This is here for an example.  Also, there are other events that can be caught
       }
     });
+  }
+
+  onCancel() {
+    if (this.personStore.inCreateMode()) {
+      this.router.navigate(['project-management', 'people', 'all-people']);
+    } else {
+      this.personStore.toggleEditMode();
+    }
   }
 
   comparePersonTypes(pt1: PersonTypeType, pt2: PersonTypeType): boolean {
