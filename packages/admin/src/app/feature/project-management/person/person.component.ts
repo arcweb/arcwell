@@ -13,6 +13,9 @@ import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { PersonStore } from '@feature/project-management/person/person.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { PersonTypeType } from '@schemas/person-type.schema';
 
 @Component({
   selector: 'aw-person',
@@ -25,6 +28,8 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
     MatButton,
     MatError,
     ErrorContainerComponent,
+    MatOption,
+    MatSelect,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -50,9 +55,9 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
-    personTypeId: new FormControl(
+    personType: new FormControl(
       {
-        value: '',
+        value: null,
         disabled: true,
       },
       Validators.required,
@@ -75,7 +80,7 @@ export class PersonComponent implements OnInit {
         this.personForm.patchValue({
           familyName: this.personStore.person()?.familyName,
           givenName: this.personStore.person()?.givenName,
-          personTypeId: this.personStore.person()?.personTypeId,
+          personType: this.personStore.person()?.personType,
         });
       });
     }
@@ -87,5 +92,9 @@ export class PersonComponent implements OnInit {
         // This is here for an example.  Also, there are other events that can be caught
       }
     });
+  }
+
+  comparePersonTypes(pt1: PersonTypeType, pt2: PersonTypeType): boolean {
+    return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 }

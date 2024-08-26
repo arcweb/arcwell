@@ -15,7 +15,7 @@
     @if (personStore.isErrored()) {
       <aw-error-container [errors]="personStore.errors()" />
     }
-    <mat-form-field class="example-full-width">
+    <mat-form-field>
       <mat-label>Family Name</mat-label>
       <input matInput placeholder="Name" formControlName="familyName" />
       @if (personForm.controls.familyName.hasError('required')) {
@@ -26,7 +26,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
+    <mat-form-field>
       <mat-label>Given Name</mat-label>
       <input matInput placeholder="Name" formControlName="givenName" />
       @if (personForm.controls.givenName.hasError('required')) {
@@ -37,16 +37,21 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="example-full-width">
-      <mat-label>Person Type Id</mat-label>
-      <input
-        matInput
-        placeholder="Person Type Id"
-        formControlName="personTypeId"
-      />
-      @if (personForm.controls.personTypeId.hasError('required')) {
+    <mat-form-field>
+      <mat-label>Person Type</mat-label>
+      <mat-select
+        formControlName="personType"
+        [compareWith]="comparePersonTypes"
+      >
+        @for (personType of personStore.personTypes(); track personType.id) {
+          <mat-option [value]="personType">
+            {{ personType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (personForm.controls.personType.hasError('required')) {
         <mat-error>
-          Person Type Id is
+          Person Type is
           <strong>required</strong>
         </mat-error>
       }
