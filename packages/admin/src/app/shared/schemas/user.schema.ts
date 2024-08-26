@@ -13,8 +13,8 @@ export const UserSchema: any = z
     personId: z.string().uuid(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
-    role: z.lazy(() => RoleSchema),
-    person: z.lazy(() => PersonSchema),
+    role: z.lazy(() => RoleSchema).optional(),
+    person: z.lazy(() => PersonSchema).optional(),
     tags: z.array(z.any()).optional(),
   })
   .strict();

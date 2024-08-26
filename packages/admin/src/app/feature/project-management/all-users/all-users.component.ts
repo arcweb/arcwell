@@ -8,6 +8,7 @@ import { UserModel } from '@app/shared/models';
   selector: 'aw-all-users',
   standalone: true,
   imports: [],
+  providers: [UserStore],
   templateUrl: './all-users.component.html',
   styleUrl: './all-users.component.scss',
 })
@@ -29,6 +30,6 @@ export class AllUsersComponent {
 
   handleClick(row: UserModel) {
     console.log('row=', row);
-    this.router.navigate(['project-management', 'users', 'all-users', row.id]);
+    // this.router.navigate(['project-management', 'users', 'all-users', row.id]);
   }
 }

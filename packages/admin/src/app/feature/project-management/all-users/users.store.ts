@@ -1,5 +1,6 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { UserModel } from '@app/shared/models';
 import { UserService } from '@app/shared/services/user.service';
 import {
@@ -8,7 +9,13 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
 interface UserState {
@@ -45,5 +52,35 @@ export const UserStore = signalStore(
         );
       }
     },
+    async loadPage(event: PageEvent) {
+      const newOffset = event.pageIndex * event.pageSize;
+      patchState(
+        store,
+        {
+          offset: newOffset,
+          pageIndex: event.pageIndex,
+          limit: event.pageSize,
+        },
+        setPending(),
+      );
+      const resp = await firstValueFrom(
+        userService.getAllUsers(store.limit(), store.offset()),
+      );
+
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(
+          store,
+          { users: resp.totalData, totalData: resp.meta.count },
+          setFulfilled(),
+        );
+      }
+    },
   })),
+  withHooks({
+    onInit(store) {
+      store.load(store.limit(), store.offset());
+    },
+  }),
 );

@@ -36,6 +36,10 @@ export class TopMenuComponent {
       path: '/project-management',
       featurePath: 'people',
     },
+    {
+      name: 'Users',
+      path: '/project-management/users',
+    },
     { name: 'Server Settings', path: '/server-settings' },
     { name: 'Account Management', path: '/account-management' },
   ];

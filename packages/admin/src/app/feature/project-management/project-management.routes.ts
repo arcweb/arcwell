@@ -6,6 +6,7 @@ import { PlaceholderComponent } from '@feature/project-management/placeholder/pl
 import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
 import { PersonComponent } from '@feature/project-management/person/person.component';
+import { AllUsersComponent } from './all-users/all-users.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -52,6 +53,14 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'events/all-events',
         component: AllEventsComponent,
+      },
+      {
+        path: 'users',
+        redirectTo: 'users/all-users',
+      },
+      {
+        path: 'users/all-users',
+        component: AllUsersComponent,
       },
       {
         path: '',
