@@ -23,6 +23,7 @@ interface PersonState {
   person: PersonType | null;
   personTypes: PersonTypeType[];
   inEditMode: boolean;
+  inCreateMode: boolean;
   isReady: boolean;
 }
 
@@ -30,6 +31,7 @@ const initialState: PersonState = {
   person: null,
   personTypes: [],
   inEditMode: false,
+  inCreateMode: false,
   isReady: false,
 };
 
@@ -45,7 +47,6 @@ export const PersonStore = signalStore(
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
-        // const resp = await firstValueFrom(personService.getPerson(personId));
         const { personResp, personTypesResp } = await firstValueFrom(
           forkJoin({
             personResp: personService.getPerson(personId),
@@ -66,6 +67,30 @@ export const PersonStore = signalStore(
             {
               person: personResp.data,
               personTypes: personTypesResp.data,
+              isReady: true,
+            },
+            setFulfilled(),
+          );
+        }
+      },
+      async initializeForCreate() {
+        patchState(store, setPending());
+        const personTypesResp = await firstValueFrom(
+          personTypeService.getPersonTypes(),
+        );
+        if (personTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResp.errors),
+          );
+        } else {
+          patchState(
+            store,
+            {
+              personTypes: personTypesResp.data,
+              inCreateMode: true,
+              inEditMode: true,
               isReady: true,
             },
             setFulfilled(),
@@ -94,6 +119,25 @@ export const PersonStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          patchState(
+            store,
+            { person: resp.data, inEditMode: false },
+            setFulfilled(),
+          );
+        }
+      },
+      async create(createPersonFormData: PersonType) {
+        console.log('createPersonFormData', createPersonFormData);
+        patchState(store, setPending());
+        createPersonFormData.personTypeId = createPersonFormData.personType.id;
+
+        const resp = await firstValueFrom(
+          personService.create(createPersonFormData),
+        );
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
             { person: resp.data, inEditMode: false },

@@ -1,11 +1,13 @@
 <div class="main-container-header">
   <h2>All People</h2>
   <div class="icons-container">
-    <mat-icon
-      fontIcon="add_circle_outline"
-      aria-hidden="false"
-      aria-label="Create person icon"
-    ></mat-icon>
+    <a [routerLink]="['./create']" aria-label="Create person icon">
+      <mat-icon
+        fontIcon="add_circle_outline"
+        aria-hidden="false"
+        aria-label="Create person icon"
+      ></mat-icon>
+    </a>
     <mat-icon
       fontIcon="account_tree"
       aria-hidden="false"
