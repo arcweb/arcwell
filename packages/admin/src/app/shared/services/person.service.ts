@@ -95,4 +95,14 @@ export class PersonService {
       }),
     );
   }
+
+  delete(personId: string): Observable<PersonResponseType | ErrorResponseType> {
+    return this.http
+      .delete<PersonResponseType>(`${apiUrl}/people/${personId}`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }
