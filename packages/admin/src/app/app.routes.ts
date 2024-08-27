@@ -32,6 +32,17 @@ export const routes: Routes = [
             './feature/account-management/account-management.component'
           ).then(m => m.AccountManagementComponent),
       },
+      {
+        path: 'user-management',
+        redirectTo: 'user-management/all-users',
+      },
+      {
+        path: 'user-management/all-users',
+        loadComponent: () =>
+          import(
+            './feature/user-management/all-users/all-users.component'
+          ).then(m => m.AllUsersComponent),
+      },
       // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],
   },

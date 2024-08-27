@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { UserType } from '../schemas/user.schema';
 import { RoleModel } from './role.model';
+import { PersonModel } from './person.model';
 
 export class UserModel {
   public id?: string;
@@ -10,6 +11,7 @@ export class UserModel {
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public role?: RoleModel;
+  public person?: PersonModel;
 
   constructor(data: UserType) {
     this.id = data.id;
@@ -19,6 +21,7 @@ export class UserModel {
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.role = data.role ? new RoleModel(data.role) : undefined;
+    this.person = data.person ? new PersonModel(data.person) : undefined;
   }
 
   // add helper methods here

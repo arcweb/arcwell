@@ -32,11 +32,14 @@ export class TopMenuComponent {
   userAvatar = '';
   navLinks: TopMenuNavLink[] = [
     {
-      name: 'Project Management',
+      name: 'Project',
       path: '/project-management',
       featurePath: 'people',
     },
-    { name: 'Server Settings', path: '/server-settings' },
-    { name: 'Account Management', path: '/account-management' },
+    {
+      name: 'Users',
+      path: '/user-management',
+    },
+    { name: 'Settings', path: '/server-settings' },
   ];
 }

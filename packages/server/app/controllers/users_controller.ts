@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
-import { DbExceptionParser } from '#exceptions/db_execptions'
+import db from '@adonisjs/lucid/services/db'
 
 export default class UsersController {
   /**
@@ -14,6 +14,7 @@ export default class UsersController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
+    let countQuery = db.from('users')
     let query = User.query().preload('role').preload('person')
 
     if (limit) {
@@ -23,7 +24,14 @@ export default class UsersController {
       query.offset(offset)
     }
 
-    return { data: await query }
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
+    }
   }
 
   /**

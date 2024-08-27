@@ -28,9 +28,16 @@
       <div>
         <!-- user icon -->
         @if (userAvatar) {
-          <img [src]="userAvatar" alt="avatar" class="user-avatar" />
+          <img
+            [src]="userAvatar"
+            alt="avatar"
+            class="user-avatar"
+            [routerLink]="'/account-management'"
+          />
         } @else {
-          <mat-icon class="user-icon">account_circle</mat-icon>
+          <mat-icon class="user-icon" [routerLink]="'/account-management'">
+            account_circle
+          </mat-icon>
         }
       </div>
     }
