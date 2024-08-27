@@ -8,6 +8,8 @@ import { ResourceFactory } from '#database/factories/resource_factory'
 import EventType from '#models/event_type'
 import { EventFactory } from '#database/factories/event_factory'
 import Tag from '#models/tag'
+import { FactFactory } from '#database/factories/fact_factory'
+import { FactTypeFactory } from '#database/factories/fact_type_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -76,5 +78,27 @@ export default class extends BaseSeeder {
       { pathname: 'top/left', parent: 'top', basename: 'left' },
       { pathname: 'top/right', parent: 'top', basename: 'right' },
     ])
+
+    // create data for populating the facts table
+    const factType = await FactTypeFactory.create()
+    const factType2 = await FactTypeFactory.create()
+    const person = await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()
+    const event = await EventFactory.merge({ eventTypeId: apptEventType.id }).create()
+    const resource = await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).create()
+
+    await FactFactory.merge({ typeKey: factType.key }).createMany(2)
+    // create a fact with a person, resource, and event
+    await FactFactory.merge({
+      typeKey: factType.key,
+      personId: person.id,
+      resourceId: resource.id,
+      eventId: event.id,
+    }).create()
+    // create a fact with just a person
+    await FactFactory.merge({ typeKey: factType.key, personId: person.id }).create()
+    // create a fact with just a resource
+    await FactFactory.merge({ typeKey: factType2.key, resourceId: resource.id }).create()
+    // create a fact with just an event
+    await FactFactory.merge({ typeKey: factType2.key, eventId: event.id }).create()
   }
 }
