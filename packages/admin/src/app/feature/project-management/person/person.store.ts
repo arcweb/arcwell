@@ -145,6 +145,17 @@ export const PersonStore = signalStore(
           );
         }
       },
+      async delete() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          personService.delete(store.person().id),
+        );
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, { inEditMode: false }, setFulfilled());
+        }
+      },
     }),
   ),
   withHooks({

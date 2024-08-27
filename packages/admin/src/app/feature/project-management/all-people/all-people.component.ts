@@ -19,6 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'aw-all-people',
@@ -39,6 +40,7 @@ import { MatIcon } from '@angular/material/icon';
     ErrorContainerComponent,
     MatIcon,
     RouterLink,
+    MatIconButton,
   ],
   providers: [PeopleStore],
   templateUrl: './all-people.component.html',
