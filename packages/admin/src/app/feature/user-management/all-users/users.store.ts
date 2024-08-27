@@ -28,7 +28,7 @@ interface UserState {
 
 const initialState: UserState = {
   users: [],
-  limit: 0,
+  limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
@@ -47,7 +47,7 @@ export const UserStore = signalStore(
       } else {
         patchState(
           store,
-          { users: resp.data, totalData: resp.meats.count },
+          { users: resp.data, totalData: resp.meta.count },
           setFulfilled(),
         );
       }
@@ -72,7 +72,7 @@ export const UserStore = signalStore(
       } else {
         patchState(
           store,
-          { users: resp.totalData, totalData: resp.meta.count },
+          { users: resp.data, totalData: resp.meta.count },
           setFulfilled(),
         );
       }
