@@ -5,6 +5,7 @@ export const EventFactory = factory
   .define(Event, async ({ faker }) => {
     return {
       name: faker.commerce.product(),
+      source: faker.commerce.product(),
     }
   })
   .build()

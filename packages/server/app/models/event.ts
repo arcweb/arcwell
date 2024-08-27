@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import EventType from '#models/event_type'
+import Fact from '#models/fact'
 
 export default class Event extends BaseModel {
   @column({ isPrimary: true })
@@ -33,4 +34,7 @@ export default class Event extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @hasMany(() => Fact)
+  declare facts: HasMany<typeof Fact>
 }
