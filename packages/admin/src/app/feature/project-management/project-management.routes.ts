@@ -6,6 +6,7 @@ import { PlaceholderComponent } from '@feature/project-management/placeholder/pl
 import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
 import { PersonComponent } from '@feature/project-management/person/person.component';
+import { PersonTypeComponent } from '@feature/project-management/person_type/person-type.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -24,6 +25,10 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'people/person-types',
         component: PersonTypesComponent,
+      },
+      {
+        path: 'people/person-types/:personTypeId',
+        component: PersonTypeComponent,
       },
       {
         path: 'people',

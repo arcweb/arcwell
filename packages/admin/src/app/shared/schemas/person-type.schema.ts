@@ -4,23 +4,46 @@ import { PersonTypeModel } from '../models/person-type.model';
 
 export const PersonTypeSchema = z
   .object({
-    id: z.string().optional(),
+    id: z.string().uuid().optional(),
     key: z.string(),
     name: z.string(),
     info: z.string().nullable(),
     tags: z.array(z.string()),
     people: z.array(PersonSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }),
-    updatedAt: z.string().datetime({ offset: true }),
+    createdAt: z.string().datetime({ offset: true }).optional(),
+    updatedAt: z.string().datetime({ offset: true }).optional(),
   })
   .strict();
 
-export const PersonTypeResponseSchema = z.object({
+export const PersonTypeUpdateSchema = z
+  .object({
+    id: z.string().uuid(),
+    key: z.string(),
+    name: z.string(),
+    info: z.string().nullable(),
+    tags: z.array(z.string()),
+    people: z.array(PersonSchema).optional(),
+    createdAt: z.string().datetime({ offset: true }).optional(),
+    updatedAt: z.string().datetime({ offset: true }).optional(),
+  })
+  .strict();
+
+export const PersonTypesResponseSchema = z.object({
   data: z.array(PersonTypeSchema),
-  meta: z.array(z.any()).optional(),
+  meta: z
+    .object({
+      count: z.number(),
+    })
+    .optional(),
+});
+
+export const PersonTypeResponseSchema = z.object({
+  data: PersonTypeSchema,
 });
 
 export type PersonTypeType = z.infer<typeof PersonTypeSchema>;
+export type PersonTypeUpdateType = z.infer<typeof PersonTypeUpdateSchema>;
+export type PersonTypesResponseType = z.infer<typeof PersonTypesResponseSchema>;
 export type PersonTypeResponseType = z.infer<typeof PersonTypeResponseSchema>;
 
 export const deserializePersonType = (

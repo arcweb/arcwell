@@ -41,9 +41,7 @@ export const PeopleStore = signalStore(
   withMethods((store, personService = inject(PersonService)) => ({
     async load(limit: number, offset: number) {
       patchState(store, setPending());
-      const resp = await firstValueFrom(
-        personService.getAllPeople(limit, offset),
-      );
+      const resp = await firstValueFrom(personService.getPeople(limit, offset));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -66,7 +64,7 @@ export const PeopleStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getAllPeople(store.limit(), store.offset()),
+        personService.getPeople(store.limit(), store.offset()),
       );
 
       if (resp.errors) {

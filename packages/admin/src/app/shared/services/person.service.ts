@@ -22,7 +22,7 @@ const apiUrl = 'http://localhost:3333';
 export class PersonService {
   private http: HttpClient = inject(HttpClient);
 
-  getAllPeople(
+  getPeople(
     limit?: number,
     offset?: number,
   ): Observable<PeopleResponseType[] | ErrorResponseType> {
