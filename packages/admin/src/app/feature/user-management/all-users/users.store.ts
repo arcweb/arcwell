@@ -35,7 +35,7 @@ const initialState: UserState = {
 };
 
 export const UserStore = signalStore(
-  withDevtools('user'),
+  withDevtools('users'),
   withState(initialState),
   withRequestStatus(),
   withMethods((store, userService = inject(UserService)) => ({
