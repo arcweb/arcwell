@@ -39,7 +39,7 @@ $spacing: 12px;
   border-bottom: 2px solid colors.$white;
 }
 
-.top-menu-link:not(:nth-child(3)) {
+.top-menu-link:not(:last-child) {
   &::after {
     content: '';
     margin-left: $spacing;

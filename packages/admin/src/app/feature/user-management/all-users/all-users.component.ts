@@ -19,6 +19,7 @@ import { ErrorContainerComponent } from '../../project-management/error-containe
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { JsonPipe } from '@angular/common';
+import { PersonModel } from '@app/shared/models/person.model';
 
 @Component({
   selector: 'aw-all-users',
@@ -61,6 +62,15 @@ export class AllUsersComponent {
 
   handleClick(row: UserModel) {
     console.log('row=', row);
-    // this.router.navigate(['user-management', 'all-users', row.id]);
+    this.router.navigate([
+      'project-management',
+      'people',
+      'all-people',
+      row.person?.id,
+    ]);
+  }
+
+  formatName(person: PersonModel) {
+    return `${person.familyName}, ${person.givenName}`;
   }
 }

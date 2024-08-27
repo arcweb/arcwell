@@ -1,0 +1,17 @@
+@use 'layout.scss' as layout;
+
+.users-management-container {
+  padding: 2em;
+}
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.icons-container {
+  display: flex;
+  gap: 8px;
+}
