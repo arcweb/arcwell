@@ -1,4 +1,11 @@
-import { Component, DestroyRef, effect, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { UserStore } from './user.store';
 import {
   ControlEvent,
@@ -18,6 +25,8 @@ import { MatSelect } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatCardModule } from '@angular/material/card';
+import { AuthStore } from '@app/shared/store/auth.store';
 
 @Component({
   selector: 'aw-user',
@@ -35,6 +44,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIcon,
     RouterLink,
     MatIconButton,
+    MatCardModule,
   ],
   providers: [UserStore],
   templateUrl: './user.component.html',
@@ -42,6 +52,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
+  readonly authStore = inject(AuthStore);
+  userAvatar = '';
+
   destroyRef = inject(DestroyRef);
 
   @Input() userId!: string;
