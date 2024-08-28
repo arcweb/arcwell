@@ -61,7 +61,6 @@ export class AllUsersComponent {
   }
 
   handleClick(row: UserModel) {
-    console.log('row=', row);
     this.router.navigate(['user-management', 'all-users', row.id]);
   }
 
