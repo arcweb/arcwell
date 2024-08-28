@@ -34,7 +34,7 @@ const initialState: UserState = {
   pageIndex: 0,
 };
 
-export const UserStore = signalStore(
+export const UsersStore = signalStore(
   withDevtools('users'),
   withState(initialState),
   withRequestStatus(),

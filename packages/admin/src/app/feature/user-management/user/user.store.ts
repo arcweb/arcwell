@@ -43,7 +43,6 @@ export const UserStore = signalStore(
     (
       store,
       userService = inject(UserService),
-      personService = inject(PersonService),
       roleService = inject(RoleService),
     ) => ({
       async initialize(userId: string) {
