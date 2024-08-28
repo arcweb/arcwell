@@ -1,4 +1,4 @@
-import { Component, effect, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject, Input, OnInit } from '@angular/core';
 import { UserStore } from './user.store';
 import {
   ControlEvent,
@@ -17,6 +17,7 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { RoleType } from '@app/shared/schemas/role.schema';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-user',
@@ -41,6 +42,7 @@ import { RoleType } from '@app/shared/schemas/role.schema';
 })
 export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
+  destroyRef = inject(DestroyRef);
 
   @Input() userId!: string;
 
@@ -81,11 +83,13 @@ export class UserComponent implements OnInit {
       });
     }
 
-    this.userForm.events.subscribe(event => {
-      if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-        this.userStore.update(this.userForm.value);
-      }
-    });
+    this.userForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          this.userStore.update(this.userForm.value);
+        }
+      });
   }
 
   onCancel() {

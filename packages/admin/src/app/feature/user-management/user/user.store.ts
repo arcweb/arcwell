@@ -75,6 +75,9 @@ export const UserStore = signalStore(
       async update(updateUserFormData: UserUpdateType) {
         patchState(store, setPending());
         updateUserFormData.id = store.user().id;
+        if (updateUserFormData.role) {
+          updateUserFormData.roleId = updateUserFormData.role.id;
+        }
         const resp = await firstValueFrom(
           userService.update(updateUserFormData),
         );
