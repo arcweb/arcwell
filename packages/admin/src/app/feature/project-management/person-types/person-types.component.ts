@@ -13,9 +13,13 @@ import {
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PersonTypeModel } from '@app/shared/models/person-type.model';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { JsonPipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'aw-person-types',
@@ -32,6 +36,11 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
     MatHeaderCell,
     MatHeaderRow,
     ErrorContainerComponent,
+    JsonPipe,
+    MatIcon,
+    MatIconButton,
+    MatPaginator,
+    RouterLink,
   ],
   providers: [PersonTypesStore],
   templateUrl: './person-types.component.html',
@@ -48,9 +57,17 @@ export class PersonTypesComponent {
   displayedColumns: string[] = ['id', 'key', 'name', 'info', 'tags'];
 
   constructor() {
-    this.personTypesStore.getPersonTypes();
     effect(() => {
       this.dataSource.data = this.personTypesStore.personTypes();
     });
+  }
+
+  handleClick(row: PersonTypeModel) {
+    this.router.navigate([
+      'project-management',
+      'people',
+      'person-types',
+      row.id,
+    ]);
   }
 }

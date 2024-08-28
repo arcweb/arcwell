@@ -16,7 +16,7 @@ import { PersonService } from '@shared/services/person.service';
 import { inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
-import { PersonTypesService } from '@shared/services/person-types.service';
+import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
 
 interface PersonState {
@@ -43,7 +43,7 @@ export const PersonStore = signalStore(
     (
       store,
       personService = inject(PersonService),
-      personTypeService = inject(PersonTypesService),
+      personTypeService = inject(PersonTypeService),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -96,9 +96,6 @@ export const PersonStore = signalStore(
             setFulfilled(),
           );
         }
-      },
-      async loadPersonTypes() {
-        // TODO: Add person types when available
       },
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
@@ -158,9 +155,4 @@ export const PersonStore = signalStore(
       },
     }),
   ),
-  withHooks({
-    onInit(store) {
-      store.loadPersonTypes();
-    },
-  }),
 );

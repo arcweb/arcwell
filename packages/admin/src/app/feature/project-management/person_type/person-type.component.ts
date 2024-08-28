@@ -18,7 +18,6 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { PersonStore } from '@feature/project-management/person/person.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -28,10 +27,11 @@ import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { PersonTypeStore } from '@feature/project-management/person_type/person-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'aw-person',
+  selector: 'aw-person-type',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -47,75 +47,83 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RouterLink,
     MatIconButton,
   ],
-  providers: [PersonStore],
-  templateUrl: './person.component.html',
-  styleUrl: './person.component.scss',
+  providers: [PersonTypeStore],
+  templateUrl: './person-type.component.html',
+  styleUrl: './person-type.component.scss',
 })
-export class PersonComponent implements OnInit {
-  readonly personStore = inject(PersonStore);
+export class PersonTypeComponent implements OnInit {
+  readonly personTypeStore = inject(PersonTypeStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
 
-  @Input() personId!: string;
+  @Input() personTypeId!: string;
 
-  personForm = new FormGroup({
-    familyName: new FormControl(
+  personTypeForm = new FormGroup({
+    key: new FormControl(
       {
         value: '',
         disabled: true,
       },
       Validators.required,
     ),
-    givenName: new FormControl(
+    name: new FormControl(
       {
         value: '',
         disabled: true,
       },
       Validators.required,
     ),
-    personType: new FormControl(
-      {
-        value: null,
-        disabled: true,
-      },
-      Validators.required,
-    ),
+    // info: new FormControl(
+    //   {
+    //     value: '',
+    //     disabled: true,
+    //   },
+    //   Validators.required,
+    // ),
+    // tags: new FormControl(
+    //   {
+    //     value: '',
+    //     disabled: true,
+    //   },
+    //   Validators.required,
+    // ),
   });
 
   constructor() {
     effect(() => {
-      if (this.personStore.inEditMode()) {
-        this.personForm.enable();
+      if (this.personTypeStore.inEditMode()) {
+        this.personTypeForm.enable();
       } else {
-        this.personForm.disable();
+        this.personTypeForm.disable();
       }
     });
   }
 
   ngOnInit(): void {
-    if (this.personId) {
-      if (this.personId === CREATE_PARTIAL_URL) {
-        this.personStore.initializeForCreate();
+    if (this.personTypeId) {
+      if (this.personTypeId === CREATE_PARTIAL_URL) {
+        this.personTypeStore.initializeForCreate();
       } else {
-        this.personStore.initialize(this.personId).then(() => {
-          this.personForm.patchValue({
-            familyName: this.personStore.person()?.familyName,
-            givenName: this.personStore.person()?.givenName,
-            personType: this.personStore.person()?.personType,
+        this.personTypeStore.initialize(this.personTypeId).then(() => {
+          this.personTypeForm.patchValue({
+            key: this.personTypeStore.personType()?.key,
+            name: this.personTypeStore.personType()?.name,
+            // info: JSON.stringify(this.personTypeStore.personType()?.info),
+            // tags: JSON.stringify(this.personTypeStore.personType()?.tags),
           });
         });
       }
     }
 
-    this.personForm.events
+    this.personTypeForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          if (this.personStore.inCreateMode()) {
-            this.personStore.create(this.personForm.value);
+          if (this.personTypeStore.inCreateMode()) {
+            this.personTypeStore.create(this.personTypeForm.value);
           } else {
-            this.personStore.update(this.personForm.value);
+            this.personTypeStore.update(this.personTypeForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
@@ -124,11 +132,11 @@ export class PersonComponent implements OnInit {
   }
 
   onCancel() {
-    if (this.personStore.inCreateMode()) {
+    if (this.personTypeStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'all-people']);
+      this.router.navigate(['project-management', 'people', 'person-types']);
     } else {
-      this.personStore.toggleEditMode();
+      this.personTypeStore.toggleEditMode();
     }
   }
 
@@ -137,20 +145,20 @@ export class PersonComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm delete',
-        question: 'Are you sure you want to delete this person?',
+        question: 'Are you sure you want to delete this person type?',
         okButtonText: 'Delete',
       },
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.personStore.delete().then(() => {
-          if (this.personStore.errors().length === 0) {
+        this.personTypeStore.delete().then(() => {
+          if (this.personTypeStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
             this.router.navigate([
               'project-management',
               'people',
-              'all-people',
+              'person-types',
             ]);
           }
         });
