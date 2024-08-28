@@ -12,7 +12,6 @@
     "test": "node ace test",
     "lint": "eslint .",
     "migrate": "node ace migration:run",
-    "migrate-and-seed": "node ace migration:refresh --seed",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
