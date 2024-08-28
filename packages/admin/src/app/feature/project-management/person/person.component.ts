@@ -10,12 +10,17 @@ import {
 } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { PersonStore } from '@feature/project-management/person/person.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { PersonTypeType } from '@schemas/person-type.schema';
+import { Router, RouterLink } from '@angular/router';
+import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
   selector: 'aw-person',
@@ -30,6 +35,9 @@ import { PersonTypeType } from '@schemas/person-type.schema';
     ErrorContainerComponent,
     MatOption,
     MatSelect,
+    MatIcon,
+    RouterLink,
+    MatIconButton,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -37,6 +45,8 @@ import { PersonTypeType } from '@schemas/person-type.schema';
 })
 export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
+  private router = inject(Router);
+  readonly dialog = inject(MatDialog);
 
   @Input() personId!: string;
 
@@ -76,20 +86,63 @@ export class PersonComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.personId) {
-      this.personStore.initialize(this.personId).then(() => {
-        this.personForm.patchValue({
-          familyName: this.personStore.person()?.familyName,
-          givenName: this.personStore.person()?.givenName,
-          personType: this.personStore.person()?.personType,
+      if (this.personId === CREATE_PARTIAL_URL) {
+        this.personStore.initializeForCreate();
+      } else {
+        this.personStore.initialize(this.personId).then(() => {
+          this.personForm.patchValue({
+            familyName: this.personStore.person()?.familyName,
+            givenName: this.personStore.person()?.givenName,
+            personType: this.personStore.person()?.personType,
+          });
         });
-      });
+      }
     }
 
     this.personForm.events.subscribe(event => {
       if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-        this.personStore.update(this.personForm.value);
+        if (this.personStore.inCreateMode()) {
+          this.personStore.create(this.personForm.value);
+        } else {
+          this.personStore.update(this.personForm.value);
+        }
       } else if (event instanceof ValueChangeEvent) {
         // This is here for an example.  Also, there are other events that can be caught
+      }
+    });
+  }
+
+  onCancel() {
+    if (this.personStore.inCreateMode()) {
+      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
+      this.router.navigate(['project-management', 'people', 'all-people']);
+    } else {
+      this.personStore.toggleEditMode();
+    }
+  }
+
+  onDelete() {
+    // TODO: show confirmation dialog
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm delete',
+        question: 'Are you sure you want to delete this person?',
+        okButtonText: 'Delete',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.personStore.delete().then(() => {
+          if (this.personStore.errors().length === 0) {
+            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
+            this.router.navigate([
+              'project-management',
+              'people',
+              'all-people',
+            ]);
+          }
+        });
       }
     });
   }

@@ -1,30 +1,33 @@
 @if (personStore.isReady()) {
-  <form [formGroup]="personForm">
-    <div class="edit-button-container">
-      <button
-        mat-flat-button
-        type="button"
-        (click)="personStore.toggleEditMode()"
-        class="default-button"
-        [disabled]="personStore.inEditMode()"
-      >
-        Edit
-      </button>
-    </div>
+  <div class="main-container-header">
+    @if (personStore.inCreateMode()) {
+      <h2>Create Person</h2>
+    } @else if (personStore.inEditMode()) {
+      <h2>Edit Person</h2>
+    } @else {
+      <h2>View Person</h2>
+    }
 
+    <div class="icons-container">
+      @if (!personStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="personStore.inEditMode()"
+          (click)="personStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit person icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete person icon">delete_forever</mat-icon>
+        </button>
+      } @else {}
+    </div>
+  </div>
+
+  <form [formGroup]="personForm">
     @if (personStore.isErrored()) {
       <aw-error-container [errors]="personStore.errors()" />
     }
-    <mat-form-field>
-      <mat-label>Family Name</mat-label>
-      <input matInput placeholder="Name" formControlName="familyName" />
-      @if (personForm.controls.familyName.hasError('required')) {
-        <mat-error>
-          Family Name is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
 
     <mat-form-field>
       <mat-label>Given Name</mat-label>
@@ -32,6 +35,17 @@
       @if (personForm.controls.givenName.hasError('required')) {
         <mat-error>
           Given Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Family Name</mat-label>
+      <input matInput placeholder="Name" formControlName="familyName" />
+      @if (personForm.controls.familyName.hasError('required')) {
+        <mat-error>
+          Family Name is
           <strong>required</strong>
         </mat-error>
       }
@@ -61,7 +75,7 @@
       <button
         mat-button
         type="button"
-        (click)="personStore.toggleEditMode()"
+        (click)="onCancel()"
         class="default-button"
         [disabled]="!personStore.inEditMode()"
       >

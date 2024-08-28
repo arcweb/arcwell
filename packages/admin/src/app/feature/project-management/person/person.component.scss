@@ -25,5 +25,13 @@ form {
     width: 100%;
     margin-top: 16px;
     margin-bottom: 24px;
+    gap: 20px;
   }
+}
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
