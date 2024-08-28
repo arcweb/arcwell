@@ -1,4 +1,11 @@
-import { Component, effect, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  Input,
+  OnInit,
+} from '@angular/core';
 import {
   ControlEvent,
   FormControl,
@@ -21,6 +28,7 @@ import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-person',
@@ -47,6 +55,7 @@ export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
+  destroyRef = inject(DestroyRef);
 
   @Input() personId!: string;
 
@@ -99,17 +108,19 @@ export class PersonComponent implements OnInit {
       }
     }
 
-    this.personForm.events.subscribe(event => {
-      if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-        if (this.personStore.inCreateMode()) {
-          this.personStore.create(this.personForm.value);
-        } else {
-          this.personStore.update(this.personForm.value);
+    this.personForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          if (this.personStore.inCreateMode()) {
+            this.personStore.create(this.personForm.value);
+          } else {
+            this.personStore.update(this.personForm.value);
+          }
+        } else if (event instanceof ValueChangeEvent) {
+          // This is here for an example.  Also, there are other events that can be caught
         }
-      } else if (event instanceof ValueChangeEvent) {
-        // This is here for an example.  Also, there are other events that can be caught
-      }
-    });
+      });
   }
 
   onCancel() {

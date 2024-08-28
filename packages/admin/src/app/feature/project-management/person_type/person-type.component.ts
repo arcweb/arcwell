@@ -1,4 +1,11 @@
-import { Component, effect, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  Input,
+  OnInit,
+} from '@angular/core';
 import {
   ControlEvent,
   FormControl,
@@ -21,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { PersonTypeStore } from '@feature/project-management/person_type/person-type.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-person-type',
@@ -47,6 +55,7 @@ export class PersonTypeComponent implements OnInit {
   readonly personTypeStore = inject(PersonTypeStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
+  destroyRef = inject(DestroyRef);
 
   @Input() personTypeId!: string;
 
@@ -107,17 +116,19 @@ export class PersonTypeComponent implements OnInit {
       }
     }
 
-    this.personTypeForm.events.subscribe(event => {
-      if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-        if (this.personTypeStore.inCreateMode()) {
-          this.personTypeStore.create(this.personTypeForm.value);
-        } else {
-          this.personTypeStore.update(this.personTypeForm.value);
+    this.personTypeForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          if (this.personTypeStore.inCreateMode()) {
+            this.personTypeStore.create(this.personTypeForm.value);
+          } else {
+            this.personTypeStore.update(this.personTypeForm.value);
+          }
+        } else if (event instanceof ValueChangeEvent) {
+          // This is here for an example.  Also, there are other events that can be caught
         }
-      } else if (event instanceof ValueChangeEvent) {
-        // This is here for an example.  Also, there are other events that can be caught
-      }
-    });
+      });
   }
 
   onCancel() {
