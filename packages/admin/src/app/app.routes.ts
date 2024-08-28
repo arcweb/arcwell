@@ -34,14 +34,11 @@ export const routes: Routes = [
       },
       {
         path: 'user-management',
-        redirectTo: 'user-management/all-users',
-      },
-      {
-        path: 'user-management/all-users',
-        loadComponent: () =>
-          import(
-            './feature/user-management/all-users/all-users.component'
-          ).then(m => m.AllUsersComponent),
+        canActivate: [isAuthenticatedGuard()],
+        loadChildren: () => 
+          import('./feature/user-management/user-management.routes').then(
+            m => m.USER_MANAGEMENT_ROUTES,
+          ),
       },
       // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],

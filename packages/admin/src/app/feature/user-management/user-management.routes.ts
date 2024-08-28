@@ -9,11 +9,11 @@ export const USER_MANAGEMENT_ROUTES: Route[] = [
     component: UserManagementComponent,
     children: [
       {
-        path: 'users/all-users',
+        path: 'all-users',
         component: AllUsersComponent,
       },
       {
-        path: 'users/all-users/:userId',
+        path: 'all-users/:userId',
         component: UserComponent,
       },
     ],

@@ -62,12 +62,7 @@ export class AllUsersComponent {
 
   handleClick(row: UserModel) {
     console.log('row=', row);
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      row.person?.id,
-    ]);
+    this.router.navigate(['user-management', 'all-users', row.id]);
   }
 
   formatName(person: PersonModel) {

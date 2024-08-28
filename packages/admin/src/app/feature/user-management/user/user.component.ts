@@ -1,12 +1,40 @@
 import { Component, effect, inject, Input, OnInit } from '@angular/core';
 import { UserStore } from './user.store';
-import { ControlEvent, FormControl, FormGroup, FormSubmittedEvent, Validators } from '@angular/forms';
-import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
+import {
+  ControlEvent,
+  FormControl,
+  FormGroup,
+  FormSubmittedEvent,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { RouterLink } from '@angular/router';
+import { RoleType } from '@app/shared/schemas/role.schema';
 
 @Component({
   selector: 'aw-user',
   standalone: true,
-  imports: [],
+  imports: [
+    ReactiveFormsModule,
+    MatInput,
+    MatLabel,
+    MatFormField,
+    MatButton,
+    MatError,
+    ErrorContainerComponent,
+    MatOption,
+    MatSelect,
+    MatIcon,
+    RouterLink,
+    MatIconButton,
+  ],
   providers: [UserStore],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
@@ -62,5 +90,9 @@ export class UserComponent implements OnInit {
 
   onCancel() {
     this.userStore.toggleEditMode();
+  }
+
+  compareRoles(r1: RoleType, r2: RoleType): boolean {
+    return r1 && r2 ? r1.id === r2.id : false;
   }
 }

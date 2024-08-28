@@ -38,7 +38,7 @@ export class TopMenuComponent {
     },
     {
       name: 'Users',
-      path: '/user-management',
+      path: '/user-management/all-users',
     },
     { name: 'Settings', path: '/server-settings' },
   ];
