@@ -38,7 +38,7 @@ test.group('Router person type', () => {
     assert.equal(data.data.id, personType?.id)
     assert.equal(data.data.key, personType?.key)
     assert.equal(data.data.name, personType?.name)
-    assert.equal(data.data.people.length, 3)
+    assert.equal(data.data.people.length, 4)
   })
 
   test('person type update test', async ({ assert, client }) => {
@@ -46,7 +46,6 @@ test.group('Router person type', () => {
     const personType = await PersonType.first()
 
     const newData = {
-      key: 'newkey',
       name: 'New Name',
     }
 
@@ -58,7 +57,6 @@ test.group('Router person type', () => {
     response.assertStatus(200)
     const data = response.body()
     assert.equal(data.data.id, personType?.id)
-    assert.equal(data.data.key, newData.key)
     assert.equal(data.data.name, newData.name)
   })
 

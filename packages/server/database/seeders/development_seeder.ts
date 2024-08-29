@@ -49,29 +49,29 @@ export default class extends BaseSeeder {
         email: 'dev-admin@email.com',
         password: 'Password12345!',
         roleId: superAdminRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
       },
       {
         email: 'dev-limited-admin@email.com',
         password: 'Password12345!',
         roleId: limitedAdminRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
       },
       {
         email: 'dev-guest@email.com',
         password: 'Password12345!',
         roleId: guestRole.id,
-        personId: (await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()).id,
+        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
       },
     ])
 
-    await PersonFactory.merge({ personTypeId: patientPersonType.id }).createMany(100)
+    await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(100)
 
-    await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).createMany(5)
-    await ResourceFactory.merge({ resourceTypeId: dmeResourceType.id }).createMany(7)
+    await ResourceFactory.merge({ typeKey: deviceResourceType.key }).createMany(5)
+    await ResourceFactory.merge({ typeKey: dmeResourceType.key }).createMany(7)
 
-    await EventFactory.merge({ eventTypeId: apptEventType.id, source: 'doctor' }).createMany(5)
-    await EventFactory.merge({ eventTypeId: surgeryEventType.id, source: 'epic' }).createMany(5)
+    await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(5)
+    await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
 
     await Tag.createMany([
       { pathname: 'top/middle', parent: 'top', basename: 'middle' },
@@ -82,9 +82,9 @@ export default class extends BaseSeeder {
     // create data for populating the facts table
     const factType = await FactTypeFactory.create()
     const factType2 = await FactTypeFactory.create()
-    const person = await PersonFactory.merge({ personTypeId: staffPersonType.id }).create()
-    const event = await EventFactory.merge({ eventTypeId: apptEventType.id }).create()
-    const resource = await ResourceFactory.merge({ resourceTypeId: deviceResourceType.id }).create()
+    const person = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const event = await EventFactory.merge({ typeKey: apptEventType.key }).create()
+    const resource = await ResourceFactory.merge({ typeKey: deviceResourceType.key }).create()
 
     await FactFactory.merge({ typeKey: factType.key }).createMany(2)
     // create a fact with a person, resource, and event

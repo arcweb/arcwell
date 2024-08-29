@@ -23,14 +23,14 @@ test.group('Model people', (group) => {
     const personInfo = {
       givenName: 'Bob',
       familyName: 'Test',
-      personTypeId: pTypeT?.id,
+      typeKey: pTypeT?.key,
     }
 
     const newPerson = await Person.create(personInfo)
 
     ctx.assert.equal(newPerson.familyName, 'Test')
     ctx.assert.equal(newPerson.givenName, 'Bob')
-    ctx.assert.equal(newPerson.personTypeId, pTypeT?.id)
+    ctx.assert.equal(newPerson.typeKey, pTypeT?.key)
   })
 
   test('people update test', async ({ assert }) => {
@@ -49,7 +49,7 @@ test.group('Model people', (group) => {
     const personInfo = {
       familyName: 'TEST',
       givenName: 'TEST',
-      personTypeId: pTypeT?.id,
+      typeKey: pTypeT?.key,
       tags: JSON.stringify(['first/list']),
     }
 

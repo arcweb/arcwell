@@ -12,7 +12,7 @@ test.group('Router resource', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 12)
+    assert.equal(data.data.length, 13)
   })
 
   test('resource index filtered test', async ({ assert, client }) => {
@@ -62,7 +62,7 @@ test.group('Router resource', () => {
     const type = await ResourceType.findBy('key', 'tester')
 
     const newResource = {
-      resourceTypeId: type!.id,
+      typeKey: type!.key,
       name: 'Object',
     }
     const response = await client
@@ -74,7 +74,7 @@ test.group('Router resource', () => {
 
     const data = response.body()
     assert.exists(data.data.id)
-    assert.equal(data.data.resourceTypeId, newResource.resourceTypeId)
+    assert.equal(data.data.typeKey, newResource.typeKey)
     assert.equal(data.data.name, newResource.name)
   })
     .setup(async () => {
@@ -101,7 +101,7 @@ test.group('Router resource', () => {
     const type = await ResourceType.findBy('key', 'dme')
 
     const newResource = {
-      resourceTypeId: type!.id,
+      typeKey: type!.key,
       name: 'Object',
     }
     await Resource.create(newResource)

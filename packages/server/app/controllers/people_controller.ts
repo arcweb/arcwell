@@ -1,4 +1,5 @@
 import Person from '#models/person'
+import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonValidator, updatePersonValidator } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -23,9 +24,10 @@ export default class PeopleController {
       .preload('personType')
 
     if (personTypeId) {
-      query.where('personTypeId', personTypeId)
+      const personType = await PersonType.findOrFail(personTypeId)
+      query.where('typeKey', personType.key)
       // DB context use sql column names
-      countQuery.where('person_type_id', personTypeId)
+      countQuery.where('type_key', personType.key)
     }
     if (limit) {
       query.limit(limit)
@@ -75,7 +77,7 @@ export default class PeopleController {
     await auth.authenticate()
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['givenName', 'familyName', 'personTypeId', 'tags'])
+    const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
     return { data: updatedPerson }

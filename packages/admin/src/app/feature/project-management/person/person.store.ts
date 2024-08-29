@@ -107,8 +107,7 @@ export const PersonStore = signalStore(
           updatePersonFormData.personType &&
           updatePersonFormData.personType.id
         ) {
-          updatePersonFormData.personTypeId =
-            updatePersonFormData.personType.id;
+          updatePersonFormData.typeKey = updatePersonFormData.personType.key;
         }
         const resp = await firstValueFrom(
           personService.update(updatePersonFormData),
@@ -126,7 +125,7 @@ export const PersonStore = signalStore(
       async create(createPersonFormData: PersonType) {
         console.log('createPersonFormData', createPersonFormData);
         patchState(store, setPending());
-        createPersonFormData.personTypeId = createPersonFormData.personType.id;
+        createPersonFormData.typeKey = createPersonFormData.personType.key;
 
         const resp = await firstValueFrom(
           personService.create(createPersonFormData),

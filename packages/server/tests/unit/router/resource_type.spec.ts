@@ -38,7 +38,7 @@ test.group('Router resource type', () => {
     assert.equal(data.data.id, resourceType?.id)
     assert.equal(data.data.key, resourceType?.key)
     assert.equal(data.data.name, resourceType?.name)
-    assert.equal(data.data.resources.length, 5)
+    assert.equal(data.data.resources.length, 6)
   })
 
   test('resource type update test', async ({ assert, client }) => {
@@ -46,7 +46,6 @@ test.group('Router resource type', () => {
     const resourceType = await ResourceType.first()
 
     const newData = {
-      key: 'newkey',
       name: 'New Name',
     }
 
@@ -58,7 +57,6 @@ test.group('Router resource type', () => {
     response.assertStatus(200)
     const data = response.body()
     assert.equal(data.data.id, resourceType?.id)
-    assert.equal(data.data.key, newData.key)
     assert.equal(data.data.name, newData.name)
   })
 

@@ -1,4 +1,5 @@
 import Resource from '#models/resource'
+import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -19,8 +20,9 @@ export default class ResourcesController {
     let query = Resource.query().preload('resourceType')
 
     if (resourceTypeId) {
-      query.where('resourceTypeId', resourceTypeId)
-      countQuery.where('resource_type_id', resourceTypeId)
+      const resourceType = await ResourceType.findOrFail(resourceTypeId)
+      query.where('typeKey', resourceType.key)
+      countQuery.where('type_key', resourceType.key)
     }
     if (limit) {
       query.limit(limit)
@@ -66,7 +68,7 @@ export default class ResourcesController {
     await auth.authenticate()
     await request.validateUsing(updateResourceValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name'])
+    const cleanRequest = request.only(['name', 'typeKey'])
     const resource = await Resource.findOrFail(params.id)
     const updatedResource = await resource.merge(cleanRequest).save()
     return { data: updatedResource }

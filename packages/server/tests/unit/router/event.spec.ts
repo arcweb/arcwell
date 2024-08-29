@@ -12,7 +12,7 @@ test.group('Router event', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 10)
+    assert.equal(data.data.length, 11)
   })
 
   test('event index filtered test', async ({ assert, client }) => {
@@ -22,8 +22,8 @@ test.group('Router event', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 5)
-    assert.equal(data.meta.count, 5)
+    assert.equal(data.data.length, 6)
+    assert.equal(data.meta.count, 6)
   })
 
   test('event show test', async ({ assert, client }) => {
@@ -63,7 +63,7 @@ test.group('Router event', () => {
     const type = await EventType.findBy('key', 'tester')
 
     const newEvent = {
-      eventTypeId: type!.id,
+      typeKey: type!.key,
       name: 'Object',
       source: 'epic',
     }
@@ -76,7 +76,7 @@ test.group('Router event', () => {
 
     const data = response.body()
     assert.exists(data.data.id)
-    assert.equal(data.data.eventTypeId, newEvent.eventTypeId)
+    assert.equal(data.data.typeKey, newEvent.typeKey)
     assert.equal(data.data.name, newEvent.name)
     assert.equal(data.data.source, newEvent.source)
   })
@@ -104,7 +104,7 @@ test.group('Router event', () => {
     const type = await EventType.findBy('key', 'appt')
 
     const newEvent = {
-      eventTypeId: type!.id,
+      typeKey: type!.key,
       name: 'Object',
       source: 'epic',
     }

@@ -16,7 +16,7 @@ export default class ResourceType extends BaseModel {
   @column()
   declare tags: string[]
 
-  @hasMany(() => Resource)
+  @hasMany(() => Resource, { foreignKey: 'typeKey', localKey: 'key' })
   declare resources: HasMany<typeof Resource>
 
   @column.dateTime({ autoCreate: true })

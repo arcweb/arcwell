@@ -19,7 +19,7 @@ export default class PersonType extends BaseModel {
   @column()
   declare tags: string[]
 
-  @hasMany(() => Person)
+  @hasMany(() => Person, { foreignKey: 'typeKey', localKey: 'key' })
   declare people: HasMany<typeof Person>
 
   @column.dateTime({ autoCreate: true })

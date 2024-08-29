@@ -12,8 +12,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 103)
-    assert.equal(data.meta.count, 103)
+    assert.equal(data.data.length, 104)
+    assert.equal(data.meta.count, 104)
   })
 
   test('people index filtered test', async ({ assert, client }) => {
@@ -23,8 +23,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 3)
-    assert.equal(data.meta.count, 3)
+    assert.equal(data.data.length, 4)
+    assert.equal(data.meta.count, 4)
   })
 
   test('people show test', async ({ assert, client }) => {
@@ -66,7 +66,7 @@ test.group('Router people', () => {
     const type = await PersonType.findBy('key', 'tester')
 
     const newPerson = {
-      personTypeId: type!.id,
+      typeKey: type!.key,
       familyName: 'Newman',
       givenName: 'Mike',
     }
@@ -78,7 +78,7 @@ test.group('Router people', () => {
     response.assertStatus(200)
     const data = response.body()
     assert.exists(data.data.id)
-    assert.equal(data.data.personTypeId, newPerson.personTypeId)
+    assert.equal(data.data.typeKey, newPerson.typeKey)
     assert.equal(data.data.familyName, newPerson.familyName)
     assert.equal(data.data.givenName, newPerson.givenName)
   })
@@ -106,7 +106,7 @@ test.group('Router people', () => {
     const type = await PersonType.findBy('key', 'Staff')
 
     const newPerson = {
-      personTypeId: type!.id,
+      typeKey: type!.key,
       familyName: 'Newman',
       givenName: 'Mike',
     }
