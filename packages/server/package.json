@@ -11,6 +11,7 @@
     "dev-hmr": "node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
+    "migrate": "node ace migration:run",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },

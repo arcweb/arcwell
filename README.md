@@ -62,7 +62,16 @@ On subsequent runs, you can just bring them up:
 docker compose up
 ```
 
-### 3. Visit Server and Admin in browser
+### 3. Run Migrations and Seeds
+
+Prepping your local development database with schema structure and required
+seed data is an important step.
+
+```
+docker compose exec server node ace migration:refresh --seed
+```
+
+### 4. Visit Server and Admin in browser
 
 Arcwell Server:
 * Confirm the Arcwell Server is up by visiting http://localhost:3333
@@ -84,7 +93,29 @@ within Docker and a relationship is configured in the `/compose.yml`
 * **Redis Cache** as redis, pulled from [redis:7-bookworm](https://hub.docker.com/_/redis)
 
 Arcwell software is designed to also be run on your local host
-machine (i.e., without Docker); support instructions TODO.
+machine (i.e., without Docker).
+
+In general, you can startup the local environment by up'ing the services:
+
+```
+docker compose up
+```
+
+You can run one-off commands against a service using `docker compose exec` 
+and referencing the service by name with the command following. For example:
+
+```
+# Run whoami within the "server" service; if it is already running:
+docker compose exec server whoami
+```
+
+You can leverage this to grab a shell session within any of your running
+services for running a battery of commands. For example:
+
+```
+# Start a bash shell on the server:
+docker compose exec server bash
+```
 
 
 ## Additional Documentation
