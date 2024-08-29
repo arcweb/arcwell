@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ClickDirective } from '@app/shared/directives/click.directive';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatMenuModule } from '@angular/material/menu';
 import { BrandService } from '@app/shared/services/brand.service';
 import { AuthStore } from '@app/shared/store/auth.store';
 import { FeatureStore } from '@shared/store/feature.store';
@@ -20,7 +20,13 @@ interface TopMenuNavLink {
 @Component({
   selector: 'aw-top-menu',
   standalone: true,
-  imports: [MatToolbarModule, ClickDirective, MatIconModule, RouterModule],
+  imports: [
+    MatToolbarModule,
+    ClickDirective,
+    MatIconModule,
+    RouterModule,
+    MatMenuModule,
+  ],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.scss',
 })
@@ -32,6 +38,7 @@ export class TopMenuComponent {
   private router = inject(Router);
 
   instanceName = this.brandService.getInstanceName(4);
+  currentUserId = this.authStore.currentUser()?.id;
 
   userAvatar = '';
   navLinks: TopMenuNavLink[] = [

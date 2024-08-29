@@ -80,7 +80,7 @@ export const AuthStore = signalStore(
       if (resp && resp.errors) {
         patchState(store, { loginStatus: 'error' });
       } else {
-        patchState(store, { loginStatus: 'success', currentUser: null });
+        patchState(store, initialState);
       }
     },
   })),
