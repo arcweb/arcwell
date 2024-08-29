@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ClickDirective } from '@app/shared/directives/click.directive';
@@ -26,6 +26,7 @@ export class TopMenuComponent {
   private brandService: BrandService = inject(BrandService);
   public authStore = inject(AuthStore);
   public featureStore = inject(FeatureStore);
+  private router = inject(Router);
 
   instanceName = this.brandService.getInstanceName(4);
 
@@ -38,8 +39,16 @@ export class TopMenuComponent {
     },
     {
       name: 'Users',
-      path: '/user-management',
+      path: '/user-management/all-users',
     },
     { name: 'Settings', path: '/server-settings' },
   ];
+
+  viewAccount() {
+    this.router.navigate([
+      'user-management',
+      'all-users',
+      this.authStore.currentUser()?.id,
+    ]);
+  }
 }

@@ -44,7 +44,12 @@
 
     <ng-container matColumnDef="person">
       <th mat-header-cell *matHeaderCellDef>Person</th>
-      <td mat-cell *matCellDef="let element">
+      <td
+        class="link-cell"
+        mat-cell
+        *matCellDef="let element"
+        (click)="viewPerson(element.personId); $event.stopPropagation()"
+      >
         {{ element.person ? formatName(element.person) : element.personId }}
       </td>
     </ng-container>

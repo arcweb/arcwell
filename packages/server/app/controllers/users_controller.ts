@@ -67,7 +67,7 @@ export default class UsersController {
     await auth.authenticate()
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['email'])
+    const cleanRequest = request.only(['email', 'roleId'])
     const user = await User.findOrFail(params.id)
     const updatedUser = await user.merge(cleanRequest).save()
     return { data: updatedUser }

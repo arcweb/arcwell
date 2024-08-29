@@ -28,14 +28,11 @@
       <div>
         <!-- user icon -->
         @if (userAvatar) {
-          <img
-            [src]="userAvatar"
-            alt="avatar"
-            class="user-avatar"
-            [routerLink]="'/account-management'"
-          />
+          <mat-button (click)="viewAccount()">
+            <img [src]="userAvatar" alt="avatar" class="user-avatar" />
+          </mat-button>
         } @else {
-          <mat-icon class="user-icon" [routerLink]="'/account-management'">
+          <mat-icon class="user-icon" (click)="viewAccount()">
             account_circle
           </mat-icon>
         }

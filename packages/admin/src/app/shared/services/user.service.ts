@@ -13,7 +13,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, tap } from 'rxjs';
 import { UserModel } from '../models/user.model';
 import { ErrorResponseType } from '../schemas/error.schema';
-import { ZodError } from 'zod';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 
 const apiUrl = 'http://localhost:3333';
@@ -27,7 +26,7 @@ export class UserService {
   getAllUsers(
     limit?: number,
     offset?: number,
-  ): Observable<UserResponseType[] | ErrorResponseType> {
+  ): Observable<UsersResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
     if (limit !== undefined) {
@@ -72,34 +71,19 @@ export class UserService {
   //   );
   // }
 
-  getUser(id: string): Observable<UserModel | null> {
+  getUser(id: string): Observable<UserModel | ErrorResponseType> {
     return this.http.get<UserResponseType>(`${apiUrl}/users/${id}`).pipe(
-      tap((response: UserResponseType | ErrorResponseType) => {
-        // validate response is success
-        if (response.errors && response.errors.length > 0) {
-          // TODO: Refactor this to handle error status codes and errors array
-          throw new Error(response.message);
-        }
-      }),
       map((response: UserResponseType) => {
-        try {
-          const parsedResponse = UserResponseSchema.parse(response);
-          return parsedResponse.data
-            ? deserializeUser(parsedResponse.data)
-            : null;
-        } catch (error) {
-          if (error instanceof ZodError) {
-            console.error('Zod validation error:', error.errors);
-          } else {
-            console.error('Unexpected error during validation:', error);
-          }
-          throw error;
-        }
+        const parsedResponse = UserResponseSchema.parse(response);
+        return { data: deserializeUser(parsedResponse.data) };
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
       }),
     );
   }
 
-  patchUser(user: UserUpdateType): Observable<UserModel | null> {
+  update(user: UserUpdateType): Observable<UserModel | ErrorResponseType> {
     return this.http
       .patch<UserResponseType>(`${apiUrl}/users/${user.id}`, user)
       .pipe(

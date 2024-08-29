@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { UserStore } from './users.store';
+import { UsersStore } from './users.store';
 import { Router } from '@angular/router';
 import {
   MatCell,
@@ -40,12 +40,12 @@ import { PersonModel } from '@app/shared/models/person.model';
     MatHeaderRow,
     MatPaginator,
   ],
-  providers: [UserStore],
+  providers: [UsersStore],
   templateUrl: './all-users.component.html',
   styleUrl: './all-users.component.scss',
 })
 export class AllUsersComponent {
-  readonly userStore = inject(UserStore);
+  readonly userStore = inject(UsersStore);
   private router = inject(Router);
 
   pageSizes = [10, 20, 50];
@@ -61,16 +61,19 @@ export class AllUsersComponent {
   }
 
   handleClick(row: UserModel) {
-    console.log('row=', row);
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      row.person?.id,
-    ]);
+    this.router.navigate(['user-management', 'all-users', row.id]);
   }
 
   formatName(person: PersonModel) {
     return `${person.familyName}, ${person.givenName}`;
+  }
+
+  viewPerson(personId: string) {
+    this.router.navigate([
+      'project-management',
+      'people',
+      'all-people',
+      personId,
+    ]);
   }
 }
