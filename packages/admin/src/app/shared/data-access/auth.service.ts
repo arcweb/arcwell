@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, tap } from 'rxjs';
 import { Credentials } from '@shared/interfaces/credentials';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '@shared/models/user.model';
@@ -9,6 +9,7 @@ import {
   LoginResponseSchema,
   LoginResponseType,
 } from '@shared/schemas/login.schema';
+import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,16 @@ export class AuthService {
             token: response.data.token,
             user: deserializeUser(response.data.user),
           };
+        }),
+      );
+  }
+
+  logout(): Observable<LoginResponseType | ErrorResponseType> {
+    return this.http
+      .delete<LoginResponseType>(`${this.apiUrl}/auth/logout`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
         }),
       );
   }

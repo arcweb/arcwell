@@ -28,14 +28,25 @@
       <div>
         <!-- user icon -->
         @if (userAvatar) {
-          <mat-button (click)="viewAccount()">
+          <mat-button [matMenuTriggerFor]="profileMenu">
             <img [src]="userAvatar" alt="avatar" class="user-avatar" />
           </mat-button>
         } @else {
-          <mat-icon class="user-icon" (click)="viewAccount()">
-            account_circle
-          </mat-icon>
+          <mat-button [matMenuTriggerFor]="profileMenu">
+            <mat-icon class="user-icon">account_circle</mat-icon>
+          </mat-button>
         }
+        <mat-menu #profileMenu="matMenu">
+          <button
+            mat-menu-item
+            [routerLink]="
+              '/user-management/all-users/' + authStore.currentUser()?.id
+            "
+          >
+            Profile
+          </button>
+          <button mat-menu-item (click)="logout()">Log Out</button>
+        </mat-menu>
       </div>
     }
   </div>

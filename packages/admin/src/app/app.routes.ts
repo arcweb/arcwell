@@ -22,7 +22,6 @@ export const routes: Routes = [
         path: '',
         loadComponent: () =>
           import('./feature/home/home.component').then(m => m.HomeComponent),
-        pathMatch: 'full',
       },
       {
         path: 'account-management',
@@ -35,7 +34,7 @@ export const routes: Routes = [
       {
         path: 'user-management',
         canActivate: [isAuthenticatedGuard()],
-        loadChildren: () => 
+        loadChildren: () =>
           import('./feature/user-management/user-management.routes').then(
             m => m.USER_MANAGEMENT_ROUTES,
           ),
