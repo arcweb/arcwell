@@ -18,12 +18,12 @@ export default class Event extends BaseModel {
   declare meta: Object | null
 
   @column()
-  declare eventTypeId: string
+  declare typeKey: string
 
   @column()
   declare tags: string[]
 
-  @belongsTo(() => EventType)
+  @belongsTo(() => EventType, { foreignKey: 'typeKey', localKey: 'key' })
   declare eventType: BelongsTo<typeof EventType>
 
   @column.dateTime()

@@ -21,12 +21,12 @@ test.group('Model resource', (group) => {
     const rTypeT = await ResourceType.findBy('key', 'tester')
     const resourceInfo = {
       name: 'Object',
-      resourceTypeId: rTypeT?.id,
+      typeKey: rTypeT?.key,
     }
 
     const newResource = await Resource.create(resourceInfo)
     assert.equal(newResource.name, 'Object')
-    assert.equal(newResource.resourceTypeId, rTypeT?.id)
+    assert.equal(newResource.typeKey, rTypeT?.key)
   })
 
   test('resource update test', async ({ assert }) => {
@@ -44,7 +44,7 @@ test.group('Model resource', (group) => {
     const rTypeT = await ResourceType.findBy('key', 'tester')
     const resourceInfo = {
       name: 'TEST',
-      resourceTypeId: rTypeT?.id,
+      typeKey: rTypeT?.key,
       tags: JSON.stringify(['first/list']),
     }
 

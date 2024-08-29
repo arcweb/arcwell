@@ -1,4 +1,5 @@
 import Event from '#models/event'
+import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -18,8 +19,9 @@ export default class EventsController {
     let query = Event.query().preload('eventType')
 
     if (eventTypeId) {
-      query.where('eventTypeId', eventTypeId)
-      countQuery.where('event_type_id', eventTypeId)
+      const eventType = await EventType.findOrFail(eventTypeId)
+      query.where('typeKey', eventType.key)
+      countQuery.where('type_key', eventType.key)
     }
     if (limit) {
       query.limit(limit)
@@ -65,7 +67,7 @@ export default class EventsController {
     await auth.authenticate()
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name'])
+    const cleanRequest = request.only(['name', 'typeKey'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
     return { data: updatedEvent }

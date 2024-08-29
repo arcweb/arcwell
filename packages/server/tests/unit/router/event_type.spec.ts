@@ -38,7 +38,7 @@ test.group('Router event type', () => {
     assert.equal(data.data.id, eventType?.id)
     assert.equal(data.data.key, eventType?.key)
     assert.equal(data.data.name, eventType?.name)
-    assert.equal(data.data.events.length, 5)
+    assert.equal(data.data.events.length, 6)
   })
 
   test('event type update test', async ({ assert, client }) => {
@@ -46,7 +46,6 @@ test.group('Router event type', () => {
     const eventType = await EventType.first()
 
     const newData = {
-      key: 'newkey',
       name: 'New Name',
     }
 
@@ -58,7 +57,6 @@ test.group('Router event type', () => {
     response.assertStatus(200)
     const data = response.body()
     assert.equal(data.data.id, eventType?.id)
-    assert.equal(data.data.key, newData.key)
     assert.equal(data.data.name, newData.name)
   })
 

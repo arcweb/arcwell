@@ -1,6 +1,6 @@
 import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
-import { createEventTypeValidator } from '#validators/event_type'
+import { createEventTypeValidator, updateEventTypeValidator } from '#validators/event_type'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class EventTypesController {
@@ -59,7 +59,7 @@ export default class EventTypesController {
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
-    await request.validateUsing(createEventTypeValidator)
+    await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     const updatedEventType = await eventType.merge(request.body()).save()

@@ -21,13 +21,13 @@ test.group('Model event', (group) => {
     const eTypeT = await EventType.findBy('key', 'tester')
     const eventInfo = {
       name: 'Object',
-      eventTypeId: eTypeT?.id,
+      typeKey: eTypeT?.key,
       source: 'epic',
     }
 
     const newEvent = await Event.create(eventInfo)
     assert.equal(newEvent.name, 'Object')
-    assert.equal(newEvent.eventTypeId, eTypeT?.id)
+    assert.equal(newEvent.typeKey, eTypeT?.key)
     assert.equal(newEvent.source, 'epic')
   })
 
@@ -46,7 +46,7 @@ test.group('Model event', (group) => {
     const eTypeT = await EventType.findBy('key', 'tester')
     const eventInfo = {
       name: 'TEST',
-      eventTypeId: eTypeT?.id,
+      typeKey: eTypeT?.key,
       tags: JSON.stringify(['first/list']),
       source: 'epic',
     }

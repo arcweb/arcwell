@@ -1,6 +1,6 @@
 import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
-import { createResourceTypeValidator } from '#validators/resource_type'
+import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ResourceTypesController {
@@ -59,7 +59,7 @@ export default class ResourceTypesController {
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
-    await request.validateUsing(createResourceTypeValidator)
+    await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     const updatedResourceType = await resourceType.merge(request.body()).save()

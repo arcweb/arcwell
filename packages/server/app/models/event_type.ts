@@ -16,7 +16,7 @@ export default class EventType extends BaseModel {
   @column()
   declare tags: string[]
 
-  @hasMany(() => Event)
+  @hasMany(() => Event, { foreignKey: 'typeKey', localKey: 'key' })
   declare events: HasMany<typeof Event>
 
   @column.dateTime({ autoCreate: true })

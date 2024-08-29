@@ -15,12 +15,12 @@ export default class Resource extends BaseModel {
   declare meta: Object | null
 
   @column()
-  declare resourceTypeId: string
+  declare typeKey: string
 
   @column()
   declare tags: string[]
 
-  @belongsTo(() => ResourceType)
+  @belongsTo(() => ResourceType, { foreignKey: 'typeKey', localKey: 'key' })
   declare resourceType: BelongsTo<typeof ResourceType>
 
   @column.dateTime({ autoCreate: true })
