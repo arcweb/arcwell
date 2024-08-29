@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { BrandService } from '@app/shared/services/brand.service';
 import { AuthStore } from '@app/shared/store/auth.store';
 import { FeatureStore } from '@shared/store/feature.store';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 
 interface TopMenuNavLink {
   name: string;
@@ -23,6 +25,7 @@ interface TopMenuNavLink {
   styleUrl: './top-menu.component.scss',
 })
 export class TopMenuComponent {
+  readonly dialog = inject(MatDialog);
   private brandService: BrandService = inject(BrandService);
   public authStore = inject(AuthStore);
   public featureStore = inject(FeatureStore);
@@ -50,5 +53,23 @@ export class TopMenuComponent {
       'all-users',
       this.authStore.currentUser()?.id,
     ]);
+  }
+
+  logout() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Log Out',
+        question: 'Are you sure you want to logout?',
+        okButtonText: 'Log Out',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.authStore.logout().then(() => {
+          this.router.navigate(['']);
+        });
+      }
+    });
   }
 }

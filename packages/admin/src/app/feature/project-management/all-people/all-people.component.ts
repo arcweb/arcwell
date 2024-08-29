@@ -71,7 +71,6 @@ export class AllPeopleComponent {
   }
 
   handleClick(row: PersonModel) {
-    console.log(row);
     this.router.navigate([
       'project-management',
       'people',
@@ -81,7 +80,6 @@ export class AllPeopleComponent {
   }
 
   viewAccount(personId: string) {
-    console.log(personId);
     this.router.navigate(['user-management', 'all-users', personId]);
   }
 }

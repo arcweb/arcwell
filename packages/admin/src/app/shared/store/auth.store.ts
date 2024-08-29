@@ -10,7 +10,7 @@ import { effect, inject } from '@angular/core';
 import { AuthService } from '@shared/data-access/auth.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Credentials } from '@shared/interfaces/credentials';
-import { EMPTY, map, pipe, switchMap, tap } from 'rxjs';
+import { EMPTY, firstValueFrom, map, pipe, switchMap, tap } from 'rxjs';
 import { UserModel } from '@shared/models/user.model';
 import { catchError } from 'rxjs/operators';
 import {
@@ -74,6 +74,15 @@ export const AuthStore = signalStore(
         }),
       ),
     ),
+    async logout() {
+      patchState(store, { loginStatus: 'pending' });
+      const resp = await firstValueFrom(authService.logout());
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'success', currentUser: null });
+      }
+    },
   })),
   withComputed(state => {
     return {};
