@@ -67,4 +67,13 @@ export class AllUsersComponent {
   formatName(person: PersonModel) {
     return `${person.familyName}, ${person.givenName}`;
   }
+
+  viewPerson(personId: string) {
+    this.router.navigate([
+      'project-management',
+      'people',
+      'all-people',
+      personId,
+    ]);
+  }
 }

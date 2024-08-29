@@ -1,13 +1,22 @@
 @use 'layout.scss' as layout;
+@use 'colors' as colors;
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
 
 .main-container-header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-content: center;
+  place-content: center space-between;
 }
 
 .icons-container {
   display: flex;
   gap: 8px;
+}
+
+.link-cell {
+  text-decoration: underline;
+  text-decoration-color: colors.$link-color;
 }
