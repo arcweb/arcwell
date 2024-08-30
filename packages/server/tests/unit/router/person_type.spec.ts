@@ -38,7 +38,7 @@ test.group('Router person type', () => {
     assert.equal(data.data.id, personType?.id)
     assert.equal(data.data.key, personType?.key)
     assert.equal(data.data.name, personType?.name)
-    assert.equal(data.data.people.length, 4)
+    assert.equal(data.data.people.length, 14)
   })
 
   test('person type update test', async ({ assert, client }) => {

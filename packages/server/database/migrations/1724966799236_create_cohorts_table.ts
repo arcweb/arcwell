@@ -31,6 +31,7 @@ export default class extends BaseSchema {
   }
 
   async down() {
+    this.schema.dropTable('cohort_person')
     this.schema.dropTable(this.tableName)
   }
 }
