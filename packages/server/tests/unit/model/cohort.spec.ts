@@ -8,11 +8,22 @@ test.group('Model Cohort', (group) => {
   test('cohort create test', async ({ assert }) => {
     const cohortInfo = {
       name: 'Arcweb',
-      description: 'The arwebbers',
+      description: 'The arcwebbers',
     }
 
     const newCohort = await Cohort.create(cohortInfo)
     assert.equal(newCohort.name, cohortInfo.name)
     assert.equal(newCohort.description, cohortInfo.description)
+  })
+
+  test('cohort update test', async ({ assert }) => {
+    const cohort = await Cohort.first()
+    const newData = {
+      description: 'New Description',
+    }
+
+    cohort?.merge(newData).save()
+
+    assert.equal(cohort?.description, newData.description)
   })
 })
