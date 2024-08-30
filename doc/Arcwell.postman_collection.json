@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "5b9e2aa5-d85d-4e7a-9c97-56292b1375dd",
+		"_postman_id": "a65d9eb9-05f8-4d2b-a7da-8cfac9715a2d",
 		"name": "Arcwell",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "12305113"
+		"description": "test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11158532"
 	},
 	"item": [
 		{
@@ -66,6 +67,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -80,7 +136,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/people"
+				"url": {
+					"raw": "{{base_url}}/people",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"people"
+					]
+				}
 			},
 			"response": []
 		},
@@ -144,6 +208,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -158,7 +277,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/resources"
+				"url": {
+					"raw": "{{base_url}}/resources",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"resources"
+					]
+				}
 			},
 			"response": []
 		},
@@ -222,6 +349,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -236,7 +418,301 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/events"
+				"url": {
+					"raw": "{{base_url}}/events",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Store Fact",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"typeKey\": \"postKeyAgain1\",\n    \"observedAt\": \"2024-08-29T15:32:53.266+00:00\",\n    \"dimensions\": {\n        \"someDimension\": \"dimension\"\n    },\n    \"meta\": {\n        \"meta1\": \"meta1\"\n    },\n    \"tags\": [\"first/second/third\"]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/facts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"facts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Store Fact Type",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"key\": \"postKey7\",\n    \"name\": \"postName\",\n    \"dimensions\": {\"dimension1\": \"dimension\"},\n    \"tags\": [\"one/two/three\"]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/fact_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -300,6 +776,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -314,7 +845,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/tags"
+				"url": {
+					"raw": "{{base_url}}/tags",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tags"
+					]
+				}
 			},
 			"response": []
 		},
@@ -378,6 +917,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -392,7 +986,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/users"
+				"url": {
+					"raw": "{{base_url}}/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
 			},
 			"response": []
 		},
@@ -456,6 +1058,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -463,14 +1120,22 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"ROLE NAME\"\n}\n",
+					"raw": "{\n    \"name\": \"newRole\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "{{base_url}}/roles"
+				"url": {
+					"raw": "{{base_url}}/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"roles"
+					]
+				}
 			},
 			"response": []
 		},
@@ -534,6 +1199,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -548,7 +1268,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/person_types"
+				"url": {
+					"raw": "{{base_url}}/person_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"person_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -612,6 +1340,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -626,7 +1409,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/event_types"
+				"url": {
+					"raw": "{{base_url}}/event_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"event_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -690,6 +1481,61 @@
 						"type": "text"
 					},
 					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"name": "content-type",
+						"type": "text"
+					},
+					{
+						"key": "Content-Length",
+						"value": "<calculated when request is sent>",
+						"name": "content-length",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
 						"key": "Authorization",
 						"value": "{{Authorization}}",
 						"type": "text"
@@ -704,7 +1550,15 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/resource_types"
+				"url": {
+					"raw": "{{base_url}}/resource_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"resource_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -734,7 +1588,16 @@
 						}
 					}
 				},
-				"url": "{{base_url}}/auth/login"
+				"url": {
+					"raw": "{{base_url}}/auth/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
@@ -791,7 +1654,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/users"
+				"url": {
+					"raw": "{{base_url}}/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
 			},
 			"response": []
 		},
@@ -848,7 +1719,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/roles"
+				"url": {
+					"raw": "{{base_url}}/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"roles"
+					]
+				}
 			},
 			"response": []
 		},
@@ -905,7 +1784,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/tags"
+				"url": {
+					"raw": "{{base_url}}/tags",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"tags"
+					]
+				}
 			},
 			"response": []
 		},
@@ -962,7 +1849,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/people"
+				"url": {
+					"raw": "{{base_url}}/people",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"people"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1019,7 +1914,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/resources"
+				"url": {
+					"raw": "{{base_url}}/resources",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"resources"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1076,7 +1979,145 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/events"
+				"url": {
+					"raw": "{{base_url}}/events",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index Facts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/facts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"facts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index Facts Types",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fact_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1133,7 +2174,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/person_types"
+				"url": {
+					"raw": "{{base_url}}/person_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"person_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1190,7 +2239,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/resource_types"
+				"url": {
+					"raw": "{{base_url}}/resource_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"resource_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1247,7 +2304,15 @@
 						"type": "text"
 					}
 				],
-				"url": "{{base_url}}/event_types"
+				"url": {
+					"raw": "{{base_url}}/event_types",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"event_types"
+					]
+				}
 			},
 			"response": []
 		},
@@ -1316,8 +2381,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1389,8 +2453,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1462,7 +2525,226 @@
 					"variable": [
 						{
 							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show Fact",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/facts/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"facts",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
 							"value": "",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show Fact Type",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fact_types/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "ab1631b0-036c-493a-8108-be63f3885bd8",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Show Fact Type With Facts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fact_types/:id/facts",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types",
+						":id",
+						"facts"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "937659cc-b12c-4ba5-938d-1c0aae908026",
 							"type": "string"
 						}
 					]
@@ -1535,8 +2817,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1608,8 +2889,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1681,8 +2961,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1755,8 +3034,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1829,8 +3107,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1903,8 +3180,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -1976,8 +3252,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2049,8 +3324,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2122,8 +3396,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2204,7 +3477,170 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Fact",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"036d8f90-4b65-43c5-99ca-e6c2452bd7d2\",\n    \"typeKey\": \"compello\",\n    \"notAKey\": \"notAKey\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/facts/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"facts",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "dab46918-b29c-4b7b-a5a2-62d835c61f50",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Fact Type",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"893fe8d1-f9f0-46ab-ad4b-23bffb4f9d8b\",\n    \"key\": \"someKey\",\n    \"name\": \"newName\",\n    \"notAKey\": \"notAKey\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/fact_types/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "893fe8d1-f9f0-46ab-ad4b-23bffb4f9d8b",
 							"type": "string"
 						}
 					]
@@ -2286,8 +3722,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2368,8 +3803,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2450,8 +3884,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2532,8 +3965,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2614,8 +4046,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2696,8 +4127,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2778,8 +4208,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2860,8 +4289,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -2933,8 +4361,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3006,8 +4433,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3074,6 +4500,151 @@
 					],
 					"path": [
 						"events",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Destroy Fact",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/facts/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"facts",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Destroy Fact Type",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"name": "cache-control",
+						"type": "text"
+					},
+					{
+						"key": "Postman-Token",
+						"value": "<calculated when request is sent>",
+						"name": "postman-token",
+						"type": "text"
+					},
+					{
+						"key": "Host",
+						"value": "<calculated when request is sent>",
+						"name": "host",
+						"type": "text"
+					},
+					{
+						"key": "User-Agent",
+						"value": "PostmanRuntime/7.39.1",
+						"name": "user-agent",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"name": "accept",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"name": "accept-encoding",
+						"type": "text"
+					},
+					{
+						"key": "Connection",
+						"value": "keep-alive",
+						"name": "connection",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{Authorization}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/fact_types/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"fact_types",
 						":id"
 					],
 					"variable": [
@@ -3152,8 +4723,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3225,8 +4795,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3298,8 +4867,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3371,8 +4939,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3444,8 +5011,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
@@ -3517,8 +5083,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "",
-							"type": "string"
+							"value": ""
 						}
 					]
 				}
