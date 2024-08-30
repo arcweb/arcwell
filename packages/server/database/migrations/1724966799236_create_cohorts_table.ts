@@ -15,6 +15,19 @@ export default class extends BaseSchema {
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
+
+    this.schema.createTable('cohort_person', (table) => {
+      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
+
+      table.uuid('person_id').notNullable()
+      table.uuid('cohort_id').notNullable()
+
+      table.timestamp('created_at')
+      table.timestamp('updated_at')
+
+      table.foreign('person_id').references('people.id')
+      table.foreign('cohort_id').references('cohorts.id')
+    })
   }
 
   async down() {
