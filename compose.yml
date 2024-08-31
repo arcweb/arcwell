@@ -57,7 +57,7 @@ services:
 
   db:
     image: postgres:16-bookworm
-    restart: always
+    restart: unless-stopped
     ports:
       - '5432:5432'
     environment:
@@ -72,7 +72,7 @@ services:
 
   redis:
     image: redis:7-bookworm
-    restart: always
+    restart: unless-stopped
     #command: redis-server --requirepass arcwell
     ports:
       - '6379:6379'
