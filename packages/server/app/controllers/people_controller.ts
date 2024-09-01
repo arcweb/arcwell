@@ -66,6 +66,7 @@ export default class PeopleController {
         .where('id', params.id)
         .preload('user')
         .preload('personType')
+        .preload('tags')
         .firstOrFail(),
     }
   }

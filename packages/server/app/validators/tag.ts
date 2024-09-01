@@ -5,8 +5,7 @@ import vine from '@vinejs/vine'
  */
 export const createTagValidator = vine.compile(
   vine.object({
-    parent: vine.string().trim(),
-    basename: vine.string().trim(),
+    pathname: vine.string().trim(),
   })
 )
 

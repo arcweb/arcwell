@@ -3,13 +3,15 @@ import { PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeModel } from '@shared/models/person-type.model';
 import { UserModel } from '@shared/models/user.model';
 import { UserType } from '@schemas/user.schema';
+import { TagModel } from '@shared/models/tag.model';
+import { TagType } from '@schemas/tag.schema';
 
 // Base interface with common properties
 interface PersonBase {
   familyName: string;
   givenName: string;
   typeKey: string;
-  tags: string[];
+  tags?: TagModel[] | undefined;
   createdAt: DateTime;
   updatedAt: DateTime;
   personType?: PersonTypeModel;
@@ -32,7 +34,7 @@ export class PersonModel {
   public familyName: string;
   public givenName: string;
   public typeKey: string;
-  public tags: string[];
+  public tags?: TagModel[] | undefined;
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public personType?: PersonTypeModel;
@@ -43,7 +45,9 @@ export class PersonModel {
     this.familyName = data.familyName;
     this.givenName = data.givenName;
     this.typeKey = data.typeKey;
-    this.tags = data.tags;
+    this.tags = data.tags
+      ? data.tags.map((tag: TagType) => new TagModel(tag))
+      : undefined;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.personType = data.personType

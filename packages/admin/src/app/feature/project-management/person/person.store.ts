@@ -18,10 +18,11 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
+import { TagType } from '@schemas/tag.schema';
 
 interface PersonState {
   person: PersonType | null;
-  tags: string[];
+  tags: TagType[];
   personTypes: PersonTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -42,7 +43,9 @@ export const PersonStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withComputed(({ tags }) => ({
-    sortedTags: computed(() => tags().sort((a, b) => b.localeCompare(a))),
+    sortedTags: computed(
+      () => tags().sort((a, b) => b.pathname.localeCompare(a.pathname)) ?? [],
+    ),
   })),
   withMethods(
     (
@@ -169,7 +172,7 @@ export const PersonStore = signalStore(
       addTag(tag: string) {
         const tags = store.tags();
         if (!store.tags().includes(tag)) {
-          tags.push(tag);
+          tags.push({ pathname: tag });
           patchState(store, { tags: tags });
         }
       },

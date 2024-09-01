@@ -86,9 +86,9 @@ export default class extends BaseSeeder {
     await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
 
     await Tag.createMany([
-      { pathname: 'top/middle', parent: 'top', basename: 'middle' },
-      { pathname: 'top/left', parent: 'top', basename: 'left' },
-      { pathname: 'top/right', parent: 'top', basename: 'right' },
+      { pathname: 'top/middle' },
+      { pathname: 'top/left' },
+      { pathname: 'top/right' },
     ])
 
     // for (let i = 0; i < 10; i++) {

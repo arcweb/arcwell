@@ -7,23 +7,21 @@ test.group('Model tag', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
   test('tag create test', async (ctx) => {
-    const tagInfo = { pathname: 'bottom/middle', parent: 'bottom', basename: 'middle' }
+    const tagInfo = { pathname: 'bottom/middle' }
 
     const newTag = await Tag.create(tagInfo)
 
     ctx.assert.equal(newTag.pathname, tagInfo.pathname)
-    ctx.assert.equal(newTag.parent, tagInfo.parent)
-    ctx.assert.equal(newTag.basename, tagInfo.basename)
   })
 
   test('tag update test', async ({ assert }) => {
     const tag = await Tag.first()
     const newData = {
-      basename: 'NewTag',
+      pathname: 'NewTag',
     }
 
-    tag?.merge(newData).save()
+    await tag?.merge(newData).save()
 
-    assert.equal(tag?.basename, 'NewTag')
+    assert.equal(tag?.pathname, 'NewTag')
   })
 })

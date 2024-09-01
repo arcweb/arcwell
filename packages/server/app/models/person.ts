@@ -5,6 +5,7 @@ import type { BelongsTo, HasMany, HasOne, ManyToMany } from '@adonisjs/lucid/typ
 import PersonType from '#models/person_type'
 import Fact from '#models/fact'
 import Cohort from '#models/cohort'
+import Tag from '#models/tag'
 
 export default class Person extends BaseModel {
   @column({ isPrimary: true })
@@ -19,8 +20,8 @@ export default class Person extends BaseModel {
   @column()
   declare typeKey: string
 
-  @column()
-  declare tags: string[]
+  // @column()
+  // declare tags: string[]
 
   @belongsTo(() => PersonType, { foreignKey: 'typeKey', localKey: 'key' })
   declare personType: BelongsTo<typeof PersonType>
@@ -36,6 +37,15 @@ export default class Person extends BaseModel {
     pivotTable: 'cohort_person',
   })
   declare cohorts: ManyToMany<typeof Cohort>
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+    // pivotColumns: ['object_type'],
+  })
+  declare tags: ManyToMany<typeof Tag>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

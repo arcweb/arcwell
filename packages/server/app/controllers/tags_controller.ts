@@ -73,7 +73,7 @@ export default class TagsController {
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateTagValidator)
-    const cleanRequest = request.only(['parent', 'basename'])
+    const cleanRequest = request.only(['pathname'])
     const tag = await Tag.findOrFail(params.id)
     const updatedTag = await tag.merge(cleanRequest).save()
     return { data: updatedTag }

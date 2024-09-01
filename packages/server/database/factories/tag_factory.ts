@@ -3,13 +3,14 @@ import Tag from '#models/tag'
 
 export const TagFactory = factory
   .define(Tag, async ({ faker }) => {
-    const parent = faker.commerce.product() + '/' + faker.string.alphanumeric(10)
-    const basename = faker.commerce.productName()
-    const pathname = parent + '/' + basename
+    const pathname =
+      faker.commerce.product() +
+      '/' +
+      faker.string.alphanumeric(10) +
+      '/' +
+      faker.commerce.productName()
     return {
       pathname: pathname,
-      parent: parent,
-      basename: basename,
     }
   })
   .build()
