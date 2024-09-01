@@ -1,7 +1,6 @@
 import {
   patchState,
   signalStore,
-  withComputed,
   withHooks,
   withMethods,
   withState,
@@ -84,9 +83,6 @@ export const AuthStore = signalStore(
       }
     },
   })),
-  withComputed(state => {
-    return {};
-  }),
   withHooks({
     onInit(store) {
       effect(() => {

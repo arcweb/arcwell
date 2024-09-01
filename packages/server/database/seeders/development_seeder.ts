@@ -10,6 +10,7 @@ import { EventFactory } from '#database/factories/event_factory'
 import Tag from '#models/tag'
 import { FactFactory } from '#database/factories/fact_factory'
 import { FactTypeFactory } from '#database/factories/fact_type_factory'
+import { TagFactory } from '#database/factories/tag_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -78,6 +79,10 @@ export default class extends BaseSeeder {
       { pathname: 'top/left', parent: 'top', basename: 'left' },
       { pathname: 'top/right', parent: 'top', basename: 'right' },
     ])
+
+    // for (let i = 0; i < 10; i++) {
+    await TagFactory.createMany(100)
+    // }
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.create()

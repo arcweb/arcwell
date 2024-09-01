@@ -71,6 +71,49 @@
       }
     </mat-form-field>
 
+    <mat-form-field>
+      <mat-label>Tags</mat-label>
+      <input matInput placeholder="Tags" formControlName="tags" />
+      @if (personForm.controls.tags.hasError('required')) {
+        <mat-error>
+          Tags are
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="tags-chip-list">
+      <mat-label>Tags</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Tag selection">
+        @for (tag of personStore.sortedTags(); track $index) {
+          <mat-chip-row (removed)="personStore.removeTag(tag)">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        name="currentTag"
+        placeholder="New Tag..."
+        #tagInput
+        formControlName="tags"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event)"
+      >
+        @for (tag of filteredTags(); track tag) {
+          <mat-option [value]="tag">{{ tag }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
     <div class="form-button-container">
       <button
         mat-button

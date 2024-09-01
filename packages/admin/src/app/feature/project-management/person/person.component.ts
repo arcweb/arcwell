@@ -1,15 +1,19 @@
 import {
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
   Input,
+  model,
   OnInit,
+  signal,
 } from '@angular/core';
 import {
   ControlEvent,
   FormControl,
   FormGroup,
+  FormsModule,
   FormSubmittedEvent,
   ReactiveFormsModule,
   Validators,
@@ -29,6 +33,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  MatChipGrid,
+  MatChipInput,
+  MatChipInputEvent,
+  MatChipRemove,
+  MatChipRow,
+} from '@angular/material/chips';
+import { remove } from 'lodash';
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent,
+  MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'aw-person',
@@ -46,6 +64,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIcon,
     RouterLink,
     MatIconButton,
+    MatChipGrid,
+    MatChipRow,
+    FormsModule,
+    MatChipInput,
+    MatAutocompleteTrigger,
+    MatAutocomplete,
+    MatChipRemove,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -55,7 +80,7 @@ export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
-  destroyRef = inject(DestroyRef);
+  readonly destroyRef = inject(DestroyRef);
 
   @Input() personId!: string;
 
@@ -81,7 +106,31 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
+    tags: new FormControl(
+      {
+        value: [],
+        disabled: true,
+      },
+      Validators.required,
+    ),
   });
+
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly currentTag = model('');
+  readonly filteredTags = computed(() => {
+    const currentTag = this.currentTag(); //.toLowerCase();
+    return currentTag
+      ? this.allTags.filter(tag => tag.toLowerCase().includes(currentTag))
+      : this.allTags.slice();
+  });
+  readonly allTags: string[] = [
+    'diagnosis',
+    'diagnosis/diabetes',
+    'diagnosis/diabetes/type1',
+    'diagnosis/diabetes/type2',
+    'measurements/diabetes',
+    'scale/foo/bar',
+  ];
 
   constructor() {
     effect(() => {
@@ -103,6 +152,7 @@ export class PersonComponent implements OnInit {
             familyName: this.personStore.person()?.familyName,
             givenName: this.personStore.person()?.givenName,
             personType: this.personStore.person()?.personType,
+            tags: this.personStore.person()?.tags,
           });
         });
       }
@@ -113,9 +163,9 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            this.personStore.create(this.personForm.value);
+            this.personStore.createPerson(this.personForm.value);
           } else {
-            this.personStore.update(this.personForm.value);
+            this.personStore.updatePerson(this.personForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
@@ -144,7 +194,7 @@ export class PersonComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.personStore.delete().then(() => {
+        this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
             this.router.navigate([
@@ -160,5 +210,21 @@ export class PersonComponent implements OnInit {
 
   comparePersonTypes(pt1: PersonTypeType, pt2: PersonTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  add(event: MatChipInputEvent): void {
+    const tag = (event.value || '').trim();
+    // Add our tag
+    if (tag) {
+      this.personStore.addTag(tag);
+    }
+    // Clear the input value
+    this.currentTag.set('');
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.personStore.addTag(event.option.viewValue);
+    this.currentTag.set('');
+    event.option.deselect();
   }
 }

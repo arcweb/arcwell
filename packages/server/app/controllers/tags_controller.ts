@@ -12,8 +12,9 @@ export default class TagsController {
     const parentStr = queryData['parentStr']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const search = queryData['search']
 
-    let countQuery = db.from('people')
+    let countQuery = db.from('tags')
 
     let query = Tag.query()
 
@@ -21,6 +22,15 @@ export default class TagsController {
       query.where('parent', parentStr)
       countQuery.where('parent', parentStr)
     }
+
+    if (search) {
+      console.log('search=', search)
+      const searchString = '%' + search + '%'
+      // query.whereILike('pathname', searchString)
+      query.whereLike('pathname', searchString)
+      countQuery.whereLike('pathname', searchString)
+    }
+
     if (limit) {
       query.limit(limit)
     }

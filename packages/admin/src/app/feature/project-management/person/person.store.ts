@@ -1,7 +1,7 @@
 import {
   patchState,
   signalStore,
-  withHooks,
+  withComputed,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -13,7 +13,7 @@ import {
   setErrors,
 } from '@shared/store/request-status.feature';
 import { PersonService } from '@shared/services/person.service';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
@@ -21,6 +21,7 @@ import { PersonTypeType } from '@schemas/person-type.schema';
 
 interface PersonState {
   person: PersonType | null;
+  tags: string[];
   personTypes: PersonTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -29,6 +30,7 @@ interface PersonState {
 
 const initialState: PersonState = {
   person: null,
+  tags: [],
   personTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -39,6 +41,9 @@ export const PersonStore = signalStore(
   withDevtools('person'),
   withState(initialState),
   withRequestStatus(),
+  withComputed(({ tags }) => ({
+    sortedTags: computed(() => tags().sort((a, b) => b.localeCompare(a))),
+  })),
   withMethods(
     (
       store,
@@ -66,6 +71,7 @@ export const PersonStore = signalStore(
             store,
             {
               person: personResp.data,
+              tags: personResp.data.tags,
               personTypes: personTypesResp.data,
               isReady: true,
             },
@@ -100,7 +106,7 @@ export const PersonStore = signalStore(
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
       },
-      async update(updatePersonFormData: PersonUpdateType) {
+      async updatePerson(updatePersonFormData: PersonUpdateType) {
         patchState(store, setPending());
         updatePersonFormData.id = store.person().id;
         if (
@@ -122,7 +128,7 @@ export const PersonStore = signalStore(
           );
         }
       },
-      async create(createPersonFormData: PersonType) {
+      async createPerson(createPersonFormData: PersonType) {
         console.log('createPersonFormData', createPersonFormData);
         patchState(store, setPending());
         createPersonFormData.typeKey = createPersonFormData.personType.key;
@@ -141,7 +147,7 @@ export const PersonStore = signalStore(
           );
         }
       },
-      async delete() {
+      async deletePerson() {
         patchState(store, setPending());
         const resp = await firstValueFrom(
           personService.delete(store.person().id),
@@ -150,6 +156,21 @@ export const PersonStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+        }
+      },
+      removeTag(tag: string) {
+        const tags = store.tags();
+        const index = tags.indexOf(tag);
+        if (index >= 0) {
+          tags.splice(index, 1);
+          patchState(store, { tags: tags });
+        }
+      },
+      addTag(tag: string) {
+        const tags = store.tags();
+        if (!store.tags().includes(tag)) {
+          tags.push(tag);
+          patchState(store, { tags: tags });
         }
       },
     }),
