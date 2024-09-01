@@ -12,6 +12,10 @@ export default class extends BaseSchema {
       END;
       $$ LANGUAGE plpgsql;
 
+      CREATE TRIGGER cohorts_cascade_delete_trigger
+      AFTER DELETE ON public.cohorts
+      FOR EACH ROW EXECUTE FUNCTION cascade_delete_tag_object();
+
       CREATE TRIGGER people_cascade_delete_trigger
       AFTER DELETE ON public.people
       FOR EACH ROW EXECUTE FUNCTION cascade_delete_tag_object();
@@ -53,6 +57,9 @@ export default class extends BaseSchema {
   async down() {
     await this.raw(`
       -- Drop triggers
+
+
+      DROP TRIGGER cohorts_cascade_delete_trigger ON public.cohorts;
       DROP TRIGGER people_cascade_delete_trigger ON public.people;
       DROP TRIGGER events_cascade_delete_trigger ON public.events;
       DROP TRIGGER resources_cascade_delete_trigger ON public.resources;
