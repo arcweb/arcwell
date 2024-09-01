@@ -45,24 +45,28 @@ export default class extends BaseSeeder {
       throw new Error('A event type not found. Run the default seeder first')
     }
 
+    const person1 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const person2 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const person3 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+
     await User.createMany([
       {
         email: 'dev-admin@email.com',
         password: 'Password12345!',
         roleId: superAdminRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person1.id,
       },
       {
         email: 'dev-limited-admin@email.com',
         password: 'Password12345!',
         roleId: limitedAdminRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person2.id,
       },
       {
         email: 'dev-guest@email.com',
         password: 'Password12345!',
         roleId: guestRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person3.id,
       },
     ])
 

@@ -7,7 +7,6 @@ import {
   Input,
   model,
   OnInit,
-  signal,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -40,7 +39,6 @@ import {
   MatChipRemove,
   MatChipRow,
 } from '@angular/material/chips';
-import { remove } from 'lodash';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent,
