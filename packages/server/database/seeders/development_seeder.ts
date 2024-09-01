@@ -10,6 +10,8 @@ import { EventFactory } from '#database/factories/event_factory'
 import Tag from '#models/tag'
 import { FactFactory } from '#database/factories/fact_factory'
 import { FactTypeFactory } from '#database/factories/fact_type_factory'
+import Cohort from '#models/cohort'
+import { CohortFactory } from '#database/factories/cohort_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -65,7 +67,13 @@ export default class extends BaseSeeder {
       },
     ])
 
-    await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(100)
+    await CohortFactory.merge({ name: 'Arcweb' })
+      .with('people', 10, (builder) => {
+        builder.merge({ typeKey: staffPersonType.key })
+      })
+      .create()
+
+    await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(90)
 
     await ResourceFactory.merge({ typeKey: deviceResourceType.key }).createMany(5)
     await ResourceFactory.merge({ typeKey: dmeResourceType.key }).createMany(7)

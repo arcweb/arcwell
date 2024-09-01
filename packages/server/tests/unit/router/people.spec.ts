@@ -23,8 +23,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 4)
-    assert.equal(data.meta.count, 4)
+    assert.equal(data.data.length, 14)
+    assert.equal(data.meta.count, 14)
   })
 
   test('people show test', async ({ assert, client }) => {
