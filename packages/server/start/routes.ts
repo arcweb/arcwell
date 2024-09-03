@@ -11,6 +11,8 @@ import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
+const FactTypesController = () => import('#controllers/fact_types_controller')
+const FactsController = () => import('#controllers/facts_controller')
 const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
 const GetAllFullUsersController = () => import('#controllers/full_user_controller')
@@ -36,6 +38,7 @@ router.get('/', async () => {
   }
 })
 
+// auth routes
 router
   .group(() => {
     router.post('/register', [AuthController, 'register']).as('register')
@@ -46,23 +49,16 @@ router
   .as('auth')
   .prefix('auth')
 
-router.resource('roles', RolesController).apiOnly()
-router.get('users/full', [GetAllFullUsersController]).as('users.full')
-router.resource('users', UsersController).apiOnly()
-router.resource('people', PeopleController).apiOnly()
+// fact routes
+router.resource('facts', FactsController).apiOnly()
 router.group(() => {
-  router.resource('person_types', PersonTypesController).apiOnly()
+  router.resource('fact_types', FactTypesController).apiOnly()
   router
-    .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
-    .as('person_types.showWithPeople')
+    .get('fact_types/:id/facts', [FactTypesController, 'showWithFacts'])
+    .as('fact_types.showWithFacts')
 })
-router.resource('resources', ResourcesController).apiOnly()
-router.group(() => {
-  router.resource('resource_types', ResourceTypesController).apiOnly()
-  router
-    .get('resource_types/:id/resources', [ResourceTypesController, 'showWithResources'])
-    .as('resource_types.showWithResources')
-})
+
+// event routes
 router.resource('events', EventController).apiOnly()
 router.group(() => {
   router.resource('event_types', EventTypeController).apiOnly()
@@ -70,4 +66,31 @@ router.group(() => {
     .get('event_types/:id/events', [EventTypeController, 'showWithEvents'])
     .as('event_types.showWithEvents')
 })
+
+// people routes
+router.resource('people', PeopleController).apiOnly()
+router.group(() => {
+  router.resource('person_types', PersonTypesController).apiOnly()
+  router
+    .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
+    .as('person_types.showWithPeople')
+})
+
+// resource routes
+router.resource('resources', ResourcesController).apiOnly()
+router.group(() => {
+  router.resource('resource_types', ResourceTypesController).apiOnly()
+  router
+    .get('resource_types/:id/resources', [ResourceTypesController, 'showWithResources'])
+    .as('resource_types.showWithResources')
+})
+
+// role routes
+router.resource('roles', RolesController).apiOnly()
+
+// user routes
+router.get('users/full', [GetAllFullUsersController]).as('users.full')
+router.resource('users', UsersController).apiOnly()
+
+// tag routes
 router.resource('tags', TagsController).apiOnly()
