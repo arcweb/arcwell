@@ -52,7 +52,8 @@ export default class FactTypesController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
+  async show({ params, auth }: HttpContext) {
+    await auth.authenticate()
     await paramsUUIDValidator.validate(params)
 
     return {
@@ -63,7 +64,8 @@ export default class FactTypesController {
   /**
    * Show record with related facts
    */
-  async showWithFacts({ params }: HttpContext) {
+  async showWithFacts({ params, auth }: HttpContext) {
+    await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
       data: await FactType.query().preload('facts').where('id', params.id).firstOrFail(),
