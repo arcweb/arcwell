@@ -7,8 +7,8 @@ interface EventBase {
   source: string;
   typeKey: string;
   tags: string[];
-  meta: object;
-  occcurredAt: DateTime;
+  meta?: object;
+  occcurredAt?: DateTime;
   createdAt: DateTime;
   updatedAt: DateTime;
   eventType?: EventTypeModel;
@@ -28,7 +28,7 @@ export class EventModel {
   public source: string;
   public typeKey: string;
   public meta?: object;
-  public occurredAt: DateTime;
+  public occurredAt?: DateTime;
   public tags: string[];
   public createdAt: DateTime;
   public updatedAt: DateTime;
@@ -40,7 +40,9 @@ export class EventModel {
     this.source = data.source;
     this.typeKey = data.typeKey;
     this.meta = data.meta;
-    this.occurredAt = DateTime.fromISO(data.occcurredAt);
+    this.occurredAt = data.occcurredAt
+      ? DateTime.fromISO(data.occcurredAt)
+      : undefined;
     this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);

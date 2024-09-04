@@ -28,7 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { EventTypeType } from '@app/shared/schemas/person-type.schema';
+import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 
 @Component({
   selector: 'aw-event',
@@ -47,7 +47,7 @@ import { EventTypeType } from '@app/shared/schemas/person-type.schema';
     RouterLink,
     MatIconButton,
   ],
-  providers: [],
+  providers: [EventStore],
   templateUrl: './event.component.html',
   styleUrl: './event.component.scss',
 })

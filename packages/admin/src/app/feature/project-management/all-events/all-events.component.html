@@ -1,1 +1,78 @@
-<p>events works!</p>
+<div class="events-management-container">
+  <div class="main-container-header">
+    <h2>All Events</h2>
+    <div class="icons-container">
+      <mat-icon
+        fontIcon="add_circle_outline"
+        aria-hidden="false"
+        aria-label="Create event icon"
+      ></mat-icon>
+      <mat-icon
+        fontIcon="account_tree"
+        aria-hidden="false"
+        aria-label="Filter icon"
+      ></mat-icon>
+      <mat-icon
+        fontIcon="search"
+        aria-hidden="false"
+        aria-label="Search icon"
+      ></mat-icon>
+    </div>
+  </div>
+
+  @if (eventsStore.isErrored()) {
+    <aw-error-container [errors]="eventsStore.errors()" />
+  }
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef>Source</th>
+      <td mat-cell *matCellDef="let element">{{ element.source }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="occurredAt">
+      <th mat-header-cell *matHeaderCellDef>Occurred At</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.occurredAt }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="eventType">
+      <th mat-header-cell *matHeaderCellDef>Event Type</th>
+      <td mat-cell *matCellDef="let element">{{ element.eventType.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="tags">
+      <th mat-header-cell *matHeaderCellDef>Tags</th>
+      <td mat-cell *matCellDef="let element">
+        <pre>{{ element.tags ? (element.tags | json) : '' }}</pre>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="handleClick(row)"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="eventsStore.totalData()"
+    [pageSizeOptions]="pageSizes"
+    [pageSize]="eventsStore.limit()"
+    [pageIndex]="eventsStore.pageIndex()"
+    (page)="this.eventsStore.loadPage($event)"
+    showFirstLastButtons="true"
+  ></mat-paginator>
+</div>

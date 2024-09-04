@@ -7,11 +7,11 @@ export const EventSchema: any = z
     id: z.string().uuid().optional(),
     name: z.string(),
     source: z.string(),
-    meta: z.array(z.any()).optional(),
+    meta: z.array(z.any()).optional().nullable(),
     typeKey: z.string(),
     tags: z.array(z.any()).optional(),
     eventType: EventTypeSchema.optional(),
-    occurredAt: z.string().datetime({ offset: true }).optional(),
+    occurredAt: z.string().datetime({ offset: true }).optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
