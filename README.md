@@ -27,7 +27,7 @@ software, it is recommended you install local software to support development
 in the JavaScript/TypeScript stack and supporting plugins in your IDE of
 choice.
 
-Arcwell also written with support for Docker containers. In order to simply
+Arcwell is also written with support for Docker containers. In order to simply
 _run_ the software, you must install Docker-compatible containerization
 software. We recommend you install
 [Docker Desktop](https://www.docker.com/products/docker-desktop/)
