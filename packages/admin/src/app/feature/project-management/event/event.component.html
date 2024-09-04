@@ -1,0 +1,86 @@
+@if (eventStore.isReady()) {
+  <div class="main-container-header">
+    @if (eventStore.inCreateMode()) {
+      <h2>Create Event</h2>
+    } @else if (eventStore.inEditMode()) {
+      <h2>Edit Event</h2>
+    } @else {
+      <h2>View Event</h2>
+    }
+
+    <div class="icons-container">
+      @if (!eventStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="eventStore.inEditMode()"
+          (click)="eventStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit event icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete event icon">delete_forever</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="eventForm">
+    @if (eventStore.isErrored()) {
+      <aw-error-container [errors]="eventStore.errors()" />
+    }
+
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (eventForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Source</mat-label>
+      <input matInput placeholder="Source" formControlName="source" />
+      @if (eventForm.controls.source.hasError('required')) {
+        <mat-error>
+          Source is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Event Type</mat-label>
+      <mat-select formControlName="eventType" [compareWith]="compareEventTypes">
+        @for (eventType of eventStore.eventTypes(); track eventType.id) {
+          <mat-option [value]="eventType">
+            {{ eventType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (eventForm.controls.eventType.hasError('required')) {
+        <mat-error>
+          Event Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        type="datetime-local"
+        placeholder="Occurred At"
+        formControlName="occurredAt"
+      />
+      @if (eventForm.controls.eventType.hasError('required')) {
+        <mat-error>
+          Occurred At time is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+  </form>
+}
