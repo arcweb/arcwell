@@ -14,15 +14,29 @@ import {
 } from '@shared/store/request-status.feature';
 import { PersonService } from '@shared/services/person.service';
 import { computed, inject } from '@angular/core';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  forkJoin,
+  of,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
 import { TagType } from '@schemas/tag.schema';
+import { TagService } from '@shared/services/tag.service';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { tapResponse } from '@ngrx/operators';
 
 interface PersonState {
   person: PersonType | null;
   tags: TagType[];
+  searchText: string;
+  searchTags: TagType[];
   personTypes: PersonTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -32,6 +46,8 @@ interface PersonState {
 const initialState: PersonState = {
   person: null,
   tags: [],
+  searchText: '',
+  searchTags: [],
   personTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -42,9 +58,14 @@ export const PersonStore = signalStore(
   withDevtools('person'),
   withState(initialState),
   withRequestStatus(),
-  withComputed(({ tags }) => ({
+  withComputed(({ tags, searchTags }) => ({
     sortedTags: computed(
       () => tags().sort((a, b) => b.pathname.localeCompare(a.pathname)) ?? [],
+    ),
+
+    filteredTags: computed(
+      () =>
+        searchTags().sort((a, b) => b.pathname.localeCompare(a.pathname)) ?? [],
     ),
   })),
   withMethods(
@@ -52,6 +73,7 @@ export const PersonStore = signalStore(
       store,
       personService = inject(PersonService),
       personTypeService = inject(PersonTypeService),
+      tagService = inject(TagService),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -173,9 +195,48 @@ export const PersonStore = signalStore(
         const tags = store.tags();
         if (!store.tags().includes(tag)) {
           tags.push({ pathname: tag });
-          patchState(store, { tags: tags });
+          patchState(store, { tags: tags, searchText: '', searchTags: [] });
         }
       },
+      searchTags: rxMethod<string>(
+        pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          tap(searchString =>
+            patchState(store, { searchText: searchString }, setPending()),
+          ),
+          switchMap(searchString => {
+            if (searchString == null || searchString === '') {
+              patchState(store, { searchText: '', searchTags: [] });
+              return of([]);
+            }
+            return tagService.getTags(searchString, 50, 0).pipe(
+              tapResponse({
+                next: tagsResp => {
+                  if (tagsResp.errors) {
+                    patchState(
+                      store,
+                      { isReady: true },
+                      setErrors(tagsResp.errors),
+                    );
+                  } else {
+                    patchState(
+                      store,
+                      {
+                        searchTags: tagsResp.data,
+                      },
+                      setFulfilled(),
+                    );
+                  }
+                },
+                error: err => {
+                  throw err;
+                },
+              }),
+            );
+          }),
+        ),
+      ),
     }),
   ),
 );

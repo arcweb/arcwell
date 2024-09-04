@@ -16,7 +16,7 @@ export default class TagsController {
 
     let countQuery = db.from('tags')
 
-    let query = Tag.query()
+    let query = Tag.query().orderBy('pathname', 'asc')
 
     if (parentStr) {
       query.where('parent', parentStr)
@@ -24,9 +24,8 @@ export default class TagsController {
     }
 
     if (search) {
-      console.log('search=', search)
       const searchString = '%' + search + '%'
-      // query.whereILike('pathname', searchString)
+      // This is case sensitive.  Use whereILike for insensitive
       query.whereLike('pathname', searchString)
       countQuery.whereLike('pathname', searchString)
     }

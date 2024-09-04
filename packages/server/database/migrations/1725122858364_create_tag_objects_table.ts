@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
       table.uuid('tag_id').notNullable()
       table.uuid('object_id').notNullable()
-      // table.string('object_type').notNullable() // Represents the table ('people', 'events', 'resources', etc)
       table
         .enu(
           'object_type',
@@ -41,6 +40,7 @@ export default class extends BaseSchema {
 
       // Indices
       table.index(['tag_id', 'object_id', 'object_type'], 'idx_tag_object_object_type')
+      table.index(['object_id', 'object_type'], 'idx_tag_object_object_id_type')
     })
   }
 

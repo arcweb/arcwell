@@ -111,24 +111,13 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
+    searchTag: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  readonly currentTag = model('');
-  readonly filteredTags = computed(() => {
-    const currentTag = this.currentTag(); //.toLowerCase();
-    return currentTag
-      ? this.allTags.filter(tag => tag.toLowerCase().includes(currentTag))
-      : this.allTags.slice();
-  });
-  readonly allTags: string[] = [
-    'diagnosis',
-    'diagnosis/diabetes',
-    'diagnosis/diabetes/type1',
-    'diagnosis/diabetes/type2',
-    'measurements/diabetes',
-    'scale/foo/bar',
-  ];
 
   constructor() {
     effect(() => {
@@ -166,8 +155,10 @@ export class PersonComponent implements OnInit {
             this.personStore.updatePerson(this.personForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other events that can be caught
+          console.log('ValueChangeEvent', event.value.searchTag);
+          this.personStore.searchTags(event.value.searchTag);
         }
+        // This is here for an example.  Also, there are other events that can be caught
       });
   }
 
@@ -212,17 +203,16 @@ export class PersonComponent implements OnInit {
 
   add(event: MatChipInputEvent): void {
     const tag = (event.value || '').trim();
-    // Add our tag
     if (tag) {
       this.personStore.addTag(tag);
     }
     // Clear the input value
-    this.currentTag.set('');
+    this.personForm.controls.searchTag.setValue('');
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.personStore.addTag(event.option.viewValue);
-    this.currentTag.set('');
+    this.personForm.controls.searchTag.setValue('');
     event.option.deselect();
   }
 }

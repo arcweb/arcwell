@@ -84,10 +84,10 @@
         }
       </mat-chip-grid>
       <input
-        name="currentTag"
-        placeholder="New Tag..."
-        #tagInput
-        formControlName="tags"
+        placeholder="Enter new tag and/or search..."
+        type="text"
+        formControlName="searchTag"
+        [value]="personStore.searchText() ?? ''"
         [matChipInputFor]="chipGrid"
         [matAutocomplete]="auto"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -97,8 +97,10 @@
         #auto="matAutocomplete"
         (optionSelected)="selected($event)"
       >
-        @for (tag of filteredTags(); track tag) {
-          <mat-option [value]="tag">{{ tag }}</mat-option>
+        @if (personStore.filteredTags()) {
+          @for (tag of personStore.filteredTags(); track tag.id) {
+            <mat-option [value]="tag.pathname">{{ tag.pathname }}</mat-option>
+          }
         }
       </mat-autocomplete>
     </mat-form-field>

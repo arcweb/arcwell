@@ -77,12 +77,15 @@ export default class extends BaseSeeder {
       })
       .create()
 
-    await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(90)
-
+    for (let i = 0; i < 10; i++) {
+      await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(10)
+    }
     await ResourceFactory.merge({ typeKey: deviceResourceType.key }).createMany(5)
     await ResourceFactory.merge({ typeKey: dmeResourceType.key }).createMany(7)
 
-    await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(5)
+    for (let i = 0; i < 10; i++) {
+      await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(10)
+    }
     await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
 
     await Tag.createMany([
@@ -91,9 +94,9 @@ export default class extends BaseSeeder {
       { pathname: 'top/right' },
     ])
 
-    // for (let i = 0; i < 10; i++) {
-    await TagFactory.createMany(100)
-    // }
+    for (let i = 0; i < 10; i++) {
+      await TagFactory.createMany(10)
+    }
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.create()

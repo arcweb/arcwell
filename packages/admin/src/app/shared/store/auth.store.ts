@@ -101,9 +101,9 @@ export const AuthStore = signalStore(
 
     // TODO: Commenting out this select temporarily, so that currentUser is loaded from localstorage.
     //  Only the token should be stored, but calling /me endpoint isn't working yet
-    // select: (state: AuthState): Partial<AuthState> => {
-    //   return { token: state.token };
-    // }, // projection to keep specific slices in sync
+    select: (state: AuthState): Partial<AuthState> => {
+      return { token: state.token };
+    }, // projection to keep specific slices in sync
     // parse: (stateString: string) => State, // custom parsing from storage - `JSON.parse` by default
     // stringify: (state: User) => string, // custom stringification - `JSON.stringify` by default
     storage: () => localStorage, // factory to select storage to sync with
