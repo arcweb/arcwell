@@ -54,7 +54,7 @@ files with starter config:
 
 You can also double-check that things are good by confirming the Docker
 Compose configuration is now working. If this command displays configuration
-and exists successfully, you are good to go:
+and exits successfully, you are good to go:
 
 ```
 docker compose config
