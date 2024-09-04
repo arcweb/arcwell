@@ -79,6 +79,15 @@ Arcwell Server:
 
 Arcwell Admin:
 * Browse to the root of the admin at http://localhost:4200
+* Login with seeded dev credentials (see below)
+
+Environment seed data will create user credentials for you:
+
+| Email                        | Password       | Role |
+|------------------------------|----------------|------|
+| dev-admin@email.com          | Password12345! | Super Admin |
+| dev-limited-admin@email.com  | Password12345! | Limited Admin  |
+| dev-guest@email.com          | Password12345! | Guest |
 
 
 ## Docker Services

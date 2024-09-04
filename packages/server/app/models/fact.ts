@@ -13,9 +13,6 @@ export default class Fact extends BaseModel {
   @column()
   declare typeKey: string
 
-  @belongsTo(() => FactType)
-  declare factType: BelongsTo<typeof FactType>
-
   @column()
   declare personId: string
 
@@ -43,12 +40,15 @@ export default class Fact extends BaseModel {
   @column()
   declare tags: string[]
 
-  @hasOne(() => Person)
-  declare person: HasOne<typeof Person>
+  @belongsTo(() => FactType, { foreignKey: 'typeKey', localKey: 'key' })
+  declare factType: BelongsTo<typeof FactType>
 
-  @hasOne(() => Resource)
-  declare resource: HasOne<typeof Resource>
+  @belongsTo(() => Person)
+  declare person: BelongsTo<typeof Person>
 
-  @hasOne(() => Event)
-  declare event: HasOne<typeof Event>
+  @belongsTo(() => Resource)
+  declare resource: BelongsTo<typeof Resource>
+
+  @belongsTo(() => Event)
+  declare event: BelongsTo<typeof Event>
 }
