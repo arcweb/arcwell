@@ -66,10 +66,7 @@ export class EventComponent implements OnInit {
       { value: '', disabled: true },
       Validators.required,
     ),
-    occurredAt: new FormControl(
-      { value: '', disabled: true },
-      Validators.required,
-    ),
+    occurredAt: new FormControl({ value: '', disabled: true }),
     meta: new FormControl({ value: '', disabled: true }),
   });
 
@@ -93,7 +90,7 @@ export class EventComponent implements OnInit {
             name: this.eventStore.event()?.name,
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
-            occurredAt: this.eventStore.event()?.occcurredAt,
+            occurredAt: this.eventStore.event()?.occurredAt,
             meta: this.eventStore.event()?.meta,
           });
         });
@@ -118,7 +115,7 @@ export class EventComponent implements OnInit {
   onCancel() {
     if (this.eventStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'all-people']);
+      this.router.navigate(['project-management', 'events', 'all-events']);
     } else {
       this.eventStore.toggleEditMode();
     }

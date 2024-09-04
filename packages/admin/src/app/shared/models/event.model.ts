@@ -40,8 +40,8 @@ export class EventModel {
     this.source = data.source;
     this.typeKey = data.typeKey;
     this.meta = data.meta;
-    this.occurredAt = data.occcurredAt
-      ? DateTime.fromISO(data.occcurredAt)
+    this.occurredAt = data.occurredAt
+      ? DateTime.fromISO(data.occurredAt)
       : undefined;
     this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);

@@ -58,7 +58,11 @@ export const EventStore = signalStore(
         } else {
           patchState(
             store,
-            { event: eventResponse.data, eventTypes: eventTypesResponse.data },
+            {
+              event: eventResponse.data,
+              eventTypes: eventTypesResponse.data,
+              isReady: true,
+            },
             setFulfilled(),
           );
         }
