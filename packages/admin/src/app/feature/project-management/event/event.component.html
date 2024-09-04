@@ -82,5 +82,27 @@
         </mat-error>
       }
     </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!eventStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !eventStore.inEditMode() || !eventForm.valid || !eventForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
   </form>
 }
