@@ -2,6 +2,7 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { EventModel } from '@app/shared/models/event.model';
+import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
 import {
   setErrors,
@@ -19,7 +20,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 
 interface EventsState {
-  events: EventModel[];
+  events: EventType[];
   limit: number;
   offset: number;
   totalData: number;

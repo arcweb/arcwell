@@ -29,6 +29,7 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'aw-event',
@@ -90,7 +91,9 @@ export class EventComponent implements OnInit {
             name: this.eventStore.event()?.name,
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
-            occurredAt: this.eventStore.event()?.occurredAt,
+            occurredAt: this.eventStore.event()?.occurredAt
+              ? this.eventStore.event()?.occurredAt.toString()
+              : null,
             meta: this.eventStore.event()?.meta,
           });
         });
