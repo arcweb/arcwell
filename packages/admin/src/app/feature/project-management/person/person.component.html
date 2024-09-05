@@ -71,40 +71,6 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="tags-chip-list">
-      <mat-label>Tags</mat-label>
-      <mat-chip-grid #chipGrid aria-label="Tag selection">
-        @for (tag of personStore.sortedTags(); track $index) {
-          <mat-chip-row (removed)="personStore.removeTag(tag)">
-            {{ tag.pathname }}
-            <button matChipRemove [attr.aria-label]="'remove ' + tag">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-        }
-      </mat-chip-grid>
-      <input
-        placeholder="Enter new tag and/or search..."
-        type="text"
-        formControlName="searchTag"
-        [value]="personStore.searchText() ?? ''"
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto"
-        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event)"
-      />
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="selected($event)"
-      >
-        @if (personStore.filteredTags()) {
-          @for (tag of personStore.filteredTags(); track tag.id) {
-            <mat-option [value]="tag.pathname">{{ tag.pathname }}</mat-option>
-          }
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-
     <div class="form-button-container">
       <button
         mat-button
@@ -127,4 +93,10 @@
       </button>
     </div>
   </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="personStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
 }

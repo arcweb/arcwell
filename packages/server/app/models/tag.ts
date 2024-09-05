@@ -5,7 +5,7 @@ import Person from '#models/person'
 
 export default class Tag extends BaseModel {
   @column({ isPrimary: true })
-  declare id: number
+  declare id: string
 
   @column()
   declare pathname: string

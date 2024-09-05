@@ -1,11 +1,9 @@
 import {
   Component,
-  computed,
   DestroyRef,
   effect,
   inject,
   Input,
-  model,
   OnInit,
 } from '@angular/core';
 import {
@@ -16,7 +14,6 @@ import {
   FormSubmittedEvent,
   ReactiveFormsModule,
   Validators,
-  ValueChangeEvent,
 } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -32,19 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { TagType } from '@schemas/tag.schema';
 
 @Component({
   selector: 'aw-person',
@@ -62,13 +48,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
     MatIcon,
     RouterLink,
     MatIconButton,
-    MatChipGrid,
-    MatChipRow,
     FormsModule,
-    MatChipInput,
-    MatAutocompleteTrigger,
-    MatAutocomplete,
-    MatChipRemove,
+    TagsFormComponent,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -104,20 +85,7 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
-    tags: new FormControl(
-      {
-        value: [],
-        disabled: true,
-      },
-      Validators.required,
-    ),
-    searchTag: new FormControl({
-      value: '',
-      disabled: true,
-    }),
   });
-
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor() {
     effect(() => {
@@ -139,7 +107,6 @@ export class PersonComponent implements OnInit {
             familyName: this.personStore.person()?.familyName,
             givenName: this.personStore.person()?.givenName,
             personType: this.personStore.person()?.personType,
-            tags: this.personStore.person()?.tags,
           });
         });
       }
@@ -154,10 +121,9 @@ export class PersonComponent implements OnInit {
           } else {
             this.personStore.updatePerson(this.personForm.value);
           }
-        } else if (event instanceof ValueChangeEvent) {
-          console.log('ValueChangeEvent', event.value.searchTag);
-          this.personStore.searchTags(event.value.searchTag);
         }
+        // else if (event instanceof ValueChangeEvent) {
+        // }
         // This is here for an example.  Also, there are other events that can be caught
       });
   }
@@ -172,7 +138,6 @@ export class PersonComponent implements OnInit {
   }
 
   onDelete() {
-    // TODO: show confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm delete',
@@ -201,18 +166,10 @@ export class PersonComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  add(event: MatChipInputEvent): void {
-    const tag = (event.value || '').trim();
-    if (tag) {
-      this.personStore.addTag(tag);
-    }
-    // Clear the input value
-    this.personForm.controls.searchTag.setValue('');
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.personStore.addTag(event.option.viewValue);
-    this.personForm.controls.searchTag.setValue('');
-    event.option.deselect();
+  onSetTags(tags: TagType[]): void {
+    console.log('Now save the tags', tags);
+    this.personStore.setTags(tags).then(resp => {
+      console.log('OK DONE SAVIN TAGS', resp);
+    });
   }
 }

@@ -28,6 +28,10 @@ export const TagsResponseSchema = z.object({
     .optional(),
 });
 
+export const TagsSimpleResponseSchema = z.object({
+  data: z.array(z.string()),
+});
+
 // Single Person
 export const TagResponseSchema = z.object({
   data: TagSchema,
@@ -37,6 +41,7 @@ export type TagType = z.infer<typeof TagSchema>;
 export type TagUpdateType = z.infer<typeof TagUpdateSchema>;
 export type TagsResponseType = z.infer<typeof TagsResponseSchema>;
 export type TagResponseType = z.infer<typeof TagResponseSchema>;
+export type TagsSimpleResponseType = z.infer<typeof TagsSimpleResponseSchema>;
 
 // Deserializer / Serializer
 export const deserializeTag = (data: TagType): TagModel => {

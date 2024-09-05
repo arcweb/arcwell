@@ -93,4 +93,8 @@ router.get('users/full', [GetAllFullUsersController]).as('users.full')
 router.resource('users', UsersController).apiOnly()
 
 // tag routes
-router.resource('tags', TagsController).apiOnly()
+router.group(() => {
+  router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+  router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
+  router.resource('tags', TagsController).apiOnly()
+})
