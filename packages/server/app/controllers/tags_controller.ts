@@ -138,8 +138,6 @@ export default class TagsController {
       )
 
       for (let tagString of cleanRequest.tags) {
-        console.log('tag=', tagString)
-
         let dbTag = await Tag.findBy('pathname', tagString)
         if (!dbTag) {
           const newTag = new Tag()

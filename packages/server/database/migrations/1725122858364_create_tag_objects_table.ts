@@ -8,37 +8,13 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
       table.uuid('tag_id').notNullable()
       table.uuid('object_id').notNullable()
-      table
-        .enu(
-          'object_type',
-          [
-            'activities',
-            'activity_types',
-            'cohorts',
-            'events',
-            'event_types',
-            'facts',
-            'fact_types',
-            'people',
-            'person_types',
-            'resources',
-            'resource_types',
-            'users',
-          ],
-          {
-            useNative: true,
-            enumName: 'tag_object_object_type',
-            existingType: false,
-            schemaName: 'public',
-          }
-        )
-        .notNullable()
+      table.string('object_type').notNullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
 
       // Constraints
       table.foreign('tag_id').references('tags.id').onDelete('CASCADE')
-      table.unique(['tag_id', 'object_id'])
+      table.unique(['tag_id', 'object_id', 'object_type'])
 
       // Indices
       table.index(['tag_id', 'object_id', 'object_type'], 'idx_tag_object_object_type')
@@ -48,6 +24,5 @@ export default class extends BaseSchema {
 
   async down() {
     this.schema.dropTable(this.tableName)
-    this.schema.raw('DROP TYPE "tag_object_object_type"')
   }
 }
