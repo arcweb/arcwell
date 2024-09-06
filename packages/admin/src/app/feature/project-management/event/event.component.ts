@@ -113,7 +113,7 @@ export class EventComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventStore.inCreateMode()) {
-            this.eventStore.create(this.eventForm.value);
+            this.eventStore.create(this.cleanDateData());
           } else {
             this.cleanDateData();
             this.eventStore.update(this.cleanDateData());
