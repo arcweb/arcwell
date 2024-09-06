@@ -51,7 +51,7 @@ export const deserializeEventType = (data: EventTypeType): EventTypeModel => {
 export const serializeEventType = (data: EventTypeModel): EventTypeType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt?.toISO(),
+    updatedAt: data.updatedAt?.toISO(),
   };
 };
