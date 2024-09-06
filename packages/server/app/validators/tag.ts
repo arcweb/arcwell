@@ -21,17 +21,18 @@ export const updateTagValidator = vine.compile(vine.object({}))
 export const setTagsValidator = vine.compile(
   vine.object({
     objectType: vine.enum([
-      'users',
-      'people',
-      'events',
-      'resources',
-      'facts',
-      'activity',
-      'person_types',
-      'event_types',
-      'resource_types',
-      'fact_types',
+      'activities',
       'activity_types',
+      'cohorts',
+      'events',
+      'event_types',
+      'facts',
+      'fact_types',
+      'people',
+      'person_types',
+      'resources',
+      'resource_types',
+      'users',
     ]),
     tags: vine.array(vine.string()),
   })

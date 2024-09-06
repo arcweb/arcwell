@@ -7,25 +7,25 @@ export default class extends BaseSchema {
       RETURNS TRIGGER AS $$
       BEGIN
           -- For INSERT or UPDATE operations, check and enforce foreign key constraints
-          IF NEW.object_type = 'people' THEN
-              IF NOT EXISTS (SELECT 1 FROM public.people WHERE id = NEW.object_id) THEN
-                  RAISE EXCEPTION 'Object ID % does not exist in people', NEW.object_id;
+          IF NEW.object_type = 'activities' THEN
+              IF NOT EXISTS (SELECT 1 FROM public.activities WHERE id = NEW.object_id) THEN
+                  RAISE EXCEPTION 'Object ID % does not exist in activities', NEW.object_id;
               END IF;
-          ELSIF NEW.object_type = 'events' THEN
-              IF NOT EXISTS (SELECT 1 FROM public.events WHERE id = NEW.object_id) THEN
-                  RAISE EXCEPTION 'Object ID % does not exist in events', NEW.object_id;
-              END IF;
-          ELSIF NEW.object_type = 'resources' THEN
-              IF NOT EXISTS (SELECT 1 FROM public.resources WHERE id = NEW.object_id) THEN
-                  RAISE EXCEPTION 'Object ID % does not exist in resources', NEW.object_id;
+          ELSIF NEW.object_type = 'activity_types' THEN
+              IF NOT EXISTS (SELECT 1 FROM public.activity_types WHERE id = NEW.object_id) THEN
+                  RAISE EXCEPTION 'Object ID % does not exist in activity_types', NEW.object_id;
               END IF;
           ELSIF NEW.object_type = 'cohorts' THEN
-              IF NOT EXISTS (SELECT 1 FROM public.resources WHERE id = NEW.object_id) THEN
+              IF NOT EXISTS (SELECT 1 FROM public.cohorts WHERE id = NEW.object_id) THEN
                   RAISE EXCEPTION 'Object ID % does not exist in cohorts', NEW.object_id;
               END IF;
           ELSIF NEW.object_type = 'event_types' THEN
               IF NOT EXISTS (SELECT 1 FROM public.event_types WHERE id = NEW.object_id) THEN
                   RAISE EXCEPTION 'Object ID % does not exist in event_types', NEW.object_id;
+              END IF;
+          ELSIF NEW.object_type = 'events' THEN
+              IF NOT EXISTS (SELECT 1 FROM public.events WHERE id = NEW.object_id) THEN
+                  RAISE EXCEPTION 'Object ID % does not exist in events', NEW.object_id;
               END IF;
           ELSIF NEW.object_type = 'fact_types' THEN
               IF NOT EXISTS (SELECT 1 FROM public.fact_types WHERE id = NEW.object_id) THEN
@@ -35,6 +35,10 @@ export default class extends BaseSchema {
               IF NOT EXISTS (SELECT 1 FROM public.facts WHERE id = NEW.object_id) THEN
                   RAISE EXCEPTION 'Object ID % does not exist in facts', NEW.object_id;
               END IF;
+          ELSIF NEW.object_type = 'people' THEN
+              IF NOT EXISTS (SELECT 1 FROM public.people WHERE id = NEW.object_id) THEN
+                  RAISE EXCEPTION 'Object ID % does not exist in people', NEW.object_id;
+              END IF;
           ELSIF NEW.object_type = 'person_types' THEN
               IF NOT EXISTS (SELECT 1 FROM public.person_types WHERE id = NEW.object_id) THEN
                   RAISE EXCEPTION 'Object ID % does not exist in person_types', NEW.object_id;
@@ -42,6 +46,10 @@ export default class extends BaseSchema {
           ELSIF NEW.object_type = 'resource_types' THEN
               IF NOT EXISTS (SELECT 1 FROM public.resource_types WHERE id = NEW.object_id) THEN
                   RAISE EXCEPTION 'Object ID % does not exist in resource_types', NEW.object_id;
+              END IF;
+          ELSIF NEW.object_type = 'resources' THEN
+              IF NOT EXISTS (SELECT 1 FROM public.resources WHERE id = NEW.object_id) THEN
+                  RAISE EXCEPTION 'Object ID % does not exist in resources', NEW.object_id;
               END IF;
           ELSIF NEW.object_type = 'users' THEN
               IF NOT EXISTS (SELECT 1 FROM public.users WHERE id = NEW.object_id) THEN
@@ -69,7 +77,7 @@ export default class extends BaseSchema {
       DROP TRIGGER tag_object_enforce_fk_trigger ON public.tag_object;
 
       -- Remove the enforce_object_type_fk function
-      DROP FUNCTION  enforce_object_type_fk();
+      DROP FUNCTION enforce_object_type_fk();
     `)
   }
 }

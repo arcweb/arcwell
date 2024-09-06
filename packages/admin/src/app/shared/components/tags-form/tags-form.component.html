@@ -21,7 +21,7 @@
         placeholder="Enter new tag and/or search..."
         type="text"
         formControlName="searchTag"
-        [value]="tagStore.searchText() ?? ''"
+        [value]="tagStore.searchText()"
         [matChipInputFor]="chipGrid"
         [matAutocomplete]="auto"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"

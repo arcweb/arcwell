@@ -12,13 +12,15 @@ export default class extends BaseSchema {
         .enu(
           'object_type',
           [
+            'activities',
+            'activity_types',
             'cohorts',
-            'people',
-            'person_types',
             'events',
             'event_types',
             'facts',
             'fact_types',
+            'people',
+            'person_types',
             'resources',
             'resource_types',
             'users',

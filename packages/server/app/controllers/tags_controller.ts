@@ -149,7 +149,7 @@ export default class TagsController {
         }
 
         await trx.rawQuery(
-          `INSxERT INTO public.tag_object
+          `INSERT INTO public.tag_object
             (id, tag_id, object_id, object_type, created_at, updated_at)
             VALUES(gen_random_uuid(), :tagId, :objectId, :objectType, now(), now());`,
           {
