@@ -2,6 +2,7 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventTypeValidator, updateEventTypeValidator } from '#validators/event_type'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class EventTypesController {
   /**
@@ -12,6 +13,8 @@ export default class EventTypesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
+    let countQuery = db.from('event_types')
+
     let query = EventType.query()
 
     if (limit) {
@@ -21,7 +24,14 @@ export default class EventTypesController {
       query.offset(offset)
     }
 
-    return { data: await query }
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
+    }
   }
 
   /**
@@ -31,7 +41,8 @@ export default class EventTypesController {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
     const newEventType = await EventType.create(request.body())
-    return { data: newEventType }
+    const fullEventType = await EventType.query().where('id', newEventType.id).firstOrFail()
+    return { data: fullEventType }
   }
 
   /**
