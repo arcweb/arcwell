@@ -17,23 +17,9 @@ export const updateTagValidator = vine.compile(vine.object({}))
 /**
  * Validates the person's set tags action
  */
-// TODO: Add other objectType enums and maybe make it more global
 export const setTagsValidator = vine.compile(
   vine.object({
-    objectType: vine.enum([
-      'activities',
-      'activity_types',
-      'cohorts',
-      'events',
-      'event_types',
-      'facts',
-      'fact_types',
-      'people',
-      'person_types',
-      'resources',
-      'resource_types',
-      'users',
-    ]),
+    objectType: vine.string(),
     tags: vine.array(vine.string()),
   })
 )
