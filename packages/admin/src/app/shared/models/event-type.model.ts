@@ -14,11 +14,7 @@ export class EventTypeModel {
     this.key = data.key;
     this.name = data.name;
     this.tags = data.tags;
-    this.createdAt = data.createdAt
-      ? DateTime.fromISO(data.createdAt)
-      : undefined;
-    this.updatedAt = data.updatedAt
-      ? DateTime.fromISO(data.updatedAt)
-      : undefined;
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
   }
 }
