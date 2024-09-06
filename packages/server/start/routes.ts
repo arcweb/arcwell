@@ -11,6 +11,7 @@ import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
+const CohortsController = () => import('#controllers/cohorts_controller')
 const FactTypesController = () => import('#controllers/fact_types_controller')
 const FactsController = () => import('#controllers/facts_controller')
 const RolesController = () => import('#controllers/roles_controller')
@@ -48,6 +49,19 @@ router
   })
   .as('auth')
   .prefix('auth')
+
+// cohort routes
+router.group(() => {
+  router.resource('cohorts', CohortsController).apiOnly()
+  router
+    .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
+    .as('cohorts.showWithPeople')
+  router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
+  router
+    .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
+    .as('cohorts.detachPeople')
+  router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+})
 
 // fact routes
 router.resource('facts', FactsController).apiOnly()
