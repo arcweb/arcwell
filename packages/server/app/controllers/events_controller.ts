@@ -67,7 +67,7 @@ export default class EventsController {
     await auth.authenticate()
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'typeKey'])
+    const cleanRequest = request.only(['name', 'typeKey', 'source', 'occurredAt'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
     return { data: updatedEvent }
