@@ -16,8 +16,22 @@ Arcwell itself is composed of:
 - **Arcwell Client Libraries** – SDKs for developers to leverage when integrating Arcwell in their applications
 - **Embedded EHR** – FHIR-compliant electronic health record system for cache, local record, and integration with health systems
 
+This repository includes the code for _Arcwell Server_ and _Arcwell Admin_.
 
 ## Quickstart
+
+### 0. Prerequisites
+
+Arcwell is written primarily in TypeScript. In order to _contribute_ to the
+software, it is recommended you install local software to support development
+in the JavaScript/TypeScript stack and supporting plugins in your IDE of
+choice.
+
+Arcwell is also written with support for Docker containers. In order to simply
+_run_ the software, you must install Docker-compatible containerization
+software. We recommend you install
+[Docker Desktop](https://www.docker.com/products/docker-desktop/)
+and have adapted our instructions and guides based on it.
 
 ### 1. Expand local dev environment files
 
@@ -40,7 +54,7 @@ files with starter config:
 
 You can also double-check that things are good by confirming the Docker
 Compose configuration is now working. If this command displays configuration
-and exists successfully, you are good to go:
+and exits successfully, you are good to go:
 
 ```
 docker compose config
@@ -65,11 +79,14 @@ docker compose up
 ### 3. Run Migrations and Seeds
 
 Prepping your local development database with schema structure and required
-seed data is an important step.
+seed data is an important step. Run this command from your project root:
 
 ```
 docker compose exec server node ace migration:refresh --seed
 ```
+☝️ Note: The `docker compose exec` invocation is used to run commands against
+a running container. This command, for example, is equivalent to running the
+command `node ace migration:refresh --seed` on the server application itself.
 
 ### 4. Visit Server and Admin in browser
 
@@ -126,6 +143,9 @@ services for running a battery of commands. For example:
 docker compose exec server bash
 ```
 
+## Deployment & Hosting
+
+_Guidance and documentation coming soon._
 
 ## Additional Documentation
 

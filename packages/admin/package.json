@@ -30,6 +30,7 @@
     "@ngrx/store-devtools": "^18.0.2",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4",
+    "ngx-mask": "18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zod": "^3.23.8",
