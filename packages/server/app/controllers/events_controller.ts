@@ -16,7 +16,7 @@ export default class EventsController {
     const offset = queryData['offset']
 
     let countQuery = db.from('events')
-    let query = Event.query().preload('eventType')
+    let query = Event.query().orderBy('name').preload('eventType')
 
     if (eventTypeId) {
       const eventType = await EventType.findOrFail(eventTypeId)
