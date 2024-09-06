@@ -2,21 +2,17 @@
   <div class="main-container-header">
     <h2>All Events</h2>
     <div class="icons-container">
-      <mat-icon
-        fontIcon="add_circle_outline"
-        aria-hidden="false"
-        aria-label="Create event icon"
-      ></mat-icon>
-      <mat-icon
-        fontIcon="account_tree"
-        aria-hidden="false"
-        aria-label="Filter icon"
-      ></mat-icon>
-      <mat-icon
-        fontIcon="search"
-        aria-hidden="false"
-        aria-label="Search icon"
-      ></mat-icon>
+      <button mat-icon-button [routerLink]="['create']">
+        <mat-icon aria-label="Create event icon button">
+          add_circle_outline
+        </mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon aria-label="Search icon button">search</mat-icon>
+      </button>
     </div>
   </div>
 

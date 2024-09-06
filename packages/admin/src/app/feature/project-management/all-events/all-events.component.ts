@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -20,14 +20,13 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { DateTime } from 'luxon';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'aw-all-events',
   standalone: true,
   imports: [
     JsonPipe,
-    ErrorContainerComponent,
-    MatIcon,
     MatTable,
     MatColumnDef,
     MatRowDef,
@@ -39,6 +38,10 @@ import { DateTime } from 'luxon';
     MatHeaderCell,
     MatHeaderRow,
     MatPaginator,
+    ErrorContainerComponent,
+    MatIcon,
+    RouterLink,
+    MatIconButton,
   ],
   providers: [EventsStore],
   templateUrl: './all-events.component.html',
