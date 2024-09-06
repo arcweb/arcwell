@@ -12,7 +12,8 @@ export default class CohortsController {
   /**
    * Display a list of resource
    */
-  async index({ request }: HttpContext) {
+  async index({ request, auth }: HttpContext) {
+    await auth.authenticate()
     const queryData = request.qs()
     const limit = queryData['limit']
     const offset = queryData['offset']
@@ -43,11 +44,12 @@ export default class CohortsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createCohortValidator)
+    const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
     // TODO: remove this when we change the type of tags
-    if (request.body().tags) {
-      request.body().tags = JSON.stringify(request.body().tags)
+    if (cleanRequest.tags) {
+      cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
-    const newCohort = await Cohort.create(request.body())
+    const newCohort = await Cohort.create(cleanRequest)
     return {
       data: newCohort,
     }
@@ -56,7 +58,8 @@ export default class CohortsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
+  async show({ params, auth }: HttpContext) {
+    await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
       data: await Cohort.query().where('id', params.id).firstOrFail(),
@@ -66,7 +69,8 @@ export default class CohortsController {
   /**
    * Show individual record with people
    */
-  async showWithPeople({ params }: HttpContext) {
+  async showWithPeople({ params, auth }: HttpContext) {
+    await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
       data: await Cohort.query().where('id', params.id).preload('people').firstOrFail(),
@@ -125,7 +129,9 @@ export default class CohortsController {
     await request.validateUsing(peopleIdsValidator)
     const cleanRequest = request.only(['peopleIds'])
     const cohort = await Cohort.findOrFail(params.id)
+
     await cohort.related('people').detach(cleanRequest.peopleIds)
+
     response.status(204).send('')
   }
 
@@ -138,6 +144,7 @@ export default class CohortsController {
     await request.validateUsing(peopleIdsValidator)
     const cleanRequest = request.only(['peopleIds'])
     const cohort = await Cohort.findOrFail(params.id)
+
     await cohort.related('people').sync(cleanRequest.peopleIds)
 
     response.status(201).send('')
