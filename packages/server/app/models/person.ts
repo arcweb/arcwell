@@ -43,20 +43,19 @@ export default class Person extends BaseModel {
   })
   declare cohorts: ManyToMany<typeof Cohort>
 
-  @manyToMany(() => Tag, {
-    pivotTimestamps: true,
-    pivotTable: 'tag_object',
-    pivotForeignKey: 'object_id',
-    pivotRelatedForeignKey: 'tag_id',
-    // pivotColumns: ['object_type'],
-  })
-  declare tags: ManyToMany<typeof Tag>
-
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
 
   @afterDelete()
   static async detachTags(person: Person) {
