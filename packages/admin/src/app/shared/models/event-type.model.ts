@@ -6,15 +6,19 @@ export class EventTypeModel {
   public key: string;
   public name: string;
   public tags: string[];
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
   constructor(data: EventTypeType) {
     this.id = data.id;
     this.key = data.key;
     this.name = data.name;
     this.tags = data.tags;
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+    this.createdAt = data.createdAt
+      ? DateTime.fromISO(data.createdAt)
+      : undefined;
+    this.updatedAt = data.updatedAt
+      ? DateTime.fromISO(data.updatedAt)
+      : undefined;
   }
 }

@@ -86,10 +86,7 @@ export class AllEventsComponent {
     ]);
   }
 
-  convertDate(dateTime: DateTime | undefined) {
-    if (dateTime) {
-      return dateTime.toLocaleString(DateTime.DATETIME_SHORT);
-    }
-    return '';
+  convertDateToLocal(dateTime: DateTime | undefined) {
+    return dateTime?.toLocaleString(DateTime.DATETIME_SHORT) || '';
   }
 }

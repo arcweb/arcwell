@@ -69,9 +69,10 @@
     </mat-form-field>
 
     <mat-form-field>
+      <mat-label>Occured At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
       <input
         matInput
-        placeholder="Occurred At"
+        placeholder="MM/DD/YYYY HH:MM AM or PM"
         formControlName="occurredAt"
         mask="M0/d0/0000, Hh:m0 SS"
         [leadZeroDateTime]="true"
