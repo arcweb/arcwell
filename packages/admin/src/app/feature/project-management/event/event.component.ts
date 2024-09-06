@@ -7,13 +7,11 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  AbstractControl,
   ControlEvent,
   FormControl,
   FormGroup,
   FormSubmittedEvent,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
@@ -33,6 +31,10 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { DateTime } from 'luxon';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import {
+  cleanDateData,
+  prepDateData,
+} from '@app/shared/helpers/date-format.helper';
 
 @Component({
   selector: 'aw-event',
@@ -96,7 +98,7 @@ export class EventComponent implements OnInit {
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
             occurredAt: this.eventStore.event()?.occurredAt
-              ? this.prepDateData(
+              ? prepDateData(
                   this.eventStore
                     .event()
                     ?.occurredAt.toLocaleString(DateTime.DATETIME_SHORT),
@@ -113,10 +115,10 @@ export class EventComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventStore.inCreateMode()) {
-            this.eventStore.create(this.cleanDateData());
+            console.log(cleanDateData(this.eventForm, 'occurredAt'));
+            this.eventStore.create(cleanDateData(this.eventForm, 'occurredAt'));
           } else {
-            this.cleanDateData();
-            this.eventStore.update(this.cleanDateData());
+            this.eventStore.update(cleanDateData(this.eventForm, 'occurredAt'));
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
@@ -161,32 +163,5 @@ export class EventComponent implements OnInit {
 
   compareEventTypes(pt1: EventTypeType, pt2: EventTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
-  }
-
-  cleanDateData() {
-    if (this.eventForm.controls.occurredAt.value) {
-      return {
-        ...this.eventForm.value,
-        occurredAt: DateTime.fromFormat(
-          this.eventForm.controls.occurredAt.value,
-          'MM/dd/yyyy, hh:mm a',
-        ),
-      };
-    } else {
-      return { ...this.eventForm.value };
-    }
-  }
-
-  prepDateData(dateTime: string) {
-    const split = dateTime.split(/([\s/:]+)/);
-
-    const adjusted = [0, 2, 6, 8];
-    for (const x of adjusted) {
-      if (split[x].length === 1) {
-        split[x] = '0' + split[x];
-      }
-    }
-    const rVal = split.join('');
-    return rVal;
   }
 }

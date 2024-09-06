@@ -87,6 +87,6 @@ export class AllEventsComponent {
   }
 
   convertDateToLocal(dateTime: DateTime | undefined) {
-    return dateTime?.toLocaleString(DateTime.DATETIME_SHORT) || '';
+    return dateTime?.toLocaleString(DateTime.DATETIME_SHORT) ?? '';
   }
 }
