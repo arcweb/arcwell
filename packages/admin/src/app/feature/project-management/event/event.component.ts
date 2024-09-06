@@ -179,7 +179,7 @@ export class EventComponent implements OnInit {
 
   prepDateData(dateTime: string) {
     const split = dateTime.split(/([\s/:]+)/);
-    // for some reason the hour does not fill the 0 if the hour is a single digit
+
     const adjusted = [0, 2, 6, 8];
     for (const x of adjusted) {
       if (split[x].length === 1) {
