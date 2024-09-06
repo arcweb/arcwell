@@ -19,6 +19,7 @@ import { JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'aw-all-events',
@@ -80,5 +81,12 @@ export class AllEventsComponent {
       'all-events',
       eventId,
     ]);
+  }
+
+  convertDate(dateTime: DateTime | undefined) {
+    if (dateTime) {
+      return dateTime.toLocaleString(DateTime.DATETIME_SHORT);
+    }
+    return '';
   }
 }

@@ -7,11 +7,13 @@ import {
   OnInit,
 } from '@angular/core';
 import {
+  AbstractControl,
   ControlEvent,
   FormControl,
   FormGroup,
   FormSubmittedEvent,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
@@ -21,7 +23,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { EventType, Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { EventStore } from './event.store';
 import { MatDialog } from '@angular/material/dialog';
@@ -30,6 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { DateTime } from 'luxon';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'aw-event',
@@ -47,8 +50,9 @@ import { DateTime } from 'luxon';
     MatIcon,
     RouterLink,
     MatIconButton,
+    NgxMaskDirective,
   ],
-  providers: [EventStore],
+  providers: [EventStore, provideNgxMask()],
   templateUrl: './event.component.html',
   styleUrl: './event.component.scss',
 })
@@ -92,7 +96,11 @@ export class EventComponent implements OnInit {
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
             occurredAt: this.eventStore.event()?.occurredAt
-              ? this.eventStore.event()?.occurredAt.toString()
+              ? this.prepDateData(
+                  this.eventStore
+                    .event()
+                    ?.occurredAt.toLocaleString(DateTime.DATETIME_SHORT),
+                )
               : null,
             meta: this.eventStore.event()?.meta,
           });
@@ -107,7 +115,8 @@ export class EventComponent implements OnInit {
           if (this.eventStore.inCreateMode()) {
             this.eventStore.create(this.eventForm.value);
           } else {
-            this.eventStore.update(this.eventForm.value);
+            this.cleanDateData();
+            this.eventStore.update(this.cleanDateData());
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
@@ -152,5 +161,32 @@ export class EventComponent implements OnInit {
 
   compareEventTypes(pt1: EventTypeType, pt2: EventTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  cleanDateData() {
+    if (this.eventForm.controls.occurredAt.value) {
+      return {
+        ...this.eventForm.value,
+        occurredAt: DateTime.fromFormat(
+          this.eventForm.controls.occurredAt.value,
+          'MM/dd/yyyy, hh:mm a',
+        ),
+      };
+    } else {
+      return { ...this.eventForm.value };
+    }
+  }
+
+  prepDateData(dateTime: string) {
+    const split = dateTime.split(/([\s/:]+)/);
+    // for some reason the hour does not fill the 0 if the hour is a single digit
+    const adjusted = [0, 2, 6, 8];
+    for (const x of adjusted) {
+      if (split[x].length === 1) {
+        split[x] = '0' + split[x];
+      }
+    }
+    const rVal = split.join('');
+    return rVal;
   }
 }

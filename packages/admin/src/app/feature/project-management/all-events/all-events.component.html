@@ -43,7 +43,7 @@
     <ng-container matColumnDef="occurredAt">
       <th mat-header-cell *matHeaderCellDef>Occurred At</th>
       <td mat-cell *matCellDef="let element">
-        {{ element.occurredAt }}
+        {{ convertDate(element.occurredAt) }}
       </td>
     </ng-container>
 

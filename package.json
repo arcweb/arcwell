@@ -30,5 +30,8 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "ngx-mask": "18.0.0"
   }
 }

@@ -71,11 +71,20 @@
     <mat-form-field>
       <input
         matInput
-        type="datetime-local"
         placeholder="Occurred At"
         formControlName="occurredAt"
+        mask="M0/d0/0000, Hh:m0 SS"
+        [leadZeroDateTime]="true"
+        [dropSpecialCharacters]="false"
+        [apm]="true"
       />
     </mat-form-field>
+    @if (
+      eventForm.controls.occurredAt.invalid &&
+      !eventForm.controls.occurredAt.pristine
+    ) {
+      <mat-error>Occured At format must be DD/MM/YYYY HH:MM AM or PM</mat-error>
+    }
 
     <div class="form-button-container">
       <button
