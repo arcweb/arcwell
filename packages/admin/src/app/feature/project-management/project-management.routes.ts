@@ -8,6 +8,7 @@ import { AllPeopleComponent } from '@feature/project-management/all-people/all-p
 import { PersonComponent } from '@feature/project-management/person/person.component';
 import { PersonTypeComponent } from '@feature/project-management/person_type/person-type.component';
 import { EventComponent } from '@feature/project-management/event/event.component';
+import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -49,7 +50,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       },
       {
         path: 'events/event-types',
-        component: PlaceholderComponent,
+        component: AllEventTypesComponent,
       },
       {
         path: 'events/all-events',
