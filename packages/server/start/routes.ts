@@ -16,7 +16,7 @@ const FactTypesController = () => import('#controllers/fact_types_controller')
 const FactsController = () => import('#controllers/facts_controller')
 const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
-const GetAllFullUsersController = () => import('#controllers/full_user_controller')
+// const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 const PeopleController = () => import('#controllers/people_controller')
 const PersonTypesController = () => import('#controllers/person_types_controller')
 const ResourcesController = () => import('#controllers/resources_controller')
@@ -103,8 +103,12 @@ router.group(() => {
 router.resource('roles', RolesController).apiOnly()
 
 // user routes
-router.get('users/full', [GetAllFullUsersController]).as('users.full')
+// router.get('users/full', [GetAllFullUsersController]).as('users.full')
 router.resource('users', UsersController).apiOnly()
 
 // tag routes
-router.resource('tags', TagsController).apiOnly()
+router.group(() => {
+  router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+  router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
+  router.resource('tags', TagsController).apiOnly()
+})

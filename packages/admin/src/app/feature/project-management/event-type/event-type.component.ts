@@ -29,6 +29,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
+import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { TagType } from '@schemas/tag.schema';
 
 @Component({
   selector: 'aw-event-type',
@@ -46,6 +48,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
     MatIcon,
     RouterLink,
     MatIconButton,
+    TagsFormComponent,
   ],
   providers: [EventTypeStore],
   templateUrl: './event-type.component.html',
@@ -152,5 +155,9 @@ export class EventTypeComponent implements OnInit {
 
   compareEventTypes(pt1: EventTypeType, pt2: EventTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  onSetTags(tags: TagType[]): void {
+    this.eventTypeStore.setTags(tags);
   }
 }

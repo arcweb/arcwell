@@ -10,10 +10,10 @@ import {
   ControlEvent,
   FormControl,
   FormGroup,
+  FormsModule,
   FormSubmittedEvent,
   ReactiveFormsModule,
   Validators,
-  ValueChangeEvent,
 } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -29,6 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { TagType } from '@schemas/tag.schema';
 
 @Component({
   selector: 'aw-person',
@@ -46,6 +48,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIcon,
     RouterLink,
     MatIconButton,
+    FormsModule,
+    TagsFormComponent,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -55,7 +59,7 @@ export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
-  destroyRef = inject(DestroyRef);
+  readonly destroyRef = inject(DestroyRef);
 
   @Input() personId!: string;
 
@@ -113,13 +117,14 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            this.personStore.create(this.personForm.value);
+            this.personStore.createPerson(this.personForm.value);
           } else {
-            this.personStore.update(this.personForm.value);
+            this.personStore.updatePerson(this.personForm.value);
           }
-        } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other events that can be caught
         }
+        // else if (event instanceof ValueChangeEvent) {
+        // }
+        // This is here for an example.  Also, there are other events that can be caught
       });
   }
 
@@ -133,7 +138,6 @@ export class PersonComponent implements OnInit {
   }
 
   onDelete() {
-    // TODO: show confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm delete',
@@ -144,7 +148,7 @@ export class PersonComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.personStore.delete().then(() => {
+        this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
             this.router.navigate([
@@ -160,5 +164,9 @@ export class PersonComponent implements OnInit {
 
   comparePersonTypes(pt1: PersonTypeType, pt2: PersonTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  onSetTags(tags: TagType[]): void {
+    this.personStore.setTags(tags);
   }
 }

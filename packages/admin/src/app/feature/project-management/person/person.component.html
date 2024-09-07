@@ -93,4 +93,10 @@
       </button>
     </div>
   </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="personStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
 }

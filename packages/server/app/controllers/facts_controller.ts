@@ -19,9 +19,19 @@ export default class FactsController {
 
     let query = Fact.query()
       .orderBy('observedAt', 'desc')
-      .preload('person')
-      .preload('resource')
-      .preload('event')
+      .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
+      .preload('event', (event) => {
+        event.preload('tags')
+      })
 
     if (factTypeKey) {
       query.where('typeKey', factTypeKey)
@@ -70,9 +80,19 @@ export default class FactsController {
     return {
       data: await Fact.query()
         .where('id', params.id)
-        .preload('person')
-        .preload('resource')
-        .preload('event')
+        .preload('tags')
+        .preload('person', (person) => {
+          person.preload('tags')
+          person.preload('user', (user) => {
+            user.preload('tags')
+          })
+        })
+        .preload('resource', (resource) => {
+          resource.preload('tags')
+        })
+        .preload('event', (event) => {
+          event.preload('tags')
+        })
         .firstOrFail(),
     }
   }

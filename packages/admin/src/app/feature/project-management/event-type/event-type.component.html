@@ -75,4 +75,10 @@
       </button>
     </div>
   </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="eventTypeStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
 }

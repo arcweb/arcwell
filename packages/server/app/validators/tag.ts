@@ -5,8 +5,7 @@ import vine from '@vinejs/vine'
  */
 export const createTagValidator = vine.compile(
   vine.object({
-    parent: vine.string().trim(),
-    basename: vine.string().trim(),
+    pathname: vine.string().trim(),
   })
 )
 
@@ -14,3 +13,13 @@ export const createTagValidator = vine.compile(
  * Validates the person's update action
  */
 export const updateTagValidator = vine.compile(vine.object({}))
+
+/**
+ * Validates the person's set tags action
+ */
+export const setTagsValidator = vine.compile(
+  vine.object({
+    objectType: vine.string(),
+    tags: vine.array(vine.string()),
+  })
+)

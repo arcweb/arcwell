@@ -1,7 +1,6 @@
 import {
   patchState,
   signalStore,
-  withComputed,
   withHooks,
   withMethods,
   withState,
@@ -76,17 +75,11 @@ export const AuthStore = signalStore(
     ),
     async logout() {
       patchState(store, { loginStatus: 'pending' });
-      const resp = await firstValueFrom(authService.logout());
-      if (resp && resp.errors) {
-        patchState(store, { loginStatus: 'error' });
-      } else {
-        patchState(store, initialState);
-      }
+      await firstValueFrom(authService.logout());
+      // Don't need to check if the logout was successful, just reset state
+      patchState(store, initialState);
     },
   })),
-  withComputed(state => {
-    return {};
-  }),
   withHooks({
     onInit(store) {
       effect(() => {

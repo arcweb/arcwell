@@ -27,8 +27,10 @@ import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { PersonTypeStore } from '@feature/project-management/person_type/person-type.store';
+import { PersonTypeStore } from '@feature/project-management/person-type/person-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TagType } from '@schemas/tag.schema';
+import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 
 @Component({
   selector: 'aw-person-type',
@@ -46,6 +48,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatIcon,
     RouterLink,
     MatIconButton,
+    TagsFormComponent,
   ],
   providers: [PersonTypeStore],
   templateUrl: './person-type.component.html',
@@ -168,5 +171,9 @@ export class PersonTypeComponent implements OnInit {
 
   comparePersonTypes(pt1: PersonTypeType, pt2: PersonTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  onSetTags(tags: TagType[]): void {
+    this.personTypeStore.setTags(tags);
   }
 }

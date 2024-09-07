@@ -79,7 +79,7 @@ test.group('Router person type', () => {
     assert.equal(data.data.name, newRType.name)
   })
 
-  test('person type delete type', async ({ assert, client }) => {
+  test('person type delete type', async ({ client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@email.com')
     const personType = await PersonType.findBy('key', 'newtest')
 

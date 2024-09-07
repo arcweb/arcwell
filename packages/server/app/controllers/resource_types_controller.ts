@@ -12,7 +12,7 @@ export default class ResourceTypesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
-    let query = ResourceType.query()
+    let query = ResourceType.query().preload('tags').orderBy('name', 'asc')
 
     if (limit) {
       query.limit(limit)
@@ -40,7 +40,7 @@ export default class ResourceTypesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await ResourceType.query().where('id', params.id).firstOrFail(),
+      data: await ResourceType.query().preload('tags').where('id', params.id).firstOrFail(),
     }
   }
 

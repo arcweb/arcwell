@@ -19,7 +19,7 @@ export default class CohortsController {
     const offset = queryData['offset']
 
     let countQuery = db.from('cohorts')
-    let query = Cohort.query()
+    let query = Cohort.query().orderBy('name', 'asc').preload('tags')
 
     if (limit) {
       query.limit(limit)
@@ -62,7 +62,11 @@ export default class CohortsController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
-      data: await Cohort.query().where('id', params.id).firstOrFail(),
+      data: await Cohort.query()
+        .orderBy('name', 'asc')
+        .preload('tags')
+        .where('id', params.id)
+        .firstOrFail(),
     }
   }
 
@@ -72,8 +76,21 @@ export default class CohortsController {
   async showWithPeople({ params, auth }: HttpContext) {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
+    // TODO: nested people could get large.  Add pagination?
     return {
-      data: await Cohort.query().where('id', params.id).preload('people').firstOrFail(),
+      data: await Cohort.query()
+        .where('id', params.id)
+        .preload('people', (people) => {
+          people.preload('tags')
+          people.preload('personType', (personType) => {
+            personType.preload('tags')
+          })
+          people.preload('user', (user) => {
+            user.preload('tags')
+          })
+        })
+
+        .firstOrFail(),
     }
   }
 

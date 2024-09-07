@@ -24,8 +24,6 @@ test.group('Router tag', () => {
     const data = response.body()
     assert.equal(data.data.id, tag?.id)
     assert.equal(data.data.pathname, tag?.pathname)
-    assert.equal(data.data.parent, tag?.parent)
-    assert.equal(data.data.basename, tag?.basename)
   })
 
   test('tag udate test', async ({ assert, client }) => {
@@ -33,7 +31,7 @@ test.group('Router tag', () => {
     const tag = await Tag.first()
 
     const newData = {
-      basename: 'NewName',
+      pathname: 'NewName',
     }
     const response = await client
       .put(`${TAG_URL}/${tag?.id}`)
@@ -44,7 +42,7 @@ test.group('Router tag', () => {
 
     const data = response.body()
     assert.equal(data.data.id, tag?.id)
-    assert.equal(data.data.basename, newData.basename)
+    assert.equal(data.data.pathname, newData.pathname)
   })
 
   test('tag store test', async ({ assert, client }) => {
@@ -52,8 +50,6 @@ test.group('Router tag', () => {
 
     const newTag = {
       pathname: 'Object/big',
-      parent: 'Object',
-      basename: 'big',
     }
     const response = await client
       .post(`${TAG_URL}`)
@@ -65,8 +61,6 @@ test.group('Router tag', () => {
     const data = response.body()
     assert.exists(data.data.id)
     assert.equal(data.data.pathname, newTag.pathname)
-    assert.equal(data.data.parent, newTag.parent)
-    assert.equal(data.data.basename, newTag.basename)
   })
 
   test('tag destroy test', async ({ client }) => {
@@ -78,8 +72,6 @@ test.group('Router tag', () => {
   }).setup(async () => {
     const newTag = {
       pathname: 'Object/small',
-      parent: 'Object',
-      basename: 'small',
     }
     await Tag.create(newTag)
   })

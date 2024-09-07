@@ -15,7 +15,16 @@ export default class UsersController {
     const offset = queryData['offset']
 
     let countQuery = db.from('users')
-    let query = User.query().preload('role').preload('person')
+    let query = User.query()
+      .orderBy('email', 'asc')
+      .preload('tags')
+      .preload('role')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('personType', (personType) => {
+          personType.preload('tags')
+        })
+      })
 
     if (limit) {
       query.limit(limit)
@@ -43,8 +52,14 @@ export default class UsersController {
     return {
       data: await User.query()
         .where('id', params.id)
+        .preload('tags')
         .preload('role')
-        .preload('person')
+        .preload('person', (person) => {
+          person.preload('tags')
+          person.preload('personType', (personType) => {
+            personType.preload('tags')
+          })
+        })
         .firstOrFail(),
     }
   }

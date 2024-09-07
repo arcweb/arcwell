@@ -11,6 +11,7 @@ import Tag from '#models/tag'
 import { FactFactory } from '#database/factories/fact_factory'
 import { FactTypeFactory } from '#database/factories/fact_type_factory'
 import { CohortFactory } from '#database/factories/cohort_factory'
+import { TagFactory } from '#database/factories/tag_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -45,24 +46,28 @@ export default class extends BaseSeeder {
       throw new Error('A event type not found. Run the default seeder first')
     }
 
+    const person1 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const person2 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const person3 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+
     await User.createMany([
       {
         email: 'dev-admin@email.com',
         password: 'Password12345!',
         roleId: superAdminRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person1.id,
       },
       {
         email: 'dev-limited-admin@email.com',
         password: 'Password12345!',
         roleId: limitedAdminRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person2.id,
       },
       {
         email: 'dev-guest@email.com',
         password: 'Password12345!',
         roleId: guestRole.id,
-        personId: (await PersonFactory.merge({ typeKey: staffPersonType.key }).create()).id,
+        personId: person3.id,
       },
     ])
 
@@ -72,19 +77,26 @@ export default class extends BaseSeeder {
       })
       .create()
 
-    await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(90)
-
+    for (let i = 0; i < 10; i++) {
+      await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(10)
+    }
     await ResourceFactory.merge({ typeKey: deviceResourceType.key }).createMany(5)
     await ResourceFactory.merge({ typeKey: dmeResourceType.key }).createMany(7)
 
-    await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(5)
+    for (let i = 0; i < 10; i++) {
+      await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(10)
+    }
     await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
 
     await Tag.createMany([
-      { pathname: 'top/middle', parent: 'top', basename: 'middle' },
-      { pathname: 'top/left', parent: 'top', basename: 'left' },
-      { pathname: 'top/right', parent: 'top', basename: 'right' },
+      { pathname: 'top/middle' },
+      { pathname: 'top/left' },
+      { pathname: 'top/right' },
     ])
+
+    for (let i = 0; i < 10; i++) {
+      await TagFactory.createMany(10)
+    }
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.create()

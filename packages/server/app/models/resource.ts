@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import { afterDelete, BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import ResourceType from '#models/resource_type'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
+import Tag from '#models/tag'
 
 export default class Resource extends BaseModel {
   @column({ isPrimary: true })
@@ -17,9 +18,6 @@ export default class Resource extends BaseModel {
   @column()
   declare typeKey: string
 
-  @column()
-  declare tags: string[]
-
   @belongsTo(() => ResourceType, { foreignKey: 'typeKey', localKey: 'key' })
   declare resourceType: BelongsTo<typeof ResourceType>
 
@@ -31,4 +29,17 @@ export default class Resource extends BaseModel {
 
   @hasMany(() => Fact)
   declare facts: HasMany<typeof Fact>
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
+
+  @afterDelete()
+  static async detachTags(resource: Resource) {
+    await resource.related('tags').detach()
+  }
 }

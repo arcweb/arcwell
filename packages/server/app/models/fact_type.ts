@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import { afterDelete, BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
+import Tag from '#models/tag'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -16,9 +17,6 @@ export default class FactType extends BaseModel {
   @column()
   declare dimensions: Object
 
-  @column()
-  declare tags: string[]
-
   @hasMany(() => Fact, { foreignKey: 'typeKey', localKey: 'key' })
   declare facts: HasMany<typeof Fact>
 
@@ -27,4 +25,17 @@ export default class FactType extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
+
+  @afterDelete()
+  static async detachTags(factType: FactType) {
+    await factType.related('tags').detach()
+  }
 }

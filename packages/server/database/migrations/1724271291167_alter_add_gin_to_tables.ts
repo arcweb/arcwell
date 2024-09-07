@@ -34,32 +34,32 @@ export default class extends BaseSchema {
 
   async down() {
     this.schema.alterTable('users', (table) => {
-      table.dropIndex(['tags'], 'users_tags_gin')
+      // table.dropIndex(['tags'], 'users_tags_gin')
       table.dropColumn('tags')
     })
 
-    this.schema.alterTable('people', (table) => {
-      table.dropIndex(['tags'], 'people_tags_gin')
-    })
-
-    this.schema.alterTable('person_types', (table) => {
-      table.dropIndex(['tags'], 'person_types_tags_gin')
-    })
-
-    this.schema.alterTable('resources', (table) => {
-      table.dropIndex(['tags'], 'resources_tags_gin')
-    })
-
-    this.schema.alterTable('resource_types', (table) => {
-      table.dropIndex(['tags'], 'resource_types_tags_gin')
-    })
-
-    this.schema.alterTable('events', (table) => {
-      table.dropIndex(['tags'], 'events_tags_gin')
-    })
-
-    this.schema.alterTable('event_types', (table) => {
-      table.dropIndex(['tags'], 'event_types_tags_gin')
-    })
+    // this.schema.alterTable('people', (table) => {
+    //   table.dropIndex(['tags'], 'people_tags_gin')
+    // })
+    //
+    // this.schema.alterTable('person_types', (table) => {
+    //   table.dropIndex(['tags'], 'person_types_tags_gin')
+    // })
+    //
+    // this.schema.alterTable('resources', (table) => {
+    //   table.dropIndex(['tags'], 'resources_tags_gin')
+    // })
+    //
+    // this.schema.alterTable('resource_types', (table) => {
+    //   table.dropIndex(['tags'], 'resource_types_tags_gin')
+    // })
+    //
+    // this.schema.alterTable('events', (table) => {
+    //   table.dropIndex(['tags'], 'events_tags_gin')
+    // })
+    //
+    // this.schema.alterTable('event_types', (table) => {
+    //   table.dropIndex(['tags'], 'event_types_tags_gin')
+    // })
   }
 }

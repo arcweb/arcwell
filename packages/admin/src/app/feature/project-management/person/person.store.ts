@@ -1,7 +1,7 @@
 import {
   patchState,
   signalStore,
-  withHooks,
+  withComputed,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -13,11 +13,13 @@ import {
   setErrors,
 } from '@shared/store/request-status.feature';
 import { PersonService } from '@shared/services/person.service';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
+import { TagType } from '@schemas/tag.schema';
+import { TagService } from '@shared/services/tag.service';
 
 interface PersonState {
   person: PersonType | null;
@@ -44,6 +46,7 @@ export const PersonStore = signalStore(
       store,
       personService = inject(PersonService),
       personTypeService = inject(PersonTypeService),
+      tagService = inject(TagService),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -100,7 +103,7 @@ export const PersonStore = signalStore(
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
       },
-      async update(updatePersonFormData: PersonUpdateType) {
+      async updatePerson(updatePersonFormData: PersonUpdateType) {
         patchState(store, setPending());
         updatePersonFormData.id = store.person().id;
         if (
@@ -122,7 +125,7 @@ export const PersonStore = signalStore(
           );
         }
       },
-      async create(createPersonFormData: PersonType) {
+      async createPerson(createPersonFormData: PersonType) {
         console.log('createPersonFormData', createPersonFormData);
         patchState(store, setPending());
         createPersonFormData.typeKey = createPersonFormData.personType.key;
@@ -141,7 +144,7 @@ export const PersonStore = signalStore(
           );
         }
       },
-      async delete() {
+      async deletePerson() {
         patchState(store, setPending());
         const resp = await firstValueFrom(
           personService.delete(store.person().id),
@@ -152,6 +155,22 @@ export const PersonStore = signalStore(
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },
+      async setTags(tags: string[]) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          tagService.setTags(store.person().id, 'people', tags),
+        );
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, setFulfilled());
+        }
+      },
     }),
   ),
+  withComputed(({ person }) => ({
+    tagStrings: computed(
+      () => person().tags.map((tag: TagType) => tag.pathname) ?? [],
+    ),
+  })),
 );

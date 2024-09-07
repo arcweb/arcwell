@@ -15,7 +15,7 @@ export default class PersonTypesController {
 
     let countQuery = db.from('person_types')
 
-    let query = PersonType.query().orderBy('name', 'asc')
+    let query = PersonType.query().preload('tags').orderBy('name', 'asc')
 
     if (limit) {
       query.limit(limit)
@@ -52,7 +52,7 @@ export default class PersonTypesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await PersonType.query().where('id', params.id).firstOrFail(),
+      data: await PersonType.query().preload('tags').where('id', params.id).firstOrFail(),
     }
   }
 

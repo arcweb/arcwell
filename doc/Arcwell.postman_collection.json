@@ -1447,7 +1447,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"pathname\": \"TAG PATHNAME\",\n    \"basename\": \"TAG BASENAME\",\n    \"parent\": \"TAG PARENT\"\n}\n",
+					"raw": "{\n    \"pathname\": \"TAG PATHNAME\",\n  }\n",
 					"options": {
 						"raw": {
 							"language": "json"

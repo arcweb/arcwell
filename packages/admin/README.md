@@ -59,3 +59,7 @@ rules: {
 },
 
 ```
+## JetBrains IDE Configurations
+
+For IDE to recognize signalstore exposed signals,  enable proper typescript highlighting of signalStore
+  * Settings > Languages & Frameworks > TypeScript > Angular > WebStorm Angular TypeScript Plugin > Auto
