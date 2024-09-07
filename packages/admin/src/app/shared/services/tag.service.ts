@@ -88,7 +88,7 @@ export class TagService {
 
   setTags(
     objectId: string,
-    objectType: 'people' | 'events',
+    objectType: string,
     tags: string[],
   ): Observable<void | ErrorResponseType> {
     return this.http

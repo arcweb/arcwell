@@ -153,7 +153,7 @@ export const EventStore = signalStore(
       async setTags(tags: string[]) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          tagService.setTags(store.event().id, 'people', tags),
+          tagService.setTags(store.event().id, 'events', tags),
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));

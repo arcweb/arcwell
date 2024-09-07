@@ -62,17 +62,6 @@
     <!--      }-->
     <!--    </mat-form-field>-->
 
-    <!--    <mat-form-field>-->
-    <!--      <mat-label>Tags</mat-label>-->
-    <!--      <input matInput placeholder="Tags" formControlName="tags" />-->
-    <!--      @if (personTypeForm.controls.tags.hasError('required')) {-->
-    <!--        <mat-error>-->
-    <!--          Tags Name are-->
-    <!--          <strong>required</strong>-->
-    <!--        </mat-error>-->
-    <!--      }-->
-    <!--    </mat-form-field>-->
-
     <div class="form-button-container">
       <button
         mat-button
@@ -97,4 +86,10 @@
       </button>
     </div>
   </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="personTypeStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
 }
