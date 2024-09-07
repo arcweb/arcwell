@@ -27,7 +27,7 @@ import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { PersonTypeStore } from '@feature/project-management/person_type/person-type.store';
+import { PersonTypeStore } from '@feature/project-management/person-type/person-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';

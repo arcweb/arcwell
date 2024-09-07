@@ -12,12 +12,10 @@ import {
   setFulfilled,
   setErrors,
 } from '@shared/store/request-status.feature';
-import { PersonService } from '@shared/services/person.service';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
-import { PersonTypeType } from '@schemas/person-type.schema';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 
