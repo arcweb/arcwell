@@ -17,7 +17,12 @@ export default class ResourcesController {
 
     let countQuery = db.from('resources')
 
-    let query = Resource.query().preload('resourceType')
+    let query = Resource.query()
+      .preload('resourceType', (resourceType) => {
+        resourceType.preload('tags')
+      })
+      .preload('tags')
+      .orderBy('name', 'asc')
 
     if (resourceTypeId) {
       const resourceType = await ResourceType.findOrFail(resourceTypeId)
@@ -57,7 +62,14 @@ export default class ResourcesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await Resource.query().where('id', params.id).preload('resourceType').firstOrFail(),
+      data: await Resource.query()
+        .preload('resourceType', (resourceType) => {
+          resourceType.preload('tags')
+        })
+        .preload('tags')
+        .where('id', params.id)
+        .preload('resourceType')
+        .firstOrFail(),
     }
   }
 

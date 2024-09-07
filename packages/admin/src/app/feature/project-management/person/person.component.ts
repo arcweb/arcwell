@@ -167,9 +167,6 @@ export class PersonComponent implements OnInit {
   }
 
   onSetTags(tags: TagType[]): void {
-    console.log('Now save the tags', tags);
-    this.personStore.setTags(tags).then(resp => {
-      console.log('OK DONE SAVIN TAGS', resp);
-    });
+    this.personStore.setTags(tags);
   }
 }

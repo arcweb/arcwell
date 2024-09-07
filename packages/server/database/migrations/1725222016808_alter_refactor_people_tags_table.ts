@@ -3,7 +3,7 @@ import { BaseSchema } from '@adonisjs/lucid/schema'
 export default class extends BaseSchema {
   async up() {
     this.schema.alterTable('people', (table) => {
-      table.dropIndex(['tags'], 'people_tags_gin')
+      // table.dropIndex(['tags'], 'people_tags_gin')
       table.dropColumn('tags')
     })
 

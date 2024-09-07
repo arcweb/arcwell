@@ -15,7 +15,7 @@ export default class EventTypesController {
 
     let countQuery = db.from('event_types')
 
-    let query = EventType.query()
+    let query = EventType.query().preload('tags').orderBy('name', 'asc')
 
     if (limit) {
       query.limit(limit)
@@ -41,7 +41,10 @@ export default class EventTypesController {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
     const newEventType = await EventType.create(request.body())
-    const fullEventType = await EventType.query().where('id', newEventType.id).firstOrFail()
+    const fullEventType = await EventType.query()
+      .preload('tags')
+      .where('id', newEventType.id)
+      .firstOrFail()
     return { data: fullEventType }
   }
 
@@ -51,7 +54,7 @@ export default class EventTypesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await EventType.query().where('id', params.id).firstOrFail(),
+      data: await EventType.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
@@ -61,7 +64,15 @@ export default class EventTypesController {
   async showWithEvents({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await EventType.query().preload('events').where('id', params.id).firstOrFail(),
+      data: await EventType.query()
+        .preload('events', (event) => {
+          event.preload('tags')
+          event.preload('facts', (fact) => {
+            fact.preload('tags')
+          })
+        })
+        .where('id', params.id)
+        .firstOrFail(),
     }
   }
 

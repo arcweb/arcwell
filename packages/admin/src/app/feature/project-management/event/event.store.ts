@@ -1,6 +1,12 @@
 import { EventType, EventUpdateType } from '@app/shared/schemas/event.schema';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   setErrors,
@@ -8,10 +14,12 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { EventService } from '@app/shared/services/event.service';
 import { EventTypeService } from '@app/shared/services/event-type.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
+import { TagService } from '@shared/services/tag.service';
+import { TagType } from '@schemas/tag.schema';
 
 interface EventState {
   event: EventType | null;
@@ -38,6 +46,7 @@ export const EventStore = signalStore(
       store,
       eventService = inject(EventService),
       eventTypeService = inject(EventTypeService),
+      tagService = inject(TagService),
     ) => ({
       async initialize(eventId: string) {
         patchState(store, setPending());
@@ -141,6 +150,22 @@ export const EventStore = signalStore(
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },
+      async setTags(tags: string[]) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          tagService.setTags(store.event().id, 'people', tags),
+        );
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, setFulfilled());
+        }
+      },
     }),
   ),
+  withComputed(({ event }) => ({
+    tagStrings: computed(
+      () => event().tags.map((tag: TagType) => tag.pathname) ?? [],
+    ),
+  })),
 );

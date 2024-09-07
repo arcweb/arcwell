@@ -15,7 +15,7 @@ export default class FactTypesController {
 
     let countQuery = db.from('fact_types')
 
-    let query = FactType.query().orderBy('key', 'asc')
+    let query = FactType.query().preload('tags').orderBy('name', 'asc')
 
     if (limit) {
       query.limit(limit)
@@ -57,7 +57,7 @@ export default class FactTypesController {
     await paramsUUIDValidator.validate(params)
 
     return {
-      data: await FactType.query().where('id', params.id).firstOrFail(),
+      data: await FactType.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
@@ -68,7 +68,13 @@ export default class FactTypesController {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
-      data: await FactType.query().preload('facts').where('id', params.id).firstOrFail(),
+      data: await FactType.query()
+        .preload('tags')
+        .preload('facts', (fact) => {
+          fact.preload('tags')
+        })
+        .where('id', params.id)
+        .firstOrFail(),
     }
   }
 

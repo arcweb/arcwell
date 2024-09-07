@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { PersonSchema } from './person.schema';
 import { PersonTypeModel } from '../models/person-type.model';
+import { TagSchema } from '@schemas/tag.schema';
 
 export const PersonTypeSchema = z
   .object({
@@ -8,7 +9,7 @@ export const PersonTypeSchema = z
     key: z.string(),
     name: z.string(),
     info: z.string().nullable(),
-    tags: z.array(z.string()),
+    tags: z.array(TagSchema).optional(),
     people: z.array(PersonSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -21,7 +22,7 @@ export const PersonTypeUpdateSchema = z
     key: z.string(),
     name: z.string(),
     info: z.string().nullable(),
-    tags: z.array(z.string()),
+    tags: z.array(TagSchema).optional(),
     people: z.array(PersonSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),

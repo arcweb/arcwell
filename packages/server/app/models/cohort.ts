@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
 import Person from '#models/person'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import Tag from '#models/tag'
 
 export default class Cohort extends BaseModel {
   @column({ isPrimary: true })
@@ -16,9 +17,6 @@ export default class Cohort extends BaseModel {
   @column()
   declare rules: Object | null
 
-  @column()
-  declare tags: string[]
-
   @manyToMany(() => Person, {
     pivotTimestamps: true,
     pivotTable: 'cohort_person',
@@ -30,4 +28,17 @@ export default class Cohort extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
+
+  @afterDelete()
+  static async detachTags(cohort: Cohort) {
+    await cohort.related('tags').detach()
+  }
 }

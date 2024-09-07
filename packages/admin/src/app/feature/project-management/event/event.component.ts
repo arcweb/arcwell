@@ -35,6 +35,8 @@ import {
   cleanDateData,
   prepDateData,
 } from '@app/shared/helpers/date-format.helper';
+import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { TagType } from '@schemas/tag.schema';
 
 @Component({
   selector: 'aw-event',
@@ -53,6 +55,7 @@ import {
     RouterLink,
     MatIconButton,
     NgxMaskDirective,
+    TagsFormComponent,
   ],
   providers: [EventStore, provideNgxMask()],
   templateUrl: './event.component.html',
@@ -163,5 +166,9 @@ export class EventComponent implements OnInit {
 
   compareEventTypes(pt1: EventTypeType, pt2: EventTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  onSetTags(tags: TagType[]): void {
+    this.eventStore.setTags(tags);
   }
 }

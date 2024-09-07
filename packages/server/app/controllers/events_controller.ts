@@ -16,7 +16,12 @@ export default class EventsController {
     const offset = queryData['offset']
 
     let countQuery = db.from('events')
-    let query = Event.query().orderBy('name').preload('eventType')
+    let query = Event.query()
+      .orderBy('name')
+      .preload('tags')
+      .preload('eventType', (tags) => {
+        tags.preload('tags')
+      })
 
     if (eventTypeId) {
       const eventType = await EventType.findOrFail(eventTypeId)
@@ -56,7 +61,13 @@ export default class EventsController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await Event.query().where('id', params.id).preload('eventType').firstOrFail(),
+      data: await Event.query()
+        .where('id', params.id)
+        .preload('tags')
+        .preload('eventType', (tags) => {
+          tags.preload('tags')
+        })
+        .firstOrFail(),
     }
   }
 

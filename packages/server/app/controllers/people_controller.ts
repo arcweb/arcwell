@@ -9,7 +9,9 @@ export default class PeopleController {
   /**
    * Display a list of resource
    */
-  async index({ request }: HttpContext) {
+  async index({ request, auth }: HttpContext) {
+    await auth.authenticate()
+
     const queryData = request.qs()
     const personTypeId = queryData['personTypeId']
     const limit = queryData['limit']
@@ -20,8 +22,13 @@ export default class PeopleController {
     let query = Person.query()
       .orderBy('familyName', 'asc')
       .orderBy('givenName', 'asc')
-      .preload('user')
-      .preload('personType')
+      .preload('tags')
+      .preload('user', (user) => {
+        user.preload('tags')
+      })
+      .preload('personType', (personType) => {
+        personType.preload('tags')
+      })
 
     if (personTypeId) {
       const personType = await PersonType.findOrFail(personTypeId)
@@ -59,14 +66,19 @@ export default class PeopleController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
+  async show({ params, auth }: HttpContext) {
+    await auth.authenticate()
     await paramsUUIDValidator.validate(params)
     return {
       data: await Person.query()
         .where('id', params.id)
-        .preload('user')
-        .preload('personType')
         .preload('tags')
+        .preload('user', (tags) => {
+          tags.preload('tags')
+        })
+        .preload('personType', (tags) => {
+          tags.preload('tags')
+        })
         .firstOrFail(),
     }
   }

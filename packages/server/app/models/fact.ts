@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
+import { afterDelete, BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import FactType from '#models/fact_type'
-import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 import Resource from '#models/resource'
 import Event from '#models/event'
+import Tag from '#models/tag'
 
 export default class Fact extends BaseModel {
   @column({ isPrimary: true })
@@ -37,9 +38,6 @@ export default class Fact extends BaseModel {
   @column()
   declare meta: Object
 
-  @column()
-  declare tags: string[]
-
   @belongsTo(() => FactType, { foreignKey: 'typeKey', localKey: 'key' })
   declare factType: BelongsTo<typeof FactType>
 
@@ -51,4 +49,17 @@ export default class Fact extends BaseModel {
 
   @belongsTo(() => Event)
   declare event: BelongsTo<typeof Event>
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
+
+  @afterDelete()
+  static async detachTags(fact: Fact) {
+    await fact.related('tags').detach()
+  }
 }

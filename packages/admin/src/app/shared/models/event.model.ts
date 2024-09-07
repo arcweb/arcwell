@@ -1,14 +1,16 @@
 import { DateTime } from 'luxon';
 import { EventTypeModel } from '@shared/models/event-type.model';
 import { EventType } from '@shared/schemas/event.schema';
+import { deserializeTag, TagType } from '@schemas/tag.schema';
+import { TagModel } from '@shared/models/tag.model';
 
 interface EventBase {
   name: string;
   source: string;
   typeKey: string;
-  tags: string[];
+  tags?: TagModel[] | undefined;
   meta?: object;
-  occcurredAt?: DateTime;
+  occurredAt?: DateTime;
   createdAt: DateTime;
   updatedAt: DateTime;
   eventType?: EventTypeModel;
@@ -29,7 +31,7 @@ export class EventModel {
   public typeKey: string;
   public meta?: object;
   public occurredAt?: DateTime;
-  public tags: string[];
+  public tags?: TagModel[] | undefined;
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public eventType?: EventTypeModel;
@@ -43,9 +45,11 @@ export class EventModel {
     this.occurredAt = data.occurredAt
       ? DateTime.fromISO(data.occurredAt)
       : undefined;
-    this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
+    this.tags = data.tags
+      ? data.tags.map((tag: TagType) => new TagModel(tag))
+      : undefined;
     this.eventType = data.eventType
       ? new EventTypeModel(data.eventType)
       : undefined;
