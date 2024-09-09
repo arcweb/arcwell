@@ -178,7 +178,7 @@ export const ResourceStore = signalStore(
   ),
   withComputed(({ resource }) => ({
     tagStrings: computed(
-      () => resource().tags.map((tag: TagType) => tag.pathname) ?? [],
+      () => resource()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
     ),
   })),
 );
