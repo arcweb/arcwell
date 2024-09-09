@@ -10,6 +10,7 @@ import { PersonTypeComponent } from '@feature/project-management/person-type/per
 import { EventComponent } from '@feature/project-management/event/event.component';
 import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
 import { EventTypeComponent } from './event-type/event-type.component';
+import { ResourceComponent } from './resource/resource.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -48,6 +49,10 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'resources/resource-types',
         component: PlaceholderComponent,
+      },
+      {
+        path: 'resources/all-resources/:resourceId',
+        component: ResourceComponent,
       },
       {
         path: 'events/event-types',
