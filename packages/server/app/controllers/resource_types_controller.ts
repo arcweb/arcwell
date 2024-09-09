@@ -2,6 +2,7 @@ import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class ResourceTypesController {
   /**
@@ -12,6 +13,8 @@ export default class ResourceTypesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
+    let countQuery = db.from('resource_types')
+
     let query = ResourceType.query().preload('tags').orderBy('name', 'asc')
 
     if (limit) {
@@ -21,7 +24,14 @@ export default class ResourceTypesController {
       query.offset(offset)
     }
 
-    return { data: await query }
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
+    }
   }
 
   /**
