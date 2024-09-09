@@ -136,7 +136,7 @@ export const EventTypeStore = signalStore(
   ),
   withComputed(({ eventType }) => ({
     tagStrings: computed(
-      () => eventType().tags.map((tag: TagType) => tag.pathname) ?? [],
+      () => eventType()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
     ),
   })),
 );

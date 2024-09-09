@@ -141,7 +141,7 @@ export const PersonTypeStore = signalStore(
   ),
   withComputed(({ personType }) => ({
     tagStrings: computed(
-      () => personType().tags.map((tag: TagType) => tag.pathname) ?? [],
+      () => personType()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
     ),
   })),
 );
