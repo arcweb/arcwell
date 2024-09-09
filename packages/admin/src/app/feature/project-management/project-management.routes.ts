@@ -12,6 +12,7 @@ import { AllEventTypesComponent } from './all-event-types/all-event-types.compon
 import { EventTypeComponent } from './event-type/event-type.component';
 import { ResourceComponent } from './resource/resource.component';
 import { AllResourceTypesComponent } from './all-resource-types/all-resource-types.component';
+import { ResourceTypeComponent } from './resource-type/resource-type.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -45,7 +46,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       },
       {
         path: 'resources/resource-types/:resourceTypeId',
-        component: PlaceholderComponent,
+        component: ResourceTypeComponent,
       },
       {
         path: 'resources/all-resources',
