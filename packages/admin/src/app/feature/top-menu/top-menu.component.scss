@@ -30,9 +30,11 @@ $spacing: 12px;
 }
 
 .top-menu-link {
-  cursor: pointer;
+  cursor: pointer !important;
   height: 100%;
   padding-bottom: 6px;
+  border-radius: 0 !important;
+  color: colors.$white !important;
 }
 
 .top-menu-nav-link-active {
@@ -42,8 +44,8 @@ $spacing: 12px;
 .top-menu-link:not(:last-child) {
   &::after {
     content: '';
-    margin-left: $spacing;
-    border-right: 1px solid colors.$on-primary;
+    margin-left: $spacing !important;
+    border-right: 1px solid colors.$white !important;
   }
 }
 

@@ -10,6 +10,7 @@ import { AuthStore } from '@app/shared/store/auth.store';
 import { FeatureStore } from '@shared/store/feature.store';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 interface TopMenuNavLink {
   name: string;
@@ -26,6 +27,7 @@ interface TopMenuNavLink {
     MatIconModule,
     RouterModule,
     MatMenuModule,
+    MatButtonModule,
   ],
   templateUrl: './top-menu.component.html',
   styleUrl: './top-menu.component.scss',
