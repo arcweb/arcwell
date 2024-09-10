@@ -10,6 +10,9 @@ import { PersonTypeComponent } from '@feature/project-management/person-type/per
 import { EventComponent } from '@feature/project-management/event/event.component';
 import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
 import { EventTypeComponent } from './event-type/event-type.component';
+import { ResourceComponent } from './resource/resource.component';
+import { AllResourceTypesComponent } from './all-resource-types/all-resource-types.component';
+import { ResourceTypeComponent } from './resource-type/resource-type.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -38,6 +41,14 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         redirectTo: 'people/all-people',
       },
       {
+        path: 'resources/resource-types',
+        component: AllResourceTypesComponent,
+      },
+      {
+        path: 'resources/resource-types/:resourceTypeId',
+        component: ResourceTypeComponent,
+      },
+      {
         path: 'resources/all-resources',
         component: AllResourcesComponent,
       },
@@ -46,8 +57,8 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         redirectTo: 'resources/all-resources',
       },
       {
-        path: 'resources/resource-types',
-        component: PlaceholderComponent,
+        path: 'resources/all-resources/:resourceId',
+        component: ResourceComponent,
       },
       {
         path: 'events/event-types',
