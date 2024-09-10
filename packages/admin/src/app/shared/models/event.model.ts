@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { EventTypeModel } from '@shared/models/event-type.model';
 import { EventType } from '@shared/schemas/event.schema';
-import { deserializeTag, TagType } from '@schemas/tag.schema';
+import { TagType } from '@schemas/tag.schema';
 import { TagModel } from '@shared/models/tag.model';
 
 interface EventBase {

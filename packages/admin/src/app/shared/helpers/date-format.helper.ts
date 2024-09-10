@@ -26,3 +26,7 @@ export function cleanDateData(form: FormGroup, controlName: string) {
     return { ...form.value };
   }
 }
+
+export function convertDateTimeToLocal(dateTime: DateTime | undefined): string {
+  return dateTime?.toLocaleString(DateTime.DATETIME_SHORT) ?? '';
+}

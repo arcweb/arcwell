@@ -1,0 +1,117 @@
+<div class="main-container-header">
+  <h2>All Facts</h2>
+  <div class="icons-container">
+    <button mat-icon-button [routerLink]="['create']">
+      <mat-icon aria-label="Create fact icon button">
+        add_circle_outline
+      </mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Search icon button">search</mat-icon>
+    </button>
+  </div>
+</div>
+
+@if (factsStore.isErrored()) {
+  <aw-error-container [errors]="factsStore.errors()" />
+}
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="factType">
+    <th mat-header-cell *matHeaderCellDef>Fact Type</th>
+    <td mat-cell *matCellDef="let element">{{ element.factType.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="person">
+    <th mat-header-cell *matHeaderCellDef>Person</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.person) {
+        <button
+          mat-button
+          type="button"
+          (click)="viewPerson(element.person.id); $event.stopPropagation()"
+        >
+          <div>
+            {{ element.person.familyName }}, {{ element.person.givenName }}
+          </div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="resource">
+    <th mat-header-cell *matHeaderCellDef>Resource</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.resource) {
+        <button
+          mat-button
+          type="button"
+          (click)="viewResource(element.resource.id); $event.stopPropagation()"
+        >
+          <div>{{ element.resource.name }}</div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="event">
+    <th mat-header-cell *matHeaderCellDef>Event</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.event) {
+        <button
+          mat-button
+          type="button"
+          (click)="viewEvent(element.event.id); $event.stopPropagation()"
+        >
+          <div>{{ element.event.name }}</div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="observedAt">
+    <th mat-header-cell *matHeaderCellDef>Observed At</th>
+    <td mat-cell *matCellDef="let element">
+      {{ convertDateTimeToLocal(element.observedAt) }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <th mat-header-cell *matHeaderCellDef>Tags</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.tags && element.tags.length > 0) {
+        @for (tag of element.tags; track $index) {
+          <div>
+            {{ tag.pathname }}
+          </div>
+        }
+      } @else {
+        <div>--</div>
+      }
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    (click)="handleClick(row)"
+  ></tr>
+</table>
+
+<mat-paginator
+  [length]="factsStore.totalData()"
+  [pageSizeOptions]="pageSizes"
+  [pageSize]="factsStore.limit()"
+  [pageIndex]="factsStore.pageIndex()"
+  (page)="this.factsStore.loadPage($event)"
+  showFirstLastButtons="true"
+></mat-paginator>

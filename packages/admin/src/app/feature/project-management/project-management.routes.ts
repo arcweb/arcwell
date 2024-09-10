@@ -2,7 +2,6 @@ import { Route } from '@angular/router';
 import { AllEventsComponent } from '@feature/project-management/all-events/all-events.component';
 import { AllResourcesComponent } from '@feature/project-management/all-resources/all-resources.component';
 import { PersonTypesComponent } from '@app/feature/project-management/person-types/person-types.component';
-import { PlaceholderComponent } from '@feature/project-management/placeholder/placeholder.component';
 import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
 import { PersonComponent } from '@feature/project-management/person/person.component';
@@ -13,6 +12,10 @@ import { EventTypeComponent } from './event-type/event-type.component';
 import { ResourceComponent } from './resource/resource.component';
 import { AllResourceTypesComponent } from './all-resource-types/all-resource-types.component';
 import { ResourceTypeComponent } from './resource-type/resource-type.component';
+import { AllFactsComponent } from '@feature/project-management/all-facts/all-facts.component';
+import { FactComponent } from '@feature/project-management/fact/fact.component';
+import { FactTypeComponent } from '@feature/project-management/fact-type/fact-type.component';
+import { FactTypesComponent } from '@feature/project-management/fact-types/fact-types.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -80,6 +83,29 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         path: 'events',
         redirectTo: 'events/all-events',
       },
+      {
+        path: 'facts/all-facts',
+        component: AllFactsComponent,
+      },
+      {
+        path: 'facts/fact-types',
+        component: FactTypesComponent,
+      },
+      {
+        path: 'facts/fact-types/:factTypeId',
+        component: FactTypeComponent,
+      },
+
+      {
+        path: 'facts/all-facts/:factId',
+        component: FactComponent,
+      },
+
+      {
+        path: 'facts',
+        redirectTo: 'facts/all-facts',
+      },
+
       {
         path: '',
         pathMatch: 'full',

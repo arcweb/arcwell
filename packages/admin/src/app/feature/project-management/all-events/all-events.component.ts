@@ -21,6 +21,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { DateTime } from 'luxon';
 import { MatIconButton } from '@angular/material/button';
+import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 
 @Component({
   selector: 'aw-all-events',
@@ -86,7 +87,7 @@ export class AllEventsComponent {
     ]);
   }
 
-  convertDateToLocal(dateTime: DateTime | undefined) {
-    return dateTime?.toLocaleString(DateTime.DATETIME_SHORT) ?? '';
+  convertDateTimeToLocal(dateTime: DateTime | undefined): string {
+    return convertDateTimeToLocal(dateTime);
   }
 }

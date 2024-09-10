@@ -1,0 +1,96 @@
+@if (factStore.isReady()) {
+  <div class="main-container-header">
+    @if (factStore.inCreateMode()) {
+      <h2>Create Fact</h2>
+    } @else if (factStore.inEditMode()) {
+      <h2>Edit Fact</h2>
+    } @else {
+      <h2>View Fact</h2>
+    }
+
+    <div class="icons-container">
+      @if (!factStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="factStore.inEditMode()"
+          (click)="factStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit fact icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete fact icon">delete_forever</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="factForm">
+    @if (factStore.isErrored()) {
+      <aw-error-container [errors]="factStore.errors()" />
+    }
+
+    <mat-form-field>
+      <mat-label>Fact Type</mat-label>
+      <mat-select formControlName="factType" [compareWith]="compareFactTypes">
+        @for (factType of factStore.factTypes(); track factType.id) {
+          <mat-option [value]="factType">
+            {{ factType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (factForm.controls.factType.hasError('required')) {
+        <mat-error>
+          Fact Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Occurred At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <input
+        matInput
+        placeholder="MM/DD/YYYY HH:MM AM or PM"
+        formControlName="observedAt"
+        mask="M0/d0/0000, Hh:m0 SS"
+        [leadZeroDateTime]="true"
+        [dropSpecialCharacters]="false"
+        [apm]="true"
+      />
+    </mat-form-field>
+    @if (
+      factForm.controls.observedAt.invalid &&
+      !factForm.controls.observedAt.pristine
+    ) {
+      <mat-error>Occured At format must be DD/MM/YYYY HH:MM AM or PM</mat-error>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!factStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !factStore.inEditMode() || !factForm.valid || !factForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="factStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
+}

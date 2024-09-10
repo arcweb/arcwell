@@ -12,67 +12,63 @@ import {
   setFulfilled,
   setErrors,
 } from '@shared/store/request-status.feature';
-import { PersonService } from '@shared/services/person.service';
+import { FactService } from '@shared/services/fact.service';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
-import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
-import { PersonTypeService } from '@shared/services/person-type.service';
-import { PersonTypeType } from '@schemas/person-type.schema';
+import { FactType, FactUpdateType } from '@shared/schemas/fact.schema';
+import { FactTypeService } from '@shared/services/fact-type.service';
+import { FactTypeType } from '@schemas/fact-type.schema';
 import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 
-interface PersonState {
-  person: PersonType | null;
-  personTypes: PersonTypeType[];
+interface FactState {
+  fact: FactType | null;
+  factTypes: FactTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
 }
 
-const initialState: PersonState = {
-  person: null,
-  personTypes: [],
+const initialState: FactState = {
+  fact: null,
+  factTypes: [],
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
 };
 
-export const PersonStore = signalStore(
-  withDevtools('person'),
+export const FactStore = signalStore(
+  withDevtools('fact'),
   withState(initialState),
   withRequestStatus(),
   withMethods(
     (
       store,
-      personService = inject(PersonService),
-      personTypeService = inject(PersonTypeService),
+      factService = inject(FactService),
+      factTypeService = inject(FactTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
     ) => ({
-      async initialize(personId: string) {
+      async initialize(factId: string) {
         patchState(store, setPending());
-        const { personResp, personTypesResp } = await firstValueFrom(
+        const { factResp, factTypesResp } = await firstValueFrom(
           forkJoin({
-            personResp: personService.getPerson(personId),
-            personTypesResp: personTypeService.getPersonTypes(),
+            factResp: factService.getFact(factId),
+            factTypesResp: factTypeService.getFactTypes(),
           }),
         );
-        if (personResp.errors) {
-          patchState(store, { isReady: true }, setErrors(personResp.errors));
-        } else if (personTypesResp.errors) {
-          patchState(
-            store,
-            { isReady: true },
-            setErrors(personTypesResp.errors),
-          );
+        if (factResp.errors) {
+          patchState(store, { isReady: true }, setErrors(factResp.errors));
+        } else if (factTypesResp.errors) {
+          patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
         } else {
           patchState(
             store,
             {
-              person: personResp.data,
-              personTypes: personTypesResp.data,
+              fact: factResp.data,
+              factTypes: factTypesResp.data,
               isReady: true,
             },
             setFulfilled(),
@@ -81,20 +77,16 @@ export const PersonStore = signalStore(
       },
       async initializeForCreate() {
         patchState(store, setPending());
-        const personTypesResp = await firstValueFrom(
-          personTypeService.getPersonTypes(),
+        const factTypesResp = await firstValueFrom(
+          factTypeService.getFactTypes(),
         );
-        if (personTypesResp.errors) {
-          patchState(
-            store,
-            { isReady: true },
-            setErrors(personTypesResp.errors),
-          );
+        if (factTypesResp.errors) {
+          patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
         } else {
           patchState(
             store,
             {
-              personTypes: personTypesResp.data,
+              factTypes: factTypesResp.data,
               inCreateMode: true,
               inEditMode: true,
               isReady: true,
@@ -106,75 +98,76 @@ export const PersonStore = signalStore(
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
       },
-      async updatePerson(updatePersonFormData: PersonUpdateType) {
+      async updateFact(updateFactFormData: FactUpdateType) {
         patchState(store, setPending());
-        updatePersonFormData.id = store.person().id;
-        if (
-          updatePersonFormData.personType &&
-          updatePersonFormData.personType.id
-        ) {
-          updatePersonFormData.typeKey = updatePersonFormData.personType.key;
+        updateFactFormData.id = store.fact().id;
+        if (updateFactFormData.factType && updateFactFormData.factType.id) {
+          updateFactFormData.typeKey = updateFactFormData.factType.key;
         }
         const resp = await firstValueFrom(
-          personService.update(updatePersonFormData),
+          factService.update(updateFactFormData),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error uploading facts.', ToastLevel.ERROR);
         } else {
           patchState(
             store,
-            { person: resp.data, inEditMode: false },
+            { fact: resp.data, inEditMode: false },
             setFulfilled(),
           );
-          toastService.sendMessage('Updated person.', ToastLevel.SUCCESS);
+          toastService.sendMessage('Updated fact.', ToastLevel.SUCCESS);
         }
       },
-      async createPerson(createPersonFormData: PersonType) {
-        console.log('createPersonFormData', createPersonFormData);
+      async createFact(createFactFormData: FactType) {
         patchState(store, setPending());
-        createPersonFormData.typeKey = createPersonFormData.personType.key;
+        createFactFormData.typeKey = createFactFormData.factType.key;
 
         const resp = await firstValueFrom(
-          personService.create(createPersonFormData),
+          factService.create(createFactFormData),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error creating facts.', ToastLevel.ERROR);
         } else {
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { person: resp.data, inEditMode: false },
+            { fact: resp.data, inEditMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
         }
       },
-      async deletePerson() {
+      async deleteFact() {
         patchState(store, setPending());
-        const resp = await firstValueFrom(
-          personService.delete(store.person().id),
-        );
+        const resp = await firstValueFrom(factService.delete(store.fact().id));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error deleting fact.', ToastLevel.ERROR);
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+          toastService.sendMessage('Deleted fact.', ToastLevel.SUCCESS);
         }
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          tagService.setTags(store.person().id, 'people', tags),
+          tagService.setTags(store.fact().id, 'facts', tags),
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error setting facts.', ToastLevel.ERROR);
         } else {
           patchState(store, setFulfilled());
+          toastService.sendMessage('Set facts.', ToastLevel.SUCCESS);
         }
       },
     }),
   ),
-  withComputed(({ person }) => ({
+  withComputed(({ fact }) => ({
     tagStrings: computed(
-      () => person()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
+      () => fact()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
     ),
   })),
 );
