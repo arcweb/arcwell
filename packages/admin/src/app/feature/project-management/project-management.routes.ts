@@ -10,6 +10,10 @@ import { PersonTypeComponent } from '@feature/project-management/person-type/per
 import { EventComponent } from '@feature/project-management/event/event.component';
 import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
 import { EventTypeComponent } from './event-type/event-type.component';
+import { AllFactsComponent } from '@feature/project-management/all-facts/all-facts.component';
+import { FactComponent } from '@feature/project-management/fact/fact.component';
+import { FactTypeComponent } from '@feature/project-management/fact-type/fact-type.component';
+import { FactTypesComponent } from '@feature/project-management/fact-types/fact-types.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -69,6 +73,29 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         path: 'events',
         redirectTo: 'events/all-events',
       },
+      {
+        path: 'facts/all-facts',
+        component: AllFactsComponent,
+      },
+      {
+        path: 'facts/fact-types',
+        component: FactTypesComponent,
+      },
+      {
+        path: 'facts/fact-types/:factTypeId',
+        component: FactTypeComponent,
+      },
+
+      {
+        path: 'facts/all-facts/:factId',
+        component: FactComponent,
+      },
+
+      {
+        path: 'facts',
+        redirectTo: 'facts/all-facts',
+      },
+
       {
         path: '',
         pathMatch: 'full',

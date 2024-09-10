@@ -69,7 +69,7 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Occured At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <mat-label>Occurred At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
       <input
         matInput
         placeholder="MM/DD/YYYY HH:MM AM or PM"
@@ -84,7 +84,9 @@
       eventForm.controls.occurredAt.invalid &&
       !eventForm.controls.occurredAt.pristine
     ) {
-      <mat-error>Occured At format must be DD/MM/YYYY HH:MM AM or PM</mat-error>
+      <mat-error>
+        Occurred At format must be MM/DD/YYYY HH:MM AM or PM
+      </mat-error>
     }
 
     <div class="form-button-container">

@@ -118,7 +118,6 @@ export class EventComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventStore.inCreateMode()) {
-            console.log(cleanDateData(this.eventForm, 'occurredAt'));
             this.eventStore.create(cleanDateData(this.eventForm, 'occurredAt'));
           } else {
             this.eventStore.update(cleanDateData(this.eventForm, 'occurredAt'));

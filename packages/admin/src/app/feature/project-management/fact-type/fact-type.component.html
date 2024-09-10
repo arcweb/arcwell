@@ -1,0 +1,84 @@
+@if (factTypeStore.isReady()) {
+  <div class="main-container-header">
+    @if (factTypeStore.inCreateMode()) {
+      <h2>Create Fact</h2>
+    } @else if (factTypeStore.inEditMode()) {
+      <h2>Edit Fact</h2>
+    } @else {
+      <h2>View Fact</h2>
+    }
+
+    <div class="icons-container">
+      @if (!factTypeStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="factTypeStore.inEditMode()"
+          (click)="factTypeStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit fact icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete fact icon">delete_forever</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="factTypeForm">
+    @if (factTypeStore.isErrored()) {
+      <aw-error-container [errors]="factTypeStore.errors()" />
+    }
+
+    <mat-form-field>
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="Key" formControlName="key" />
+      @if (factTypeForm.controls.key.hasError('required')) {
+        <mat-error>
+          Key is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (factTypeForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!factTypeStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !factTypeStore.inEditMode() ||
+          !factTypeForm.valid ||
+          !factTypeForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="factTypeStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
+}

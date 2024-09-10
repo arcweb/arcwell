@@ -19,6 +19,7 @@ export default class FactsController {
 
     let query = Fact.query()
       .orderBy('observedAt', 'desc')
+      .preload('factType')
       .preload('tags')
       .preload('person', (person) => {
         person.preload('tags')
@@ -80,6 +81,7 @@ export default class FactsController {
     return {
       data: await Fact.query()
         .where('id', params.id)
+        .preload('factType')
         .preload('tags')
         .preload('person', (person) => {
           person.preload('tags')
