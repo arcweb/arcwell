@@ -41,12 +41,10 @@ $spacing: 12px;
   border-bottom: 2px solid colors.$white;
 }
 
-.top-menu-link:not(:last-child) {
-  &::after {
-    content: '';
-    margin-left: $spacing !important;
-    border-right: 1px solid colors.$white !important;
-  }
+.spacer { 
+  height: 35px;
+  margin-left: $spacing !important;
+  border-right: 1px solid colors.$white !important;
 }
 
 .user-avatar {
