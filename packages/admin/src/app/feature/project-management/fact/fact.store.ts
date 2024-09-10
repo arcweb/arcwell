@@ -20,6 +20,8 @@ import { FactTypeService } from '@shared/services/fact-type.service';
 import { FactTypeType } from '@schemas/fact-type.schema';
 import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
+import { ToastService } from '@shared/services/toast.service';
+import { ToastLevel } from '@shared/models';
 
 interface FactState {
   fact: FactType | null;
@@ -47,6 +49,7 @@ export const FactStore = signalStore(
       factService = inject(FactService),
       factTypeService = inject(FactTypeService),
       tagService = inject(TagService),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(factId: string) {
         patchState(store, setPending());
@@ -106,12 +109,14 @@ export const FactStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error uploading facts.', ToastLevel.ERROR);
         } else {
           patchState(
             store,
             { fact: resp.data, inEditMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Updated fact.', ToastLevel.SUCCESS);
         }
       },
       async createFact(createFactFormData: FactType) {
@@ -123,6 +128,7 @@ export const FactStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error creating facts.', ToastLevel.ERROR);
         } else {
           // TODO: Do we need to do this if we are navigating away?
           patchState(
@@ -130,6 +136,7 @@ export const FactStore = signalStore(
             { fact: resp.data, inEditMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
         }
       },
       async deleteFact() {
@@ -137,8 +144,10 @@ export const FactStore = signalStore(
         const resp = await firstValueFrom(factService.delete(store.fact().id));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error deleting fact.', ToastLevel.ERROR);
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+          toastService.sendMessage('Deleted fact.', ToastLevel.SUCCESS);
         }
       },
       async setTags(tags: string[]) {
@@ -148,8 +157,10 @@ export const FactStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+          toastService.sendMessage('Error setting facts.', ToastLevel.ERROR);
         } else {
           patchState(store, setFulfilled());
+          toastService.sendMessage('Set facts.', ToastLevel.SUCCESS);
         }
       },
     }),

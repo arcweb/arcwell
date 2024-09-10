@@ -87,10 +87,10 @@ export class AllFactsComponent {
     ]);
   }
 
-  viewResoource(resourceId: string) {
+  viewResource(resourceId: string) {
     this.router.navigate([
       'project-management',
-      'resource',
+      'resources',
       'all-resources',
       resourceId,
     ]);

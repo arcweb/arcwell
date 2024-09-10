@@ -7,6 +7,8 @@ import { PersonType } from '@schemas/person.schema';
 import { EventType } from '@schemas/event.schema';
 import { PersonModel } from '@shared/models/person.model';
 import { EventModel } from '@shared/models/event.model';
+import { ResourceModel } from '@shared/models/resource.model';
+import { ResourceType } from '@schemas/resource.schema';
 
 // Base interface with common properties
 interface FactBase {
@@ -15,7 +17,7 @@ interface FactBase {
   resourceId?: string;
   eventId?: string;
   person?: PersonType | undefined;
-  resource?: any | undefined; // TODO: Add resource when implemented - ResourceType | undefined;
+  resource?: ResourceType | undefined;
   event?: EventType | undefined;
   tags?: TagModel[] | undefined;
   meta?: object;
@@ -43,7 +45,7 @@ export class FactModel {
   public resourceId?: string;
   public eventId?: string;
   public person?: PersonType | undefined;
-  public resource?: any | undefined; // TODO: Add resource when implemented - ResourceType | undefined;
+  public resource?: ResourceType | undefined;
   public event?: EventType | undefined;
   public tags?: TagModel[] | undefined;
   public meta?: object;
@@ -60,7 +62,7 @@ export class FactModel {
     this.eventId = data.eventId;
 
     if (data.person) this.person = new PersonModel(data.person);
-    // if (this.resource)  this.resource = new ResourceModel(data.resource);  // TODO: Add resource when implemented
+    if (data.resource) this.resource = new ResourceModel(data.resource);
     if (data.event) this.event = new EventModel(data.event);
 
     if (data.factType) this.factType = new FactTypeModel(data.factType);

@@ -20,6 +20,8 @@ import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
 import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
+import { ToastService } from '@shared/services/toast.service';
+import { ToastLevel } from '@shared/models';
 
 interface PersonState {
   person: PersonType | null;
@@ -47,6 +49,7 @@ export const PersonStore = signalStore(
       personService = inject(PersonService),
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -123,6 +126,7 @@ export const PersonStore = signalStore(
             { person: resp.data, inEditMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Updated person.', ToastLevel.SUCCESS);
         }
       },
       async createPerson(createPersonFormData: PersonType) {

@@ -5,13 +5,14 @@ import { FactTypeSchema } from './fact-type.schema';
 import { TagSchema } from '@schemas/tag.schema';
 import { PersonSchema } from '@schemas/person.schema';
 import { EventSchema } from '@schemas/event.schema';
+import { ResourceSchema } from '@schemas/resource.schema';
 
 export const FactSchema: any = z
   .object({
     id: z.string().uuid().optional(),
     typeKey: z.string(),
     person: z.lazy(() => PersonSchema.optional().nullable()),
-    resource: z.any().optional().nullable(), // TODO: Reference resource schema when added
+    resource: z.lazy(() => ResourceSchema.optional().nullable()),
     event: z.lazy(() => EventSchema.optional().nullable()),
     personId: z.string().uuid().optional().nullable(),
     resourceId: z.string().uuid().optional().nullable(),
@@ -31,7 +32,7 @@ export const FactUpdateSchema = FactSchema.extend({
   id: z.string().uuid(),
   typeKey: z.string().optional(),
   person: z.lazy(() => PersonSchema.optional().nullable()),
-  resource: z.any().optional().nullable(), // TODO: Reference resource schema when added
+  resource: z.lazy(() => ResourceSchema.optional().nullable()),
   event: z.lazy(() => EventSchema.optional().nullable()),
   personId: z.string().uuid().optional().nullable(),
   resourceId: z.string().uuid().optional().nullable(),
