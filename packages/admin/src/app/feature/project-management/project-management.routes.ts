@@ -2,7 +2,6 @@ import { Route } from '@angular/router';
 import { AllEventsComponent } from '@feature/project-management/all-events/all-events.component';
 import { AllResourcesComponent } from '@feature/project-management/all-resources/all-resources.component';
 import { PersonTypesComponent } from '@app/feature/project-management/person-types/person-types.component';
-import { PlaceholderComponent } from '@feature/project-management/placeholder/placeholder.component';
 import { ProjectManagementComponent } from './project-management.component';
 import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
 import { PersonComponent } from '@feature/project-management/person/person.component';
@@ -10,6 +9,9 @@ import { PersonTypeComponent } from '@feature/project-management/person-type/per
 import { EventComponent } from '@feature/project-management/event/event.component';
 import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
 import { EventTypeComponent } from './event-type/event-type.component';
+import { ResourceComponent } from './resource/resource.component';
+import { AllResourceTypesComponent } from './all-resource-types/all-resource-types.component';
+import { ResourceTypeComponent } from './resource-type/resource-type.component';
 import { AllFactsComponent } from '@feature/project-management/all-facts/all-facts.component';
 import { FactComponent } from '@feature/project-management/fact/fact.component';
 import { FactTypeComponent } from '@feature/project-management/fact-type/fact-type.component';
@@ -42,6 +44,14 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         redirectTo: 'people/all-people',
       },
       {
+        path: 'resources/resource-types',
+        component: AllResourceTypesComponent,
+      },
+      {
+        path: 'resources/resource-types/:resourceTypeId',
+        component: ResourceTypeComponent,
+      },
+      {
         path: 'resources/all-resources',
         component: AllResourcesComponent,
       },
@@ -50,8 +60,8 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         redirectTo: 'resources/all-resources',
       },
       {
-        path: 'resources/resource-types',
-        component: PlaceholderComponent,
+        path: 'resources/all-resources/:resourceId',
+        component: ResourceComponent,
       },
       {
         path: 'events/event-types',

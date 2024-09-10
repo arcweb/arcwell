@@ -1,0 +1,68 @@
+<div class="main-container-header">
+  <h2>Resource Types</h2>
+  <div class="icons-container">
+    <button mat-icon-button [routerLink]="['create']">
+      <mat-icon aria-label="Create resource icon button">
+        add_circle_outline
+      </mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Search icon button">search</mat-icon>
+    </button>
+  </div>
+</div>
+
+@if (resourceTypesStore.isErrored()) {
+  <aw-error-container [errors]="resourceTypesStore.errors()" />
+}
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>Id</th>
+    <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="key">
+    <th mat-header-cell *matHeaderCellDef>Key</th>
+    <td mat-cell *matCellDef="let element">{{ element.key }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <th mat-header-cell *matHeaderCellDef>Tags</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.tags && element.tags.length > 0) {
+        @for (tag of element.tags; track $index) {
+          <div>
+            {{ tag.pathname }}
+          </div>
+        }
+      } @else {
+        <div>--</div>
+      }
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    (click)="handleClick(row)"
+  ></tr>
+</table>
+
+<mat-paginator
+  [length]="resourceTypesStore.totalData()"
+  [pageSizeOptions]="pageSizes"
+  [pageSize]="resourceTypesStore.limit()"
+  [pageIndex]="resourceTypesStore.pageIndex()"
+  (page)="this.resourceTypesStore.loadPage($event)"
+  showFirstLastButtons="true"
+></mat-paginator>

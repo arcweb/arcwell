@@ -1,0 +1,96 @@
+@if (resourceStore.isReady()) {
+  <div class="main-container-header">
+    @if (resourceStore.inCreateMode()) {
+      <h2>Create Resource</h2>
+    } @else if (resourceStore.inEditMode()) {
+      <h2>Edit Resource</h2>
+    } @else {
+      <h2>View Resource</h2>
+    }
+
+    <div class="icons-container">
+      @if (!resourceStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="resourceStore.inEditMode()"
+          (click)="resourceStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit resource icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete resource icon">delete_forever</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="resourceForm">
+    @if (resourceStore.isErrored()) {
+      <aw-error-container [errors]="resourceStore.errors()" />
+    }
+
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (resourceForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Resource Type</mat-label>
+      <mat-select
+        formControlName="resourceType"
+        [compareWith]="compareResourceTypes"
+      >
+        @for (
+          resourceType of resourceStore.resourceTypes();
+          track resourceType.id
+        ) {
+          <mat-option [value]="resourceType">
+            {{ resourceType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (resourceForm.controls.resourceType.hasError('required')) {
+        <mat-error>
+          Resource Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!resourceStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !resourceStore.inEditMode() ||
+          !resourceForm.valid ||
+          !resourceForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="resourceStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
+}
