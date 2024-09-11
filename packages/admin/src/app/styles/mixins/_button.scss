@@ -28,4 +28,8 @@
     min-width: 200px;
     border-radius: 0;
   }
+
+  .top-menu-nav-link-active {
+    border-bottom: 2px solid colors.$gray-94;
+  }
 }
