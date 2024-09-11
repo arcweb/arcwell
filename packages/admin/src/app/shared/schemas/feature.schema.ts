@@ -1,17 +1,14 @@
 import { z } from 'zod';
 import { FeatureModel } from '../models/feature.model';
-import { SubFeatureSchema } from './sub-feature.schema';
+import { SubFeatureSchema } from './subfeature.schema';
 
 // TODO: Look at using z.lazy() to avoid circular dependency and define subfeatures without using FeatureSchemaBase
 export const FeatureSchema: any = z
   .object({
-    id: z.string().uuid().optional(),
     name: z.string(),
     path: z.string(),
     icon: z.string(),
-    createdAt: z.string().datetime({ offset: true }),
-    updatedAt: z.string().datetime({ offset: true }),
-    subFeatures: z.array(SubFeatureSchema).optional(),
+    subfeatures: z.array(SubFeatureSchema).optional(),
   })
   .strict();
 
@@ -29,7 +26,5 @@ export const deserializeFeature = (data: FeatureType): FeatureModel => {
 export const serializeFeature = (data: FeatureModel): FeatureType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
   };
 };

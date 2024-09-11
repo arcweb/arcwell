@@ -19,30 +19,34 @@ import {
 } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
-interface EventsState {
+interface EventsListState {
   events: EventType[];
   limit: number;
   offset: number;
   totalData: number;
   pageIndex: number;
+  typeKey: string;
 }
 
-const initialState: EventsState = {
+const initialState: EventsListState = {
   events: [],
   limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  typeKey: '',
 };
 
-export const EventsStore = signalStore(
+export const EventsListStore = signalStore(
   withDevtools('events'),
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventService = inject(EventService)) => ({
-    async load(limit: number, offset: number) {
+    async load(limit: number, offset: number, typeKey: string = '') {
       patchState(store, setPending());
-      const resp = await firstValueFrom(eventService.getEvents(limit, offset));
+      const resp = await firstValueFrom(
+        eventService.getEvents(limit, offset, typeKey),
+      );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -65,7 +69,7 @@ export const EventsStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventService.getEvents(store.limit(), store.offset()),
+        eventService.getEvents(store.limit(), store.offset(), store.typeKey()),
       );
 
       if (resp.errors) {
@@ -79,9 +83,4 @@ export const EventsStore = signalStore(
       }
     },
   })),
-  withHooks({
-    onInit(store) {
-      store.load(store.limit(), store.offset());
-    },
-  }),
 );

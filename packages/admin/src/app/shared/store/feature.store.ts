@@ -17,17 +17,18 @@ import { lastValueFrom } from 'rxjs';
 import { FeatureModel } from '@shared/models/feature.model';
 import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
+import { SubfeatureType } from '../schemas/subfeature.schema';
 
 interface FeatureState {
   features: FeatureModel[];
   currentFeaturePath: string | null;
-  currentSubFeaturePath: string | null;
+  currentSubfeature: SubfeatureType | null;
 }
 
 const initialState: FeatureState = {
   features: [],
   currentFeaturePath: null,
-  currentSubFeaturePath: null,
+  currentSubfeature: null,
 };
 
 export const FeatureStore = signalStore(
@@ -52,32 +53,39 @@ export const FeatureStore = signalStore(
         const currentFeaturePath =
           resp.find(feature => feature.path === router.url.split('/')[2])
             ?.path || resp[0].path;
-        const currentSubFeaturePath =
+        const currentSubfeature =
           resp
             .find(feature => feature.path === router.url.split('/')[2])
-            ?.subFeatures.find(
-              subFeature => subFeature.path === router.url.split('/')[3],
-            )?.path || resp[0].subFeatures[1].path;
+            ?.subfeatures.find(
+              subfeature => subfeature.path === router.url.split('/')[3],
+            ) || resp[0].subfeatures[1];
         patchState(
           store,
           {
             features: resp,
             currentFeaturePath: currentFeaturePath,
-            currentSubFeaturePath: currentSubFeaturePath,
+            currentSubfeature,
           },
           setFulfilled(),
         );
       },
       setCurrentFeature(featurePath: string) {
+        const currentSubfeature = store
+          .features()
+          .find(feature => feature.path === featurePath)?.subfeatures[1];
         patchState(store, {
           currentFeaturePath: featurePath,
-          currentSubFeaturePath: store
-            .features()
-            .find(feature => feature.path === featurePath)?.subFeatures[1].path,
+          currentSubfeature: currentSubfeature,
         });
       },
-      setCurrentSubFeature(subFeaturePath: string) {
-        patchState(store, { currentSubFeaturePath: subFeaturePath });
+      setCurrentSubfeature(subfeaturePath: string) {
+        const currentSubfeature = store
+          .features()
+          .find(feature => feature.path === store.currentFeaturePath())
+          ?.subfeatures.find(subfeature => subfeature.path === subfeaturePath);
+        patchState(store, {
+          currentSubfeature,
+        });
       },
     }),
   ),

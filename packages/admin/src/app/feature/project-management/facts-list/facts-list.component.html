@@ -1,5 +1,5 @@
 <div class="main-container-header">
-  <h2>All Facts</h2>
+  <h2>{{ featureStore.currentSubfeature().name }}</h2>
   <div class="icons-container">
     <button mat-icon-button [routerLink]="['create']">
       <mat-icon aria-label="Create fact icon button">
@@ -15,8 +15,8 @@
   </div>
 </div>
 
-@if (factsStore.isErrored()) {
-  <aw-error-container [errors]="factsStore.errors()" />
+@if (factsListStore.isErrored()) {
+  <aw-error-container [errors]="factsListStore.errors()" />
 }
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
@@ -108,10 +108,10 @@
 </table>
 
 <mat-paginator
-  [length]="factsStore.totalData()"
+  [length]="factsListStore.totalData()"
   [pageSizeOptions]="pageSizes"
-  [pageSize]="factsStore.limit()"
-  [pageIndex]="factsStore.pageIndex()"
-  (page)="this.factsStore.loadPage($event)"
+  [pageSize]="factsListStore.limit()"
+  [pageIndex]="factsListStore.pageIndex()"
+  (page)="this.factsListStore.loadPage($event)"
   showFirstLastButtons="true"
 ></mat-paginator>

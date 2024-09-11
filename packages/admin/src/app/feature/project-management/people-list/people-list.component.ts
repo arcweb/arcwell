@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { PeopleStore } from '@feature/project-management/all-people/people.store';
+import { PeopleListStore } from '@feature/project-management/people-list/people-list.store';
 import {
   MatCell,
   MatCellDef,
@@ -16,13 +16,17 @@ import {
 } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { capitalize } from 'lodash';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 @Component({
-  selector: 'aw-all-people',
+  selector: 'aw-people-list',
   standalone: true,
   imports: [
     JsonPipe,
@@ -42,15 +46,20 @@ import { MatIconButton } from '@angular/material/button';
     RouterLink,
     MatIconButton,
   ],
-  providers: [PeopleStore],
-  templateUrl: './all-people.component.html',
-  styleUrl: './all-people.component.scss',
+  providers: [PeopleListStore],
+  templateUrl: './people-list.component.html',
+  styleUrl: './people-list.component.scss',
 })
-export class AllPeopleComponent {
-  readonly peopleStore = inject(PeopleStore);
+export class PeopleListComponent {
+  readonly peopleListStore = inject(PeopleListStore);
   private router = inject(Router);
-
+  private activatedRoute = inject(ActivatedRoute);
+  readonly featureStore = inject(FeatureStore);
   pageSizes = [10, 20, 50];
+  typeKey$ = this.activatedRoute.params.pipe(
+    takeUntilDestroyed(),
+    map(({ typeKey }) => typeKey),
+  );
 
   dataSource = new MatTableDataSource<PersonModel>();
 
@@ -66,17 +75,16 @@ export class AllPeopleComponent {
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.peopleStore.people();
+      this.dataSource.data = this.peopleListStore.people();
+    });
+    // load the people list based on the route parameters if they exist
+    this.typeKey$.subscribe(typeKey => {
+      this.peopleListStore.load(this.peopleListStore.limit(), 0, typeKey);
     });
   }
 
   handleClick(row: PersonModel) {
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      row.id,
-    ]);
+    this.router.navigate(['project-management', 'people', row.id]);
   }
 
   viewAccount(personId: string) {
