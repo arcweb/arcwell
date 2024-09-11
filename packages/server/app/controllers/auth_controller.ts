@@ -76,7 +76,7 @@ export default class AuthController {
     const user = await User.verifyCredentials(email, password)
 
     const token = await User.accessTokens.create(user, ['*'], {
-      expiresIn: 1,
+      expiresIn: '7 days',
     })
 
     return {
