@@ -3,6 +3,7 @@ import { afterDelete, BaseModel, column, hasMany, manyToMany } from '@adonisjs/l
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
+import DimensionType from '#models/dimension_type'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -15,7 +16,7 @@ export default class FactType extends BaseModel {
   declare name: string
 
   @column()
-  declare dimensions: Object
+  declare description: string
 
   @hasMany(() => Fact, { foreignKey: 'typeKey', localKey: 'key' })
   declare facts: HasMany<typeof Fact>
@@ -25,6 +26,12 @@ export default class FactType extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @manyToMany(() => DimensionType, {
+    pivotTimestamps: true,
+    pivotColumns: ['is_required'],
+  })
+  declare dimensionTypes: ManyToMany<typeof DimensionType>
 
   @manyToMany(() => Tag, {
     pivotTimestamps: true,

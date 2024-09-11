@@ -21,6 +21,7 @@ export default class FactsController {
       .orderBy('observedAt', 'desc')
       .preload('factType')
       .preload('tags')
+      .preload('dimensions')
       .preload('person', (person) => {
         person.preload('tags')
         person.preload('user', (user) => {
@@ -83,6 +84,7 @@ export default class FactsController {
         .where('id', params.id)
         .preload('factType')
         .preload('tags')
+        .preload('dimensions')
         .preload('person', (person) => {
           person.preload('tags')
           person.preload('user', (user) => {

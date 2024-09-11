@@ -77,20 +77,10 @@ export class FactTypeComponent implements OnInit {
       },
       Validators.required,
     ),
-    // info: new FormControl(
-    //   {
-    //     value: '',
-    //     disabled: true,
-    //   },
-    //   Validators.required,
-    // ),
-    // tags: new FormControl(
-    //   {
-    //     value: '',
-    //     disabled: true,
-    //   },
-    //   Validators.required,
-    // ),
+    description: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -112,8 +102,7 @@ export class FactTypeComponent implements OnInit {
           this.factTypeForm.patchValue({
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
-            // info: JSON.stringify(this.factTypeStore.factType()?.info),
-            // tags: JSON.stringify(this.factTypeStore.factType()?.tags),
+            description: this.factTypeStore.factType()?.description,
           });
         });
       }

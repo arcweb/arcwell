@@ -86,7 +86,7 @@ export default class FactTypesController {
     await request.validateUsing(updateFactTypeValidator)
 
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['key', 'name', 'dimensions', 'tags'])
+    const cleanRequest = request.only(['key', 'name', 'description', 'tags'])
     if (cleanRequest.tags) {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
