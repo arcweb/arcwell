@@ -79,6 +79,9 @@ export const AuthStore = signalStore(
       // Don't need to check if the logout was successful, just reset state
       patchState(store, initialState);
     },
+    async clearStore() {
+      patchState(store, initialState);
+    },
   })),
   withHooks({
     onInit(store) {
