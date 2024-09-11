@@ -13,9 +13,12 @@
     @if (authStore.currentUser()) {
       @for (navLink of navLinks; track navLink.name) {
         <a
-          class="top-menu-link"
-          [routerLink]="navLink.path"
+          mat-button
+          class="top-menu-button"
           routerLinkActive="top-menu-nav-link-active"
+          #rla="routerLinkActive"
+          [routerLink]="navLink.path"
+          [disabled]="rla.isActive"
           (click)="
             navLink.featurePath
               ? featureStore.setCurrentFeature(navLink.featurePath)
@@ -24,6 +27,7 @@
         >
           {{ navLink.name }}
         </a>
+        <span class="spacer"></span>
       }
       <div>
         <!-- user icon -->
