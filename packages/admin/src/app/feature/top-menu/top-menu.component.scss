@@ -29,22 +29,10 @@ $spacing: 12px;
   gap: $spacing;
 }
 
-.top-menu-link {
-  cursor: pointer !important;
-  height: 100%;
-  padding-bottom: 6px;
-  border-radius: 0 !important;
-  color: colors.$white !important;
-}
-
-.top-menu-nav-link-active {
-  border-bottom: 2px solid colors.$white;
-}
-
 .spacer { 
   height: 35px;
-  margin-left: $spacing !important;
-  border-right: 1px solid colors.$white !important;
+  margin-left: $spacing;
+  border-right: 1px solid colors.$white;
 }
 
 .user-avatar {
