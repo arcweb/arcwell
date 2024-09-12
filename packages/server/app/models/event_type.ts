@@ -12,7 +12,7 @@ export default class EventType extends BaseModel {
   declare key: string
 
   @column()
-  declare name: string | null
+  declare name: string
 
   @hasMany(() => Event, { foreignKey: 'typeKey', localKey: 'key' })
   declare events: HasMany<typeof Event>

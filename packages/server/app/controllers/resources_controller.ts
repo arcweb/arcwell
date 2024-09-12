@@ -11,7 +11,7 @@ export default class ResourcesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-    const resourceTypeId = queryData['resourceTypeId']
+    const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
 
@@ -24,8 +24,8 @@ export default class ResourcesController {
       .preload('tags')
       .orderBy('name', 'asc')
 
-    if (resourceTypeId) {
-      const resourceType = await ResourceType.findOrFail(resourceTypeId)
+    if (typeKey) {
+      const resourceType = await ResourceType.findByOrFail('key', typeKey)
       query.where('typeKey', resourceType.key)
       countQuery.where('type_key', resourceType.key)
     }

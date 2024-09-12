@@ -25,6 +25,7 @@ export class PersonService {
   getPeople(
     limit?: number,
     offset?: number,
+    typeKey?: string,
   ): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -33,6 +34,9 @@ export class PersonService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (typeKey) {
+      params = params.set('typeKey', typeKey);
     }
 
     return this.http

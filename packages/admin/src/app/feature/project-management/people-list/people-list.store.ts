@@ -1,10 +1,4 @@
-import {
-  patchState,
-  signalStore,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   withRequestStatus,
@@ -18,30 +12,34 @@ import { PersonModel } from '@shared/models/person.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 
-interface PersonState {
+interface PeopleListState {
   people: PersonModel[];
   limit: number;
   offset: number;
   totalData: number;
   pageIndex: number;
+  typeKey: string;
 }
 
-const initialState: PersonState = {
+const initialState: PeopleListState = {
   people: [],
   limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  typeKey: '',
 };
 
-export const PeopleStore = signalStore(
+export const PeopleListStore = signalStore(
   withDevtools('people'),
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, setPending());
-      const resp = await firstValueFrom(personService.getPeople(limit, offset));
+    async load(limit: number, offset: number, typeKey: string = '') {
+      patchState(store, { ...initialState, typeKey }, setPending());
+      const resp = await firstValueFrom(
+        personService.getPeople(limit, offset, typeKey),
+      );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -64,7 +62,7 @@ export const PeopleStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(store.limit(), store.offset()),
+        personService.getPeople(store.limit(), store.offset(), store.typeKey()),
       );
 
       if (resp.errors) {
@@ -78,9 +76,4 @@ export const PeopleStore = signalStore(
       }
     },
   })),
-  withHooks({
-    onInit(store) {
-      store.load(store.limit(), store.offset());
-    },
-  }),
 );

@@ -1,18 +1,18 @@
 import { Route } from '@angular/router';
-import { AllEventsComponent } from '@feature/project-management/all-events/all-events.component';
-import { AllResourcesComponent } from '@feature/project-management/all-resources/all-resources.component';
+import { EventsListComponent } from '@app/feature/project-management/events-list/events-list.component';
+import { ResourcesListComponent } from '@feature/project-management/resources-list/resources-list.component';
 import { PersonTypesComponent } from '@app/feature/project-management/person-types/person-types.component';
 import { ProjectManagementComponent } from './project-management.component';
-import { AllPeopleComponent } from '@feature/project-management/all-people/all-people.component';
+import { PeopleListComponent } from '@feature/project-management/people-list/people-list.component';
 import { PersonComponent } from '@feature/project-management/person/person.component';
 import { PersonTypeComponent } from '@feature/project-management/person-type/person-type.component';
 import { EventComponent } from '@feature/project-management/event/event.component';
-import { AllEventTypesComponent } from './all-event-types/all-event-types.component';
+import { EventTypesComponent } from './event-types/event-types.component';
 import { EventTypeComponent } from './event-type/event-type.component';
 import { ResourceComponent } from './resource/resource.component';
-import { AllResourceTypesComponent } from './all-resource-types/all-resource-types.component';
+import { ResourceTypesComponent } from './resource-types/resource-types.component';
 import { ResourceTypeComponent } from './resource-type/resource-type.component';
-import { AllFactsComponent } from '@feature/project-management/all-facts/all-facts.component';
+import { FactsListComponent } from '@feature/project-management/facts-list/facts-list.component';
 import { FactComponent } from '@feature/project-management/fact/fact.component';
 import { FactTypeComponent } from '@feature/project-management/fact-type/fact-type.component';
 import { FactTypesComponent } from '@feature/project-management/fact-types/fact-types.component';
@@ -23,16 +23,17 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
     component: ProjectManagementComponent,
     children: [
       // TODO: Move these child routes into their own routing config
+      // people routes
       {
-        path: 'people/all-people',
-        component: AllPeopleComponent,
+        path: 'people/list',
+        component: PeopleListComponent,
       },
       {
-        path: 'people/all-people/:personId',
-        component: PersonComponent,
+        path: 'people/list/:typeKey',
+        component: PeopleListComponent,
       },
       {
-        path: 'people/person-types',
+        path: 'people/types',
         component: PersonTypesComponent,
       },
       {
@@ -40,80 +41,97 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         component: PersonTypeComponent,
       },
       {
+        path: 'people/:personId',
+        component: PersonComponent,
+      },
+      {
         path: 'people',
-        redirectTo: 'people/all-people',
+        redirectTo: 'people/list',
+      },
+      // resources routes
+      {
+        path: 'resources/list',
+        component: ResourcesListComponent,
       },
       {
-        path: 'resources/resource-types',
-        component: AllResourceTypesComponent,
+        path: 'resources/list/:typeKey',
+        component: ResourcesListComponent,
       },
       {
-        path: 'resources/resource-types/:resourceTypeId',
+        path: 'resources/types',
+        component: ResourceTypesComponent,
+      },
+      {
+        path: 'resources/types/:resourceTypeId',
         component: ResourceTypeComponent,
       },
       {
-        path: 'resources/all-resources',
-        component: AllResourcesComponent,
-      },
-      {
-        path: 'resources',
-        redirectTo: 'resources/all-resources',
-      },
-      {
-        path: 'resources/all-resources/:resourceId',
+        path: 'resources/:resourceId',
         component: ResourceComponent,
       },
       {
-        path: 'events/event-types',
-        component: AllEventTypesComponent,
+        path: 'resources',
+        redirectTo: 'resources/list',
+      },
+      // events routes
+      {
+        path: 'events/list',
+        component: EventsListComponent,
       },
       {
-        path: 'events/event-types/:eventTypeId',
+        path: 'events/list/:typeKey',
+        component: EventsListComponent,
+      },
+      {
+        path: 'events/types',
+        component: EventTypesComponent,
+      },
+      {
+        path: 'events/types/:eventTypeId',
         component: EventTypeComponent,
       },
       {
-        path: 'events/all-events',
-        component: AllEventsComponent,
-      },
-      {
-        path: 'events/all-events/:eventId',
+        path: 'events/:eventId',
         component: EventComponent,
       },
       {
         path: 'events',
-        redirectTo: 'events/all-events',
+        redirectTo: 'events/list',
+      },
+      // facts routes
+      {
+        path: 'facts/list',
+        component: FactsListComponent,
       },
       {
-        path: 'facts/all-facts',
-        component: AllFactsComponent,
+        path: 'facts/list/:typeKey',
+        component: FactsListComponent,
       },
       {
-        path: 'facts/fact-types',
+        path: 'facts/types',
         component: FactTypesComponent,
       },
       {
-        path: 'facts/fact-types/:factTypeId',
+        path: 'facts/types/:factTypeId',
         component: FactTypeComponent,
       },
-
       {
-        path: 'facts/all-facts/:factId',
+        path: 'facts/:factId',
         component: FactComponent,
       },
-
       {
         path: 'facts',
-        redirectTo: 'facts/all-facts',
+        redirectTo: 'facts/list',
       },
 
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'people/all-people',
+        redirectTo: 'people/list',
       },
       {
         path: '**',
-        redirectTo: 'people/all-people',
+        redirectTo: 'people/list',
       },
     ],
   },

@@ -18,30 +18,34 @@ import { FactModel } from '@shared/models/fact.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 
-interface FactState {
+interface FactsListState {
   facts: FactModel[];
   limit: number;
   offset: number;
   totalData: number;
   pageIndex: number;
+  typeKey: string;
 }
 
-const initialState: FactState = {
+const initialState: FactsListState = {
   facts: [],
   limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  typeKey: '',
 };
 
-export const FactsStore = signalStore(
+export const FactsListStore = signalStore(
   withDevtools('facts'),
   withState(initialState),
   withRequestStatus(),
   withMethods((store, factService = inject(FactService)) => ({
-    async load(limit: number, offset: number) {
+    async load(limit: number, offset: number, typeKey: string = '') {
       patchState(store, setPending());
-      const resp = await firstValueFrom(factService.getFacts(limit, offset));
+      const resp = await firstValueFrom(
+        factService.getFacts(limit, offset, typeKey),
+      );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -64,7 +68,7 @@ export const FactsStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factService.getFacts(store.limit(), store.offset()),
+        factService.getFacts(store.limit(), store.offset(), store.typeKey()),
       );
 
       if (resp.errors) {
@@ -78,9 +82,4 @@ export const FactsStore = signalStore(
       }
     },
   })),
-  withHooks({
-    onInit(store) {
-      store.load(store.limit(), store.offset());
-    },
-  }),
 );

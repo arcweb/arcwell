@@ -1,9 +1,9 @@
-<div class="events-management-container">
+<div class="resources-management-container">
   <div class="main-container-header">
-    <h2>All Events</h2>
+    <h2>{{ featureStore.currentSubfeature().name }}</h2>
     <div class="icons-container">
       <button mat-icon-button [routerLink]="['create']">
-        <mat-icon aria-label="Create event icon button">
+        <mat-icon aria-label="Create resource icon button">
           add_circle_outline
         </mat-icon>
       </button>
@@ -16,8 +16,8 @@
     </div>
   </div>
 
-  @if (eventsStore.isErrored()) {
-    <aw-error-container [errors]="eventsStore.errors()" />
+  @if (resourcesListStore.isErrored()) {
+    <aw-error-container [errors]="resourcesListStore.errors()" />
   }
 
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
@@ -31,21 +31,11 @@
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
     </ng-container>
 
-    <ng-container matColumnDef="source">
-      <th mat-header-cell *matHeaderCellDef>Source</th>
-      <td mat-cell *matCellDef="let element">{{ element.source }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="occurredAt">
-      <th mat-header-cell *matHeaderCellDef>Occurred At</th>
+    <ng-container matColumnDef="resourceType">
+      <th mat-header-cell *matHeaderCellDef>Resource Type</th>
       <td mat-cell *matCellDef="let element">
-        {{ convertDateTimeToLocal(element.occurredAt) }}
+        {{ element.resourceType.name }}
       </td>
-    </ng-container>
-
-    <ng-container matColumnDef="eventType">
-      <th mat-header-cell *matHeaderCellDef>Event Type</th>
-      <td mat-cell *matCellDef="let element">{{ element.eventType.name }}</td>
     </ng-container>
 
     <ng-container matColumnDef="tags">
@@ -72,11 +62,11 @@
   </table>
 
   <mat-paginator
-    [length]="eventsStore.totalData()"
+    [length]="resourcesListStore.totalData()"
     [pageSizeOptions]="pageSizes"
-    [pageSize]="eventsStore.limit()"
-    [pageIndex]="eventsStore.pageIndex()"
-    (page)="this.eventsStore.loadPage($event)"
+    [pageSize]="resourcesListStore.limit()"
+    [pageIndex]="resourcesListStore.pageIndex()"
+    (page)="this.resourcesListStore.loadPage($event)"
     showFirstLastButtons="true"
   ></mat-paginator>
 </div>

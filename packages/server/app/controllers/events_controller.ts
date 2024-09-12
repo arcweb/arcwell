@@ -7,11 +7,11 @@ import db from '@adonisjs/lucid/services/db'
 
 export default class EventsController {
   /**
-   * Display a list of event
+   * Display a list of events
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-    const eventTypeId = queryData['eventTypeId']
+    const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
 
@@ -23,8 +23,8 @@ export default class EventsController {
         tags.preload('tags')
       })
 
-    if (eventTypeId) {
-      const eventType = await EventType.findOrFail(eventTypeId)
+    if (typeKey) {
+      const eventType = await EventType.findByOrFail('key', typeKey)
       query.where('typeKey', eventType.key)
       countQuery.where('type_key', eventType.key)
     }

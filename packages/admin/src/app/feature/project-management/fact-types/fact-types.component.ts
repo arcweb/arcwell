@@ -63,6 +63,6 @@ export class FactTypesComponent {
   }
 
   handleClick(row: FactTypeModel) {
-    this.router.navigate(['project-management', 'facts', 'fact-types', row.id]);
+    this.router.navigate(['project-management', 'facts', 'types', row.id]);
   }
 }

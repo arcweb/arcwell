@@ -21,8 +21,8 @@ export default class extends BaseSeeder {
     const limitedAdminRole = await Role.findBy('name', 'Limited Admin')
     const guestRole = await Role.findBy('name', 'Guest')
 
-    const patientPersonType = await PersonType.findBy('key', 'Patient')
-    const staffPersonType = await PersonType.findBy('key', 'Staff')
+    const patientPersonType = await PersonType.findBy('key', 'patient')
+    const staffPersonType = await PersonType.findBy('key', 'staff')
 
     const deviceResourceType = await ResourceType.findBy('key', 'device')
     const dmeResourceType = await ResourceType.findBy('key', 'dme')

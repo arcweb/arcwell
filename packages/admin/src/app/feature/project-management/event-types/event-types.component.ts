@@ -22,7 +22,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 
 @Component({
-  selector: 'aw-all-event-types',
+  selector: 'aw-event-types',
   standalone: true,
   imports: [
     MatTable,
@@ -43,10 +43,10 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
     RouterLink,
   ],
   providers: [EventTypesStore],
-  templateUrl: './all-event-types.component.html',
-  styleUrl: './all-event-types.component.scss',
+  templateUrl: './event-types.component.html',
+  styleUrl: './event-types.component.scss',
 })
-export class AllEventTypesComponent {
+export class EventTypesComponent {
   public eventTypesStore = inject(EventTypesStore);
   private router = inject(Router);
 
@@ -63,11 +63,6 @@ export class AllEventTypesComponent {
   }
 
   handleClick(row: EventTypeModel) {
-    this.router.navigate([
-      'project-management',
-      'events',
-      'event-types',
-      row.id,
-    ]);
+    this.router.navigate(['project-management', 'events', 'types', row.id]);
   }
 }

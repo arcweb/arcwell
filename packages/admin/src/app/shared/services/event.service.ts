@@ -24,6 +24,7 @@ export class EventService {
   getEvents(
     limit?: number,
     offset?: number,
+    typeKey?: string,
   ): Observable<EventsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -32,6 +33,9 @@ export class EventService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (typeKey) {
+      params = params.set('typeKey', typeKey);
     }
 
     return this.http
