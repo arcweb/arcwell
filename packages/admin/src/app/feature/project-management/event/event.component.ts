@@ -37,6 +37,10 @@ import {
 } from '@app/shared/helpers/date-format.helper';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
+import {
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule,
+} from '@danielmoncada/angular-datetime-picker';
 
 @Component({
   selector: 'aw-event',
@@ -56,6 +60,8 @@ import { TagType } from '@schemas/tag.schema';
     MatIconButton,
     NgxMaskDirective,
     TagsFormComponent,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
   providers: [EventStore, provideNgxMask()],
   templateUrl: './event.component.html',
@@ -100,15 +106,10 @@ export class EventComponent implements OnInit {
             name: this.eventStore.event()?.name,
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
-            occurredAt: this.eventStore.event()?.occurredAt
-              ? prepDateData(
-                  this.eventStore
-                    .event()
-                    ?.occurredAt.toLocaleString(DateTime.DATETIME_SHORT),
-                )
-              : null,
+            occurredAt: this.eventStore.event()?.occurredAt.toJSDate(),
             meta: this.eventStore.event()?.meta,
           });
+          console.log(this.eventForm.value);
         });
       }
     }
@@ -118,9 +119,9 @@ export class EventComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventStore.inCreateMode()) {
-            this.eventStore.create(cleanDateData(this.eventForm, 'occurredAt'));
+            this.eventStore.create(this.eventForm.value);
           } else {
-            this.eventStore.update(cleanDateData(this.eventForm, 'occurredAt'));
+            this.eventStore.update(this.eventForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
