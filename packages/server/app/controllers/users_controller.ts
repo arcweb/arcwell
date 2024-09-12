@@ -72,7 +72,19 @@ export default class UsersController {
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
     const newUser = await User.create(request.body())
-    return { data: newUser }
+    let returnQuery = User.query()
+      .where('id', newUser.id)
+      .preload('tags')
+      .preload('role')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('personType', (personType) => {
+          personType.preload('tags')
+        })
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -85,7 +97,19 @@ export default class UsersController {
     const cleanRequest = request.only(['email', 'roleId'])
     const user = await User.findOrFail(params.id)
     const updatedUser = await user.merge(cleanRequest).save()
-    return { data: updatedUser }
+    let returnQuery = User.query()
+      .where('id', updatedUser.id)
+      .preload('tags')
+      .preload('role')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('personType', (personType) => {
+          personType.preload('tags')
+        })
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

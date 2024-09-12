@@ -70,7 +70,26 @@ export default class FactsController {
     }
     // @ts-ignore - stringify is required for knex and jsonb arrays
     const newFact = await Fact.create(request.body())
-    return { data: newFact }
+
+    let returnQuery = Fact.query()
+      .where('id', newFact.id)
+      .preload('factType')
+      .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
+      .preload('event', (event) => {
+        event.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -115,7 +134,26 @@ export default class FactsController {
     }
     const fact = await Fact.findOrFail(params.id)
     const updatedFact = await fact.merge(cleanRequest).save()
-    return { data: updatedFact }
+
+    let returnQuery = Fact.query()
+      .where('id', updatedFact.id)
+      .preload('factType')
+      .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
+      .preload('event', (event) => {
+        event.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

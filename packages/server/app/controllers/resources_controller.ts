@@ -53,7 +53,15 @@ export default class ResourcesController {
     await auth.authenticate()
     await request.validateUsing(createResourceValidator)
     const newResource = await Resource.create(request.body())
-    return { data: newResource }
+
+    let returnQuery = Resource.query()
+      .where('id', newResource.id)
+      .preload('tags')
+      .preload('facts')
+      .preload('resourceType', (resourceType) => resourceType.preload('tags'))
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -83,7 +91,15 @@ export default class ResourcesController {
     const cleanRequest = request.only(['name', 'typeKey'])
     const resource = await Resource.findOrFail(params.id)
     const updatedResource = await resource.merge(cleanRequest).save()
-    return { data: updatedResource }
+
+    let returnQuery = Resource.query()
+      .where('id', updatedResource.id)
+      .preload('tags')
+      .preload('facts')
+      .preload('resourceType', (resourceType) => resourceType.preload('tags'))
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

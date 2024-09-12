@@ -42,7 +42,11 @@ export default class PersonTypesController {
     await request.validateUsing(createPersonTypeValidator)
     const newPersonType = await PersonType.create(request.body())
     // TODO: Forced to get the object because create didn't return tags & info.  Because I didn't pass them in?
-    const fullPersonType = await PersonType.query().where('id', newPersonType.id).firstOrFail()
+    const fullPersonType = await PersonType.query()
+      .preload('tags')
+      .preload('people', (people) => people.preload('tags'))
+      .where('id', newPersonType.id)
+      .firstOrFail()
     return { data: fullPersonType }
   }
 
@@ -75,7 +79,14 @@ export default class PersonTypesController {
     await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
     const updatedPersonType = await personType.merge(request.body()).save()
-    return { data: updatedPersonType }
+
+    let returnQuery = PersonType.query()
+      .preload('tags')
+      .preload('people', (people) => people.preload('tags'))
+      .where('id', updatedPersonType.id)
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

@@ -46,7 +46,16 @@ export default class FactTypesController {
     }
     // @ts-ignore - stringify is required for knex and jsonb arrays
     const newFactType = await FactType.create(request.body())
-    return { data: newFactType }
+
+    let returnQuery = FactType.query()
+      .where('id', newFactType.id)
+      .preload('tags')
+      .preload('facts', (facts) => {
+        facts.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -92,7 +101,16 @@ export default class FactTypesController {
     }
     const factType = await FactType.findOrFail(params.id)
     const updatedFactType = await factType.merge(cleanRequest).save()
-    return { data: updatedFactType }
+
+    let returnQuery = FactType.query()
+      .where('id', updatedFactType.id)
+      .preload('tags')
+      .preload('facts', (facts) => {
+        facts.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

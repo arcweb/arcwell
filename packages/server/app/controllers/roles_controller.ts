@@ -41,7 +41,12 @@ export default class RolesController {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
     const newRole = await Role.create(request.body())
-    response.status(201).send({ data: newRole })
+
+    let returnQuery = Role.query()
+      .where('id', newRole.id)
+      .preload('users', (users) => users.preload('person').preload('tags'))
+      .firstOrFail()
+    return { data: await returnQuery }
   }
 
   /**
@@ -54,7 +59,12 @@ export default class RolesController {
     const role = await Role.findOrFail(params.id)
     const cleanRequest = request.only(['name'])
     const updateRole = await role.merge(cleanRequest).save()
-    return { data: updateRole }
+
+    let returnQuery = Role.query()
+      .where('id', updateRole.id)
+      .preload('users', (users) => users.preload('person').preload('tags'))
+      .firstOrFail()
+    return { data: await returnQuery }
   }
 
   /**

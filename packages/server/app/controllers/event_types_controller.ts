@@ -85,7 +85,18 @@ export default class EventTypesController {
     await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     const updatedEventType = await eventType.merge(request.body()).save()
-    return { data: updatedEventType }
+
+    let returnQuery = EventType.query()
+      .where('id', updatedEventType.id)
+      .preload('events', (event) => {
+        event.preload('tags')
+        event.preload('facts', (fact) => {
+          fact.preload('tags')
+        })
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

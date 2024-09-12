@@ -60,7 +60,19 @@ export default class PeopleController {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
     const newPerson = await Person.create(request.body())
-    return { data: newPerson }
+
+    let returnQuery = Person.query()
+      .where('id', newPerson.id)
+      .preload('tags')
+      .preload('user', (user) => {
+        user.preload('tags')
+      })
+      .preload('personType', (personType) => {
+        personType.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -93,7 +105,19 @@ export default class PeopleController {
     const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
-    return { data: updatedPerson }
+
+    let returnQuery = Person.query()
+      .where('id', updatedPerson.id)
+      .preload('tags')
+      .preload('user', (user) => {
+        user.preload('tags')
+      })
+      .preload('personType', (personType) => {
+        personType.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

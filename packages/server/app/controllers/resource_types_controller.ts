@@ -41,7 +41,14 @@ export default class ResourceTypesController {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
     const newResourceType = await ResourceType.create(request.body())
-    return { data: newResourceType }
+
+    let returnQuery = ResourceType.query()
+      .preload('tags')
+      .preload('resources', (resources) => resources.preload('tags'))
+      .where('id', newResourceType.id)
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -73,7 +80,14 @@ export default class ResourceTypesController {
     await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     const updatedResourceType = await resourceType.merge(request.body()).save()
-    return { data: updatedResourceType }
+
+    let returnQuery = ResourceType.query()
+      .preload('tags')
+      .preload('resources', (resources) => resources.preload('tags'))
+      .where('id', updatedResourceType.id)
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

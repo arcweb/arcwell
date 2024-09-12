@@ -50,8 +50,22 @@ export default class CohortsController {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
     const newCohort = await Cohort.create(cleanRequest)
+    let returnQuery = Cohort.query()
+      .where('id', newCohort.id)
+      .preload('tags')
+      .preload('people', (people) => {
+        people.preload('tags')
+        people.preload('personType', (personType) => {
+          personType.preload('tags')
+        })
+        people.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .firstOrFail()
+
     return {
-      data: newCohort,
+      data: await returnQuery,
     }
   }
 
@@ -108,7 +122,22 @@ export default class CohortsController {
     }
     const cohort = await Cohort.findOrFail(params.id)
     const updatedCohort = await cohort.merge(cleanRequest).save()
-    return { data: updatedCohort }
+
+    let returnQuery = Cohort.query()
+      .where('id', updatedCohort.id)
+      .preload('tags')
+      .preload('people', (people) => {
+        people.preload('tags')
+        people.preload('personType', (personType) => {
+          personType.preload('tags')
+        })
+        people.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
