@@ -91,7 +91,7 @@ test.group('Router resource', () => {
       }
     })
 
-  test('resource destroy test', async ({ assert, client }) => {
+  test('resource destroy test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const resource = await Resource.findBy('name', 'Object')
 

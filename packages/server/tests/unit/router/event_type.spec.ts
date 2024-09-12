@@ -79,7 +79,7 @@ test.group('Router event type', () => {
     assert.equal(data.data.name, newRType.name)
   })
 
-  test('event type delete type', async ({ assert, client }) => {
+  test('event type delete type', async ({ client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const eventType = await EventType.findBy('key', 'newtest')
 

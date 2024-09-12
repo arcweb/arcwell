@@ -79,7 +79,7 @@ test.group('Router resource type', () => {
     assert.equal(data.data.name, newRType.name)
   })
 
-  test('resource type delete type', async ({ assert, client }) => {
+  test('resource type delete type', async ({ client }) => {
     const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const resourceType = await ResourceType.findBy('key', 'newtest')
 
