@@ -90,3 +90,31 @@ knex
 ```
 
 for more info on this [KNEX Doc](https://knexjs.org/guide/schema-builder.html#jsonb)
+
+## API (Just putting this here for now.)
+
+Example of fact insert
+
+`/facts/insert`
+
+```json
+{
+    "observedAt": "2025-11-13T23:11:00.000-05:00",
+    "typeKey": "blood-pressure",
+    "personId": "09f246a3-ea09-472e-9a15-b6bb6d43541c",
+    "dimensions": [
+        {
+            "key": "systolic",
+            "value": "121"
+        },
+        {
+            "key": "diastolic",
+            "value": "80"
+        },
+        {
+            "key": "hr",
+            "value": "72"
+        }
+    ]
+}
+```

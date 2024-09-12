@@ -7,7 +7,7 @@ export class FactTypeModel {
   public id?: string;
   public key: string;
   public name: string;
-  public info: string;
+  public description: string | undefined;
   public tags?: TagModel[] | undefined;
   public createdAt: DateTime;
   public updatedAt: DateTime;
@@ -16,7 +16,7 @@ export class FactTypeModel {
     this.id = data.id;
     this.key = data.key;
     this.name = data.name;
-    this.info = data.info;
+    this.description = data.description;
     this.tags = data.tags
       ? data.tags.map((tag: TagType) => new TagModel(tag))
       : undefined;
