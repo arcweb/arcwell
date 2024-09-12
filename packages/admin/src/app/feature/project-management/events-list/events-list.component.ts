@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -14,7 +14,7 @@ import {
   MatTableDataSource,
 } from '@angular/material/table';
 import { EventModel } from '@app/shared/models/event.model';
-import { EventsStore } from './events.store';
+import { EventsListStore } from './events-list.store';
 import { JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,9 +22,12 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { DateTime } from 'luxon';
 import { MatIconButton } from '@angular/material/button';
 import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
+import { FeatureStore } from '@app/shared/store/feature.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
-  selector: 'aw-all-events',
+  selector: 'aw-events-list',
   standalone: true,
   imports: [
     JsonPipe,
@@ -44,13 +47,19 @@ import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
     RouterLink,
     MatIconButton,
   ],
-  providers: [EventsStore],
-  templateUrl: './all-events.component.html',
-  styleUrl: './all-events.component.scss',
+  providers: [EventsListStore],
+  templateUrl: './events-list.component.html',
+  styleUrl: './events-list.component.scss',
 })
-export class AllEventsComponent {
-  readonly eventsStore = inject(EventsStore);
+export class EventsListComponent {
+  readonly eventsListStore = inject(EventsListStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  readonly featureStore = inject(FeatureStore);
+  typeKey$ = this.activatedRoute.params.pipe(
+    takeUntilDestroyed(),
+    map(({ typeKey }) => typeKey),
+  );
 
   pageSizes = [10, 20, 50];
   dataSource = new MatTableDataSource<EventModel>();
@@ -65,26 +74,16 @@ export class AllEventsComponent {
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.eventsStore.events();
+      this.dataSource.data = this.eventsListStore.events();
+    });
+    // load the events list based on the route parameters if they exist
+    this.typeKey$.subscribe(typeKey => {
+      this.eventsListStore.load(this.eventsListStore.limit(), 0, typeKey);
     });
   }
 
   handleClick(row: EventModel) {
-    this.router.navigate([
-      'project-management',
-      'events',
-      'all-events',
-      row.id,
-    ]);
-  }
-
-  viewEvent(eventId: string) {
-    this.router.navigate([
-      'project-management',
-      'events',
-      'all-events',
-      eventId,
-    ]);
+    this.router.navigate(['project-management', 'events', row.id]);
   }
 
   convertDateTimeToLocal(dateTime: DateTime | undefined): string {

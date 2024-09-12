@@ -24,6 +24,7 @@ export class ResourceService {
   getResources(
     limit?: number,
     offset?: number,
+    typeKey?: string,
   ): Observable<ResourcesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -32,6 +33,9 @@ export class ResourceService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (typeKey) {
+      params = params.set('typeKey', typeKey);
     }
 
     return this.http

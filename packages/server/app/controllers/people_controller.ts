@@ -13,7 +13,7 @@ export default class PeopleController {
     await auth.authenticate()
 
     const queryData = request.qs()
-    const personTypeId = queryData['personTypeId']
+    const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
 
@@ -30,8 +30,8 @@ export default class PeopleController {
         personType.preload('tags')
       })
 
-    if (personTypeId) {
-      const personType = await PersonType.findOrFail(personTypeId)
+    if (typeKey) {
+      const personType = await PersonType.findByOrFail('key', typeKey)
       query.where('typeKey', personType.key)
       // DB context use sql column names
       countQuery.where('type_key', personType.key)

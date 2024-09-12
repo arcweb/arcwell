@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { FactsStore } from '@feature/project-management/all-facts/facts.store';
+import { FactsListStore } from '@feature/project-management/facts-list/facts-list.store';
 import {
   MatCell,
   MatCellDef,
@@ -16,12 +16,15 @@ import {
 } from '@angular/material/table';
 import { FactModel } from '@shared/models/fact.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { DateTime } from 'luxon';
 import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
+import { FeatureStore } from '@app/shared/store/feature.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'aw-all-facts',
@@ -45,13 +48,19 @@ import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
     MatIconButton,
     MatButton,
   ],
-  providers: [FactsStore],
-  templateUrl: './all-facts.component.html',
-  styleUrl: './all-facts.component.scss',
+  providers: [FactsListStore],
+  templateUrl: './facts-list.component.html',
+  styleUrl: './facts-list.component.scss',
 })
-export class AllFactsComponent {
-  readonly factsStore = inject(FactsStore);
+export class FactsListComponent {
+  readonly factsListStore = inject(FactsListStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  readonly featureStore = inject(FeatureStore);
+  typeKey$ = this.activatedRoute.params.pipe(
+    takeUntilDestroyed(),
+    map(({ typeKey }) => typeKey),
+  );
 
   pageSizes = [10, 20, 50];
 
@@ -70,39 +79,28 @@ export class AllFactsComponent {
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.factsStore.facts();
+      this.dataSource.data = this.factsListStore.facts();
+    });
+    // load the facts list based on the route parameters if they exist
+    this.typeKey$.subscribe(typeKey => {
+      this.factsListStore.load(this.factsListStore.limit(), 0, typeKey);
     });
   }
 
   handleClick(row: FactModel) {
-    this.router.navigate(['project-management', 'facts', 'all-facts', row.id]);
+    this.router.navigate(['project-management', 'facts', row.id]);
   }
 
   viewEvent(eventId: string) {
-    this.router.navigate([
-      'project-management',
-      'events',
-      'all-events',
-      eventId,
-    ]);
+    this.router.navigate(['project-management', 'events', eventId]);
   }
 
   viewResource(resourceId: string) {
-    this.router.navigate([
-      'project-management',
-      'resources',
-      'all-resources',
-      resourceId,
-    ]);
+    this.router.navigate(['project-management', 'resources', resourceId]);
   }
 
   viewPerson(personId: string) {
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      personId,
-    ]);
+    this.router.navigate(['project-management', 'people', personId]);
   }
 
   convertDateTimeToLocal(dateTime: DateTime | undefined): string {

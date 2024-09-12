@@ -29,9 +29,9 @@ export default class extends BaseSeeder {
 
     await RoleFactory.merge({ name: 'Guest' }).create()
 
-    await PersonTypeFactory.merge({ key: 'Patient', name: 'Patient' }).create()
-    await PersonTypeFactory.merge({ key: 'Staff', name: 'Staff' }).create()
-    await PersonTypeFactory.merge({ key: 'Temp', name: 'Temp' }).create()
+    await PersonTypeFactory.merge({ key: 'patient', name: 'Patient' }).create()
+    await PersonTypeFactory.merge({ key: 'staff', name: 'Staff' }).create()
+    await PersonTypeFactory.merge({ key: 'temp', name: 'Temp' }).create()
 
     await ResourceTypeFactory.merge({ key: 'device', name: 'Device' }).create()
     await ResourceTypeFactory.merge({ key: 'dme', name: 'DME' }).create()

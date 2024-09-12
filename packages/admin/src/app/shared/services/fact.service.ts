@@ -25,6 +25,7 @@ export class FactService {
   getFacts(
     limit?: number,
     offset?: number,
+    typeKey?: string,
   ): Observable<FactsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -33,6 +34,9 @@ export class FactService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (typeKey) {
+      params = params.set('typeKey', typeKey);
     }
 
     return this.http.get<FactsResponseType>(`${apiUrl}/facts`, { params }).pipe(

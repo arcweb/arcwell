@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,4 +14,6 @@ import { FeatureStore } from '@shared/store/feature.store';
 })
 export class FeaturesMenuComponent {
   readonly featureStore = inject(FeatureStore);
+
+  constructor() {}
 }

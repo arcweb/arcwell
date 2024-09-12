@@ -22,7 +22,7 @@ import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
 
 @Component({
-  selector: 'aw-all-resource-types',
+  selector: 'aw-resource-types',
   standalone: true,
   imports: [
     MatTable,
@@ -43,10 +43,10 @@ import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
     RouterLink,
   ],
   providers: [ResourceTypesStore],
-  templateUrl: './all-resource-types.component.html',
-  styleUrl: './all-resource-types.component.scss',
+  templateUrl: './resource-types.component.html',
+  styleUrl: './resource-types.component.scss',
 })
-export class AllResourceTypesComponent {
+export class ResourceTypesComponent {
   public resourceTypesStore = inject(ResourceTypesStore);
   private router = inject(Router);
 
@@ -63,11 +63,6 @@ export class AllResourceTypesComponent {
   }
 
   handleClick(row: ResourceTypeModel) {
-    this.router.navigate([
-      'project-management',
-      'resources',
-      'resource-types',
-      row.id,
-    ]);
+    this.router.navigate(['project-management', 'resources', 'types', row.id]);
   }
 }

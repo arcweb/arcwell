@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
-import { ResourcesStore } from '@feature/project-management/all-resources/resources.store';
+import { ResourcesListStore } from '@feature/project-management/resources-list/resources-list.store';
 import {
   MatCell,
   MatCellDef,
@@ -16,13 +16,17 @@ import {
 } from '@angular/material/table';
 import { ResourceModel } from '@shared/models/resource.model';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { capitalize } from 'lodash';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 @Component({
-  selector: 'aw-all-resources',
+  selector: 'aw-resources-list',
   standalone: true,
   imports: [
     JsonPipe,
@@ -42,13 +46,19 @@ import { MatIconButton } from '@angular/material/button';
     RouterLink,
     MatIconButton,
   ],
-  providers: [ResourcesStore],
-  templateUrl: './all-resources.component.html',
-  styleUrl: './all-resources.component.scss',
+  providers: [ResourcesListStore],
+  templateUrl: './resources-list.component.html',
+  styleUrl: './resources-list.component.scss',
 })
-export class AllResourcesComponent {
-  readonly resourcesStore = inject(ResourcesStore);
+export class ResourcesListComponent {
+  readonly resourcesListStore = inject(ResourcesListStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  readonly featureStore = inject(FeatureStore);
+  typeKey$ = this.activatedRoute.params.pipe(
+    takeUntilDestroyed(),
+    map(({ typeKey }) => typeKey),
+  );
 
   pageSizes = [10, 20, 50];
 
@@ -59,16 +69,15 @@ export class AllResourcesComponent {
 
   constructor() {
     effect(() => {
-      this.dataSource.data = this.resourcesStore.resources();
+      this.dataSource.data = this.resourcesListStore.resources();
+    });
+    // load the resources list based on the route parameters if they exist
+    this.typeKey$.subscribe(typeKey => {
+      this.resourcesListStore.load(this.resourcesListStore.limit(), 0, typeKey);
     });
   }
 
   handleClick(row: ResourceModel) {
-    this.router.navigate([
-      'project-management',
-      'resources',
-      'all-resources',
-      row.id,
-    ]);
+    this.router.navigate(['project-management', 'resources', row.id]);
   }
 }

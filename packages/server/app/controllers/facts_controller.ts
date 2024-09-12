@@ -1,4 +1,5 @@
 import Fact from '#models/fact'
+import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, insertFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -32,7 +33,7 @@ export default class FactsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const factTypeKey = queryData['typeKey']
+    const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
 
@@ -56,10 +57,11 @@ export default class FactsController {
         event.preload('tags')
       })
 
-    if (factTypeKey) {
-      query.where('typeKey', factTypeKey)
+    if (typeKey) {
+      const factType = await FactType.findByOrFail('key', typeKey)
+      query.where('typeKey', factType.key)
       // DB context use sql column names
-      countQuery.where('type_key', factTypeKey)
+      countQuery.where('type_key', factType.key)
     }
     if (limit) {
       query.limit(limit)

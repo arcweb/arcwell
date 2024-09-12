@@ -1,18 +1,19 @@
-@if (featureStore.currentSubFeaturePath()) {
+@if (featureStore.currentSubfeature()) {
   <div class="feature-sub-menu-container">
     @for (
-      subFeature of featureStore.currentFeature()?.subFeatures;
-      track subFeature.id
+      subfeature of featureStore.currentFeature()?.subfeatures;
+      track subfeature.name
     ) {
       <button
         mat-button
         [routerLink]="
-          featureStore.currentFeature()?.path + '/' + subFeature.path
+          featureStore.currentFeature()?.path + '/' + subfeature.path
         "
         routerLinkActive="subfeature-button-active"
+        (click)="featureStore.setCurrentSubfeature(subfeature.path)"
         [routerLinkActiveOptions]="{ exact: true }"
       >
-        {{ subFeature.name }}
+        {{ subfeature.name }}
       </button>
     }
   </div>

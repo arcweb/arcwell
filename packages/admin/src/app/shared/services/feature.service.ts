@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { ErrorResponseType } from '../schemas/error.schema';
 
+const apiUrl = 'http://localhost:3333';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,7 +15,7 @@ export class FeatureService {
 
   getFeatures(): Observable<FeatureModel[]> {
     return this.http
-      .get<FeatureResponseType>('assets/fake-feature-data.json')
+      .get<FeatureResponseType>(`${apiUrl}/config/features-menu`)
       .pipe(
         tap((response: FeatureResponseType | ErrorResponseType) => {
           // validate response is success
