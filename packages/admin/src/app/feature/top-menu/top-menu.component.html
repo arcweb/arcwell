@@ -16,14 +16,6 @@
           mat-button
           class="top-menu-button"
           routerLinkActive="top-menu-nav-link-active"
-          #rla="routerLinkActive"
-          [routerLink]="navLink.path"
-          [disabled]="rla.isActive"
-          (click)="
-            navLink.featurePath
-              ? featureStore.setCurrentFeature(navLink.featurePath)
-              : null
-          "
         >
           {{ navLink.name }}
         </a>
