@@ -6,6 +6,7 @@ import { TagSchema } from '@schemas/tag.schema';
 import { PersonSchema } from '@schemas/person.schema';
 import { EventSchema } from '@schemas/event.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
+import { DimensionSchema } from '@schemas/dimension.schema';
 
 export const FactSchema: any = z
   .object({
@@ -18,7 +19,7 @@ export const FactSchema: any = z
     resourceId: z.string().uuid().optional().nullable(),
     eventId: z.string().uuid().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional().nullable(),
-    dimensions: z.any().optional().nullable(),
+    dimensions: z.array(DimensionSchema).optional().nullable(),
     tags: z.array(TagSchema).optional(),
     meta: z.any().optional().nullable(),
     factType: FactTypeSchema.optional(),
@@ -38,7 +39,7 @@ export const FactUpdateSchema = FactSchema.extend({
   resourceId: z.string().uuid().optional().nullable(),
   eventId: z.string().uuid().optional().nullable(),
   observedAt: z.string().datetime({ offset: true }).optional().nullable(),
-  dimensions: z.any().optional().nullable(),
+  dimensions: z.array(DimensionSchema).optional().nullable(),
   tags: z.array(TagSchema).optional(),
   meta: z.any().optional().nullable(),
   factType: FactTypeSchema.optional(),

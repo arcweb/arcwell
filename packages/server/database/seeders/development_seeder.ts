@@ -99,8 +99,19 @@ export default class extends BaseSeeder {
     }
 
     // create data for populating the facts table
-    const factType = await FactTypeFactory.create()
-    const factType2 = await FactTypeFactory.with('dimensionTypes', 8).create()
+    const factType = await FactTypeFactory.merge({
+      key: 'blood-pressure',
+      name: 'Blood Pressure',
+      description: 'A reading from your BP monitor',
+    }).create()
+
+    const factType2 = await FactTypeFactory.merge({
+      key: 'weight',
+      name: 'Weight',
+      description: 'Recording of patient weight',
+    }).create()
+
+    // const factType2 = await FactTypeFactory.with('dimensionTypes', 8).create()
 
     const person = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
     const event = await EventFactory.merge({ typeKey: apptEventType.key }).create()

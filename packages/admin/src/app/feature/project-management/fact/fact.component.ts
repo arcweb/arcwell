@@ -33,6 +33,18 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { TagType } from '@schemas/tag.schema';
 import { cleanDateData } from '@shared/helpers/date-format.helper';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
 
 @Component({
   selector: 'aw-fact',
@@ -53,6 +65,16 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     FormsModule,
     TagsFormComponent,
     NgxMaskDirective,
+    MatTable,
+    MatRow,
+    MatCell,
+    MatHeaderCell,
+    MatColumnDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatHeaderRowDef,
+    MatCellDef,
+    MatHeaderCellDef,
   ],
   providers: [FactStore, provideNgxMask()],
   templateUrl: './fact.component.html',
@@ -76,6 +98,8 @@ export class FactComponent implements OnInit {
     ),
     observedAt: new FormControl({ value: '', disabled: true }),
   });
+
+  displayedColumns: string[] = ['id', 'key', 'value'];
 
   constructor() {
     effect(() => {

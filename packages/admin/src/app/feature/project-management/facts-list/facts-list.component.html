@@ -1,5 +1,5 @@
 <div class="main-container-header">
-  <h2>{{ featureStore.currentSubfeature().name }}</h2>
+  <h2>{{ featureStore.activeSubfeature()?.name || 'Facts' }}</h2>
   <div class="icons-container">
     <button mat-icon-button [routerLink]="['create']">
       <mat-icon aria-label="Create fact icon button">

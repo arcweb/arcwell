@@ -1,6 +1,6 @@
 <div class="main-container-header">
   <h2>
-    {{ featureStore.currentSubfeature().name }}
+    {{ featureStore.activeSubfeature()?.name || 'People' }}
   </h2>
   <div class="icons-container">
     <button mat-icon-button [routerLink]="['create']">

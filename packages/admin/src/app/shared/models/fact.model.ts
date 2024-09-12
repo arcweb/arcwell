@@ -9,6 +9,8 @@ import { PersonModel } from '@shared/models/person.model';
 import { EventModel } from '@shared/models/event.model';
 import { ResourceModel } from '@shared/models/resource.model';
 import { ResourceType } from '@schemas/resource.schema';
+import { DimensionModel } from '@shared/models/dimension.model';
+import { DimensionType } from '@schemas/dimension.schema';
 
 // Base interface with common properties
 interface FactBase {
@@ -22,6 +24,7 @@ interface FactBase {
   tags?: TagModel[] | undefined;
   meta?: object;
   observedAt?: DateTime;
+  dimensions: DimensionModel[] | undefined;
   factType?: FactTypeModel;
   createdAt?: DateTime;
   updatedAt?: DateTime;
@@ -50,6 +53,7 @@ export class FactModel {
   public tags?: TagModel[] | undefined;
   public meta?: object;
   public observedAt?: DateTime;
+  public dimensions: DimensionModel[] | undefined;
   public factType?: FactTypeModel;
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
@@ -75,6 +79,12 @@ export class FactModel {
 
     if (data.tags)
       this.tags = data.tags.map((tag: TagType) => new TagModel(tag));
+
+    if (data.dimensions) {
+      this.dimensions = data.dimensions.map(
+        (dimension: DimensionType) => new DimensionModel(dimension),
+      );
+    }
 
     if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
     if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
