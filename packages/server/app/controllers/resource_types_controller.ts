@@ -4,6 +4,14 @@ import { createResourceTypeValidator, updateResourceTypeValidator } from '#valid
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullResourceType(id: string) {
+  return ResourceType.query()
+    .preload('tags')
+    .preload('resources', (resources) => resources.preload('tags'))
+    .where('id', id)
+    .firstOrFail()
+}
+
 export default class ResourceTypesController {
   /**
    * Display a list of resource
@@ -42,13 +50,7 @@ export default class ResourceTypesController {
     await request.validateUsing(createResourceTypeValidator)
     const newResourceType = await ResourceType.create(request.body())
 
-    let returnQuery = ResourceType.query()
-      .preload('tags')
-      .preload('resources', (resources) => resources.preload('tags'))
-      .where('id', newResourceType.id)
-      .firstOrFail()
-
-    return { data: await returnQuery }
+    return { data: await getFullResourceType(newResourceType.id) }
   }
 
   /**
@@ -81,13 +83,7 @@ export default class ResourceTypesController {
     const resourceType = await ResourceType.findOrFail(params.id)
     const updatedResourceType = await resourceType.merge(request.body()).save()
 
-    let returnQuery = ResourceType.query()
-      .preload('tags')
-      .preload('resources', (resources) => resources.preload('tags'))
-      .where('id', updatedResourceType.id)
-      .firstOrFail()
-
-    return { data: await returnQuery }
+    return { data: await getFullResourceType(updatedResourceType.id) }
   }
 
   /**

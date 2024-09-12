@@ -5,6 +5,22 @@ import { createPersonValidator, updatePersonValidator } from '#validators/person
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullPerson(id: string) {
+  return Person.query()
+    .where('id', id)
+    .preload('tags')
+    .preload('user', (user) => {
+      user.preload('tags')
+    })
+    .preload('personType', (personType) => {
+      personType.preload('tags')
+    })
+    .preload('cohorts', (cohorts) => {
+      cohorts.preload('tags')
+    })
+    .firstOrFail()
+}
+
 export default class PeopleController {
   /**
    * Display a list of resource
@@ -61,18 +77,7 @@ export default class PeopleController {
     await request.validateUsing(createPersonValidator)
     const newPerson = await Person.create(request.body())
 
-    let returnQuery = Person.query()
-      .where('id', newPerson.id)
-      .preload('tags')
-      .preload('user', (user) => {
-        user.preload('tags')
-      })
-      .preload('personType', (personType) => {
-        personType.preload('tags')
-      })
-      .firstOrFail()
-
-    return { data: await returnQuery }
+    return { data: await getFullPerson(newPerson.id) }
   }
 
   /**
@@ -106,18 +111,7 @@ export default class PeopleController {
     const person = await Person.findOrFail(params.id)
     const updatedPerson = await person.merge(cleanRequest).save()
 
-    let returnQuery = Person.query()
-      .where('id', updatedPerson.id)
-      .preload('tags')
-      .preload('user', (user) => {
-        user.preload('tags')
-      })
-      .preload('personType', (personType) => {
-        personType.preload('tags')
-      })
-      .firstOrFail()
-
-    return { data: await returnQuery }
+    return { data: await getFullPerson(updatedPerson.id) }
   }
 
   /**

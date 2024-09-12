@@ -3,6 +3,13 @@ import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
 
+export function getFullRole(id: string) {
+  return Role.query()
+    .where('id', id)
+    .preload('users', (users) => users.preload('person').preload('tags'))
+    .firstOrFail()
+}
+
 export default class RolesController {
   /**
    * Display a list of resource
@@ -41,12 +48,7 @@ export default class RolesController {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
     const newRole = await Role.create(request.body())
-
-    let returnQuery = Role.query()
-      .where('id', newRole.id)
-      .preload('users', (users) => users.preload('person').preload('tags'))
-      .firstOrFail()
-    return { data: await returnQuery }
+    return { data: await getFullRole(newRole.id) }
   }
 
   /**
@@ -59,12 +61,7 @@ export default class RolesController {
     const role = await Role.findOrFail(params.id)
     const cleanRequest = request.only(['name'])
     const updateRole = await role.merge(cleanRequest).save()
-
-    let returnQuery = Role.query()
-      .where('id', updateRole.id)
-      .preload('users', (users) => users.preload('person').preload('tags'))
-      .firstOrFail()
-    return { data: await returnQuery }
+    return { data: await getFullRole(updateRole.id) }
   }
 
   /**
