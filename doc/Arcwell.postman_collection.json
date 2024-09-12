@@ -1588,7 +1588,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"familyName\": \"LAST NAME\",\n    \"givenName\": \"FIRST NAME\",\n    //\"personID\": \"UUID\"\n    \"email\": \"email@email.com\",\n    \"password\": \"Password12345!\",\n    \"roleId\": \"UUID\"\n}\n",
+					"raw": "{\n    \"familyName\": \"LAST NAME\",\n    \"givenName\": \"FIRST NAME\",\n    //\"personID\": \"UUID\"\n    \"email\": \"email@example.com\",\n    \"password\": \"password\",\n    \"roleId\": \"UUID\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -5005,7 +5005,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"email@email.com\"\n}",
+					"raw": "{\n    \"email\": \"email@example.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

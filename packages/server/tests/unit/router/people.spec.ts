@@ -42,7 +42,7 @@ test.group('Router people', () => {
   })
 
   test('people update test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     // get a valid person for id for request
     const person = await Person.first()
 
@@ -62,7 +62,7 @@ test.group('Router people', () => {
   })
 
   test('people store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const type = await PersonType.findBy('key', 'tester')
 
     const newPerson = {
@@ -97,7 +97,7 @@ test.group('Router people', () => {
     })
 
   test('people destroy test', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const person = await Person.findBy('familyName', 'Newman')
 
     const response = await client.delete(`${PEOPLE_URL}/${person!.id}`).loginAs(adminUser!)

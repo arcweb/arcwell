@@ -27,7 +27,7 @@ test.group('Router tag', () => {
   })
 
   test('tag udate test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const tag = await Tag.first()
 
     const newData = {
@@ -46,7 +46,7 @@ test.group('Router tag', () => {
   })
 
   test('tag store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
 
     const newTag = {
       pathname: 'Object/big',
@@ -64,7 +64,7 @@ test.group('Router tag', () => {
   })
 
   test('tag destroy test', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const tag = await Tag.findBy('pathname', 'Object/small')
 
     const response = await client.delete(`${TAG_URL}/${tag?.id}`).loginAs(adminUser!)

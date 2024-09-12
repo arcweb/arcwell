@@ -11,12 +11,27 @@ import Tag from '#models/tag'
 import { FactFactory } from '#database/factories/fact_factory'
 import { FactTypeFactory } from '#database/factories/fact_type_factory'
 import { CohortFactory } from '#database/factories/cohort_factory'
-import { TagFactory } from '#database/factories/tag_factory'
+import { PersonTypeFactory } from '#database/factories/person_type_factory'
+import { ResourceTypeFactory } from '#database/factories/resource_type_factory'
+import { EventTypeFactory } from '#database/factories/event_type_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
 
   async run() {
+    await PersonTypeFactory.merge({ key: 'patient', name: 'Patient' }).create()
+    await PersonTypeFactory.merge({ key: 'staff', name: 'Staff' }).create()
+    await PersonTypeFactory.merge({ key: 'temp', name: 'Temp' }).create()
+
+    await ResourceTypeFactory.merge({ key: 'medical-device', name: 'Medical Device' }).create()
+    await ResourceTypeFactory.merge({ key: 'room', name: 'Room' }).create()
+    await ResourceTypeFactory.merge({ key: 'bed', name: 'Bed' }).create()
+
+    await EventTypeFactory.merge({ key: 'appointment', name: 'Appointment' }).create()
+    await EventTypeFactory.merge({ key: 'surgery', name: 'Surgery' }).create()
+    await EventTypeFactory.merge({ key: 'intake', name: 'Intake' }).create()
+    await EventTypeFactory.merge({ key: 'release', name: 'Release' }).create()
+
     const superAdminRole = await Role.findBy('name', 'Super Admin')
     const limitedAdminRole = await Role.findBy('name', 'Limited Admin')
     const guestRole = await Role.findBy('name', 'Guest')
@@ -24,10 +39,10 @@ export default class extends BaseSeeder {
     const patientPersonType = await PersonType.findBy('key', 'patient')
     const staffPersonType = await PersonType.findBy('key', 'staff')
 
-    const deviceResourceType = await ResourceType.findBy('key', 'device')
-    const dmeResourceType = await ResourceType.findBy('key', 'dme')
+    const deviceResourceType = await ResourceType.findBy('key', 'medical-device')
+    const roomResourceType = await ResourceType.findBy('key', 'room')
 
-    const apptEventType = await EventType.findBy('key', 'appt')
+    const apptEventType = await EventType.findBy('key', 'appointment')
     const surgeryEventType = await EventType.findBy('key', 'surgery')
 
     if (!superAdminRole || !limitedAdminRole || !guestRole) {
@@ -38,7 +53,7 @@ export default class extends BaseSeeder {
       throw new Error('A person type not found.  Run the defaults seeder first')
     }
 
-    if (!deviceResourceType || !dmeResourceType) {
+    if (!deviceResourceType || !roomResourceType) {
       throw new Error('A resource type not found. Run the default seeder first')
     }
 
@@ -52,20 +67,20 @@ export default class extends BaseSeeder {
 
     await User.createMany([
       {
-        email: 'dev-admin@email.com',
-        password: 'Password12345!',
+        email: 'dev-admin@example.com',
+        password: 'password',
         roleId: superAdminRole.id,
         personId: person1.id,
       },
       {
-        email: 'dev-limited-admin@email.com',
-        password: 'Password12345!',
+        email: 'dev-limited-admin@example.com',
+        password: 'password',
         roleId: limitedAdminRole.id,
         personId: person2.id,
       },
       {
-        email: 'dev-guest@email.com',
-        password: 'Password12345!',
+        email: 'dev-guest@example.com',
+        password: 'password',
         roleId: guestRole.id,
         personId: person3.id,
       },
@@ -80,8 +95,18 @@ export default class extends BaseSeeder {
     for (let i = 0; i < 10; i++) {
       await PersonFactory.merge({ typeKey: patientPersonType.key }).createMany(10)
     }
-    await ResourceFactory.merge({ typeKey: deviceResourceType.key }).createMany(5)
-    await ResourceFactory.merge({ typeKey: dmeResourceType.key }).createMany(7)
+    await ResourceFactory.merge({
+      typeKey: deviceResourceType.key,
+      name: 'Digital Scale',
+    }).create()
+    await ResourceFactory.merge({
+      typeKey: deviceResourceType.key,
+      name: 'BP Monitor',
+    }).create()
+    await ResourceFactory.merge({
+      typeKey: roomResourceType.key,
+      name: 'ER Room 100',
+    }).create()
 
     for (let i = 0; i < 10; i++) {
       await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(10)
@@ -89,14 +114,14 @@ export default class extends BaseSeeder {
     await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
 
     await Tag.createMany([
-      { pathname: 'top/middle' },
-      { pathname: 'top/left' },
-      { pathname: 'top/right' },
+      { pathname: 'measurements' },
+      { pathname: 'measurements/diabetes' },
+      { pathname: 'measurements/weight' },
     ])
 
-    for (let i = 0; i < 10; i++) {
-      await TagFactory.createMany(10)
-    }
+    // for (let i = 0; i < 10; i++) {
+    //   await TagFactory.createMany(10)
+    // }
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.merge({
