@@ -16,11 +16,6 @@
           class="top-menu-link"
           [routerLink]="navLink.path"
           routerLinkActive="top-menu-nav-link-active"
-          (click)="
-            navLink.featurePath
-              ? featureStore.setCurrentFeature(navLink.featurePath)
-              : null
-          "
         >
           {{ navLink.name }}
         </a>
