@@ -31,8 +31,6 @@ export class FeaturesMenuComponent {
         const activeFeature = features.find(feature =>
           urlAfterRedirects.includes(feature.path),
         );
-        console.log(urlAfterRedirects);
-        console.log('activeFeature', activeFeature);
         if (activeFeature) {
           this.featureStore.setActiveFeature(activeFeature);
           // need to check the all-{type} path last because it will match any typekey paths
