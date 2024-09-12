@@ -15,9 +15,5 @@ import { FeatureStore } from '@shared/store/feature.store';
 export class FeaturesMenuComponent {
   readonly featureStore = inject(FeatureStore);
 
-  constructor() {
-    effect(() => {
-      this.featureStore.features();
-    });
-  }
+  constructor() {}
 }

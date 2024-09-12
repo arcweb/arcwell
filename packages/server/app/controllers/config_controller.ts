@@ -17,6 +17,7 @@ export default class ConfigController {
   async featuresMenu({ auth }: HttpContext) {
     await auth.authenticate()
     // clone the featureMenuConfig so we don't modify the original
+    // TODO: Find a better way to clone the featureMenuConfig
     const featuresBaseMenuConfig = JSON.parse(JSON.stringify(featureMenuConfig))
 
     const personTypeQuery = await PersonType.query().select('name', 'key').orderBy('name', 'asc')
