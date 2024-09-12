@@ -2,7 +2,10 @@
   <div class="main-container-header">
     <h2>{{ featureStore.activeSubfeature()?.name || 'Events' }}</h2>
     <div class="icons-container">
-      <button mat-icon-button [routerLink]="['create']">
+      <button
+        mat-icon-button
+        [routerLink]="['/project-management/events/create']"
+      >
         <mat-icon aria-label="Create event icon button">
           add_circle_outline
         </mat-icon>

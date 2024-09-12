@@ -3,7 +3,10 @@
     {{ featureStore.activeSubfeature()?.name || 'People' }}
   </h2>
   <div class="icons-container">
-    <button mat-icon-button [routerLink]="['create']">
+    <button
+      mat-icon-button
+      [routerLink]="['/project-management/people/create']"
+    >
       <mat-icon aria-label="Create person icon button">
         add_circle_outline
       </mat-icon>

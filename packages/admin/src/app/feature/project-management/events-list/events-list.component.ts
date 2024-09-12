@@ -23,7 +23,7 @@ import { DateTime } from 'luxon';
 import { MatIconButton } from '@angular/material/button';
 import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
 @Component({
