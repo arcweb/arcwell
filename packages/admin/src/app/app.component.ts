@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { FeaturesMenuComponent } from '@feature/project-management/features-menu/features-menu.component';
 import { FeatureSubMenuComponent } from '@feature/project-management/feature-sub-menu/feature-sub-menu.component';
 import { TopMenuComponent } from './feature/top-menu/top-menu.component';
+import { AuthStore } from './shared/store/auth.store';
 
 @Component({
   selector: 'aw-app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
   title = 'Arcwell';
   private matIconRegistry = inject(MatIconRegistry);
   private domSanitizer = inject(DomSanitizer);
+  readonly authStore = inject(AuthStore);
 
   constructor() {
     this.matIconRegistry.addSvgIcon(
@@ -32,5 +34,9 @@ export class AppComponent {
         'assets/arcwell-logo.svg',
       ),
     );
+
+    if (!this.authStore.currentUser() && this.authStore.token()) {
+      this.authStore.loadCurrentUser();
+    }
   }
 }

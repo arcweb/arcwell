@@ -25,14 +25,6 @@ export class ProjectManagementComponent implements AfterViewInit {
   private router = inject(Router);
   readonly featureStore = inject(FeatureStore);
 
-  constructor() {
-    effect(() => {
-      if (!this.authStore.currentUser()) {
-        this.router.navigate(['auth', 'login']);
-      }
-    });
-  }
-
   ngAfterViewInit() {
     if (this.authStore.currentUser()) {
       this.featureStore.load();
