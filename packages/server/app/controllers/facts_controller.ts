@@ -1,9 +1,30 @@
 import Fact from '#models/fact'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
-import { createFactValidator, updateFactValidator } from '#validators/fact'
+import { createFactValidator, insertFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+
+async function getFullFact(id: string) {
+  return Fact.query()
+    .where('id', id)
+    .preload('factType')
+    .preload('tags')
+    .preload('dimensions')
+    .preload('person', (person) => {
+      person.preload('tags')
+      person.preload('user', (user) => {
+        user.preload('tags')
+      })
+    })
+    .preload('resource', (resource) => {
+      resource.preload('tags')
+    })
+    .preload('event', (event) => {
+      event.preload('tags')
+    })
+    .firstOrFail()
+}
 
 export default class FactsController {
   /**
@@ -22,6 +43,7 @@ export default class FactsController {
       .orderBy('observedAt', 'desc')
       .preload('factType')
       .preload('tags')
+      .preload('dimensions')
       .preload('person', (person) => {
         person.preload('tags')
         person.preload('user', (user) => {
@@ -64,13 +86,8 @@ export default class FactsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactValidator)
-    // TODO: remove this when we change the type of tags
-    if (request.body().tags) {
-      request.body().tags = JSON.stringify(request.body().tags)
-    }
-    // @ts-ignore - stringify is required for knex and jsonb arrays
     const newFact = await Fact.create(request.body())
-    return { data: newFact }
+    return { data: await getFullFact(newFact.id) }
   }
 
   /**
@@ -81,23 +98,7 @@ export default class FactsController {
     await paramsUUIDValidator.validate(params)
 
     return {
-      data: await Fact.query()
-        .where('id', params.id)
-        .preload('factType')
-        .preload('tags')
-        .preload('person', (person) => {
-          person.preload('tags')
-          person.preload('user', (user) => {
-            user.preload('tags')
-          })
-        })
-        .preload('resource', (resource) => {
-          resource.preload('tags')
-        })
-        .preload('event', (event) => {
-          event.preload('tags')
-        })
-        .firstOrFail(),
+      data: await getFullFact(params.id),
     }
   }
 
@@ -114,8 +115,8 @@ export default class FactsController {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
     const fact = await Fact.findOrFail(params.id)
-    const updatedFact = await fact.merge(cleanRequest).save()
-    return { data: updatedFact }
+    await fact.merge(cleanRequest).save()
+    return { data: await getFullFact(params.id) }
   }
 
   /**
@@ -128,4 +129,89 @@ export default class FactsController {
     await fact.delete()
     response.status(204).send('')
   }
+
+  /**
+   * Handle form submission for the non-admin full features insert  action
+   */
+  async insert({ auth, request }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(insertFactValidator)
+    const cleanRequest = request.only([
+      'typeKey',
+      'observedAt',
+      'meta',
+      'dimensions',
+      'personId',
+      'resourceId',
+      'eventId',
+    ])
+
+    let newFact = null as Fact | null
+
+    await db.transaction(async (trx) => {
+      newFact = new Fact().fill(cleanRequest).useTransaction(trx)
+      await newFact.save()
+
+      if (cleanRequest.dimensions) {
+        for (const dimension of cleanRequest.dimensions) {
+          await newFact.related('dimensions').create(dimension)
+        }
+      }
+
+      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
+      // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
+    })
+
+    // Load the full object to return
+    let newCreatedFact = null
+    if (newFact) {
+      newCreatedFact = await getFullFact(newFact.id)
+    }
+
+    return { data: newCreatedFact }
+  }
+
+  // TODO: Temporarily removing this until we have the api endpoint discussion
+  // async insertWithFactType({ auth, params, request }: HttpContext) {
+  //   await auth.authenticate()
+  //
+  //   const cleanRequest = request.only([
+  //     'typeKey',
+  //     'observedAt',
+  //     'meta',
+  //     'dimensions',
+  //     'personId',
+  //     'resourceId',
+  //     'eventId',
+  //   ])
+  //
+  //   // TODO Not needed, since it will fail on foreign key constraint
+  //   // const factType = FactType.findByOrFail('type_key', params.fact_type_key)
+  //
+  //   let newFact = null as Fact | null
+  //
+  //   await db.transaction(async (trx) => {
+  //     newFact = new Fact()
+  //       .fill({ ...cleanRequest, typeKey: params.fact_type_key })
+  //       .useTransaction(trx)
+  //     await newFact.save()
+  //
+  //     if (cleanRequest.dimensions) {
+  //       for (const dimension of cleanRequest.dimensions) {
+  //         await newFact.related('dimensions').create(dimension)
+  //       }
+  //     }
+  //
+  //     // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
+  //     // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
+  //   })
+  //
+  //   // Load the full object to return
+  //   let newCreatedFact = null
+  //   if (newFact) {
+  //     newCreatedFact = await getFullFact(newFact.id)
+  //   }
+  //
+  //   return { data: newCreatedFact }
+  // }
 }

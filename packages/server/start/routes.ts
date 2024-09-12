@@ -70,7 +70,15 @@ router.group(() => {
 })
 
 // fact routes
-router.resource('facts', FactsController).apiOnly()
+router.group(() => {
+  router.resource('facts', FactsController).apiOnly()
+  router.post('facts/insert', [FactsController, 'insert']).as('facts.insert')
+  // TODO: Temporarily removing this until we have the api endpoint discussion
+  // router
+  //   .post('facts/:fact_type_key/insert', [FactsController, 'insertWithFactType'])
+  //   .as('facts.insertWithFactType')
+})
+
 router.group(() => {
   router.resource('fact_types', FactTypesController).apiOnly()
   router
