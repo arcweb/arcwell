@@ -17,7 +17,7 @@ export default class EventsController {
 
     let countQuery = db.from('events')
     let query = Event.query()
-      .orderBy('name')
+      .orderBy('name', 'asc')
       .preload('tags')
       .preload('eventType', (tags) => {
         tags.preload('tags')

@@ -13,7 +13,7 @@ export default class RolesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
-    let query = Role.query()
+    let query = Role.query().orderBy('name', 'asc').preload('users')
 
     if (limit) {
       query.limit(limit)
