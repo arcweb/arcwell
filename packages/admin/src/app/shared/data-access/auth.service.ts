@@ -3,7 +3,7 @@ import { catchError, map, Observable, tap } from 'rxjs';
 import { Credentials } from '@shared/interfaces/credentials';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '@shared/models/user.model';
-import { deserializeUser } from '@shared/schemas/user.schema';
+import { UserResponseType, deserializeUser } from '@shared/schemas/user.schema';
 import { ErrorResponseType } from '@shared/schemas/error.schema';
 import {
   LoginResponseSchema,
@@ -55,5 +55,13 @@ export class AuthService {
           return defaultErrorResponseHandler(error);
         }),
       );
+  }
+
+  me(): Observable<UserResponseType | ErrorResponseType> {
+    return this.http.get<UserResponseType>(`${this.apiUrl}/auth/me`).pipe(
+      map(response => {
+        return deserializeUser(response.data);
+      }),
+    );
   }
 }

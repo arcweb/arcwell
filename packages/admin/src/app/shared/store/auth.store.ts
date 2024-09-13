@@ -82,19 +82,15 @@ export const AuthStore = signalStore(
     async clearStore() {
       patchState(store, initialState);
     },
-  })),
-  withHooks({
-    onInit(store) {
-      effect(() => {
-        // 👇 The effect is re-executed on state change.
-        if (store.token() && !store.currentUser()) {
-          console.log(
-            'Have a token, but no currentUser.  Should call /me endpoint, but here?',
-          );
-        }
-      });
+    async loadCurrentUser() {
+      patchState(store, { loginStatus: 'pending' });
+      const user = await firstValueFrom(authService.me());
+      if (user.errors) {
+        this.logout();
+      }
+      patchState(store, { currentUser: user, loginStatus: 'success' });
     },
-  }),
+  })),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage
     autoSync: true, // read from storage on init and write on state changes - `true` by default
