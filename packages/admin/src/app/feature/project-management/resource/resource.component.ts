@@ -30,7 +30,6 @@ import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.co
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { TagType } from '@app/shared/schemas/tag.schema';
-import { NgxMaskDirective } from 'ngx-mask';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 
 @Component({
@@ -49,7 +48,6 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
     MatIcon,
     RouterLink,
     MatIconButton,
-    NgxMaskDirective,
     TagsFormComponent,
   ],
   providers: [ResourceStore],

@@ -29,7 +29,6 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
 import {
@@ -53,12 +52,11 @@ import {
     MatIcon,
     RouterLink,
     MatIconButton,
-    NgxMaskDirective,
     TagsFormComponent,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
   ],
-  providers: [EventStore, provideNgxMask()],
+  providers: [EventStore],
   templateUrl: './event.component.html',
   styleUrl: './event.component.scss',
 })
