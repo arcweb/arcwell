@@ -31,7 +31,6 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import {
   MatCell,
   MatCellDef,
@@ -67,7 +66,6 @@ import {
     MatIconButton,
     FormsModule,
     TagsFormComponent,
-    NgxMaskDirective,
     MatTable,
     MatRow,
     MatCell,
@@ -81,7 +79,7 @@ import {
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
   ],
-  providers: [FactStore, provideNgxMask()],
+  providers: [FactStore],
   templateUrl: './fact.component.html',
   styleUrl: './fact.component.scss',
 })
