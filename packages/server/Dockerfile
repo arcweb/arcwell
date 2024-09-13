@@ -1,7 +1,7 @@
 # Arcwell Server
 # Dockerfile
 
-FROM node:20-bookworm-slim
+FROM node:20-bookworm-slim AS base
 
 # Set node environment, development or production
 # Default to production; override this in compose for development to build and run
@@ -21,15 +21,29 @@ WORKDIR /home/node/app
 
 # Copy in package defs first and install dependencies:
 COPY --chown=node:node package.json package-lock.json* ./
-##RUN npm ci && npm cache clean --force
-RUN npm install && npm cache clean --force
+RUN npm install --no-fund && npm cache clean --force
 
 # Check every 30s to ensure this service returns HTTP 200
 HEALTHCHECK --interval=60s CMD node healthcheck.js
 
 # Add source code last (it changes the most), as node user:
-WORKDIR /home/node/app
 COPY --chown=node:node . .
 
-CMD ["npm", "run", "dev"]
+
+#
+# Development
+#
+FROM base AS develop
+
+# In development build, always npm install prior to app start
+CMD npm install --no-fund; npm run dev
+
+
+#
+# Production
+#
+FROM base AS production
+
+# In production build, simply start server
+CMD ["npm", "run", "start"]
 

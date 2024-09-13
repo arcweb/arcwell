@@ -1,12 +1,11 @@
 # Arcwell Admin
 # Dockerfile
 
-FROM node:20-bookworm-slim
+FROM node:20-bookworm-slim AS base
 
-LABEL project="arcwell-sandbox"
+LABEL project="Arcwell Admin"
 LABEL version="0.1"
-LABEL author.dev="Tim Getz <tgetz@arcwebtech.com>"
-LABEL author.co="Arcweb Technologies"
+LABEL author.co="Arcweb Technologies, LLC <https://arcweb.co>"
 
 # RUN apt-get update -qq \
 #     && apt-get install -qq vim \
@@ -46,42 +45,26 @@ WORKDIR /home/node/app
 
 # Copy in package defs first and install dependencies:
 COPY --chown=node:node package.json package-lock.json* ./
-RUN npm install && npm cache clean --force
-
-#COPY ng .
-
-#RUN mkdir scripts
-#COPY scripts/* scripts/
-#COPY npm-packages/* npm-packages/
-#COPY npm-packages/fontawesome/* npm-packages/fontawesome/
-
-# Make scripts executable
-#RUN chmod +x ./ng
-#RUN chmod +x ./scripts/install.sh
-#RUN chmod +x ./scripts/entrypoint.sh
-#RUN chmod +x ./scripts/entrypoint.ci.sh
-#RUN chmod +x ./scripts/tests-headless.sh
-#RUN chmod +x ./scripts/tests-start.sh
-
-# RUN echo "node version $(node -v); npm version $(npm -v)"
-
-# RUN npm install -g @angular/cli@18
-# RUN ng version
+RUN npm install --no-fund && npm cache clean --force
 
 # Add source code last (it changes the most), as node user:
-WORKDIR /home/node/app
 COPY --chown=node:node . .
 
-# RUN npm install --no-fund
-RUN npm install --no-fund
 
-#ARG CI_VERSION=1.0.LOCAL_DEV
-#RUN mkdir /etc/lvfiles
 #
-## Create a version file for the version endpoint
-#RUN echo "{\"version\":\"${CI_VERSION}\"}" > /etc/lvfiles/version.json
-#RUN cat /etc/lvfiles/version.json
+# Development
+#
+FROM base as develop
 
-#CMD "./scripts/entrypoint.sh"
+# In development build, always npm install prior to app start
+CMD npm install --no-fund; npm run dev
 
-CMD ["npm", "run", "dev"]
+
+#
+# Production
+#
+FROM base as production
+
+# In production build, just start server
+CMD ["npm", "run", "start"]
+
