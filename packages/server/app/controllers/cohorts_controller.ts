@@ -8,6 +8,21 @@ import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullCohort(id: string) {
+  return Cohort.query()
+    .where('id', id)
+    .preload('tags')
+    .preload('people', (people) => {
+      people.preload('tags')
+      people.preload('personType', (personType) => {
+        personType.preload('tags')
+      })
+      people.preload('user', (user) => {
+        user.preload('tags')
+      })
+    })
+    .firstOrFail()
+}
 export default class CohortsController {
   /**
    * Display a list of resource
@@ -50,8 +65,9 @@ export default class CohortsController {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
     const newCohort = await Cohort.create(cleanRequest)
+
     return {
-      data: newCohort,
+      data: await getFullCohort(newCohort.id),
     }
   }
 
@@ -108,7 +124,8 @@ export default class CohortsController {
     }
     const cohort = await Cohort.findOrFail(params.id)
     const updatedCohort = await cohort.merge(cleanRequest).save()
-    return { data: updatedCohort }
+
+    return { data: await getFullCohort(updatedCohort.id) }
   }
 
   /**

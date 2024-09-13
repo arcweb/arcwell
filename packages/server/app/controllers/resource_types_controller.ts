@@ -4,6 +4,14 @@ import { createResourceTypeValidator, updateResourceTypeValidator } from '#valid
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullResourceType(id: string) {
+  return ResourceType.query()
+    .preload('tags')
+    .preload('resources', (resources) => resources.preload('tags'))
+    .where('id', id)
+    .firstOrFail()
+}
+
 export default class ResourceTypesController {
   /**
    * Display a list of resource
@@ -41,7 +49,8 @@ export default class ResourceTypesController {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
     const newResourceType = await ResourceType.create(request.body())
-    return { data: newResourceType }
+
+    return { data: await getFullResourceType(newResourceType.id) }
   }
 
   /**
@@ -73,7 +82,8 @@ export default class ResourceTypesController {
     await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     const updatedResourceType = await resourceType.merge(request.body()).save()
-    return { data: updatedResourceType }
+
+    return { data: await getFullResourceType(updatedResourceType.id) }
   }
 
   /**

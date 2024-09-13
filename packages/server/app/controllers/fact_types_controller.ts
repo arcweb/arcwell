@@ -4,6 +4,16 @@ import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fa
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullFactType(id: string) {
+  return FactType.query()
+    .where('id', id)
+    .preload('tags')
+    .preload('facts', (facts) => {
+      facts.preload('tags')
+    })
+    .firstOrFail()
+}
+
 export default class FactTypesController {
   /**
    * Display a list of resource
@@ -46,7 +56,8 @@ export default class FactTypesController {
     }
     // @ts-ignore - stringify is required for knex and jsonb arrays
     const newFactType = await FactType.create(request.body())
-    return { data: newFactType }
+
+    return { data: await getFullFactType(newFactType.id) }
   }
 
   /**
@@ -92,7 +103,8 @@ export default class FactTypesController {
     }
     const factType = await FactType.findOrFail(params.id)
     const updatedFactType = await factType.merge(cleanRequest).save()
-    return { data: updatedFactType }
+
+    return { data: await getFullFactType(updatedFactType.id) }
   }
 
   /**

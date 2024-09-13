@@ -4,6 +4,14 @@ import { createEventTypeValidator, updateEventTypeValidator } from '#validators/
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullEventType(id: string) {
+  return EventType.query()
+    .preload('tags')
+    .preload('events', (events) => events.preload('tags'))
+    .where('id', id)
+    .firstOrFail()
+}
+
 export default class EventTypesController {
   /**
    * Display a list of event
@@ -41,11 +49,7 @@ export default class EventTypesController {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
     const newEventType = await EventType.create(request.body())
-    const fullEventType = await EventType.query()
-      .preload('tags')
-      .where('id', newEventType.id)
-      .firstOrFail()
-    return { data: fullEventType }
+    return { data: await getFullEventType(newEventType.id) }
   }
 
   /**
@@ -85,7 +89,8 @@ export default class EventTypesController {
     await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     const updatedEventType = await eventType.merge(request.body()).save()
-    return { data: updatedEventType }
+
+    return { data: await getFullEventType(updatedEventType.id) }
   }
 
   /**
