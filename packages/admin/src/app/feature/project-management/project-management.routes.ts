@@ -37,7 +37,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         component: PersonTypesComponent,
       },
       {
-        path: 'people/person-types/:personTypeId',
+        path: 'people/types/:personTypeId',
         component: PersonTypeComponent,
       },
       {
