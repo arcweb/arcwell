@@ -63,11 +63,6 @@ export class PersonTypesComponent {
   }
 
   handleClick(row: PersonTypeModel) {
-    this.router.navigate([
-      'project-management',
-      'people',
-      'person-types',
-      row.id,
-    ]);
+    this.router.navigate(['project-management', 'people', 'types', row.id]);
   }
 }
