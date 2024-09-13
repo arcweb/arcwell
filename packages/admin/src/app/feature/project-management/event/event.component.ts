@@ -29,12 +29,7 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
-import { DateTime } from 'luxon';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import {
-  cleanDateData,
-  prepDateData,
-} from '@app/shared/helpers/date-format.helper';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
 import {
@@ -106,10 +101,11 @@ export class EventComponent implements OnInit {
             name: this.eventStore.event()?.name,
             source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
-            occurredAt: this.eventStore.event()?.occurredAt.toJSDate(),
+            occurredAt: this.eventStore.event()?.occurredAt
+              ? this.eventStore.event()?.occurredAt.toJSDate()
+              : null,
             meta: this.eventStore.event()?.meta,
           });
-          console.log(this.eventForm.value);
         });
       }
     }
