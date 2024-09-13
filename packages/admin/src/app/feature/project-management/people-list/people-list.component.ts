@@ -23,7 +23,7 @@ import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { MatSortModule, Sort, SortDirection } from '@angular/material/sort';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-people-list',
@@ -104,10 +104,6 @@ export class PeopleListComponent {
       this.peopleListStore.offset(),
       event.active,
       event.direction,
-    );
-    console.log(
-      this.peopleListStore.sortColumn(),
-      this.peopleListStore.sortDirection(),
     );
   }
 }

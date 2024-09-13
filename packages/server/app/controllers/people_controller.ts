@@ -59,7 +59,6 @@ export default class PeopleController {
       query.offset(offset)
     }
     if (sortColumn && sortDirection) {
-      console.log('ORDERING', sortColumn, sortDirection)
       console.log(query)
       query.orderBy(sortColumn, sortDirection)
     } else {

@@ -18,6 +18,7 @@ import { inject } from '@angular/core';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { PersonTypeModel } from '@app/shared/models/person-type.model';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 
 interface PersonTypesState {
   personTypes: PersonTypeModel[];
@@ -25,6 +26,8 @@ interface PersonTypesState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sortColumn: string;
+  sortDirection: SortDirection;
 }
 
 const initialState: PersonTypesState = {
@@ -33,6 +36,8 @@ const initialState: PersonTypesState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sortColumn: 'name',
+  sortDirection: 'asc',
 };
 
 export const PersonTypesStore = signalStore(
@@ -40,10 +45,19 @@ export const PersonTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personTypesService = inject(PersonTypeService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+    ) {
+      patchState(
+        store,
+        { ...initialState, sortColumn, sortDirection },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        personTypesService.getPersonTypes(limit, offset),
+        personTypesService.getPersonTypes(limit, offset, sortColumn, sortDirection),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

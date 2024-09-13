@@ -20,6 +20,7 @@ import { JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-person-types',
@@ -41,6 +42,7 @@ import { MatPaginator } from '@angular/material/paginator';
     MatIconButton,
     MatPaginator,
     RouterLink,
+    MatSortModule,
   ],
   providers: [PersonTypesStore],
   templateUrl: './person-types.component.html',
@@ -64,5 +66,14 @@ export class PersonTypesComponent {
 
   handleClick(row: PersonTypeModel) {
     this.router.navigate(['project-management', 'people', 'types', row.id]);
+  }
+
+  sortChange(event: Sort) {
+    this.personTypesStore.load(
+      this.personTypesStore.limit(),
+      this.personTypesStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }
