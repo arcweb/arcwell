@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { EventTypeSchema } from './event-type.schema';
 import { EventModel } from '../models/event.model';
 import { TagSchema } from '@schemas/tag.schema';
+import { FactSchema } from './fact.schema';
 
 export const EventSchema: any = z
   .object({
@@ -11,6 +12,7 @@ export const EventSchema: any = z
     meta: z.array(z.any()).optional().nullable(),
     typeKey: z.string(),
     tags: z.array(TagSchema).optional(),
+    facts: z.array(FactSchema).optional(),
     eventType: EventTypeSchema.optional(),
     occurredAt: z.string().datetime({ offset: true }).optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),

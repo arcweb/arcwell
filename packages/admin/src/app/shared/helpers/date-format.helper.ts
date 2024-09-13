@@ -15,11 +15,12 @@ export function prepDateData(dateTime: string) {
 }
 
 export function cleanDateData(form: FormGroup, controlName: string) {
+  console.log("IN FUNC",form);
   if (form.get(controlName)?.value) {
     const retObj = { ...form.value };
     retObj[controlName] = DateTime.fromFormat(
       form.get(controlName)?.value,
-      'MM/dd/yyyy, hh:mm a',
+      "EEE MMM dd yyyy TTTZZZ (z)",
     );
     return retObj;
   } else {

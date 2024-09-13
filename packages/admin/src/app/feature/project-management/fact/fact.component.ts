@@ -31,7 +31,6 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
-import { cleanDateData } from '@shared/helpers/date-format.helper';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import {
   MatCell,
@@ -45,6 +44,10 @@ import {
   MatRowDef,
   MatTable,
 } from '@angular/material/table';
+import {
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule,
+} from '@danielmoncada/angular-datetime-picker';
 
 @Component({
   selector: 'aw-fact',
@@ -75,6 +78,8 @@ import {
     MatHeaderRowDef,
     MatCellDef,
     MatHeaderCellDef,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
   providers: [FactStore, provideNgxMask()],
   templateUrl: './fact.component.html',
@@ -119,10 +124,7 @@ export class FactComponent implements OnInit {
         this.factStore.initialize(this.factId).then(() => {
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
-            observedAt:
-              this.factStore
-                .fact()
-                ?.observedAt?.toFormat('MM/dd/yyyy HH:mm a') ?? null,
+            observedAt: this.factStore.fact()?.observedAt.toJSDate(),
           });
         });
       }
@@ -133,15 +135,9 @@ export class FactComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.factStore.inCreateMode()) {
-            this.factStore.createFact(
-              cleanDateData(this.factForm, 'observedAt'),
-            );
-            // this.factStore.createFact(this.factForm.value);
+            this.factStore.createFact(this.factForm);
           } else {
-            this.factStore.createFact(
-              cleanDateData(this.factForm, 'observedAt'),
-            );
-            // this.factStore.updateFact(this.factForm.value);
+            this.factStore.updateFact(this.factForm);
           }
         }
         // else if (event instanceof ValueChangeEvent) {

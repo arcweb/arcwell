@@ -47,16 +47,16 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Occurred At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <mat-label>Observed At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
       <input
         matInput
-        placeholder="MM/DD/YYYY HH:MM AM or PM"
+        type="datetime"
         formControlName="observedAt"
-        mask="M0/d0/0000, Hh:m0 SS"
-        [leadZeroDateTime]="true"
-        [dropSpecialCharacters]="false"
-        [apm]="true"
+        [owlDateTime]="dt1"
+        [owlDateTimeTrigger]="dt1"
       />
+      <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
+      <owl-date-time #dt1></owl-date-time>
     </mat-form-field>
     @if (
       factForm.controls.observedAt.invalid &&
