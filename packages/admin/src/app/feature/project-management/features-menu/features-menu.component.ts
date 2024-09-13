@@ -28,20 +28,11 @@ export class FeaturesMenuComponent {
       if (event instanceof NavigationEnd) {
         const urlAfterRedirects = event.urlAfterRedirects;
         const features = this.featureStore.features();
-        const activeFeature = features.find(feature =>
-          urlAfterRedirects.includes(feature.path),
+        this.featureStore.setActiveFeatureAndSubfeatureByRoute(
+          urlAfterRedirects,
+          features,
+          true,
         );
-        if (activeFeature) {
-          this.featureStore.setActiveFeature(activeFeature);
-          // need to check the all-{type} path last because it will match any typekey paths
-          const subFeatures = cloneDeep(activeFeature.subfeatures).reverse();
-          const activeSubfeature = subFeatures.find(subFeature =>
-            urlAfterRedirects.includes(subFeature.path),
-          );
-          if (activeSubfeature) {
-            this.featureStore.setActiveSubfeature(activeSubfeature);
-          }
-        }
       }
     });
   }

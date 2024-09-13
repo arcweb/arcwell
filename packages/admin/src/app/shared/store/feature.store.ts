@@ -50,20 +50,7 @@ export const FeatureStore = signalStore(
         const resp: FeatureModel[] = await lastValueFrom(
           featureService.getFeatures(),
         );
-        // TODO: Find a way to set feature and subfeature which doesnt
-        // repeat the logic from the feature-menu.component.ts
-        const activeFeature = resp.find(feature =>
-          router.url.includes(feature.path),
-        );
-        if (activeFeature) {
-          patchState(store, { activeFeature });
-          const activeSubfeature = cloneDeep(activeFeature.subfeatures)
-            .reverse()
-            .find(subfeature => router.url.includes(subfeature.path));
-          if (activeSubfeature) {
-            patchState(store, { activeSubfeature });
-          }
-        }
+        this.setActiveFeatureAndSubfeatureByRoute(router.url, resp);
 
         patchState(
           store,
@@ -82,6 +69,27 @@ export const FeatureStore = signalStore(
         patchState(store, {
           activeSubfeature: subfeature,
         });
+      },
+      setActiveFeatureAndSubfeatureByRoute(
+        url: string,
+        features: FeatureModel[],
+        fulfillRequest: boolean = false,
+      ) {
+        const activeFeature = features.find(feature =>
+          url.includes(feature.path),
+        );
+        if (activeFeature) {
+          const activeSubfeature = cloneDeep(activeFeature.subfeatures)
+            .reverse()
+            .find(subfeature => url.includes(subfeature.path));
+          patchState(store, {
+            activeFeature: activeFeature || null,
+            activeSubfeature: activeSubfeature || null,
+          });
+        }
+        if (fulfillRequest) {
+          patchState(store, setFulfilled());
+        }
       },
     }),
   ),
