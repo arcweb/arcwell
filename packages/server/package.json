@@ -59,6 +59,7 @@
     "@adonisjs/cors": "^2.2.1",
     "@adonisjs/lucid": "^21.1.0",
     "@vinejs/vine": "^2.1.0",
+    "adonis-autoswagger": "^3.63.0",
     "luxon": "^3.4.4",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2"

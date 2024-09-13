@@ -29,6 +29,18 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 router.get('/health', [HealthChecksController])
 
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
+
+router.get('/swagger', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
+})
+router.get('/docs', async () => {
+  return AutoSwagger.default.ui('/swagger', swagger)
+  //return AutoSwagger.default.scalar('/swagger') // to use Scalar instead
+  //return AutoSwagger.default.rapidoc('/swagger', 'read') //to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
+})
+
 router.get('/', async () => {
   return {
     arcwell: {
@@ -96,13 +108,13 @@ router.group(() => {
 })
 
 // people routes
-router.resource('people', PeopleController).apiOnly()
+router.resource('people', PeopleController).apiOnly().as('People')
 router.group(() => {
   router.resource('person_types', PersonTypesController).apiOnly()
   router
     .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
     .as('person_types.showWithPeople')
-})
+}).as('People Types')
 
 // resource routes
 router.resource('resources', ResourcesController).apiOnly()
