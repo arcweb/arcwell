@@ -20,10 +20,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { capitalize } from 'lodash';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { MatSortModule, Sort, SortDirection } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-people-list',
@@ -45,6 +45,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
     MatIcon,
     RouterLink,
     MatIconButton,
+    MatSortModule,
   ],
   providers: [PeopleListStore],
   templateUrl: './people-list.component.html',
@@ -79,7 +80,13 @@ export class PeopleListComponent {
     });
     // load the people list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.peopleListStore.load(this.peopleListStore.limit(), 0, typeKey);
+      this.peopleListStore.load(
+        this.peopleListStore.limit(),
+        0,
+        '',
+        '',
+        typeKey,
+      );
     });
   }
 
@@ -89,5 +96,18 @@ export class PeopleListComponent {
 
   viewAccount(personId: string) {
     this.router.navigate(['user-management', 'all-users', personId]);
+  }
+
+  sortChange(event: Sort) {
+    this.peopleListStore.load(
+      this.peopleListStore.limit(),
+      this.peopleListStore.offset(),
+      event.active,
+      event.direction,
+    );
+    console.log(
+      this.peopleListStore.sortColumn(),
+      this.peopleListStore.sortDirection(),
+    );
   }
 }

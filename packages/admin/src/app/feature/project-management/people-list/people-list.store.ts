@@ -11,6 +11,7 @@ import { inject } from '@angular/core';
 import { PersonModel } from '@shared/models/person.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { Sort, SortDirection } from '@angular/material/sort';
 
 interface PeopleListState {
   people: PersonModel[];
@@ -19,6 +20,8 @@ interface PeopleListState {
   totalData: number;
   pageIndex: number;
   typeKey: string;
+  sortColumn: string;
+  sortDirection: SortDirection;
 }
 
 const initialState: PeopleListState = {
@@ -28,6 +31,8 @@ const initialState: PeopleListState = {
   totalData: 0,
   pageIndex: 0,
   typeKey: '',
+  sortColumn: 'familyName',
+  sortDirection: 'asc',
 };
 
 export const PeopleListStore = signalStore(
@@ -35,10 +40,26 @@ export const PeopleListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(limit: number, offset: number, typeKey: string = '') {
-      patchState(store, { ...initialState, typeKey }, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+      typeKey = '',
+    ) {
+      patchState(
+        store,
+        { ...initialState, sortColumn, sortDirection, typeKey },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        personService.getPeople(limit, offset, typeKey),
+        personService.getPeople(
+          limit,
+          offset,
+          sortColumn,
+          sortDirection,
+          typeKey,
+        ),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -62,7 +83,13 @@ export const PeopleListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(store.limit(), store.offset(), store.typeKey()),
+        personService.getPeople(
+          store.limit(),
+          store.offset(),
+          store.sortColumn(),
+          store.sortDirection(),
+          store.typeKey(),
+        ),
       );
 
       if (resp.errors) {

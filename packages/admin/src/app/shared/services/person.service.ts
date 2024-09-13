@@ -25,6 +25,8 @@ export class PersonService {
   getPeople(
     limit?: number,
     offset?: number,
+    sortColumn?: string,
+    sortDirection?: string,
     typeKey?: string,
   ): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
@@ -37,6 +39,10 @@ export class PersonService {
     }
     if (typeKey) {
       params = params.set('typeKey', typeKey);
+    }
+    if (sortColumn && sortDirection) {
+      params = params.set('sortColumn', sortColumn);
+      params = params.set('sortDirection', sortDirection);
     }
 
     return this.http

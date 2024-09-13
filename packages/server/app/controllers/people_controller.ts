@@ -32,12 +32,12 @@ export default class PeopleController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sortColumn = queryData['sortColumn']
+    const sortDirection = queryData['sortDirection']
 
     let countQuery = db.from('people')
 
     let query = Person.query()
-      .orderBy('familyName', 'asc')
-      .orderBy('givenName', 'asc')
       .preload('tags')
       .preload('user', (user) => {
         user.preload('tags')
@@ -57,6 +57,14 @@ export default class PeopleController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sortColumn && sortDirection) {
+      console.log('ORDERING', sortColumn, sortDirection)
+      console.log(query)
+      query.orderBy(sortColumn, sortDirection)
+    } else {
+      query.orderBy('familyName', 'asc')
+      query.orderBy('givenName', 'asc')
     }
 
     const queryCount = await countQuery.count('*')
