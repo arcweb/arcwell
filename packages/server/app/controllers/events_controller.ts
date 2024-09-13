@@ -76,9 +76,6 @@ export default class EventsController {
         .preload('eventType', (tags) => {
           tags.preload('tags')
         })
-        .preload('facts', (facts) => {
-          facts.preload('tags')
-        })
         .firstOrFail(),
     }
   }
