@@ -4,6 +4,13 @@ import { createPersonTypeValidator, updatePersonTypeValidator } from '#validator
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullPersonType(id: string) {
+  PersonType.query()
+    .preload('tags')
+    .preload('people', (people) => people.preload('tags'))
+    .where('id', id)
+    .firstOrFail()
+}
 export default class PersonTypesController {
   /**
    * Display a list of resource
@@ -42,8 +49,7 @@ export default class PersonTypesController {
     await request.validateUsing(createPersonTypeValidator)
     const newPersonType = await PersonType.create(request.body())
     // TODO: Forced to get the object because create didn't return tags & info.  Because I didn't pass them in?
-    const fullPersonType = await PersonType.query().where('id', newPersonType.id).firstOrFail()
-    return { data: fullPersonType }
+    return { data: await getFullPersonType(newPersonType.id) }
   }
 
   /**
@@ -75,7 +81,8 @@ export default class PersonTypesController {
     await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
     const updatedPersonType = await personType.merge(request.body()).save()
-    return { data: updatedPersonType }
+
+    return { data: await getFullPersonType(updatedPersonType.id) }
   }
 
   /**

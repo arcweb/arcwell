@@ -3,6 +3,13 @@ import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
 
+export function getFullRole(id: string) {
+  return Role.query()
+    .where('id', id)
+    .preload('users', (users) => users.preload('person').preload('tags'))
+    .firstOrFail()
+}
+
 export default class RolesController {
   /**
    * Display a list of resource
@@ -13,7 +20,7 @@ export default class RolesController {
     const limit = queryData['limit']
     const offset = queryData['offset']
 
-    let query = Role.query()
+    let query = Role.query().orderBy('name', 'asc').preload('users')
 
     if (limit) {
       query.limit(limit)
@@ -41,7 +48,7 @@ export default class RolesController {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
     const newRole = await Role.create(request.body())
-    response.status(201).send({ data: newRole })
+    return { data: await getFullRole(newRole.id) }
   }
 
   /**
@@ -54,7 +61,7 @@ export default class RolesController {
     const role = await Role.findOrFail(params.id)
     const cleanRequest = request.only(['name'])
     const updateRole = await role.merge(cleanRequest).save()
-    return { data: updateRole }
+    return { data: await getFullRole(updateRole.id) }
   }
 
   /**

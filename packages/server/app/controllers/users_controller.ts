@@ -4,6 +4,20 @@ import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
 import db from '@adonisjs/lucid/services/db'
 
+export function getFullUser(id: string) {
+  return User.query()
+    .where('id', id)
+    .preload('tags')
+    .preload('role')
+    .preload('person', (person) => {
+      person.preload('tags')
+      person.preload('personType', (personType) => {
+        personType.preload('tags')
+      })
+    })
+    .firstOrFail()
+}
+
 export default class UsersController {
   /**
    * Display a list of resource
@@ -72,7 +86,8 @@ export default class UsersController {
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
     const newUser = await User.create(request.body())
-    return { data: newUser }
+
+    return { data: await getFullUser(newUser.id) }
   }
 
   /**
@@ -85,7 +100,7 @@ export default class UsersController {
     const cleanRequest = request.only(['email', 'roleId'])
     const user = await User.findOrFail(params.id)
     const updatedUser = await user.merge(cleanRequest).save()
-    return { data: updatedUser }
+    return { data: await getFullUser(updatedUser.id) }
   }
 
   /**

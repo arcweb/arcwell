@@ -100,11 +100,11 @@ Arcwell Admin:
 
 Environment seed data will create user credentials for you:
 
-| Email                        | Password       | Role |
-|------------------------------|----------------|------|
-| dev-admin@email.com          | Password12345! | Super Admin |
-| dev-limited-admin@email.com  | Password12345! | Limited Admin  |
-| dev-guest@email.com          | Password12345! | Guest |
+| Email                         | Password      | Role          |
+|-------------------------------|---------------|---------------|
+| dev-admin@example.com         | password      | Super Admin   |
+| dev-limited-admin@example.com | password      | Limited Admin |
+| dev-guest@example.com         | password      | Guest         |
 
 
 ## Docker Services

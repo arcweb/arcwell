@@ -40,7 +40,7 @@ test.group('Router event', () => {
   })
 
   test('event udate test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const event = await Event.first()
 
     const newData = {
@@ -59,7 +59,7 @@ test.group('Router event', () => {
   })
 
   test('event store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const type = await EventType.findBy('key', 'tester')
 
     const newEvent = {
@@ -94,8 +94,8 @@ test.group('Router event', () => {
       }
     })
 
-  test('event destroy test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+  test('event destroy test', async ({ client }) => {
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const event = await Event.findBy('name', 'Object')
 
     const response = await client.delete(`${EVENT_URL}/${event?.id}`).loginAs(adminUser!)

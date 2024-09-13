@@ -39,7 +39,7 @@ test.group('Router resource', () => {
   })
 
   test('resource udate test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const resource = await Resource.first()
 
     const newData = {
@@ -58,7 +58,7 @@ test.group('Router resource', () => {
   })
 
   test('resource store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const type = await ResourceType.findBy('key', 'tester')
 
     const newResource = {
@@ -91,8 +91,8 @@ test.group('Router resource', () => {
       }
     })
 
-  test('resource destroy test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+  test('resource destroy test', async ({ client }) => {
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const resource = await Resource.findBy('name', 'Object')
 
     const response = await client.delete(`${RESOURCE_URL}/${resource?.id}`).loginAs(adminUser!)

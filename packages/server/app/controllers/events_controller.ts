@@ -17,7 +17,7 @@ export default class EventsController {
 
     let countQuery = db.from('events')
     let query = Event.query()
-      .orderBy('name')
+      .orderBy('name', 'asc')
       .preload('tags')
       .preload('eventType', (tags) => {
         tags.preload('tags')
@@ -52,7 +52,16 @@ export default class EventsController {
     await auth.authenticate()
     await request.validateUsing(createEventValidator)
     const newEvent = await Event.create(request.body())
-    return { data: newEvent }
+
+    let returnQuery = Event.query()
+      .where('id', newEvent.id)
+      .preload('tags')
+      .preload('eventType', (tags) => {
+        tags.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**
@@ -66,6 +75,9 @@ export default class EventsController {
         .preload('tags')
         .preload('eventType', (tags) => {
           tags.preload('tags')
+        })
+        .preload('facts', (facts) => {
+          facts.preload('tags')
         })
         .firstOrFail(),
     }
@@ -81,7 +93,19 @@ export default class EventsController {
     const cleanRequest = request.only(['name', 'typeKey', 'source', 'occurredAt'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
-    return { data: updatedEvent }
+
+    let returnQuery = Event.query()
+      .where('id', updatedEvent.id)
+      .preload('tags')
+      .preload('eventType', (tags) => {
+        tags.preload('tags')
+      })
+      .preload('facts', (facts) => {
+        facts.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: await returnQuery }
   }
 
   /**

@@ -42,7 +42,7 @@ test.group('Router person type', () => {
   })
 
   test('person type update test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const personType = await PersonType.first()
 
     const newData = {
@@ -61,7 +61,7 @@ test.group('Router person type', () => {
   })
 
   test('person type store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
 
     const newRType = {
       key: 'test',
@@ -80,7 +80,7 @@ test.group('Router person type', () => {
   })
 
   test('person type delete type', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@email.com')
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const personType = await PersonType.findBy('key', 'newtest')
 
     const response = await client.delete(`${PERSON_TYPE_URL}/${personType?.id}`).loginAs(adminUser!)
