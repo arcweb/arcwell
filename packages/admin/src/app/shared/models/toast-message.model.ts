@@ -9,7 +9,6 @@ export class ToastMessage {
   heading?: string;
   message: string;
   level: string;
-  dismissed: boolean = false;
 
   constructor(message: string, level?: ToastLevel, heading?: string) {
     this.heading = heading;

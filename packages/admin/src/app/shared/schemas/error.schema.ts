@@ -5,13 +5,13 @@ export const ErrorSchema = z
     title: z.string(),
     code: z.string().optional(),
     detail: z.string().optional(),
-    meta: z.array(z.any()).optional(),
+    info: z.object({}).passthrough(),
   })
   .strict();
 
 const ErrorsSchema: any = z.object({
   errors: z.array(ErrorSchema),
-  meta: z.array(z.any()).optional(),
+  info: z.object({}).passthrough().optional(),
 });
 
 export type ErrorResponseType = z.infer<typeof ErrorsSchema>;

@@ -54,7 +54,7 @@ export class PersonTypesComponent {
 
   pageSizes = [10, 20, 50];
 
-  displayedColumns: string[] = ['id', 'key', 'name', 'info', 'tags'];
+  displayedColumns: string[] = ['id', 'key', 'name', 'tags'];
 
   constructor() {
     effect(() => {

@@ -13,7 +13,7 @@ export default class Resource extends BaseModel {
   declare name: string
 
   @column()
-  declare meta: Object | null
+  declare info: Object | null
 
   @column()
   declare typeKey: string

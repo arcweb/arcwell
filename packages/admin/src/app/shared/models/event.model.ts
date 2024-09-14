@@ -8,8 +8,8 @@ interface EventBase {
   name: string;
   source: string;
   typeKey: string;
-  tags?: TagModel[] | undefined;
-  meta?: object;
+  tags?: TagModel[];
+  info?: object;
   occurredAt?: DateTime;
   createdAt: DateTime;
   updatedAt: DateTime;
@@ -29,9 +29,9 @@ export class EventModel {
   public name: string;
   public source: string;
   public typeKey: string;
-  public meta?: object;
+  public info?: object;
   public occurredAt?: DateTime;
-  public tags?: TagModel[] | undefined;
+  public tags?: TagModel[];
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public eventType?: EventTypeModel;
@@ -41,7 +41,7 @@ export class EventModel {
     this.name = data.name;
     this.source = data.source;
     this.typeKey = data.typeKey;
-    this.meta = data.meta;
+    this.info = data.info;
     this.occurredAt = data.occurredAt
       ? DateTime.fromISO(data.occurredAt)
       : undefined;

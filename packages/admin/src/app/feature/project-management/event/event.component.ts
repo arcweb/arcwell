@@ -76,7 +76,7 @@ export class EventComponent implements OnInit {
       Validators.required,
     ),
     occurredAt: new FormControl({ value: '', disabled: true }),
-    meta: new FormControl({ value: '', disabled: true }),
+    info: new FormControl({ value: '', disabled: true }),
   });
 
   constructor() {
@@ -102,7 +102,7 @@ export class EventComponent implements OnInit {
             occurredAt: this.eventStore.event()?.occurredAt
               ? this.eventStore.event()?.occurredAt.toJSDate()
               : null,
-            meta: this.eventStore.event()?.meta,
+            info: this.eventStore.event()?.info,
           });
         });
       }
