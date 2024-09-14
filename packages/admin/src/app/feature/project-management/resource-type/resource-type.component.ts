@@ -77,6 +77,10 @@ export class ResourceTypeComponent implements OnInit {
       },
       Validators.required,
     ),
+    description: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -98,6 +102,7 @@ export class ResourceTypeComponent implements OnInit {
           this.resourceTypeForm.patchValue({
             key: this.resourceTypeStore.resourceType()?.key,
             name: this.resourceTypeStore.resourceType()?.name,
+            description: this.resourceTypeStore.resourceType()?.description,
           });
         });
       }

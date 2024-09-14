@@ -5,11 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export function getFullEventType(id: string) {
-  return EventType.query()
-    .preload('tags')
-    .preload('events', (events) => events.preload('tags'))
-    .where('id', id)
-    .firstOrFail()
+  return EventType.query().preload('tags').where('id', id).firstOrFail()
 }
 
 export default class EventTypesController {

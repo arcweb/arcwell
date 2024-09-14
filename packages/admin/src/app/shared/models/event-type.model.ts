@@ -7,7 +7,8 @@ export class EventTypeModel {
   public id?: string;
   public key: string;
   public name: string;
-  public tags?: TagModel[] | undefined;
+  public description?: string;
+  public tags?: TagModel[];
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
 
@@ -15,6 +16,7 @@ export class EventTypeModel {
     this.id = data.id;
     this.key = data.key;
     this.name = data.name;
+    this.description = data.description;
 
     this.tags = data.tags
       ? data.tags.map((tag: TagType) => new TagModel(tag))

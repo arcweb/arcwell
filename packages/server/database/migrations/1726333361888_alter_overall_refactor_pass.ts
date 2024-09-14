@@ -24,6 +24,16 @@ export default class extends BaseSchema {
       table.jsonb('info').defaultTo('{}').notNullable()
       table.dropColumn('full_name')
     })
+
+    this.schema.alterTable('person_types', (table) => {
+      table.string('description').nullable()
+    })
+    this.schema.alterTable('resource_types', (table) => {
+      table.string('description').nullable()
+    })
+    this.schema.alterTable('event_types', (table) => {
+      table.string('description').nullable()
+    })
   }
 
   async down() {
@@ -45,6 +55,16 @@ export default class extends BaseSchema {
     this.schema.alterTable('users', (table) => {
       table.dropColumn('info')
       table.string('full_name').nullable()
+    })
+
+    this.schema.alterTable('person_types', (table) => {
+      table.dropColumn('description')
+    })
+    this.schema.alterTable('resource_types', (table) => {
+      table.dropColumn('description')
+    })
+    this.schema.alterTable('event_types', (table) => {
+      table.dropColumn('description')
     })
   }
 }
