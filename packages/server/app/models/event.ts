@@ -4,16 +4,12 @@ import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relat
 import EventType from '#models/event_type'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
+import Person from '#models/person'
+import Resource from '#models/resource'
 
 export default class Event extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
-
-  @column()
-  declare name: string
-
-  @column()
-  declare source: string
 
   @column()
   declare info: Object | null
@@ -25,13 +21,28 @@ export default class Event extends BaseModel {
   declare eventType: BelongsTo<typeof EventType>
 
   @column.dateTime()
-  declare occurredAt: DateTime
+  declare startedAt: DateTime
+
+  @column.dateTime()
+  declare endedAt: DateTime
+
+  @column()
+  declare personId: string
+
+  @column()
+  declare resourceId: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
+
+  @belongsTo(() => Person)
+  declare person: BelongsTo<typeof Person>
+
+  @belongsTo(() => Resource)
+  declare resource: BelongsTo<typeof Resource>
 
   @hasMany(() => Fact)
   declare facts: HasMany<typeof Fact>

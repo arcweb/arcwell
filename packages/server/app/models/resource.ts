@@ -4,6 +4,7 @@ import ResourceType from '#models/resource_type'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
+import Event from '#models/event'
 
 export default class Resource extends BaseModel {
   @column({ isPrimary: true })
@@ -20,6 +21,9 @@ export default class Resource extends BaseModel {
 
   @belongsTo(() => ResourceType, { foreignKey: 'typeKey', localKey: 'key' })
   declare resourceType: BelongsTo<typeof ResourceType>
+
+  @hasMany(() => Event)
+  declare events: HasMany<typeof Event>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

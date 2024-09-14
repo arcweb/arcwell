@@ -34,6 +34,18 @@ export default class extends BaseSchema {
     this.schema.alterTable('event_types', (table) => {
       table.string('description').nullable()
     })
+
+    this.schema.alterTable('events', (table) => {
+      table.timestamp('started_at').defaultTo(this.raw('now()'))
+      table.timestamp('ended_at').nullable()
+      table.dropColumn('occurred_at')
+      table.dropColumn('source')
+      table.dropColumn('name')
+      table.uuid('person_id').nullable()
+      table.uuid('resource_id').nullable()
+      table.foreign('person_id').references('people.id')
+      table.foreign('resource_id').references('resources.id')
+    })
   }
 
   async down() {
@@ -65,6 +77,17 @@ export default class extends BaseSchema {
     })
     this.schema.alterTable('event_types', (table) => {
       table.dropColumn('description')
+    })
+    this.schema.alterTable('events', (table) => {
+      table.dropColumn('started_at')
+      table.dropColumn('ended_at')
+      table.timestamp('occurred_at')
+      table.string('name').notNullable().defaultTo('migration_placeholder')
+      table.string('source').notNullable().defaultTo('migration_placeholder')
+      table.dropForeign('person_id')
+      table.dropColumn('person_id')
+      table.dropForeign('resource_id')
+      table.dropColumn('resource_id')
     })
   }
 }

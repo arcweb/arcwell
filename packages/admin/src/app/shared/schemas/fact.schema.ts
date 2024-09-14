@@ -75,6 +75,7 @@ export const deserializeFact = (data: FactType): FactModel => {
 export const serializeFact = (data: FactModel): FactType => {
   return {
     ...data,
+    observedAt: data.observedAt?.toISO() ?? undefined,
     createdAt: data.createdAt?.toISO() ?? undefined,
     updatedAt: data.updatedAt?.toISO() ?? undefined,
   };

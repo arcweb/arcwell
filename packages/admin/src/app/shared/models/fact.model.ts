@@ -47,10 +47,10 @@ export class FactModel {
   public personId?: string;
   public resourceId?: string;
   public eventId?: string;
-  public person?: PersonType | undefined;
-  public resource?: ResourceType | undefined;
-  public event?: EventType | undefined;
-  public tags?: TagModel[] | undefined;
+  public person?: PersonType;
+  public resource?: ResourceType;
+  public event?: EventType;
+  public tags?: TagModel[];
   public info?: object;
   public observedAt?: DateTime;
   public dimensions: DimensionModel[] | undefined;

@@ -69,14 +69,16 @@ export class EventComponent implements OnInit {
   @Input() eventId!: string;
 
   eventForm = new FormGroup({
-    name: new FormControl({ value: '', disabled: true }, Validators.required),
-    source: new FormControl({ value: '', disabled: true }, Validators.required),
     eventType: new FormControl(
       { value: '', disabled: true },
       Validators.required,
     ),
-    occurredAt: new FormControl({ value: '', disabled: true }),
-    info: new FormControl({ value: '', disabled: true }),
+    startedAt: new FormControl(
+      { value: '', disabled: true },
+      Validators.required,
+    ),
+    endedAt: new FormControl({ value: '', disabled: true }),
+    // info: new FormControl({ value: '', disabled: true }),
   });
 
   constructor() {
@@ -96,13 +98,14 @@ export class EventComponent implements OnInit {
       } else {
         this.eventStore.initialize(this.eventId).then(() => {
           this.eventForm.patchValue({
-            name: this.eventStore.event()?.name,
-            source: this.eventStore.event()?.source,
             eventType: this.eventStore.event()?.eventType,
-            occurredAt: this.eventStore.event()?.occurredAt
-              ? this.eventStore.event()?.occurredAt.toJSDate()
+            startedAt: this.eventStore.event()?.startedAt
+              ? this.eventStore.event()?.startedAt.toJSDate()
               : null,
-            info: this.eventStore.event()?.info,
+            endedAt: this.eventStore.event()?.endedAt
+              ? this.eventStore.event()?.endedAt.toJSDate()
+              : null,
+            // info: this.eventStore.event()?.info,
           });
         });
       }

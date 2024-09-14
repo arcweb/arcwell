@@ -3,19 +3,23 @@ import { EventTypeSchema } from './event-type.schema';
 import { EventModel } from '../models/event.model';
 import { TagSchema } from '@schemas/tag.schema';
 import { FactSchema } from './fact.schema';
+import { PersonSchema } from '@schemas/person.schema';
+import { ResourceSchema } from '@schemas/resource.schema';
 
 export const EventSchema: any = z
   .object({
     id: z.string().uuid().optional(),
-    name: z.string(),
-    source: z.string(),
-    meta: z.array(z.any()).optional().nullable(),
     typeKey: z.string(),
     tags: z.array(TagSchema).optional(),
     info: z.object({}).passthrough(),
     facts: z.array(FactSchema).optional(),
     eventType: EventTypeSchema.optional(),
-    occurredAt: z.string().datetime({ offset: true }).optional().nullable(),
+    startedAt: z.string().datetime({ offset: true }),
+    endedAt: z.string().datetime({ offset: true }).optional().nullable(),
+    person: z.lazy(() => PersonSchema.optional().nullable()),
+    resource: z.lazy(() => ResourceSchema.optional().nullable()),
+    personId: z.string().uuid().optional().nullable(),
+    resourceId: z.string().uuid().optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -23,12 +27,15 @@ export const EventSchema: any = z
 
 export const EventUpdateSchema = EventSchema.extend({
   id: z.string().uuid(),
-  name: z.string().optional(),
-  source: z.string().optional(),
   typeKey: z.string().optional(),
   tags: z.array(TagSchema).optional(),
   info: z.object({}).passthrough().optional(),
-  occurredAt: z.string().datetime({ offset: true }).optional(),
+  startedAt: z.string().datetime({ offset: true }).optional(),
+  endedAt: z.string().datetime({ offset: true }).optional().nullable(),
+  person: z.lazy(() => PersonSchema.optional().nullable()),
+  resource: z.lazy(() => ResourceSchema.optional().nullable()),
+  personId: z.string().uuid().optional().nullable(),
+  resourceId: z.string().uuid().optional().nullable(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
@@ -55,8 +62,9 @@ export const deserializeEvent = (data: EventType): EventModel => {
 export const serializeEvent = (data: EventModel): EventType => {
   return {
     ...data,
-    occurredAt: data.occurredAt?.toISO(),
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    startedAt: data.startedAt?.toISO(),
+    endedAt: data.endedAt?.toISO() ?? undefined,
+    createdAt: data.createdAt.toISO() ?? undefined,
+    updatedAt: data.updatedAt.toISO() ?? undefined,
   };
 };
