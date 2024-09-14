@@ -34,7 +34,7 @@ export default class Fact extends BaseModel {
   declare observedAt: DateTime
 
   @column()
-  declare meta: Object
+  declare info: Object
 
   @belongsTo(() => FactType, { foreignKey: 'typeKey', localKey: 'key' })
   declare factType: BelongsTo<typeof FactType>

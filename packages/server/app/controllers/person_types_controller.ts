@@ -5,11 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export function getFullPersonType(id: string) {
-  PersonType.query()
-    .preload('tags')
-    .preload('people', (people) => people.preload('tags'))
-    .where('id', id)
-    .firstOrFail()
+  return PersonType.query().preload('tags').where('id', id).firstOrFail()
 }
 export default class PersonTypesController {
   /**
@@ -48,7 +44,7 @@ export default class PersonTypesController {
     await auth.authenticate()
     await request.validateUsing(createPersonTypeValidator)
     const newPersonType = await PersonType.create(request.body())
-    // TODO: Forced to get the object because create didn't return tags & info.  Because I didn't pass them in?
+
     return { data: await getFullPersonType(newPersonType.id) }
   }
 

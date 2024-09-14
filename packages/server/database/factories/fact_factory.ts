@@ -7,7 +7,6 @@ export const FactFactory = factory
   .define(Fact, async ({}) => {
     return {
       observedAt: DateTime.now(),
-      // tags: JSON.stringify(['diagnosis/diabetes/type1']),
     }
   })
   .relation('dimensions', () => DimensionFactory)

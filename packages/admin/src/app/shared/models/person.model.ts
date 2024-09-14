@@ -11,7 +11,8 @@ interface PersonBase {
   familyName: string;
   givenName: string;
   typeKey: string;
-  tags?: TagModel[] | undefined;
+  tags?: TagModel[];
+  info?: object;
   createdAt: DateTime;
   updatedAt: DateTime;
   personType?: PersonTypeModel;
@@ -34,7 +35,8 @@ export class PersonModel {
   public familyName: string;
   public givenName: string;
   public typeKey: string;
-  public tags?: TagModel[] | undefined;
+  public tags?: TagModel[];
+  public info?: object;
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public personType?: PersonTypeModel;
@@ -48,6 +50,7 @@ export class PersonModel {
     this.tags = data.tags
       ? data.tags.map((tag: TagType) => new TagModel(tag))
       : undefined;
+    this.info = data.info;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.personType = data.personType

@@ -14,6 +14,7 @@ import PersonType from '#models/person_type'
 import Fact from '#models/fact'
 import Cohort from '#models/cohort'
 import Tag from '#models/tag'
+import Event from '#models/event'
 
 export default class Person extends BaseModel {
   @column({ isPrimary: true })
@@ -36,6 +37,9 @@ export default class Person extends BaseModel {
 
   @hasMany(() => Fact)
   declare facts: HasMany<typeof Fact>
+
+  @hasMany(() => Event)
+  declare events: HasMany<typeof Event>
 
   @manyToMany(() => Cohort, {
     pivotTimestamps: true,

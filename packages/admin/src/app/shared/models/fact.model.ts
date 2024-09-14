@@ -22,7 +22,7 @@ interface FactBase {
   resource?: ResourceType | undefined;
   event?: EventType | undefined;
   tags?: TagModel[] | undefined;
-  meta?: object;
+  info?: object;
   observedAt?: DateTime;
   dimensions: DimensionModel[] | undefined;
   factType?: FactTypeModel;
@@ -47,11 +47,11 @@ export class FactModel {
   public personId?: string;
   public resourceId?: string;
   public eventId?: string;
-  public person?: PersonType | undefined;
-  public resource?: ResourceType | undefined;
-  public event?: EventType | undefined;
-  public tags?: TagModel[] | undefined;
-  public meta?: object;
+  public person?: PersonType;
+  public resource?: ResourceType;
+  public event?: EventType;
+  public tags?: TagModel[];
+  public info?: object;
   public observedAt?: DateTime;
   public dimensions: DimensionModel[] | undefined;
   public factType?: FactTypeModel;
@@ -71,7 +71,7 @@ export class FactModel {
 
     if (data.factType) this.factType = new FactTypeModel(data.factType);
 
-    this.meta = data.meta;
+    this.info = data.info;
 
     this.observedAt = data.observedAt
       ? DateTime.fromISO(data.observedAt)

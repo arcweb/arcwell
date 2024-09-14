@@ -7,8 +7,8 @@ export class FactTypeModel {
   public id?: string;
   public key: string;
   public name: string;
-  public description: string | undefined;
-  public tags?: TagModel[] | undefined;
+  public description?: string;
+  public tags?: TagModel[];
   public createdAt: DateTime;
   public updatedAt: DateTime;
 

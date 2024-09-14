@@ -17,8 +17,17 @@ export default class EventsController {
 
     let countQuery = db.from('events')
     let query = Event.query()
-      .orderBy('name', 'asc')
+      .orderBy('startedAt', 'desc')
       .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
       .preload('eventType', (tags) => {
         tags.preload('tags')
       })
@@ -53,7 +62,7 @@ export default class EventsController {
     await request.validateUsing(createEventValidator)
     const newEvent = await Event.create(request.body())
 
-    let returnQuery = Event.query()
+    let returnQuery = await Event.query()
       .where('id', newEvent.id)
       .preload('tags')
       .preload('eventType', (tags) => {
@@ -61,7 +70,27 @@ export default class EventsController {
       })
       .firstOrFail()
 
-    return { data: await returnQuery }
+    const createdEvent = await Event.query()
+      .where('id', returnQuery.id)
+      .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
+      .preload('eventType', (tags) => {
+        tags.preload('tags')
+      })
+      .preload('facts', (facts) => {
+        facts.preload('tags')
+      })
+      .firstOrFail()
+
+    return { data: createdEvent }
   }
 
   /**
@@ -73,6 +102,15 @@ export default class EventsController {
       data: await Event.query()
         .where('id', params.id)
         .preload('tags')
+        .preload('person', (person) => {
+          person.preload('tags')
+          person.preload('user', (user) => {
+            user.preload('tags')
+          })
+        })
+        .preload('resource', (resource) => {
+          resource.preload('tags')
+        })
         .preload('eventType', (tags) => {
           tags.preload('tags')
         })
@@ -87,13 +125,23 @@ export default class EventsController {
     await auth.authenticate()
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'typeKey', 'source', 'occurredAt'])
+    // TODO Add person/personId and resource/resourceId when implemented
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
 
     let returnQuery = Event.query()
       .where('id', updatedEvent.id)
       .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
       .preload('eventType', (tags) => {
         tags.preload('tags')
       })

@@ -14,6 +14,9 @@ export default class ResourceType extends BaseModel {
   @column()
   declare name: string
 
+  @column()
+  declare description: string
+
   @hasMany(() => Resource, { foreignKey: 'typeKey', localKey: 'key' })
   declare resources: HasMany<typeof Resource>
 

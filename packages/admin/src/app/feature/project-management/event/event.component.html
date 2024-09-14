@@ -30,28 +30,6 @@
     }
 
     <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input matInput placeholder="Name" formControlName="name" />
-      @if (eventForm.controls.name.hasError('required')) {
-        <mat-error>
-          Name is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Source</mat-label>
-      <input matInput placeholder="Source" formControlName="source" />
-      @if (eventForm.controls.source.hasError('required')) {
-        <mat-error>
-          Source is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
       <mat-label>Event Type</mat-label>
       <mat-select formControlName="eventType" [compareWith]="compareEventTypes">
         @for (eventType of eventStore.eventTypes(); track eventType.id) {
@@ -69,23 +47,38 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Occurred At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <mat-label>Started At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
       <input
         matInput
         type="datetime"
-        formControlName="occurredAt"
+        formControlName="startedAt"
         [owlDateTime]="dt1"
       />
       <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
       <owl-date-time #dt1></owl-date-time>
     </mat-form-field>
     @if (
-      eventForm.controls.occurredAt.invalid &&
-      !eventForm.controls.occurredAt.pristine
+      eventForm.controls.startedAt.invalid &&
+      !eventForm.controls.startedAt.pristine
     ) {
-      <mat-error>
-        Occurred At format must be MM/DD/YYYY HH:MM AM or PM
-      </mat-error>
+      <mat-error>Started At format must be MM/DD/YYYY HH:MM AM or PM</mat-error>
+    }
+
+    <mat-form-field>
+      <mat-label>Ended At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <input
+        matInput
+        type="datetime"
+        formControlName="endedAt"
+        [owlDateTime]="dt2"
+      />
+      <mat-icon class="event-icon" [owlDateTimeTrigger]="dt2">event</mat-icon>
+      <owl-date-time #dt2></owl-date-time>
+    </mat-form-field>
+    @if (
+      eventForm.controls.endedAt.invalid && !eventForm.controls.endedAt.pristine
+    ) {
+      <mat-error>Ended At format must be MM/DD/YYYY HH:MM AM or PM</mat-error>
     }
 
     <div class="form-button-container">

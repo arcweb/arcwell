@@ -7,7 +7,7 @@ export const ResourceSchema: any = z
   .object({
     id: z.string().uuid().optional(),
     name: z.string(),
-    meta: z.array(z.any()).optional().nullable(),
+    info: z.object({}).passthrough(),
     typeKey: z.string(),
     resourceType: ResourceTypeSchema.optional(),
     tags: z.array(TagSchema).optional(),
@@ -21,6 +21,7 @@ export const ResourceUpdateSchema = ResourceSchema.extend({
   name: z.string().optional(),
   typeKey: z.string().optional(),
   tags: z.array(TagSchema).optional(),
+  info: z.object({}).passthrough().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();

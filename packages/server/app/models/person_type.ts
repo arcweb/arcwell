@@ -15,7 +15,7 @@ export default class PersonType extends BaseModel {
   declare name: string
 
   @column()
-  declare info: Object | null
+  declare description: string
 
   @hasMany(() => Person, { foreignKey: 'typeKey', localKey: 'key' })
   declare people: HasMany<typeof Person>

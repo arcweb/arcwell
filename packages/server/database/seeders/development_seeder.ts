@@ -109,9 +109,9 @@ export default class extends BaseSeeder {
     }).create()
 
     for (let i = 0; i < 10; i++) {
-      await EventFactory.merge({ typeKey: apptEventType.key, source: 'doctor' }).createMany(10)
+      await EventFactory.merge({ typeKey: apptEventType.key }).createMany(10)
     }
-    await EventFactory.merge({ typeKey: surgeryEventType.key, source: 'epic' }).createMany(5)
+    await EventFactory.merge({ typeKey: surgeryEventType.key }).createMany(5)
 
     await Tag.createMany([
       { pathname: 'measurements' },

@@ -9,7 +9,6 @@ export function getFullResource(id: string) {
   return Resource.query()
     .where('id', id)
     .preload('tags')
-    .preload('facts')
     .preload('resourceType', (resourceType) => resourceType.preload('tags'))
     .firstOrFail()
 }

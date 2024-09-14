@@ -21,7 +21,7 @@ export const FactSchema: any = z
     observedAt: z.string().datetime({ offset: true }).optional().nullable(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
     tags: z.array(TagSchema).optional(),
-    meta: z.any().optional().nullable(),
+    info: z.object({}).passthrough(),
     factType: FactTypeSchema.optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -41,7 +41,7 @@ export const FactUpdateSchema = FactSchema.extend({
   observedAt: z.string().datetime({ offset: true }).optional().nullable(),
   dimensions: z.array(DimensionSchema).optional().nullable(),
   tags: z.array(TagSchema).optional(),
-  meta: z.any().optional().nullable(),
+  info: z.object({}).passthrough().optional(),
   factType: FactTypeSchema.optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -75,6 +75,7 @@ export const deserializeFact = (data: FactType): FactModel => {
 export const serializeFact = (data: FactModel): FactType => {
   return {
     ...data,
+    observedAt: data.observedAt?.toISO() ?? undefined,
     createdAt: data.createdAt?.toISO() ?? undefined,
     updatedAt: data.updatedAt?.toISO() ?? undefined,
   };

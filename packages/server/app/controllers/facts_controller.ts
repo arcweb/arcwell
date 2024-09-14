@@ -110,7 +110,7 @@ export default class FactsController {
     await request.validateUsing(updateFactValidator)
 
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'meta', 'tags'])
+    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'info', 'tags'])
     if (cleanRequest.tags) {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
@@ -139,7 +139,7 @@ export default class FactsController {
     const cleanRequest = request.only([
       'typeKey',
       'observedAt',
-      'meta',
+      'info',
       'dimensions',
       'personId',
       'resourceId',
@@ -178,7 +178,7 @@ export default class FactsController {
   //   const cleanRequest = request.only([
   //     'typeKey',
   //     'observedAt',
-  //     'meta',
+  //     'info',
   //     'dimensions',
   //     'personId',
   //     'resourceId',
