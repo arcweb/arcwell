@@ -101,3 +101,26 @@ jobs:
           docker pull ${{ env.SERVER_IMAGE }}
           docker compose run server npm run lint
         continue-on-error: true
+  
+  test-server:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        run: docker info
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test API
+        run: |
+          docker pull ${{ env.SERVER_IMAGE }}
+          docker compose run server npm run test
+        continue-on-error: true
