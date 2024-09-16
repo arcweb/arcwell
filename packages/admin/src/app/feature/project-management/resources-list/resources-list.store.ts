@@ -19,8 +19,8 @@ interface ResourceListState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -30,8 +30,8 @@ const initialState: ResourceListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sortColumn: 'name',
-  sortDirection: 'asc',
+  sort: 'name',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -43,28 +43,22 @@ export const ResourcesListStore = signalStore(
     async load(
       limit: number,
       offset: number,
-      sortColumn = '',
-      sortDirection: SortDirection = 'asc',
+      sort = '',
+      order: SortDirection = 'asc',
       typeKey = '',
     ) {
       patchState(
         store,
         {
           ...initialState,
-          sortColumn: sortColumn,
-          sortDirection: sortDirection,
+          sort: sort,
+          order: order,
           typeKey: typeKey,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceService.getResources(
-          limit,
-          offset,
-          sortColumn,
-          sortDirection,
-          typeKey,
-        ),
+        resourceService.getResources(limit, offset, sort, order, typeKey),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

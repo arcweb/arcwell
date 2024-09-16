@@ -23,8 +23,8 @@ export default class ResourcesController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
-    const sortColumn = queryData['sortColumn']
-    const sortDirection = queryData['sortDirection']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('resources')
 
@@ -45,8 +45,8 @@ export default class ResourcesController {
     if (offset) {
       query.offset(offset)
     }
-    if (sortColumn && sortDirection) {
-      query.orderBy(sortColumn, sortDirection)
+    if (sort && order) {
+      query.orderBy(sort, order)
     } else {
       query.orderBy('name', 'asc')
     }

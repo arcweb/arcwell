@@ -36,8 +36,8 @@ export default class FactsController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
-    const sortColumn = queryData['sortColumn']
-    const sortDirection = queryData['sortDirection']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('facts')
 
@@ -70,8 +70,8 @@ export default class FactsController {
     if (offset) {
       query.offset(offset)
     }
-    if (sortColumn && sortDirection) {
-      query.orderBy(sortColumn, sortDirection)
+    if (sort && order) {
+      query.orderBy(sort, order)
     } else {
       query.orderBy('observedAt', 'desc')
     }

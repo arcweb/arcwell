@@ -25,8 +25,8 @@ interface FactsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -36,8 +36,8 @@ const initialState: FactsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sortColumn: 'familyName',
-  sortDirection: 'asc',
+  sort: 'familyName',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -49,22 +49,22 @@ export const FactsListStore = signalStore(
     async load(
       limit: number,
       offset: number,
-      sortColumn = '',
-      sortDirection: SortDirection = 'asc',
+      sort = '',
+      order: SortDirection = 'asc',
       typeKey = '',
     ) {
       patchState(
         store,
         {
           ...initialState,
-          sortColumn: sortColumn,
-          sortDirection: sortDirection,
+          sort: sort,
+          order: order,
           typeKey: typeKey,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        factService.getFacts(limit, offset, sortColumn, sortDirection, typeKey),
+        factService.getFacts(limit, offset, sort, order, typeKey),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

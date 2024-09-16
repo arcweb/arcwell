@@ -25,8 +25,8 @@
   [dataSource]="dataSource"
   class="mat-elevation-z0"
   (matSortChange)="sortChange($event)"
-  [matSortActive]="this.resourceTypesStore.sortColumn()"
-  [matSortDirection]="this.resourceTypesStore.sortDirection()"
+  [matSortActive]="this.resourceTypesStore.sort()"
+  [matSortDirection]="this.resourceTypesStore.order()"
 >
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Id</th>

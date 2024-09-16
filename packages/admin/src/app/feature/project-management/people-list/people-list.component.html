@@ -30,8 +30,8 @@
     [dataSource]="dataSource"
     class="mat-elevation-z0"
     (matSortChange)="sortChange($event)"
-    [matSortActive]="this.peopleListStore.sortColumn()"
-    [matSortDirection]="this.peopleListStore.sortDirection()"
+    [matSortActive]="this.peopleListStore.sort()"
+    [matSortDirection]="this.peopleListStore.order()"
   >
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>Id</th>

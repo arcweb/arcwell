@@ -11,7 +11,7 @@ import { inject } from '@angular/core';
 import { PersonModel } from '@shared/models/person.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
-import { Sort, SortDirection } from '@angular/material/sort';
+import { SortDirection } from '@angular/material/sort';
 
 interface PeopleListState {
   people: PersonModel[];
@@ -19,8 +19,8 @@ interface PeopleListState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -30,8 +30,8 @@ const initialState: PeopleListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sortColumn: 'familyName',
-  sortDirection: 'asc',
+  sort: 'familyName',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -43,28 +43,22 @@ export const PeopleListStore = signalStore(
     async load(
       limit: number,
       offset: number,
-      sortColumn = '',
-      sortDirection: SortDirection = 'asc',
+      sort = '',
+      order: SortDirection = 'asc',
       typeKey = '',
     ) {
       patchState(
         store,
         {
           ...initialState,
-          sortColumn: sortColumn,
-          sortDirection: sortDirection,
+          sort: sort,
+          order: order,
           typeKey: typeKey,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(
-          limit,
-          offset,
-          sortColumn,
-          sortDirection,
-          typeKey,
-        ),
+        personService.getPeople(limit, offset, sort, order, typeKey),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -91,8 +85,8 @@ export const PeopleListStore = signalStore(
         personService.getPeople(
           store.limit(),
           store.offset(),
-          store.sortColumn(),
-          store.sortDirection(),
+          store.sort(),
+          store.order(),
           store.typeKey(),
         ),
       );

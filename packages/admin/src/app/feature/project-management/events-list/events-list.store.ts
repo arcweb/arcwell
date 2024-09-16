@@ -2,7 +2,6 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
-import { EventModel } from '@app/shared/models/event.model';
 import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
 import {
@@ -11,13 +10,7 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import {
-  patchState,
-  signalStore,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
 interface EventsListState {
@@ -26,8 +19,8 @@ interface EventsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -37,8 +30,8 @@ const initialState: EventsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sortColumn: 'name',
-  sortDirection: 'asc',
+  sort: 'name',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -50,28 +43,22 @@ export const EventsListStore = signalStore(
     async load(
       limit: number,
       offset: number,
-      sortColumn = '',
-      sortDirection: SortDirection = 'asc',
+      sort = '',
+      order: SortDirection = 'asc',
       typeKey = '',
     ) {
       patchState(
         store,
         {
           ...initialState,
-          sortColumn: sortColumn,
-          sortDirection: sortDirection,
+          sort: sort,
+          order: order,
           typeKey: typeKey,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventService.getEvents(
-          limit,
-          offset,
-          sortColumn,
-          sortDirection,
-          typeKey,
-        ),
+        eventService.getEvents(limit, offset, sort, order, typeKey),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

@@ -26,8 +26,8 @@ interface EventTypesState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
+  sort: string;
+  order: SortDirection;
 }
 
 const initialState: EventTypesState = {
@@ -36,8 +36,8 @@ const initialState: EventTypesState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sortColumn: 'key',
-  sortDirection: 'asc',
+  sort: 'key',
+  order: 'asc',
 };
 
 export const EventTypesStore = signalStore(
@@ -48,25 +48,20 @@ export const EventTypesStore = signalStore(
     async load(
       limit: number,
       offset: number,
-      sortColumn = '',
-      sortDirection: SortDirection = 'asc',
+      sort = '',
+      order: SortDirection = 'asc',
     ) {
       patchState(
         store,
         {
           ...initialState,
-          sortColumn: sortColumn,
-          sortDirection: sortDirection,
+          sort: sort,
+          order: order,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(
-          limit,
-          offset,
-          sortColumn,
-          sortDirection,
-        ),
+        eventTypesService.getEventTypes(limit, offset, sort, order),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

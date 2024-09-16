@@ -22,8 +22,8 @@ export default class FactTypesController {
     const queryData = request.qs()
     const limit = queryData['limit']
     const offset = queryData['offset']
-    const sortColumn = queryData['sortColumn']
-    const sortDirection = queryData['sortDirection']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('fact_types')
 
@@ -35,9 +35,9 @@ export default class FactTypesController {
     if (offset) {
       query.offset(offset)
     }
-    if (sortColumn && sortDirection) {
+    if (sort && order) {
       console.log(query)
-      query.orderBy(sortColumn, sortDirection)
+      query.orderBy(sort, order)
     } else {
       query.orderBy('name', 'asc')
     }
