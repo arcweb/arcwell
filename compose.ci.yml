@@ -6,4 +6,5 @@ services:
       - '5173:5173'
     environment:
       - PORT=3333
+      - NODE_ENV=development
     command: npm run start

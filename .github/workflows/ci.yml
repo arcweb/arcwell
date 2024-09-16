@@ -95,5 +95,6 @@ jobs:
       - name: Lint API
         run: |
           docker pull ${{ env.SERVER_IMAGE }}
+          docker compose run server npm install --no-fund --only=dev
           docker compose run server npm run lint
         continue-on-error: true # Continue on lint errors to allow other jobs to run
