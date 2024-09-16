@@ -9,7 +9,7 @@ env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   DB_USER: arcwell
   DB_PASSWORD: arcwell
-  DB_DATABASE: arcwell
+  DB_DATABASE: arcwell_test
   APP_KEY: ${{ secrets.APP_KEY }}
 
 jobs:
