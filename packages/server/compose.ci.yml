@@ -34,6 +34,6 @@ services:
     restart: on-failure
     healthcheck:
       test: "exit 0"
-  
+
 volumes:
   pgdata:

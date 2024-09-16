@@ -1,0 +1,6 @@
+services:  
+  admin:
+    image: ${ADMIN_IMAGE}
+    ports:
+      - '4200:4200'
+      - '80:4200'
