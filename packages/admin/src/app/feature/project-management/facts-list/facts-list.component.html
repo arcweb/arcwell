@@ -19,7 +19,15 @@
   <aw-error-container [errors]="factsListStore.errors()" />
 }
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+<table
+  mat-table
+  matSort
+  [dataSource]="dataSource"
+  class="mat-elevation-z0"
+  (matSortChange)="sortChange($event)"
+  [matSortActive]="this.factsListStore.sortColumn()"
+  [matSortDirection]="this.factsListStore.sortDirection()"
+>
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Id</th>
     <td mat-cell *matCellDef="let element">{{ element.id }}</td>

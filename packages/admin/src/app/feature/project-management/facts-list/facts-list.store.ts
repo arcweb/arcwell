@@ -17,6 +17,7 @@ import { inject } from '@angular/core';
 import { FactModel } from '@shared/models/fact.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 
 interface FactsListState {
   facts: FactModel[];
@@ -24,6 +25,8 @@ interface FactsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sortColumn: string;
+  sortDirection: SortDirection;
   typeKey: string;
 }
 
@@ -33,6 +36,8 @@ const initialState: FactsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sortColumn: 'familyName',
+  sortDirection: 'asc',
   typeKey: '',
 };
 
@@ -41,10 +46,25 @@ export const FactsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, factService = inject(FactService)) => ({
-    async load(limit: number, offset: number, typeKey: string = '') {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+      typeKey = '',
+    ) {
+      patchState(
+        store,
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+          typeKey: typeKey,
+        },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        factService.getFacts(limit, offset, typeKey),
+        factService.getFacts(limit, offset, sortColumn, sortDirection, typeKey),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

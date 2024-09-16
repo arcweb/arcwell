@@ -25,6 +25,8 @@ export class FactService {
   getFacts(
     limit?: number,
     offset?: number,
+    sortColumn?: string,
+    sortDirection?: string,
     typeKey?: string,
   ): Observable<FactsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
@@ -37,6 +39,10 @@ export class FactService {
     }
     if (typeKey) {
       params = params.set('typeKey', typeKey);
+    }
+    if (sortColumn && sortDirection) {
+      params = params.set('sortColumn', sortColumn);
+      params = params.set('sortDirection', sortDirection);
     }
 
     return this.http.get<FactsResponseType>(`${apiUrl}/facts`, { params }).pipe(

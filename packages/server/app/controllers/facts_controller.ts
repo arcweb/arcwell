@@ -36,11 +36,12 @@ export default class FactsController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sortColumn = queryData['sortColumn']
+    const sortDirection = queryData['sortDirection']
 
     let countQuery = db.from('facts')
 
     let query = Fact.query()
-      .orderBy('observedAt', 'desc')
       .preload('factType')
       .preload('tags')
       .preload('dimensions')
@@ -68,6 +69,11 @@ export default class FactsController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sortColumn && sortDirection) {
+      query.orderBy(sortColumn, sortDirection)
+    } else {
+      query.orderBy('observedAt', 'desc')
     }
 
     const queryCount = await countQuery.count('*')
