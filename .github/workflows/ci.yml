@@ -27,7 +27,7 @@ jobs:
             server:
               - 'server/**'
 
-  build-api:
+  build-server:
     needs: changes
 
     runs-on: ubuntu-latest
@@ -72,3 +72,28 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  
+  lint-server:
+    needs: build-server
+
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Environment
+        run: docker info
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint API
+        run: |
+          docker pull ${{ env.SERVER_IMAGE }}
+          docker compose run server run npm lint
+        continue-on-error: true # Continue on lint errors to allow other jobs to run
