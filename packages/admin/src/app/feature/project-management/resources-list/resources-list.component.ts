@@ -20,10 +20,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { capitalize } from 'lodash';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-resources-list',
@@ -45,6 +45,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
     MatIcon,
     RouterLink,
     MatIconButton,
+    MatSortModule,
   ],
   providers: [ResourcesListStore],
   templateUrl: './resources-list.component.html',
@@ -73,11 +74,26 @@ export class ResourcesListComponent {
     });
     // load the resources list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.resourcesListStore.load(this.resourcesListStore.limit(), 0, typeKey);
+      this.resourcesListStore.load(
+        this.resourcesListStore.limit(),
+        0,
+        '',
+        '',
+        typeKey,
+      );
     });
   }
 
   handleClick(row: ResourceModel) {
     this.router.navigate(['project-management', 'resources', row.id]);
+  }
+
+  sortChange(event: Sort) {
+    this.resourcesListStore.load(
+      this.resourcesListStore.limit(),
+      this.resourcesListStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }

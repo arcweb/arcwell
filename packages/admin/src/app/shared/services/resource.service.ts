@@ -24,6 +24,8 @@ export class ResourceService {
   getResources(
     limit?: number,
     offset?: number,
+    sortColumn?: string,
+    sortDirection?: string,
     typeKey?: string,
   ): Observable<ResourcesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
@@ -36,6 +38,10 @@ export class ResourceService {
     }
     if (typeKey) {
       params = params.set('typeKey', typeKey);
+    }
+    if (sortColumn && sortDirection) {
+      params = params.set('sortColumn', sortColumn);
+      params = params.set('sortDirection', sortDirection);
     }
 
     return this.http

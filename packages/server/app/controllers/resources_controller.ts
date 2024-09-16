@@ -23,6 +23,8 @@ export default class ResourcesController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sortColumn = queryData['sortColumn']
+    const sortDirection = queryData['sortDirection']
 
     let countQuery = db.from('resources')
 
@@ -31,7 +33,6 @@ export default class ResourcesController {
         resourceType.preload('tags')
       })
       .preload('tags')
-      .orderBy('name', 'asc')
 
     if (typeKey) {
       const resourceType = await ResourceType.findByOrFail('key', typeKey)
@@ -43,6 +44,11 @@ export default class ResourcesController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sortColumn && sortDirection) {
+      query.orderBy(sortColumn, sortDirection)
+    } else {
+      query.orderBy('name', 'asc')
     }
 
     const queryCount = await countQuery.count('*')
