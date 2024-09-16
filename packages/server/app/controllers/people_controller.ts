@@ -59,7 +59,11 @@ export default class PeopleController {
       query.offset(offset)
     }
     if (sortColumn && sortDirection) {
-      query.orderBy(sortColumn, sortDirection)
+      if (sortColumn === 'personType') {
+        query.orderBy('typeKey', sortDirection)
+      } else {
+        query.orderBy(sortColumn, sortDirection)
+      }
     } else {
       query.orderBy('familyName', 'asc')
       query.orderBy('givenName', 'asc')
