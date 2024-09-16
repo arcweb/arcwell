@@ -17,7 +17,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
     depends_on:
-      - testdb
+      - db
     
   db:
     image: postgres:16
