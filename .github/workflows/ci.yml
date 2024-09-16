@@ -63,6 +63,7 @@ jobs:
         with:
           context: ./packages/server
           file: ./packages/server/Dockerfile
+          target: develop
           push: true
           tags: ${{ env.SERVER_IMAGE }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -95,6 +96,5 @@ jobs:
       - name: Lint API
         run: |
           docker pull ${{ env.SERVER_IMAGE }}
-          docker compose run -e NODE_ENV=development server npm install --only=dev --no-fund
-          docker compose run -e NODE_ENV=development server npm run lint
+          docker compose run server npm run lint
         continue-on-error: true
