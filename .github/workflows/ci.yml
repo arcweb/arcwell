@@ -22,14 +22,13 @@ jobs:
         uses: dorny/paths-filter@v3
         id: filter
         with:
-          
+
           filters: |
             server:
               - 'server/**'
 
   build-api:
     needs: changes
-    if: ${{ needs.changes.outputs.server == 'true' }}
 
     runs-on: ubuntu-latest
   
