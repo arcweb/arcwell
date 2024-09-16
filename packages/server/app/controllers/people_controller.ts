@@ -23,7 +23,10 @@ export function getFullPerson(id: string) {
 
 export default class PeopleController {
   /**
-   * Display a list of resource
+   * @index
+   * @tag People
+   * @operationId people_list
+   * @description Returns a list of People with related information
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
