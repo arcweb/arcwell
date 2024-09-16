@@ -20,6 +20,7 @@ import { JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-fact-types',
@@ -41,6 +42,7 @@ import { MatPaginator } from '@angular/material/paginator';
     MatIconButton,
     MatPaginator,
     RouterLink,
+    MatSortModule,
   ],
   providers: [FactTypesStore],
   templateUrl: './fact-types.component.html',
@@ -64,5 +66,14 @@ export class FactTypesComponent {
 
   handleClick(row: FactTypeModel) {
     this.router.navigate(['project-management', 'facts', 'types', row.id]);
+  }
+
+  sortChange(event: Sort) {
+    this.factTypesStore.load(
+      this.factTypesStore.limit(),
+      this.factTypesStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }

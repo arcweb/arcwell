@@ -18,6 +18,7 @@ import { inject } from '@angular/core';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { EventTypeModel } from '@app/shared/models/event-type.model';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 
 interface EventTypesState {
   eventTypes: EventTypeModel[];
@@ -25,6 +26,8 @@ interface EventTypesState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sortColumn: string;
+  sortDirection: SortDirection;
 }
 
 const initialState: EventTypesState = {
@@ -33,6 +36,8 @@ const initialState: EventTypesState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sortColumn: 'key',
+  sortDirection: 'asc',
 };
 
 export const EventTypesStore = signalStore(
@@ -40,10 +45,28 @@ export const EventTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventTypesService = inject(EventTypeService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+    ) {
+      patchState(
+        store,
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+        },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(limit, offset),
+        eventTypesService.getEventTypes(
+          limit,
+          offset,
+          sortColumn,
+          sortDirection,
+        ),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

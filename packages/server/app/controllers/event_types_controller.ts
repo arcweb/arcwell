@@ -20,16 +20,24 @@ export default class EventTypesController {
     const queryData = request.qs()
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sortColumn = queryData['sortColumn']
+    const sortDirection = queryData['sortDirection']
 
     let countQuery = db.from('event_types')
 
-    let query = EventType.query().preload('tags').orderBy('name', 'asc')
+    let query = EventType.query().preload('tags')
 
     if (limit) {
       query.limit(limit)
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sortColumn && sortDirection) {
+      console.log(query)
+      query.orderBy(sortColumn, sortDirection)
+    } else {
+      query.orderBy('name', 'asc')
     }
 
     const queryCount = await countQuery.count('*')

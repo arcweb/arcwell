@@ -49,7 +49,12 @@ export const PeopleListStore = signalStore(
     ) {
       patchState(
         store,
-        { ...initialState, sortColumn, sortDirection, typeKey },
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+          typeKey: typeKey,
+        },
         setPending(),
       );
       const resp = await firstValueFrom(

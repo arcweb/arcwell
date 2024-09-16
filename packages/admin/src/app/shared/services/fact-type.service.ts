@@ -25,6 +25,8 @@ export class FactTypeService {
   getFactTypes(
     limit?: number,
     offset?: number,
+    sortColumn?: string,
+    sortDirection?: string,
   ): Observable<FactTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -33,6 +35,10 @@ export class FactTypeService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (sortColumn && sortDirection) {
+      params = params.set('sortColumn', sortColumn);
+      params = params.set('sortDirection', sortDirection);
     }
 
     return this.http

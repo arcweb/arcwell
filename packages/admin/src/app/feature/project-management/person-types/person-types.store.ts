@@ -53,11 +53,20 @@ export const PersonTypesStore = signalStore(
     ) {
       patchState(
         store,
-        { ...initialState, sortColumn, sortDirection },
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+        },
         setPending(),
       );
       const resp = await firstValueFrom(
-        personTypesService.getPersonTypes(limit, offset, sortColumn, sortDirection),
+        personTypesService.getPersonTypes(
+          limit,
+          offset,
+          sortColumn,
+          sortDirection,
+        ),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
