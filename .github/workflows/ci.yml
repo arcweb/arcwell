@@ -103,6 +103,8 @@ jobs:
         continue-on-error: true
   
   test-server:
+    needs: build-server
+
     runs-on: ubuntu-latest
   
     steps:
