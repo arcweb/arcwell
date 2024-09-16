@@ -1,6 +1,7 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 import { EventModel } from '@app/shared/models/event.model';
 import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
@@ -25,6 +26,8 @@ interface EventsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sortColumn: string;
+  sortDirection: SortDirection;
   typeKey: string;
 }
 
@@ -34,6 +37,8 @@ const initialState: EventsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sortColumn: 'name',
+  sortDirection: 'asc',
   typeKey: '',
 };
 
@@ -42,10 +47,31 @@ export const EventsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventService = inject(EventService)) => ({
-    async load(limit: number, offset: number, typeKey: string = '') {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+      typeKey = '',
+    ) {
+      patchState(
+        store,
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+          typeKey: typeKey,
+        },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        eventService.getEvents(limit, offset, typeKey),
+        eventService.getEvents(
+          limit,
+          offset,
+          sortColumn,
+          sortDirection,
+          typeKey,
+        ),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

@@ -19,9 +19,9 @@ interface PeopleListState {
   offset: number;
   totalData: number;
   pageIndex: number;
-  typeKey: string;
   sortColumn: string;
   sortDirection: SortDirection;
+  typeKey: string;
 }
 
 const initialState: PeopleListState = {
@@ -30,9 +30,9 @@ const initialState: PeopleListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  typeKey: '',
   sortColumn: 'familyName',
   sortDirection: 'asc',
+  typeKey: '',
 };
 
 export const PeopleListStore = signalStore(

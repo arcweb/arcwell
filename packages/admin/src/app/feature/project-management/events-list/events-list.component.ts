@@ -25,6 +25,7 @@ import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-events-list',
@@ -46,6 +47,7 @@ import { map } from 'rxjs';
     MatIcon,
     RouterLink,
     MatIconButton,
+    MatSortModule,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',
@@ -78,7 +80,13 @@ export class EventsListComponent {
     });
     // load the events list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.eventsListStore.load(this.eventsListStore.limit(), 0, typeKey);
+      this.eventsListStore.load(
+        this.eventsListStore.limit(),
+        0,
+        '',
+        '',
+        typeKey,
+      );
     });
   }
 
@@ -88,5 +96,14 @@ export class EventsListComponent {
 
   convertDateTimeToLocal(dateTime: DateTime | undefined): string {
     return convertDateTimeToLocal(dateTime);
+  }
+
+  sortChange(event: Sort) {
+    this.eventsListStore.load(
+      this.eventsListStore.limit(),
+      this.eventsListStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }
