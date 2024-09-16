@@ -13,7 +13,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
-import { PersonType } from '@schemas/person.schema';
 
 const apiUrl = 'http://localhost:3333';
 

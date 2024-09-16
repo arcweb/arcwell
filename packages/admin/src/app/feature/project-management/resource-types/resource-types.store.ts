@@ -18,6 +18,7 @@ import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 
 interface ResourceTypesState {
   resourceTypes: ResourceTypeModel[];
@@ -25,6 +26,8 @@ interface ResourceTypesState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sortColumn: string;
+  sortDirection: SortDirection;
 }
 
 const initialState: ResourceTypesState = {
@@ -33,6 +36,8 @@ const initialState: ResourceTypesState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sortColumn: 'name',
+  sortDirection: 'asc',
 };
 
 export const ResourceTypesStore = signalStore(
@@ -40,10 +45,28 @@ export const ResourceTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, resourceTypesService = inject(ResourceTypeService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sortColumn = '',
+      sortDirection: SortDirection = 'asc',
+    ) {
+      patchState(
+        store,
+        {
+          ...initialState,
+          sortColumn: sortColumn,
+          sortDirection: sortDirection,
+        },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes(limit, offset),
+        resourceTypesService.getResourceTypes(
+          limit,
+          offset,
+          sortColumn,
+          sortDirection,
+        ),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

@@ -20,16 +20,24 @@ export default class ResourceTypesController {
     const queryData = request.qs()
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sortColumn = queryData['sortColumn']
+    const sortDirection = queryData['sortDirection']
 
     let countQuery = db.from('resource_types')
 
-    let query = ResourceType.query().preload('tags').orderBy('name', 'asc')
+    let query = ResourceType.query().preload('tags')
 
     if (limit) {
       query.limit(limit)
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sortColumn && sortDirection) {
+      console.log(query)
+      query.orderBy(sortColumn, sortDirection)
+    } else {
+      query.orderBy('name', 'asc')
     }
 
     const queryCount = await countQuery.count('*')
