@@ -5,3 +5,35 @@ services:
       - '3333:3333'
       - '5173:5173'
     command: npm run start
+    environment:
+      APP_KEY: ${APP_KEY}
+      PORT: 3333
+      TZ: UTC
+      HOST: 0.0.0.0
+      LOG_LEVEL: info
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    depends_on:
+      - testdb
+    
+  db:
+    image: postgres:16
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./support/postgres/init_databases.sh:/docker-entrypoint-initdb.d/initializer.sh
+    restart: on-failure
+    healthcheck:
+      test: "exit 0"
+  
+volumes:
+  pgdata:
