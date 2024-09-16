@@ -64,6 +64,9 @@ jobs:
           context: ./packages/server
           file: ./packages/server/Dockerfile
           target: develop
+          build-args: |
+            NODE_ENV=development
+            PORT=3333
           push: true
           tags: ${{ env.SERVER_IMAGE }}
           cache-from: type=local,src=/tmp/.buildx-cache
