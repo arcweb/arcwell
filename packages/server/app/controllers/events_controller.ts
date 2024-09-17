@@ -35,12 +35,26 @@ export default class EventsController {
       })
 
     if (sort && order) {
-      if (sort === 'eventType') {
-        query
-          .join('event_types', 'event_types.key', 'events.type_key')
-          .orderBy('event_types.name', order)
-      } else {
-        query.orderBy(sort, order)
+      switch (sort) {
+        case 'eventType':
+          query
+            .join('event_types', 'event_types.key', 'events.type_key')
+            .orderBy('event_types.name', order)
+          break
+        case 'person':
+          query
+            .leftOuterJoin('people', 'people.id', 'events.person_id')
+            .orderBy('people.family_name', order)
+            .select('events.*')
+          break
+        case 'resource':
+          query
+            .leftOuterJoin('resources', 'resources.id', 'events.resource_id')
+            .orderBy('resources.name', order)
+            .select('events.*')
+          break
+        default:
+          query.orderBy(sort, order)
       }
     } else {
       query.orderBy('startedAt', 'desc')
