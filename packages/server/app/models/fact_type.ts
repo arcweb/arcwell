@@ -1,9 +1,17 @@
 import { DateTime } from 'luxon'
-import { afterDelete, BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterDelete,
+  BaseModel,
+  beforeSave,
+  column,
+  hasMany,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
 import DimensionType from '#models/dimension_type'
+import { generateTypeKey } from '#helpers/generate_type_key'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -44,5 +52,13 @@ export default class FactType extends BaseModel {
   @afterDelete()
   static async detachTags(factType: FactType) {
     await factType.related('tags').detach()
+  }
+
+  @beforeSave()
+  // generate a key based on the name if one is not provided
+  static async generateKey(type: FactType) {
+    if (!type.key) {
+      type.key = generateTypeKey(type.name)
+    }
   }
 }

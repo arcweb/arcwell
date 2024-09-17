@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormSubmittedEvent,
   ReactiveFormsModule,
+  TouchedChangeEvent,
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
@@ -23,7 +24,10 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { PersonTypeType } from '@schemas/person-type.schema';
 import { Router, RouterLink } from '@angular/router';
-import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
+import {
+  TYPE_KEY_PATTERN,
+  CREATE_PARTIAL_URL,
+} from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
@@ -31,6 +35,8 @@ import { PersonTypeStore } from '@feature/project-management/person-type/person-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { autoSlugify } from '@shared/helpers/auto-slug.helper';
+import { HttpUrlEncodingCodec } from '@angular/common/http';
 
 @Component({
   selector: 'aw-person-type',
@@ -63,19 +69,19 @@ export class PersonTypeComponent implements OnInit {
   @Input() personTypeId!: string;
 
   personTypeForm = new FormGroup({
-    key: new FormControl(
-      {
-        value: '',
-        disabled: true,
-      },
-      Validators.required,
-    ),
     name: new FormControl(
       {
         value: '',
         disabled: true,
       },
-      Validators.required,
+      [Validators.required],
+    ),
+    key: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      [Validators.pattern(TYPE_KEY_PATTERN)],
     ),
     description: new FormControl({
       value: '',
@@ -118,7 +124,24 @@ export class PersonTypeComponent implements OnInit {
             this.personTypeStore.update(this.personTypeForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other events that can be caught
+          // auto-generate key from the user provided name
+          if (event.source === this.personTypeForm.controls.name) {
+            this.personTypeForm.patchValue({
+              key: autoSlugify(this.personTypeForm.controls.name.value || ''),
+            });
+          }
+        } else if (event instanceof TouchedChangeEvent) {
+          // on name input blur trim name and regenerate key
+          if (
+            event.source === this.personTypeForm.controls.name &&
+            this.personTypeForm.controls.name.value
+          ) {
+            const trimmedValue = this.personTypeForm.controls.name.value.trim();
+            this.personTypeForm.patchValue({
+              name: trimmedValue,
+              key: autoSlugify(trimmedValue),
+            });
+          }
         }
       });
   }
@@ -126,7 +149,7 @@ export class PersonTypeComponent implements OnInit {
   onCancel() {
     if (this.personTypeStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'person-types']);
+      this.router.navigate(['project-management', 'people', 'types']);
     } else {
       this.personTypeStore.toggleEditMode();
     }
@@ -147,11 +170,7 @@ export class PersonTypeComponent implements OnInit {
         this.personTypeStore.delete().then(() => {
           if (this.personTypeStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'people',
-              'person-types',
-            ]);
+            this.router.navigate(['project-management', 'people', 'types']);
           }
         });
       }

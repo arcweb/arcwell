@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormSubmittedEvent,
   ReactiveFormsModule,
+  TouchedChangeEvent,
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
@@ -23,7 +24,10 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { FactTypeType } from '@schemas/fact-type.schema';
 import { Router, RouterLink } from '@angular/router';
-import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
+import {
+  CREATE_PARTIAL_URL,
+  TYPE_KEY_PATTERN,
+} from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
@@ -31,6 +35,7 @@ import { FactTypeStore } from '@feature/project-management/fact-type/fact-type.s
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
+import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 
 @Component({
   selector: 'aw-fact-type',
@@ -63,19 +68,19 @@ export class FactTypeComponent implements OnInit {
   @Input() factTypeId!: string;
 
   factTypeForm = new FormGroup({
-    key: new FormControl(
-      {
-        value: '',
-        disabled: true,
-      },
-      Validators.required,
-    ),
     name: new FormControl(
       {
         value: '',
         disabled: true,
       },
       Validators.required,
+    ),
+    key: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      Validators.pattern(TYPE_KEY_PATTERN),
     ),
     description: new FormControl({
       value: '',
@@ -118,7 +123,24 @@ export class FactTypeComponent implements OnInit {
             this.factTypeStore.update(this.factTypeForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other events that can be caught
+          // auto-generate key from the user provided name
+          if (event.source === this.factTypeForm.controls.name) {
+            this.factTypeForm.patchValue({
+              key: autoSlugify(this.factTypeForm.controls.name.value || ''),
+            });
+          }
+        } else if (event instanceof TouchedChangeEvent) {
+          // on name input blur trim name and regenerate key
+          if (
+            event.source === this.factTypeForm.controls.name &&
+            this.factTypeForm.controls.name.value
+          ) {
+            const trimmedValue = this.factTypeForm.controls.name.value.trim();
+            this.factTypeForm.patchValue({
+              name: trimmedValue,
+              key: autoSlugify(trimmedValue),
+            });
+          }
         }
       });
   }
@@ -126,7 +148,7 @@ export class FactTypeComponent implements OnInit {
   onCancel() {
     if (this.factTypeStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'facts', 'fact-types']);
+      this.router.navigate(['project-management', 'facts', 'types']);
     } else {
       this.factTypeStore.toggleEditMode();
     }
@@ -147,7 +169,7 @@ export class FactTypeComponent implements OnInit {
         this.factTypeStore.delete().then(() => {
           if (this.factTypeStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'facts', 'fact-types']);
+            this.router.navigate(['project-management', 'facts', 'types']);
           }
         });
       }

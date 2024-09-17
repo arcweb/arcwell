@@ -15,11 +15,15 @@ import {
   FormSubmittedEvent,
   ValueChangeEvent,
   ReactiveFormsModule,
+  TouchedChangeEvent,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
+import {
+  CREATE_PARTIAL_URL,
+  TYPE_KEY_PATTERN,
+} from '@app/shared/constants/admin.constants';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { EventTypeStore } from './event-type.store';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -31,6 +35,7 @@ import { MatSelect } from '@angular/material/select';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
+import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 
 @Component({
   selector: 'aw-event-type',
@@ -63,19 +68,19 @@ export class EventTypeComponent implements OnInit {
   @Input() eventTypeId!: string;
 
   eventTypeForm = new FormGroup({
-    key: new FormControl(
-      {
-        value: '',
-        disabled: true,
-      },
-      Validators.required,
-    ),
     name: new FormControl(
       {
         value: '',
         disabled: true,
       },
       Validators.required,
+    ),
+    key: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      [Validators.pattern(TYPE_KEY_PATTERN)],
     ),
     description: new FormControl({
       value: '',
@@ -118,7 +123,24 @@ export class EventTypeComponent implements OnInit {
             this.eventTypeStore.update(this.eventTypeForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other events that can be caught
+          // auto-generate key from the user provided name
+          if (event.source === this.eventTypeForm.controls.name) {
+            this.eventTypeForm.patchValue({
+              key: autoSlugify(this.eventTypeForm.controls.name.value || ''),
+            });
+          }
+        } else if (event instanceof TouchedChangeEvent) {
+          if (
+            event.source === this.eventTypeForm.controls.name &&
+            this.eventTypeForm.controls.name.value
+          ) {
+            // on name input blur trim name and regenerate key
+            const trimmedValue = this.eventTypeForm.controls.name.value.trim();
+            this.eventTypeForm.patchValue({
+              name: trimmedValue,
+              key: autoSlugify(trimmedValue),
+            });
+          }
         }
       });
   }
@@ -126,7 +148,7 @@ export class EventTypeComponent implements OnInit {
   onCancel() {
     if (this.eventTypeStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'events', 'event-types']);
+      this.router.navigate(['project-management', 'events', 'types']);
     } else {
       this.eventTypeStore.toggleEditMode();
     }
@@ -147,11 +169,7 @@ export class EventTypeComponent implements OnInit {
         this.eventTypeStore.delete().then(() => {
           if (this.eventTypeStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'events',
-              'event-types',
-            ]);
+            this.router.navigate(['project-management', 'events', 'types']);
           }
         });
       }
