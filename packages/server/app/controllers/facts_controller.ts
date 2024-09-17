@@ -73,19 +73,19 @@ export default class FactsController {
           break
         case 'person':
           query
-            .join('people', 'people.id', 'facts.person_id')
+            .leftOuterJoin('people', 'people.id', 'facts.person_id')
             .orderBy('people.family_name', order)
             .select('facts.*')
           break
         case 'resource':
           query
-            .join('resources', 'resources.id', 'facts.resource_id')
+            .leftOuterJoin('resources', 'resources.id', 'facts.resource_id')
             .orderBy('resources.name', order)
             .select('facts.*')
           break
         case 'event':
           query
-            .join('events', 'events.id', 'facts.event_id')
+            .leftOuterJoin('events', 'events.id', 'facts.event_id')
             .orderBy('events.name', order)
             .select('facts.*')
           break
