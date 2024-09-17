@@ -42,9 +42,6 @@ export default class PeopleController {
       .preload('user', (user) => {
         user.preload('tags')
       })
-      .preload('personType', (personType) => {
-        personType.preload('tags')
-      })
 
     if (typeKey) {
       const personType = await PersonType.findByOrFail('key', typeKey)
@@ -60,13 +57,19 @@ export default class PeopleController {
     }
     if (sort && order) {
       if (sort === 'personType') {
-        query.orderBy('typeKey', order)
+        query.preload('personType', (personType) => {
+          personType.orderBy('name', order)
+        })
+        // For models with Types, we could just use the typeKey to sort personType column
+        // query.orderBy('typeKey', order)
       } else {
         query.orderBy(sort, order)
+        query.preload('personType')
       }
     } else {
       query.orderBy('familyName', 'asc')
       query.orderBy('givenName', 'asc')
+      query.preload('personType')
     }
 
     const queryCount = await countQuery.count('*')

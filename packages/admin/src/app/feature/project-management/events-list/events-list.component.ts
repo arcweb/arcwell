@@ -99,11 +99,14 @@ export class EventsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.eventsListStore.load(
-      this.eventsListStore.limit(),
-      this.eventsListStore.offset(),
-      event.active,
-      event.direction,
-    );
+    this.typeKey$.subscribe(typeKey => {
+      this.eventsListStore.load(
+        this.eventsListStore.limit(),
+        this.eventsListStore.offset(),
+        event.active,
+        event.direction,
+        typeKey,
+      );
+    });
   }
 }
