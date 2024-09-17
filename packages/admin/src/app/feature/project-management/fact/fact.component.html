@@ -67,6 +67,30 @@
       </mat-error>
     }
 
+    <aw-object-selector-form-field
+      formControlName="person"
+      placeholder="Search for Person"
+      label="Person"
+      serviceType="people"
+      displayProperty="familyName"
+    ></aw-object-selector-form-field>
+
+    <aw-object-selector-form-field
+      formControlName="resource"
+      placeholder="Search for Resource"
+      label="Resource"
+      serviceType="resources"
+      displayProperty="name"
+    ></aw-object-selector-form-field>
+
+    <aw-object-selector-form-field
+      formControlName="event"
+      placeholder="Search for Event"
+      label="Event"
+      serviceType="events"
+      displayProperty="id"
+    ></aw-object-selector-form-field>
+
     @if (factStore.fact()?.dimensions?.length > 0) {
       <h2>Dimensions</h2>
       <table

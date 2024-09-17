@@ -4,6 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
 
 export function getFullResource(id: string) {
   return Resource.query()
@@ -19,6 +20,8 @@ export default class ResourcesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
+
+    const search = queryData['search']
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
@@ -31,6 +34,20 @@ export default class ResourcesController {
       })
       .preload('tags')
       .orderBy('name', 'asc')
+
+    // Add search functionality to query
+    if (typeof search === 'string') {
+      query.whereILike('familyName', search)
+      countQuery.whereILike('familyName', search)
+    } else if (typeof search === 'object' && search !== null) {
+      for (const key in search) {
+        if (search.hasOwnProperty(key)) {
+          const searchString = '%' + search[key] + '%'
+          query.whereILike(string.camelCase(key), searchString)
+          countQuery.whereILike(string.snakeCase(key), searchString)
+        }
+      }
+    }
 
     if (typeKey) {
       const resourceType = await ResourceType.findByOrFail('key', typeKey)

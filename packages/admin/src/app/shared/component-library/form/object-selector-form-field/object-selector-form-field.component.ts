@@ -57,7 +57,6 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
   optionsSignal = signal<PersonType[] | EventType[] | ResourceType[]>([]);
 
   // Internal FormControl for handling validation and disabled state
-  // internalControl = new FormControl('', Validators.required);
   internalControl = new FormControl('');
 
   private onChange: (value: string | object | null) => void = () => {
@@ -119,25 +118,37 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
           });
         break;
       case 'resources':
-        this.resourceService.getResources(20, 0).subscribe(resp => {
-          if (resp.errors) {
-            console.error(resp.errors);
-          } else {
-            this.optionsSignal.set(resp.data);
-          }
-        });
+        this.resourceService
+          .getResources({
+            limit: 20,
+            offset: 0,
+            search: [{ field: 'name', searchString: query }],
+          })
+          .subscribe(resp => {
+            if (resp.errors) {
+              console.error(resp.errors);
+            } else {
+              this.optionsSignal.set(resp.data);
+            }
+          });
         break;
       case 'events':
-        this.eventService.getEvents(20, 0).subscribe(resp => {
-          if (resp.errors) {
-            console.error(resp.errors);
-          } else {
-            this.optionsSignal.set(resp.data);
-          }
-        });
+        this.eventService
+          .getEvents({
+            limit: 20,
+            offset: 0,
+            search: [{ field: 'id', searchString: query }],
+          })
+          .subscribe(resp => {
+            if (resp.errors) {
+              console.error(resp.errors);
+            } else {
+              this.optionsSignal.set(resp.data);
+            }
+          });
         break;
       default:
-        console.warn('Unknown service type');
+        throw new Error('Unimplemented service type');
     }
   }
 
