@@ -71,7 +71,26 @@ export default class FactsController {
       query.offset(offset)
     }
     if (sort && order) {
-      query.orderBy(sort, order)
+      switch (sort) {
+        case 'factType':
+          query
+            .join('fact_types', 'fact_types.key', 'facts.type_key')
+            .orderBy('fact_types.name', order)
+          break
+        case 'person':
+          query.join('people', 'people.id', 'facts.person_id').orderBy('people.family_name', order)
+          break
+        case 'resource':
+          query
+            .join('resources', 'resources.id', 'facts.resource_id')
+            .orderBy('resources.name', order)
+          break
+        case 'event':
+          query.join('events', 'events.id', 'facts.event_id').orderBy('events.name', order)
+          break
+        default:
+          query.orderBy(sort, order)
+      }
     } else {
       query.orderBy('observedAt', 'desc')
     }

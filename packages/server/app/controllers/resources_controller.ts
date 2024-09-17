@@ -46,7 +46,13 @@ export default class ResourcesController {
       query.offset(offset)
     }
     if (sort && order) {
-      query.orderBy(sort, order)
+      if (sort === 'resourceType') {
+        query
+          .join('resource_types', 'resource_types.key', 'resources.type_key')
+          .orderBy('resource_types.name', order)
+      } else {
+        query.orderBy(sort, order)
+      }
     } else {
       query.orderBy('name', 'asc')
     }

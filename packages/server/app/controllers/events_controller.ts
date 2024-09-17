@@ -19,24 +19,22 @@ export default class EventsController {
 
     let countQuery = db.from('events')
 
-    let query = Event.query().preload('tags')
+    let query = Event.query()
+      .preload('tags')
+      .preload('eventType', (type) => {
+        type.preload('tags')
+      })
 
     if (sort && order) {
       if (sort === 'eventType') {
-        query.preload('eventType', (eventType) => {
-          eventType.orderBy('name', order)
-        })
+        query
+          .join('event_types', 'event_types.key', 'events.type_key')
+          .orderBy('event_types.name', order)
       } else {
         query.orderBy(sort, order)
-        query.preload('eventType', (type) => {
-          type.preload('tags')
-        })
       }
     } else {
       query.orderBy('name', 'asc')
-      query.preload('eventType', (type) => {
-        type.preload('tags')
-      })
     }
     if (typeKey) {
       const eventType = await EventType.findByOrFail('key', typeKey)
