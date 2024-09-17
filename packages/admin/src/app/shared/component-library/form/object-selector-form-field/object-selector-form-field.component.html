@@ -21,8 +21,12 @@
     #auto="matAutocomplete"
     (optionSelected)="onOptionSelected($event)"
   >
-    <mat-option *ngFor="let option of optionsSignal()" [value]="option">
-      {{ option[displayProperty()] }}
-    </mat-option>
+    @for (option of optionsSignal(); track $index) {
+      <mat-option [value]="option">
+        {{ option[displayProperty()] }}
+      </mat-option>
+    } @empty {
+      <mat-option [disabled]="true">Nothing found.</mat-option>
+    }
   </mat-autocomplete>
 </mat-form-field>
