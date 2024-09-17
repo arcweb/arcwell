@@ -64,12 +64,6 @@ export default class FactsController {
       // DB context use sql column names
       countQuery.where('type_key', factType.key)
     }
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
     if (sort && order) {
       switch (sort) {
         case 'factType':
@@ -78,21 +72,34 @@ export default class FactsController {
             .orderBy('fact_types.name', order)
           break
         case 'person':
-          query.join('people', 'people.id', 'facts.person_id').orderBy('people.family_name', order)
+          query
+            .join('people', 'people.id', 'facts.person_id')
+            .orderBy('people.family_name', order)
+            .select('facts.*')
           break
         case 'resource':
           query
             .join('resources', 'resources.id', 'facts.resource_id')
             .orderBy('resources.name', order)
+            .select('facts.*')
           break
         case 'event':
-          query.join('events', 'events.id', 'facts.event_id').orderBy('events.name', order)
+          query
+            .join('events', 'events.id', 'facts.event_id')
+            .orderBy('events.name', order)
+            .select('facts.*')
           break
         default:
           query.orderBy(sort, order)
       }
     } else {
       query.orderBy('observedAt', 'desc')
+    }
+    if (limit) {
+      query.limit(limit)
+    }
+    if (offset) {
+      query.offset(offset)
     }
 
     const queryCount = await countQuery.count('*')
