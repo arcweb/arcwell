@@ -77,20 +77,10 @@ export class PersonTypeComponent implements OnInit {
       },
       Validators.required,
     ),
-    // info: new FormControl(
-    //   {
-    //     value: '',
-    //     disabled: true,
-    //   },
-    //   Validators.required,
-    // ),
-    // tags: new FormControl(
-    //   {
-    //     value: '',
-    //     disabled: true,
-    //   },
-    //   Validators.required,
-    // ),
+    description: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -112,8 +102,7 @@ export class PersonTypeComponent implements OnInit {
           this.personTypeForm.patchValue({
             key: this.personTypeStore.personType()?.key,
             name: this.personTypeStore.personType()?.name,
-            // info: JSON.stringify(this.personTypeStore.personType()?.info),
-            // tags: JSON.stringify(this.personTypeStore.personType()?.tags),
+            description: this.personTypeStore.personType()?.description,
           });
         });
       }

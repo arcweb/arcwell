@@ -6,7 +6,7 @@ import { TagModel } from './tag.model';
 
 interface ResourceBase {
   name: string;
-  meta: object;
+  info?: object;
   typeKey: string;
   tags?: TagModel[] | undefined;
   createdAt: DateTime;
@@ -25,7 +25,7 @@ export interface ResourcePostSave extends ResourceBase {
 export class ResourceModel {
   public id?: string;
   public name: string;
-  public meta?: object;
+  public info?: object;
   public typeKey: string;
   public tags?: TagModel[] | undefined;
   public createdAt: DateTime;
@@ -35,7 +35,7 @@ export class ResourceModel {
   constructor(data: ResourceUpdateType) {
     this.id = data.id;
     this.name = data.name;
-    this.meta = data.meta ? data.meta : undefined;
+    this.info = data.info;
     this.typeKey = data.typeKey;
     this.tags = data.tags
       ? data.tags.map((tag: TagType) => new TagModel(tag))

@@ -5,13 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export function getFullFactType(id: string) {
-  return FactType.query()
-    .where('id', id)
-    .preload('tags')
-    .preload('facts', (facts) => {
-      facts.preload('tags')
-    })
-    .firstOrFail()
+  return FactType.query().where('id', id).preload('tags').firstOrFail()
 }
 
 export default class FactTypesController {

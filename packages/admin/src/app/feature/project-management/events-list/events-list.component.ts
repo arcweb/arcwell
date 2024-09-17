@@ -20,7 +20,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { DateTime } from 'luxon';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -48,6 +48,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     RouterLink,
     MatIconButton,
     MatSortModule,
+    MatButton,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',
@@ -67,10 +68,11 @@ export class EventsListComponent {
   dataSource = new MatTableDataSource<EventModel>();
   displayedColumns: string[] = [
     'id',
-    'name',
-    'source',
-    'occurredAt',
+    'startedAt',
+    'endedAt',
     'eventType',
+    'person',
+    'resource',
     'tags',
   ];
 
@@ -108,5 +110,13 @@ export class EventsListComponent {
         typeKey,
       );
     });
+  }
+
+  viewResource(resourceId: string) {
+    this.router.navigate(['project-management', 'resources', resourceId]);
+  }
+
+  viewPerson(personId: string) {
+    this.router.navigate(['project-management', 'people', personId]);
   }
 }

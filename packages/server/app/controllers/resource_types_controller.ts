@@ -5,11 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
 export function getFullResourceType(id: string) {
-  return ResourceType.query()
-    .preload('tags')
-    .preload('resources', (resources) => resources.preload('tags'))
-    .where('id', id)
-    .firstOrFail()
+  return ResourceType.query().preload('tags').where('id', id).firstOrFail()
 }
 
 export default class ResourceTypesController {

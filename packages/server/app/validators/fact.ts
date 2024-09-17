@@ -7,7 +7,7 @@ export const createFactValidator = vine.compile(
   vine.object({
     typeKey: vine.string().trim(),
     observedAt: vine.date({ formats: { utc: true } }).optional(),
-    meta: vine.object({}).allowUnknownProperties().optional(),
+    info: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )
@@ -20,7 +20,7 @@ export const updateFactValidator = vine.compile(
     id: vine.string().trim().uuid(),
     typeKey: vine.string().trim().optional(),
     observedAt: vine.date({ formats: { utc: true } }).optional(),
-    meta: vine.object({}).allowUnknownProperties().optional(),
+    info: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )
@@ -31,7 +31,7 @@ export const insertFactValidator = vine.compile(
   vine.object({
     typeKey: vine.string().trim().optional(),
     observedAt: vine.date({ formats: { utc: true } }).optional(),
-    meta: vine.object({}).allowUnknownProperties().optional(),
+    info: vine.object({}).allowUnknownProperties().optional(),
     dimensions: dimensions,
   })
 )

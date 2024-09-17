@@ -107,19 +107,6 @@ Environment seed data will create user credentials for you:
 | dev-guest@example.com         | password      | Guest         |
 
 
-## QuickStart: Updating to latest code
-
-### Issue:  Docker compose build is not detecting new libraries and will error
-Solution: Run the following at the root directory before bringing up the containers
-
-```bash
-docker compose down
-docker volume rm arcwell_excluded_admin arcwell_excluded_server
-docker compose up --build
-```
-This should resolve any missing library errors.
-
-
 ## Docker Services
 
 In local development, a handful of services are orchestrated for you

@@ -77,6 +77,10 @@ export class EventTypeComponent implements OnInit {
       },
       Validators.required,
     ),
+    description: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -98,6 +102,7 @@ export class EventTypeComponent implements OnInit {
           this.eventTypeForm.patchValue({
             key: this.eventTypeStore.eventType()?.key,
             name: this.eventTypeStore.eventType()?.name,
+            description: this.eventTypeStore.eventType()?.description,
           });
         });
       }
