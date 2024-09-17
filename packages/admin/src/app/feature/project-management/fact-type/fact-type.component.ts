@@ -73,14 +73,14 @@ export class FactTypeComponent implements OnInit {
         value: '',
         disabled: true,
       },
-      Validators.required,
+      [Validators.required, Validators.minLength(3)],
     ),
     key: new FormControl(
       {
         value: '',
         disabled: true,
       },
-      Validators.pattern(TYPE_KEY_PATTERN),
+      [Validators.pattern(TYPE_KEY_PATTERN), Validators.minLength(3)],
     ),
     description: new FormControl({
       value: '',
