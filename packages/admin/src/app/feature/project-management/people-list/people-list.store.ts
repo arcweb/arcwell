@@ -35,10 +35,10 @@ export const PeopleListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(limit: number, offset: number, typeKey: string = '') {
+    async load(limit: number, offset: number, typeKey = '') {
       patchState(store, { ...initialState, typeKey }, setPending());
       const resp = await firstValueFrom(
-        personService.getPeople(limit, offset, typeKey),
+        personService.getPeople({ limit, offset, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -62,7 +62,11 @@ export const PeopleListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(store.limit(), store.offset(), store.typeKey()),
+        personService.getPeople({
+          limit: store.limit(),
+          offset: store.offset(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

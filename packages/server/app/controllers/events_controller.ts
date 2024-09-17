@@ -60,7 +60,8 @@ export default class EventsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventValidator)
-    const newEvent = await Event.create(request.body())
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
+    const newEvent = await Event.create(cleanRequest)
 
     let returnQuery = await Event.query()
       .where('id', newEvent.id)
@@ -126,7 +127,7 @@ export default class EventsController {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
     // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt'])
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
 
