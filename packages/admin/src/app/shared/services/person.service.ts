@@ -22,21 +22,34 @@ const apiUrl = 'http://localhost:3333';
 export class PersonService {
   private http: HttpClient = inject(HttpClient);
 
-  getPeople(
-    limit?: number,
-    offset?: number,
-    typeKey?: string,
-  ): Observable<PeopleResponseType[] | ErrorResponseType> {
+  getPeople(props: {
+    limit?: number;
+    offset?: number;
+    typeKey?: string;
+    search?: [{ field: string; searchString: string }];
+  }): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
-    if (typeKey) {
-      params = params.set('typeKey', typeKey);
+    if (props.typeKey) {
+      params = params.set('typeKey', props.typeKey);
+    }
+
+    if (props.search && props.search.length > 0) {
+      props.search.forEach(searchItem => {
+        if (searchItem.field && searchItem.searchString) {
+          // Format: search[field]=searchString
+          params = params.set(
+            `search[${searchItem.field}]`,
+            searchItem.searchString,
+          );
+        }
+      });
     }
 
     return this.http

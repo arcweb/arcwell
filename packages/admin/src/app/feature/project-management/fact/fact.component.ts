@@ -47,6 +47,10 @@ import {
   OwlDateTimeModule,
   OwlNativeDateTimeModule,
 } from '@danielmoncada/angular-datetime-picker';
+import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
+import { PersonType } from '@schemas/person.schema';
+import { ResourceType } from '@schemas/resource.schema';
+import { EventType } from '@schemas/event.schema';
 
 @Component({
   selector: 'aw-fact',
@@ -78,6 +82,7 @@ import {
     MatHeaderCellDef,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    ObjectSelectorFormFieldComponent,
   ],
   providers: [FactStore],
   templateUrl: './fact.component.html',
@@ -100,6 +105,12 @@ export class FactComponent implements OnInit {
       Validators.required,
     ),
     observedAt: new FormControl({ value: '', disabled: true }),
+    person: new FormControl<PersonType | null>({ value: null, disabled: true }),
+    resource: new FormControl<ResourceType | null>({
+      value: null,
+      disabled: true,
+    }),
+    event: new FormControl<EventType | null>({ value: null, disabled: true }),
   });
 
   displayedColumns: string[] = ['id', 'key', 'value'];
@@ -123,6 +134,9 @@ export class FactComponent implements OnInit {
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
             observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+            person: this.factStore.fact()?.person,
+            resource: this.factStore.fact()?.resource,
+            event: this.factStore.fact()?.event,
           });
         });
       }
@@ -132,16 +146,40 @@ export class FactComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const formValue = this.factForm.value;
+
+          const eventFormPayload = {
+            ...formValue,
+            personId: this.isObjectModel(formValue.person)
+              ? formValue.person.id
+              : null,
+            resourceId: this.isObjectModel(formValue.resource)
+              ? formValue.resource.id
+              : null,
+            eventId: this.isObjectModel(formValue.event)
+              ? formValue.event.id
+              : null,
+          };
+
           if (this.factStore.inCreateMode()) {
-            this.factStore.createFact(this.factForm);
+            this.factStore.createFact(eventFormPayload);
           } else {
-            this.factStore.updateFact(this.factForm);
+            this.factStore.updateFact(eventFormPayload);
           }
         }
         // else if (event instanceof ValueChangeEvent) {
         // }
         // This is here for an example.  Also, there are other events that can be caught
       });
+  }
+
+  isObjectModel(obj: unknown) {
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'id' in obj &&
+      typeof obj.id === 'string'
+    );
   }
 
   onCancel() {

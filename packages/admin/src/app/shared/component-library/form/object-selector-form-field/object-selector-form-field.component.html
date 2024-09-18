@@ -1,0 +1,32 @@
+<mat-form-field>
+  <mat-label>{{ label() }}</mat-label>
+  <input
+    type="text"
+    matInput
+    [matAutocomplete]="auto"
+    [value]="valueSignal()"
+    (input)="onInput($event)"
+    [placeholder]="placeholder()"
+    [formControl]="internalControl"
+  />
+  <mat-error
+    *ngIf="
+      internalControl.invalid &&
+      (internalControl.dirty || internalControl.touched)
+    "
+  >
+    This field is required
+  </mat-error>
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="onOptionSelected($event)"
+  >
+    @for (option of optionsSignal(); track $index) {
+      <mat-option [value]="option">
+        {{ option[displayProperty()] }}
+      </mat-option>
+    } @empty {
+      <mat-option [disabled]="true">Nothing found.</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

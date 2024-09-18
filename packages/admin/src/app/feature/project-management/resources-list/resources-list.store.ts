@@ -35,10 +35,10 @@ export const ResourcesListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, resourceService = inject(ResourceService)) => ({
-    async load(limit: number, offset: number, typeKey: string = '') {
+    async load(limit: number, offset: number, typeKey = '') {
       patchState(store, { ...initialState, typeKey }, setPending());
       const resp = await firstValueFrom(
-        resourceService.getResources(limit, offset, typeKey),
+        resourceService.getResources({ limit, offset, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -62,11 +62,11 @@ export const ResourcesListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceService.getResources(
-          store.limit(),
-          store.offset(),
-          store.typeKey(),
-        ),
+        resourceService.getResources({
+          limit: store.limit(),
+          offset: store.offset(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

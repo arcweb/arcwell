@@ -5,6 +5,7 @@ import {
   inject,
   Input,
   OnInit,
+  signal,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -35,6 +36,10 @@ import {
   OwlDateTimeModule,
   OwlNativeDateTimeModule,
 } from '@danielmoncada/angular-datetime-picker';
+import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
+import { PersonModel } from '@shared/models/person.model';
+import { PersonType } from '@schemas/person.schema';
+import { ResourceType } from '@schemas/resource.schema';
 
 @Component({
   selector: 'aw-event',
@@ -55,6 +60,7 @@ import {
     TagsFormComponent,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    ObjectSelectorFormFieldComponent,
   ],
   providers: [EventStore],
   templateUrl: './event.component.html',
@@ -64,7 +70,7 @@ export class EventComponent implements OnInit {
   readonly eventStore = inject(EventStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
-  destoyRef = inject(DestroyRef);
+  destroyRef = inject(DestroyRef);
 
   @Input() eventId!: string;
 
@@ -79,6 +85,11 @@ export class EventComponent implements OnInit {
     ),
     endedAt: new FormControl({ value: '', disabled: true }),
     // info: new FormControl({ value: '', disabled: true }),
+    person: new FormControl<PersonType | null>({ value: null, disabled: true }),
+    resource: new FormControl<ResourceType | null>({
+      value: null,
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -106,24 +117,47 @@ export class EventComponent implements OnInit {
               ? this.eventStore.event()?.endedAt.toJSDate()
               : null,
             // info: this.eventStore.event()?.info,
+            person: this.eventStore.event()?.person,
+            resource: this.eventStore.event()?.resource,
           });
         });
       }
     }
 
     this.eventForm.events
-      .pipe(takeUntilDestroyed(this.destoyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const formValue = this.eventForm.value;
+
+          const eventFormPayload = {
+            ...formValue,
+            personId: this.isObjectModel(formValue.person)
+              ? formValue.person.id
+              : null,
+            resourceId: this.isObjectModel(formValue.resource)
+              ? formValue.resource.id
+              : null,
+          };
+
           if (this.eventStore.inCreateMode()) {
-            this.eventStore.create(this.eventForm.value);
+            this.eventStore.create(eventFormPayload);
           } else {
-            this.eventStore.update(this.eventForm.value);
+            this.eventStore.update(eventFormPayload);
           }
         } else if (event instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other events that can be caught
         }
       });
+  }
+
+  isObjectModel(obj: unknown) {
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'id' in obj &&
+      typeof obj.id === 'string'
+    );
   }
 
   onCancel() {
