@@ -33,7 +33,6 @@ jobs:
 
   build-server:
     needs: changes
-    if: ${{ needs.changes.outputs.server == 'true' }}
 
     runs-on: ubuntu-latest
   
