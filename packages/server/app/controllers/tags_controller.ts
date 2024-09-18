@@ -26,9 +26,8 @@ export default class TagsController {
 
     if (search) {
       const searchString = '%' + search + '%'
-      // This is case sensitive.  Use whereILike for insensitive
-      query.whereLike('pathname', searchString)
-      countQuery.whereLike('pathname', searchString)
+      query.whereILike('pathname', searchString)
+      countQuery.whereILike('pathname', searchString)
     }
 
     if (limit) {
@@ -104,8 +103,7 @@ export default class TagsController {
 
     if (search) {
       const searchString = '%' + search + '%'
-      // This is case sensitive.  Use whereILike for insensitive
-      query.whereLike('pathname', searchString)
+      query.whereILike('pathname', searchString)
     }
 
     if (limit) {

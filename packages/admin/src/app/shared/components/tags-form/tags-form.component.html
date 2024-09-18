@@ -31,10 +31,10 @@
         #auto="matAutocomplete"
         (optionSelected)="selected($event)"
       >
-        @if (tagStore.filteredSortedTags()) {
-          @for (tag of tagStore.filteredSortedTags(); track tag) {
-            <mat-option [value]="tag">{{ tag }}</mat-option>
-          }
+        @for (tag of tagStore.filteredSortedTags(); track tag) {
+          <mat-option [value]="tag">{{ tag }}</mat-option>
+        } @empty {
+          <mat-option [disabled]="true">Nothing found.</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>

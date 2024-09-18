@@ -15,6 +15,7 @@ import {
   ControlEvent,
   FormSubmittedEvent,
   ValueChangeEvent,
+  TouchedChangeEvent,
 } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -26,11 +27,15 @@ import { MatSelect } from '@angular/material/select';
 import { RouterLink, Router } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
-import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
+import {
+  CREATE_PARTIAL_URL,
+  TYPE_KEY_PATTERN,
+} from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
+import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 
 @Component({
   selector: 'aw-resource-type',
@@ -63,19 +68,19 @@ export class ResourceTypeComponent implements OnInit {
   @Input() resourceTypeId!: string;
 
   resourceTypeForm = new FormGroup({
-    key: new FormControl(
-      {
-        value: '',
-        disabled: true,
-      },
-      Validators.required,
-    ),
     name: new FormControl(
       {
         value: '',
         disabled: true,
       },
-      Validators.required,
+      [Validators.required, Validators.minLength(3)],
+    ),
+    key: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      [Validators.pattern(TYPE_KEY_PATTERN), Validators.minLength(3)],
     ),
     description: new FormControl({
       value: '',
@@ -118,7 +123,25 @@ export class ResourceTypeComponent implements OnInit {
             this.resourceTypeStore.update(this.resourceTypeForm.value);
           }
         } else if (event instanceof ValueChangeEvent) {
-          // This is here for an example.  Also, there are other resources that can be caught
+          // auto-generate key from the user provided name
+          if (event.source === this.resourceTypeForm.controls.name) {
+            this.resourceTypeForm.patchValue({
+              key: autoSlugify(this.resourceTypeForm.controls.name.value || ''),
+            });
+          }
+        } else if (event instanceof TouchedChangeEvent) {
+          // on name input blur trim name and regenerate key
+          if (
+            event.source === this.resourceTypeForm.controls.name &&
+            this.resourceTypeForm.controls.name.value
+          ) {
+            const trimmedValue =
+              this.resourceTypeForm.controls.name.value.trim();
+            this.resourceTypeForm.patchValue({
+              name: trimmedValue,
+              key: autoSlugify(trimmedValue),
+            });
+          }
         }
       });
   }
@@ -126,11 +149,7 @@ export class ResourceTypeComponent implements OnInit {
   onCancel() {
     if (this.resourceTypeStore.inCreateMode()) {
       // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate([
-        'project-management',
-        'resources',
-        'resource-types',
-      ]);
+      this.router.navigate(['project-management', 'resources', 'types']);
     } else {
       this.resourceTypeStore.toggleEditMode();
     }
@@ -151,11 +170,7 @@ export class ResourceTypeComponent implements OnInit {
         this.resourceTypeStore.delete().then(() => {
           if (this.resourceTypeStore.errors().length === 0) {
             // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'resources',
-              'resource-types',
-            ]);
+            this.router.navigate(['project-management', 'resources', 'types']);
           }
         });
       }

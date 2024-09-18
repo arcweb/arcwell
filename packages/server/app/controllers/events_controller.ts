@@ -4,6 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
 
 export default class EventsController {
   /**
@@ -11,6 +12,8 @@ export default class EventsController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
+
+    const search = queryData['search']
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
@@ -59,6 +62,21 @@ export default class EventsController {
     } else {
       query.orderBy('startedAt', 'desc')
     }
+
+    // Add search functionality to query
+    if (typeof search === 'string') {
+      query.whereILike('familyName', search)
+      countQuery.whereILike('familyName', search)
+    } else if (typeof search === 'object' && search !== null) {
+      for (const key in search) {
+        if (search.hasOwnProperty(key)) {
+          const searchString = '%' + search[key] + '%'
+          query.whereILike(string.camelCase(key), searchString)
+          countQuery.whereILike(string.snakeCase(key), searchString)
+        }
+      }
+    }
+
     if (typeKey) {
       const eventType = await EventType.findByOrFail('key', typeKey)
       query.where('typeKey', eventType.key)
@@ -87,7 +105,8 @@ export default class EventsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventValidator)
-    const newEvent = await Event.create(request.body())
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
+    const newEvent = await Event.create(cleanRequest)
 
     let returnQuery = await Event.query()
       .where('id', newEvent.id)
@@ -153,7 +172,7 @@ export default class EventsController {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
     // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt'])
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
     const event = await Event.findOrFail(params.id)
     const updatedEvent = await event.merge(cleanRequest).save()
 

@@ -49,16 +49,11 @@ export const ResourcesListStore = signalStore(
     ) {
       patchState(
         store,
-        {
-          ...initialState,
-          sort: sort,
-          order: order,
-          typeKey: typeKey,
-        },
+        { ...initialState, sort: sort, order: order, typeKey: typeKey },
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceService.getResources(limit, offset, sort, order, typeKey),
+        resourceService.getResources({ limit, offset, sort, order, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -82,11 +77,11 @@ export const ResourcesListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceService.getResources(
-          store.limit(),
-          store.offset(),
-          store.typeKey(),
-        ),
+        resourceService.getResources({
+          limit: store.limit(),
+          offset: store.offset(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

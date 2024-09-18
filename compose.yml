@@ -32,6 +32,12 @@ services:
     ports:
       - '3333:3333'
       - '5173:5173'
+    healthcheck:
+      test: curl --fail http://localhost:3333/health || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
     volumes:
       - ./packages/server:/home/node/app
       # Exclude host node_modules from mounting within container; host-installed
@@ -56,6 +62,12 @@ services:
     volumes:
       - ./packages/admin:/home/node/app
       - excluded_admin:/home/node/app/node_modules
+    healthcheck:
+      test: curl --fail http://localhost:4200/ || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
 
   db:
     image: postgres:16-bookworm
@@ -68,6 +80,12 @@ services:
       POSTGRES_PASSWORD: arcwell
     networks:
       - data
+    healthcheck:
+      test: pg_isready -U arcwell -d arcwell || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./support/postgres/init_test.sql:/docker-entrypoint-initdb.d/init_test.sql

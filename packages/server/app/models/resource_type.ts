@@ -1,8 +1,16 @@
 import { DateTime } from 'luxon'
-import { afterDelete, BaseModel, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterDelete,
+  BaseModel,
+  beforeSave,
+  column,
+  hasMany,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import Resource from '#models/resource'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Tag from '#models/tag'
+import { generateTypeKey } from '#helpers/generate_type_key'
 
 export default class ResourceType extends BaseModel {
   @column({ isPrimary: true })
@@ -37,5 +45,13 @@ export default class ResourceType extends BaseModel {
   @afterDelete()
   static async detachTags(resourceType: ResourceType) {
     await resourceType.related('tags').detach()
+  }
+
+  @beforeSave()
+  // generate a key based on the name if one is not provided
+  static async generateKey(type: ResourceType) {
+    if (!type.key) {
+      type.key = generateTypeKey(type.name)
+    }
   }
 }

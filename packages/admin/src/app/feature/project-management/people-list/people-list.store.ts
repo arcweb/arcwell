@@ -49,16 +49,11 @@ export const PeopleListStore = signalStore(
     ) {
       patchState(
         store,
-        {
-          ...initialState,
-          sort: sort,
-          order: order,
-          typeKey: typeKey,
-        },
+        { ...initialState, sort: sort, order: order, typeKey: typeKey },
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(limit, offset, sort, order, typeKey),
+        personService.getPeople({ limit, offset, sort, order, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -82,13 +77,13 @@ export const PeopleListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personService.getPeople(
-          store.limit(),
-          store.offset(),
-          store.sort(),
-          store.order(),
-          store.typeKey(),
-        ),
+        personService.getPeople({
+          limit: store.limit(),
+          offset: store.offset(),
+          sort: store.sort(),
+          order: store.order(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

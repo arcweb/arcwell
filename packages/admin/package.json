@@ -8,8 +8,10 @@
     "start": "ng serve",
     "dev": "ng serve --host 0.0.0.0 --proxy-config proxy-config-docker.json --disable-host-check",
     "test": "ng test",
+    "test-headless": "ng test --browsers=ChromeHeadless",
     "watch": "ng build --watch --configuration development",
-    "lint": "ng lint",
+    "lint": "eslint --config eslint.config.js 'src/**/*.ts' && stylelint 'src/**/*.scss'",
+    "lint-fix": "eslint --config eslint.config.js 'src/**/*.ts' --fix && stylelint --fix 'src/**/*.scss'",
     "lint-styles": "stylelint 'src/**/*.scss'",
     "styles-fix": "stylelint --fix 'src/**/*.scss'"
   },

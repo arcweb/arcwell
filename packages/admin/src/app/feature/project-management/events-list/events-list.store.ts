@@ -58,7 +58,7 @@ export const EventsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventService.getEvents(limit, offset, sort, order, typeKey),
+        eventService.getEvents({ limit, offset, sort, order, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -82,7 +82,13 @@ export const EventsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventService.getEvents(store.limit(), store.offset(), store.typeKey()),
+        eventService.getEvents({
+          limit: store.limit(),
+          offset: store.offset(),
+          sort: store.sort(),
+          order: store.order(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

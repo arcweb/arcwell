@@ -21,12 +21,7 @@ export default class Policy extends BaseModel {
 
   @manyToMany(() => Role, {
     pivotTable: 'policy_role',
-    // pivotColumns: ['can_have_other_columns'],
     pivotTimestamps: true,
-    // localKey: 'id', // TODO: Likely don't need this or anything below because current fields follow convention
-    // relatedKey: 'id',
-    // pivotForeignKey: 'role_id',
-    // pivotRelatedForeignKey: 'policy_id'
   })
   declare roles: ManyToMany<typeof Role>
 }

@@ -13,6 +13,7 @@ import {
   ControlEvent,
   FormControl,
   FormGroup,
+  FormsModule,
   FormSubmittedEvent,
   ReactiveFormsModule,
   Validators,
@@ -22,42 +23,33 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { TagType } from '@schemas/tag.schema';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import {
-  MatAutocomplete,
+  MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
-  MatAutocompleteTrigger,
-  MatOption,
 } from '@angular/material/autocomplete';
 import { MatButton } from '@angular/material/button';
-import {
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow,
-} from '@angular/material/chips';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'aw-tags-form',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
     ErrorContainerComponent,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
     MatButton,
-    MatChipGrid,
-    MatChipInput,
-    MatChipRemove,
-    MatChipRow,
-    MatFormField,
     MatIcon,
-    MatLabel,
-    MatOption,
+    MatChipsModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
   ],
   providers: [TagStore],
   templateUrl: './tags-form.component.html',
