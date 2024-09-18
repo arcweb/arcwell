@@ -54,6 +54,7 @@ FROM base as develop
 USER root
 RUN apt-get update && apt-get install -y \
     chromium \
+    curl \
     libnss3 \
     libxss1 \
     fonts-liberation \
