@@ -15,13 +15,7 @@ export default function (config) {
     colors: true,
     logLevel: config.LOG_DEBUG,
     autoWatch: true,
-    browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
-    customLaunchers: {
-      ChromeHeadlessCI: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox', 'disable-gpu']
-      }
-    },
+    browsers: ['Chrome', 'ChromeHeadless'],
     singleRun: true
   });
 };
