@@ -82,3 +82,11 @@ services:
       - data
     volumes:
       - ./support/redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025" # smtp server
+      - "8025:8025" # web server
+    networks:
+      - application
