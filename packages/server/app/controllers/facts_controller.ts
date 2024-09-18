@@ -88,7 +88,7 @@ export default class FactsController {
           // TODO: how will event relations be sorted? name no longer a column on event
           query
             .leftOuterJoin('events', 'events.id', 'facts.event_id')
-            .orderBy('events.startedAt', order)
+            .orderBy('events.started_at', order)
             .select('facts.*')
           break
         default:
