@@ -4,6 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, insertFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
 
 async function getFullFact(id: string) {
   return Fact.query()
@@ -65,7 +66,7 @@ export default class FactsController {
       countQuery.where('type_key', factType.key)
     }
     if (sort && order) {
-      switch (sort) {
+      switch (string.camelCase(sort)) {
         case 'factType':
           query
             .join('fact_types', 'fact_types.key', 'facts.type_key')
@@ -87,7 +88,7 @@ export default class FactsController {
           // TODO: how will event relations be sorted? name no longer a column on event
           query
             .leftOuterJoin('events', 'events.id', 'facts.event_id')
-            .orderBy('events.id', order)
+            .orderBy('events.startedAt', order)
             .select('facts.*')
           break
         default:

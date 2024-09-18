@@ -30,7 +30,6 @@ export default class EventTypesController {
       query.offset(offset)
     }
     if (sort && order) {
-      console.log(query)
       query.orderBy(sort, order)
     } else {
       query.orderBy('name', 'asc')

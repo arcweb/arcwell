@@ -62,7 +62,7 @@ export default class ResourcesController {
       query.offset(offset)
     }
     if (sort && order) {
-      if (sort === 'resourceType') {
+      if (string.camelCase(sort) === 'resourceType') {
         query
           .join('resource_types', 'resource_types.key', 'resources.type_key')
           .orderBy('resource_types.name', order)

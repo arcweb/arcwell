@@ -38,7 +38,7 @@ export default class EventsController {
       })
 
     if (sort && order) {
-      switch (sort) {
+      switch (string.camelCase(sort)) {
         case 'eventType':
           query
             .join('event_types', 'event_types.key', 'events.type_key')

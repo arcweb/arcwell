@@ -76,12 +76,10 @@ export default class PeopleController {
       query.offset(offset)
     }
     if (sort && order) {
-      if (sort === 'personType') {
+      if (string.camelCase(sort) === 'personType') {
         query
           .join('person_types', 'person_types.key', 'people.type_key')
           .orderBy('person_types.name', order)
-        // For models with Types, we could just use the typeKey to sort personType column
-        // query.orderBy('typeKey', order)
       } else {
         query.orderBy(sort, order)
       }
