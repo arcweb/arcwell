@@ -62,12 +62,13 @@ export default class ResourcesController {
       query.offset(offset)
     }
     if (sort && order) {
-      if (string.camelCase(sort) === 'resourceType') {
+      const camelSortStr = string.camelCase(sort)
+      if (camelSortStr === 'resourceType') {
         query
           .join('resource_types', 'resource_types.key', 'resources.type_key')
           .orderBy('resource_types.name', order)
       } else {
-        query.orderBy(sort, order)
+        query.orderBy(camelSortStr, order)
       }
     } else {
       query.orderBy('name', 'asc')

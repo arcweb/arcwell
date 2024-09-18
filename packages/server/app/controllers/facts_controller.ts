@@ -66,7 +66,8 @@ export default class FactsController {
       countQuery.where('type_key', factType.key)
     }
     if (sort && order) {
-      switch (string.camelCase(sort)) {
+      const camelSortStr = string.camelCase(sort)
+      switch (camelSortStr) {
         case 'factType':
           query
             .join('fact_types', 'fact_types.key', 'facts.type_key')
@@ -92,7 +93,7 @@ export default class FactsController {
             .select('facts.*')
           break
         default:
-          query.orderBy(sort, order)
+          query.orderBy(camelSortStr, order)
       }
     } else {
       query.orderBy('observedAt', 'desc')

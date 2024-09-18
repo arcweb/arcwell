@@ -1,6 +1,7 @@
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
+import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -30,8 +31,8 @@ export default class FactTypesController {
       query.offset(offset)
     }
     if (sort && order) {
-      console.log(query)
-      query.orderBy(sort, order)
+      const camelSortStr = string.camelCase(sort)
+      query.orderBy(camelSortStr, order)
     } else {
       query.orderBy('name', 'asc')
     }

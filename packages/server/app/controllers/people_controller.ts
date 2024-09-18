@@ -76,12 +76,13 @@ export default class PeopleController {
       query.offset(offset)
     }
     if (sort && order) {
-      if (string.camelCase(sort) === 'personType') {
+      const camelSortStr = string.camelCase(sort)
+      if (camelSortStr === 'personType') {
         query
           .join('person_types', 'person_types.key', 'people.type_key')
           .orderBy('person_types.name', order)
       } else {
-        query.orderBy(sort, order)
+        query.orderBy(camelSortStr, order)
       }
     } else {
       query.orderBy('familyName', 'asc')

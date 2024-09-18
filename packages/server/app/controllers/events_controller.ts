@@ -38,7 +38,8 @@ export default class EventsController {
       })
 
     if (sort && order) {
-      switch (string.camelCase(sort)) {
+      const camelSortStr = string.camelCase(sort)
+      switch (camelSortStr) {
         case 'eventType':
           query
             .join('event_types', 'event_types.key', 'events.type_key')
@@ -57,7 +58,7 @@ export default class EventsController {
             .select('events.*')
           break
         default:
-          query.orderBy(sort, order)
+          query.orderBy(camelSortStr, order)
       }
     } else {
       query.orderBy('startedAt', 'desc')
