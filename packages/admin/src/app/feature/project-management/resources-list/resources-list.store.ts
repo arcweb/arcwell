@@ -80,6 +80,8 @@ export const ResourcesListStore = signalStore(
         resourceService.getResources({
           limit: store.limit(),
           offset: store.offset(),
+          sort: store.sort(),
+          order: store.order(),
           typeKey: store.typeKey(),
         }),
       );

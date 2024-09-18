@@ -101,15 +101,13 @@ export class EventsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.typeKey$.subscribe(typeKey => {
-      this.eventsListStore.load(
-        this.eventsListStore.limit(),
-        this.eventsListStore.offset(),
-        event.active,
-        event.direction,
-        typeKey,
-      );
-    });
+    this.eventsListStore.load(
+      this.eventsListStore.limit(),
+      this.eventsListStore.offset(),
+      event.active,
+      event.direction,
+      this.eventsListStore.typeKey(),
+    );
   }
 
   viewResource(resourceId: string) {

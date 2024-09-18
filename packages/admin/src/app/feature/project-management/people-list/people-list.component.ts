@@ -99,14 +99,12 @@ export class PeopleListComponent {
   }
 
   sortChange(event: Sort) {
-    this.typeKey$.subscribe(typeKey => {
-      this.peopleListStore.load(
-        this.peopleListStore.limit(),
-        this.peopleListStore.offset(),
-        event.active,
-        event.direction,
-        typeKey,
-      );
-    });
+    this.peopleListStore.load(
+      this.peopleListStore.limit(),
+      this.peopleListStore.offset(),
+      event.active,
+      event.direction,
+      this.peopleListStore.typeKey(),
+    );
   }
 }

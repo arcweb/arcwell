@@ -110,14 +110,12 @@ export class FactsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(
-        this.factsListStore.limit(),
-        this.factsListStore.offset(),
-        event.active,
-        event.direction,
-        typeKey,
-      );
-    });
+    this.factsListStore.load(
+      this.factsListStore.limit(),
+      this.factsListStore.offset(),
+      event.active,
+      event.direction,
+      this.factsListStore.typeKey(),
+    );
   }
 }

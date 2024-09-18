@@ -89,14 +89,12 @@ export class ResourcesListComponent {
   }
 
   sortChange(event: Sort) {
-    this.typeKey$.subscribe(typeKey => {
-      this.resourcesListStore.load(
-        this.resourcesListStore.limit(),
-        this.resourcesListStore.offset(),
-        event.active,
-        event.direction,
-        typeKey,
-      );
-    });
+    this.resourcesListStore.load(
+      this.resourcesListStore.limit(),
+      this.resourcesListStore.offset(),
+      event.active,
+      event.direction,
+      this.resourcesListStore.typeKey(),
+    );
   }
 }
