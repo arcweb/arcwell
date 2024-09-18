@@ -81,6 +81,22 @@
       <mat-error>Ended At format must be MM/DD/YYYY HH:MM AM or PM</mat-error>
     }
 
+    <aw-object-selector-form-field
+      formControlName="person"
+      placeholder="Search for Person"
+      label="Person"
+      serviceType="people"
+      displayProperty="familyName"
+    ></aw-object-selector-form-field>
+
+    <aw-object-selector-form-field
+      formControlName="resource"
+      placeholder="Search for Resource"
+      label="Resource"
+      serviceType="resources"
+      displayProperty="name"
+    ></aw-object-selector-form-field>
+
     <div class="form-button-container">
       <button
         mat-button

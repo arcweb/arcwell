@@ -1,10 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator, registerValidator } from '#validators/auth'
+import { loginValidator } from '#validators/auth'
 import User from '#models/user'
-import Role from '#models/role'
+// import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
-import Person from '#models/person'
-import PersonType from '#models/person_type'
+// import Person from '#models/person'
+// import PersonType from '#models/person_type'
 
 export default class AuthController {
   /**
