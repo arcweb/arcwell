@@ -82,6 +82,17 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
   
+          - name: Start Server
+          run: docker-compose up -d server
+  
+      - name: Health Check
+        uses: nick-invision/http-status-action@v1
+        with:
+          url: "http://localhost:3333/health"
+          status-codes: 200
+          retries: 10
+          timeout: 10
+  
   lint-server:
     needs: build-server
 

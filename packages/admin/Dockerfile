@@ -12,12 +12,6 @@ LABEL author.co="Arcweb Technologies, LLC <https://arcweb.co>"
 #     && apt-get clean -qq \
 #     && rm -rf /var/lib/lists/*
 
-## Capture where chromium was installed for karma-chrome-launcher:
-#ENV CHROME_BIN /usr/bin/chromium
-#
-## Puppeteer should skip installing Chrome:
-#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-
 # Provide path to node-sass binary to avoid regular rebuild:
 # ENV SASS_BINARY_NAME=linux-x64-67
 
@@ -55,6 +49,25 @@ COPY --chown=node:node . .
 # Development
 #
 FROM base as develop
+
+# Install Chromium for Karma tests and other dependencies
+USER root
+RUN apt-get update && apt-get install -y \
+    chromium \
+    libnss3 \
+    libxss1 \
+    fonts-liberation \
+    xdg-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the CHROME_BIN environment variable for Karma
+ENV CHROME_BIN=/usr/bin/chromium
+
+# Set Puppeteer to skip downloading Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+# Switch back to unprivileged user
+USER node
 
 # In development build, always npm install prior to app start
 CMD npm install --no-fund; npm run dev
