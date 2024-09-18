@@ -4,7 +4,7 @@ services:
     ports:
       - '3333:3333'
       - '5173:5173'
-    command: npm run start
+    command: npm run dev
     environment:
       APP_KEY: ${APP_KEY}
       PORT: 3333
