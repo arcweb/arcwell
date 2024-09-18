@@ -24,24 +24,32 @@
   <aw-error-container [errors]="peopleListStore.errors()" />
 }
 @if (peopleListStore.people().length > 0) {
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+  <table
+    mat-table
+    matSort
+    [dataSource]="dataSource"
+    class="mat-elevation-z0"
+    (matSortChange)="sortChange($event)"
+    [matSortActive]="this.peopleListStore.sort()"
+    [matSortDirection]="this.peopleListStore.order()"
+  >
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>Id</th>
       <td mat-cell *matCellDef="let element">{{ element.id }}</td>
     </ng-container>
 
     <ng-container matColumnDef="familyName">
-      <th mat-header-cell *matHeaderCellDef>Family Name</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Family Name</th>
       <td mat-cell *matCellDef="let element">{{ element.familyName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="givenName">
-      <th mat-header-cell *matHeaderCellDef>Given Name</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Given Name</th>
       <td mat-cell *matCellDef="let element">{{ element.givenName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="personType">
-      <th mat-header-cell *matHeaderCellDef>Person Type</th>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Person Type</th>
       <td mat-cell *matCellDef="let element">{{ element.personType.name }}</td>
     </ng-container>
 

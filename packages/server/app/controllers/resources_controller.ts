@@ -25,6 +25,8 @@ export default class ResourcesController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('resources')
 
@@ -33,7 +35,6 @@ export default class ResourcesController {
         resourceType.preload('tags')
       })
       .preload('tags')
-      .orderBy('name', 'asc')
 
     // Add search functionality to query
     if (typeof search === 'string') {
@@ -59,6 +60,18 @@ export default class ResourcesController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sort && order) {
+      const camelSortStr = string.camelCase(sort)
+      if (camelSortStr === 'resourceType') {
+        query
+          .join('resource_types', 'resource_types.key', 'resources.type_key')
+          .orderBy('resource_types.name', order)
+      } else {
+        query.orderBy(camelSortStr, order)
+      }
+    } else {
+      query.orderBy('name', 'asc')
     }
 
     const queryCount = await countQuery.count('*')

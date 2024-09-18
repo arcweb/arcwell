@@ -20,6 +20,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-resource-types',
@@ -41,6 +42,7 @@ import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
     MatIconButton,
     MatPaginator,
     RouterLink,
+    MatSortModule,
   ],
   providers: [ResourceTypesStore],
   templateUrl: './resource-types.component.html',
@@ -64,5 +66,14 @@ export class ResourceTypesComponent {
 
   handleClick(row: ResourceTypeModel) {
     this.router.navigate(['project-management', 'resources', 'types', row.id]);
+  }
+
+  sortChange(event: Sort) {
+    this.resourceTypesStore.load(
+      this.resourceTypesStore.limit(),
+      this.resourceTypesStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }

@@ -25,6 +25,7 @@ import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-all-facts',
@@ -47,6 +48,7 @@ import { map } from 'rxjs';
     RouterLink,
     MatIconButton,
     MatButton,
+    MatSortModule,
   ],
   providers: [FactsListStore],
   templateUrl: './facts-list.component.html',
@@ -83,7 +85,7 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(this.factsListStore.limit(), 0, typeKey);
+      this.factsListStore.load(this.factsListStore.limit(), 0, '', '', typeKey);
     });
   }
 
@@ -100,10 +102,20 @@ export class FactsListComponent {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', personId]);
+    this.router.navigate(['project-management', 'facts', personId]);
   }
 
   convertDateTimeToLocal(dateTime: DateTime | undefined): string {
     return convertDateTimeToLocal(dateTime);
+  }
+
+  sortChange(event: Sort) {
+    this.factsListStore.load(
+      this.factsListStore.limit(),
+      this.factsListStore.offset(),
+      event.active,
+      event.direction,
+      this.factsListStore.typeKey(),
+    );
   }
 }

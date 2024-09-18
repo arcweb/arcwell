@@ -20,6 +20,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
+import { MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'aw-event-types',
@@ -41,6 +42,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
     MatIconButton,
     MatPaginator,
     RouterLink,
+    MatSortModule,
   ],
   providers: [EventTypesStore],
   templateUrl: './event-types.component.html',
@@ -64,5 +66,14 @@ export class EventTypesComponent {
 
   handleClick(row: EventTypeModel) {
     this.router.navigate(['project-management', 'events', 'types', row.id]);
+  }
+
+  sortChange(event: Sort) {
+    this.eventTypesStore.load(
+      this.eventTypesStore.limit(),
+      this.eventTypesStore.offset(),
+      event.active,
+      event.direction,
+    );
   }
 }

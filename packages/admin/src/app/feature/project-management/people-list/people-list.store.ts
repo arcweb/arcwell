@@ -11,6 +11,7 @@ import { inject } from '@angular/core';
 import { PersonModel } from '@shared/models/person.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
 
 interface PeopleListState {
   people: PersonModel[];
@@ -18,6 +19,8 @@ interface PeopleListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -27,6 +30,8 @@ const initialState: PeopleListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sort: 'familyName',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -35,10 +40,20 @@ export const PeopleListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(limit: number, offset: number, typeKey = '') {
-      patchState(store, { ...initialState, typeKey }, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sort = '',
+      order: SortDirection = 'asc',
+      typeKey = '',
+    ) {
+      patchState(
+        store,
+        { ...initialState, sort: sort, order: order, typeKey: typeKey },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        personService.getPeople({ limit, offset, typeKey }),
+        personService.getPeople({ limit, offset, sort, order, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -65,6 +80,8 @@ export const PeopleListStore = signalStore(
         personService.getPeople({
           limit: store.limit(),
           offset: store.offset(),
+          sort: store.sort(),
+          order: store.order(),
           typeKey: store.typeKey(),
         }),
       );

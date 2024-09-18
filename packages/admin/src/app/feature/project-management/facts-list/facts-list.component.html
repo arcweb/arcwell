@@ -19,19 +19,27 @@
   <aw-error-container [errors]="factsListStore.errors()" />
 }
 
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+<table
+  mat-table
+  matSort
+  [dataSource]="dataSource"
+  class="mat-elevation-z0"
+  (matSortChange)="sortChange($event)"
+  [matSortActive]="this.factsListStore.sort()"
+  [matSortDirection]="this.factsListStore.order()"
+>
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>Id</th>
     <td mat-cell *matCellDef="let element">{{ element.id }}</td>
   </ng-container>
 
   <ng-container matColumnDef="factType">
-    <th mat-header-cell *matHeaderCellDef>Fact Type</th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Fact Type</th>
     <td mat-cell *matCellDef="let element">{{ element.factType.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="person">
-    <th mat-header-cell *matHeaderCellDef>Person</th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Person</th>
     <td mat-cell *matCellDef="let element">
       @if (element.person) {
         <button
@@ -48,7 +56,7 @@
   </ng-container>
 
   <ng-container matColumnDef="resource">
-    <th mat-header-cell *matHeaderCellDef>Resource</th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Resource</th>
     <td mat-cell *matCellDef="let element">
       @if (element.resource) {
         <button
@@ -63,7 +71,7 @@
   </ng-container>
 
   <ng-container matColumnDef="event">
-    <th mat-header-cell *matHeaderCellDef>Event</th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Event</th>
     <td mat-cell *matCellDef="let element">
       @if (element.event) {
         <button
@@ -78,7 +86,7 @@
   </ng-container>
 
   <ng-container matColumnDef="observedAt">
-    <th mat-header-cell *matHeaderCellDef>Observed At</th>
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Observed At</th>
     <td mat-cell *matCellDef="let element">
       {{ convertDateTimeToLocal(element.observedAt) }}
     </td>
