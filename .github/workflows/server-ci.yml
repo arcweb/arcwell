@@ -103,7 +103,7 @@ jobs:
       - name: Lint Server
         run: |
           docker pull ${{ env.SERVER_IMAGE }}
-          docker compose up
+          docker compose up -d
           docker compose exec server npm run lint
         continue-on-error: true
   
