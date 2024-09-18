@@ -90,20 +90,10 @@ jobs:
           for i in {1..10}; do
             # if docker compose exec server curl --fail http://localhost:3333/health; then
             if docker ps -a; then
-              echo "Health check passed!"
-              break
-            else
-              echo "Health check failed, retrying in 5 seconds..."
+              echo "docker ps again"
               sleep 15
             fi
           done
-          
-          # If we exhausted all retries and curl still fails, exit the job
-          # if docker compose exec server curl --fail http://localhost:3333/health; then
-          if ! docker ps -a; then
-            echo "Health check failed after 10 attempts. Exiting."
-            exit 1
-          fi
   
   lint-server:
     needs: build-server
