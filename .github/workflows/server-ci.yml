@@ -80,12 +80,10 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-  
-      - name: Start Server
-        run: docker compose up -d server
-
+      
       - name: Health Check
         run: |
+          docker compose up
           set -e
           echo "Checking health of the server..."
           # Retry the health check up to 10 times with a 10-second interval

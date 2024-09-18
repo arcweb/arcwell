@@ -41,6 +41,7 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
+USER node
 # In development build, always npm install prior to app start
 CMD npm install --no-fund; npm run dev
 
