@@ -81,14 +81,9 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
   
-          - name: Start Server
-          run: docker-compose up -d server
-  
-      # Start the service using docker-compose
       - name: Start Server
         run: docker-compose up -d server
 
-      # Health check using curl
       - name: Health Check
         run: |
           set -e
