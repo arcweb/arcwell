@@ -30,23 +30,28 @@
     }
 
     <mat-form-field>
-      <mat-label>Key</mat-label>
-      <input matInput placeholder="Key" formControlName="key" />
-      @if (personTypeForm.controls.key.hasError('required')) {
-        <mat-error>
-          Key is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name" formControlName="name" />
       @if (personTypeForm.controls.name.hasError('required')) {
         <mat-error>
           Name is
           <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Key</mat-label>
+      <input
+        matInput
+        placeholder="Key"
+        formControlName="key"
+        data-lpignore="true"
+      />
+      @if (personTypeForm.controls.key.hasError('pattern')) {
+        <mat-error>
+          Lowercase alpha-numeric characters, underscores and hypens
+          <strong>only</strong>
         </mat-error>
       }
     </mat-form-field>
