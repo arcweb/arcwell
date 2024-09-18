@@ -20,7 +20,7 @@ services:
       - db
     
   db:
-    image: postgres:16
+    image: postgres:16-bookworm
     environment:
       DATABASE_URL: ${DATABASE_URL}
       POSTGRES_DB: ${DB_DATABASE}

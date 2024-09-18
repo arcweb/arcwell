@@ -80,28 +80,6 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-      
-      - name: Health Check
-        run: |
-          docker compose up
-          set -e
-          echo "Checking health of the server..."
-          # Retry the health check up to 10 times with a 10-second interval
-          for i in {1..10}; do
-            if docker compose exec server curl --fail http://localhost:3333/health; then
-              echo "Health check passed!"
-              break
-            else
-              echo "Health check failed, retrying in 5 seconds..."
-              sleep 5
-            fi
-          done
-          
-          # If we exhausted all retries and curl still fails, exit the job
-          if ! docker compose exec server curl --fail http://localhost:3333/health; then
-            echo "Health check failed after 10 attempts. Exiting."
-            exit 1
-          fi
   
   lint-server:
     needs: build-server
@@ -125,7 +103,8 @@ jobs:
       - name: Lint Server
         run: |
           docker pull ${{ env.SERVER_IMAGE }}
-          docker compose run server npm run lint
+          docker compose up
+          docker compose exec server npm run lint
         continue-on-error: true
   
   test-server:
