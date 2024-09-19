@@ -19,5 +19,10 @@ $padding: 2em;
         transform: scale(2);
       }
     }
+
+    .profile-actions-container {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }

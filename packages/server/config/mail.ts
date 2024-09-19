@@ -5,12 +5,12 @@ const mailConfig = defineConfig({
   default: 'smtp',
 
   from: {
-    address: '',
-    name: '',
+    address: 'demo@example.com',
+    name: 'Demo Person',
   },
   replyTo: {
-    address: '',
-    name: '',
+    address: 'demo-reply@example.com',
+    name: 'Reply Person',
   },
 
   /**
