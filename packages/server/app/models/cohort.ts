@@ -12,7 +12,7 @@ export default class Cohort extends BaseModel {
   declare name: string
 
   @column()
-  declare description: string
+  declare description: string | null
 
   @column()
   declare rules: Object | null

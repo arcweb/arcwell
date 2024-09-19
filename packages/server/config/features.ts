@@ -36,6 +36,12 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     ],
   },
   {
+    name: 'Cohorts',
+    path: 'cohorts',
+    icon: 'groups',
+    subfeatures: [],
+  },
+  {
     name: 'Resources',
     path: 'resources',
     icon: 'collections_bookmark',
