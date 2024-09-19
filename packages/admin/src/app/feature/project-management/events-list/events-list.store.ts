@@ -1,7 +1,7 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { EventModel } from '@app/shared/models/event.model';
+import { SortDirection } from '@angular/material/sort';
 import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
 import {
@@ -10,13 +10,7 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import {
-  patchState,
-  signalStore,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
 interface EventsListState {
@@ -25,6 +19,8 @@ interface EventsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  sort: string;
+  order: SortDirection;
   typeKey: string;
 }
 
@@ -34,6 +30,8 @@ const initialState: EventsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  sort: 'name',
+  order: 'asc',
   typeKey: '',
 };
 
@@ -42,10 +40,25 @@ export const EventsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventService = inject(EventService)) => ({
-    async load(limit: number, offset: number, typeKey = '') {
-      patchState(store, setPending());
+    async load(
+      limit: number,
+      offset: number,
+      sort = '',
+      order: SortDirection = 'asc',
+      typeKey = '',
+    ) {
+      patchState(
+        store,
+        {
+          ...initialState,
+          sort: sort,
+          order: order,
+          typeKey: typeKey,
+        },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        eventService.getEvents({ limit, offset, typeKey }),
+        eventService.getEvents({ limit, offset, sort, order, typeKey }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -72,6 +85,8 @@ export const EventsListStore = signalStore(
         eventService.getEvents({
           limit: store.limit(),
           offset: store.offset(),
+          sort: store.sort(),
+          order: store.order(),
           typeKey: store.typeKey(),
         }),
       );

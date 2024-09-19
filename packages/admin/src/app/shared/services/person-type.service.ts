@@ -13,7 +13,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
-import { PersonType } from '@schemas/person.schema';
 
 const apiUrl = 'http://localhost:3333';
 
@@ -26,6 +25,8 @@ export class PersonTypeService {
   getPersonTypes(
     limit?: number,
     offset?: number,
+    sort?: string,
+    order?: string,
   ): Observable<PersonTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -34,6 +35,10 @@ export class PersonTypeService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (sort && order) {
+      params = params.set('sort', sort);
+      params = params.set('order', order);
     }
 
     return this.http

@@ -25,6 +25,8 @@ export class PersonService {
   getPeople(props: {
     limit?: number;
     offset?: number;
+    sort?: string;
+    order?: string;
     typeKey?: string;
     search?: [{ field: string; searchString: string }];
   }): Observable<PeopleResponseType[] | ErrorResponseType> {
@@ -50,6 +52,10 @@ export class PersonService {
           );
         }
       });
+    }
+    if (props.sort && props.order) {
+      params = params.set('sort', props.sort);
+      params = params.set('order', props.order);
     }
 
     return this.http

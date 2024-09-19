@@ -35,12 +35,12 @@ export default class PeopleController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('people')
 
     let query = Person.query()
-      .orderBy('familyName', 'asc')
-      .orderBy('givenName', 'asc')
       .preload('tags')
       .preload('user', (user) => {
         user.preload('tags')
@@ -74,6 +74,19 @@ export default class PeopleController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sort && order) {
+      const camelSortStr = string.camelCase(sort)
+      if (camelSortStr === 'personType') {
+        query
+          .join('person_types', 'person_types.key', 'people.type_key')
+          .orderBy('person_types.name', order)
+      } else {
+        query.orderBy(camelSortStr, order)
+      }
+    } else {
+      query.orderBy('familyName', 'asc')
+      query.orderBy('givenName', 'asc')
     }
 
     const queryCount = await countQuery.count('*')

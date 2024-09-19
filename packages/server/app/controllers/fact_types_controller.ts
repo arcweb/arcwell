@@ -1,6 +1,7 @@
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
+import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -16,16 +17,24 @@ export default class FactTypesController {
     const queryData = request.qs()
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('fact_types')
 
-    let query = FactType.query().preload('tags').orderBy('name', 'asc')
+    let query = FactType.query().preload('tags')
 
     if (limit) {
       query.limit(limit)
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (sort && order) {
+      const camelSortStr = string.camelCase(sort)
+      query.orderBy(camelSortStr, order)
+    } else {
+      query.orderBy('name', 'asc')
     }
 
     const queryCount = await countQuery.count('*')

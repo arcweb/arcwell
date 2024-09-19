@@ -17,10 +17,12 @@ export default class EventsController {
     const typeKey = queryData['typeKey']
     const limit = queryData['limit']
     const offset = queryData['offset']
+    const sort = queryData['sort']
+    const order = queryData['order']
 
     let countQuery = db.from('events')
+
     let query = Event.query()
-      .orderBy('startedAt', 'desc')
       .preload('tags')
       .preload('person', (person) => {
         person.preload('tags')
@@ -34,6 +36,33 @@ export default class EventsController {
       .preload('eventType', (tags) => {
         tags.preload('tags')
       })
+
+    if (sort && order) {
+      const camelSortStr = string.camelCase(sort)
+      switch (camelSortStr) {
+        case 'eventType':
+          query
+            .join('event_types', 'event_types.key', 'events.type_key')
+            .orderBy('event_types.name', order)
+          break
+        case 'person':
+          query
+            .leftOuterJoin('people', 'people.id', 'events.person_id')
+            .orderBy('people.family_name', order)
+            .select('events.*')
+          break
+        case 'resource':
+          query
+            .leftOuterJoin('resources', 'resources.id', 'events.resource_id')
+            .orderBy('resources.name', order)
+            .select('events.*')
+          break
+        default:
+          query.orderBy(camelSortStr, order)
+      }
+    } else {
+      query.orderBy('startedAt', 'desc')
+    }
 
     // Add search functionality to query
     if (typeof search === 'string') {
