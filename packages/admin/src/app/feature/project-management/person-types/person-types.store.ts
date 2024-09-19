@@ -50,6 +50,7 @@ export const PersonTypesStore = signalStore(
       offset: number,
       sort = '',
       order: SortDirection = 'asc',
+      pageIndex = 0,
     ) {
       patchState(
         store,
@@ -57,6 +58,7 @@ export const PersonTypesStore = signalStore(
           ...initialState,
           sort: sort,
           order: order,
+          pageIndex: pageIndex,
         },
         setPending(),
       );

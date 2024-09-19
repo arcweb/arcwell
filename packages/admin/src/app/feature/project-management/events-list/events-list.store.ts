@@ -45,6 +45,7 @@ export const EventsListStore = signalStore(
       offset: number,
       sort = '',
       order: SortDirection = 'asc',
+      pageIndex = 0,
       typeKey = '',
     ) {
       patchState(
@@ -53,6 +54,7 @@ export const EventsListStore = signalStore(
           ...initialState,
           sort: sort,
           order: order,
+          pageIndex: pageIndex,
           typeKey: typeKey,
         },
         setPending(),
