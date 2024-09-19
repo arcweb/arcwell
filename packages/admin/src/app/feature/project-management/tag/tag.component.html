@@ -1,0 +1,63 @@
+@if (tagStore.isReady()) {
+  <div class="main-container-header">
+    @if (tagStore.inCreateMode()) {
+      <h2>Create Tag</h2>
+    } @else if (tagStore.inEditMode()) {
+      <h2>Edit Tag</h2>
+    } @else {
+      <h2>View Tag</h2>
+    }
+
+    <div class="icons-container">
+      @if (!tagStore.inCreateMode()) {
+        <button
+          mat-icon-button
+          [disabled]="tagStore.inEditMode()"
+          (click)="tagStore.toggleEditMode()"
+        >
+          <mat-icon aria-label="Edit person icon">edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDelete()">
+          <mat-icon aria-label="Delete person icon">delete_forever</mat-icon>
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="tagForm">
+    @if (tagStore.isErrored()) {
+      <aw-error-container [errors]="tagStore.errors()" />
+    }
+
+    <mat-form-field>
+      <mat-label>Pathname</mat-label>
+      <input matInput placeholder="Pathname" formControlName="pathname" />
+      @if (tagForm.controls.pathname.hasError('required')) {
+        <mat-error>
+          Pathname is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!tagStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="!tagStore.inEditMode() || !tagForm.valid || !tagForm.dirty"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+}

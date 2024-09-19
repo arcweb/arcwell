@@ -1,0 +1,51 @@
+<div class="main-container-header">
+  <h2>
+    {{ featureStore.activeSubfeature()?.name || 'Tags' }}
+  </h2>
+  <div class="icons-container">
+    <button mat-icon-button [routerLink]="['/project-management/tags/create']">
+      <mat-icon aria-label="Create tag icon button">
+        add_circle_outline
+      </mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
+    </button>
+    <button mat-icon-button>
+      <mat-icon aria-label="Search icon button">search</mat-icon>
+    </button>
+  </div>
+</div>
+
+@if (tagsListStore.isErrored()) {
+  <aw-error-container [errors]="tagsListStore.errors()" />
+}
+@if (tagsListStore.tags()) {
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>Id</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="pathname">
+      <th mat-header-cell *matHeaderCellDef>Path Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.pathname }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="handleClick(row)"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="tagsListStore.totalData()"
+    [pageSizeOptions]="pageSizes"
+    [pageSize]="tagsListStore.limit()"
+    [pageIndex]="tagsListStore.pageIndex()"
+    (page)="this.tagsListStore.loadPage($event)"
+    showFirstLastButtons="true"
+  ></mat-paginator>
+}
