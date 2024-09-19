@@ -104,8 +104,10 @@ export default class PeopleController {
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
+    console.log('request.body()', request.body())
     await request.validateUsing(createPersonValidator)
-    const newPerson = await Person.create(request.body())
+    const cleanRequest = request.only(['givenName', 'familyName', 'typeKey'])
+    const newPerson = await Person.create(cleanRequest)
 
     return { data: await getFullPerson(newPerson.id) }
   }

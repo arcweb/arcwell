@@ -13,6 +13,8 @@ export const PersonSchema: any = z
     tags: z.array(TagSchema).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
     personType: PersonTypeSchema.optional(),
+    // TODO: import schema when available
+    cohorts: CohortSchema.optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
