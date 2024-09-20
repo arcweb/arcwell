@@ -27,6 +27,7 @@ import { RoleType } from '@app/shared/schemas/role.schema';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { AuthStore } from '@app/shared/store/auth.store';
+import { EmailService } from '@app/shared/services/email.service';
 
 @Component({
   selector: 'aw-user',
@@ -53,6 +54,7 @@ import { AuthStore } from '@app/shared/store/auth.store';
 export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
   readonly authStore = inject(AuthStore);
+  private emailService: EmailService = inject(EmailService);
   userAvatar = '';
 
   destroyRef = inject(DestroyRef);
@@ -111,5 +113,12 @@ export class UserComponent implements OnInit {
 
   compareRoles(r1: RoleType, r2: RoleType): boolean {
     return r1 && r2 ? r1.id === r2.id : false;
+  }
+
+  sendEmail() {
+    console.log('sending');
+    this.emailService
+      .sendEmail(this.authStore.currentUser()!.email)
+      .subscribe();
   }
 }
