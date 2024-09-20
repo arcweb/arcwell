@@ -115,6 +115,7 @@ export class FactsListComponent {
       this.factsListStore.offset(),
       event.active,
       event.direction,
+      this.factsListStore.pageIndex(),
       this.factsListStore.typeKey(),
     );
   }
