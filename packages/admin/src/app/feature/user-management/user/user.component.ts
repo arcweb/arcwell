@@ -116,7 +116,6 @@ export class UserComponent implements OnInit {
   }
 
   sendEmail() {
-    console.log('sending');
     this.emailService
       .sendEmail(this.authStore.currentUser()!.email)
       .subscribe();

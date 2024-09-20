@@ -26,12 +26,23 @@
     <mat-spinner diameter="50"></mat-spinner>
   }
 
-  <button
-    mat-stroked-button
-    color="primary"
-    type="submit"
-    [disabled]="loginStatus() === 'authenticating'"
-  >
-    Login
-  </button>
+  <div class="button-bar">
+    <button
+      mat-stroked-button
+      color="primary"
+      type="submit"
+      [disabled]="loginStatus() === 'authenticating'"
+    >
+      Login
+    </button>
+
+    <button
+      mat-stroked-button
+      color="primary"
+      [disabled]="loginStatus() === 'authenticating'"
+      (click)="forgotPassword()"
+    >
+      Forgot Password
+    </button>
+  </div>
 </form>
