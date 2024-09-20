@@ -18,6 +18,7 @@ import { EventType, EventUpdateType } from '@shared/schemas/event.schema';
 import { EventTypeService } from '@shared/services/event-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 interface EventTypeState {
   eventType: EventType | null;
@@ -42,6 +43,7 @@ export const EventTypeStore = signalStore(
       store,
       eventTypeService = inject(EventTypeService),
       tagService = inject(TagService),
+      featureStore = inject(FeatureStore),
     ) => ({
       async initialize(eventTypeId: string) {
         patchState(store, setPending());
@@ -87,6 +89,9 @@ export const EventTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(
             store,
             { eventType: resp.data, inEditMode: false },
@@ -102,6 +107,9 @@ export const EventTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
@@ -118,6 +126,9 @@ export const EventTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },
