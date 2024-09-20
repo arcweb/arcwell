@@ -94,6 +94,7 @@ export class ResourcesListComponent {
       this.resourcesListStore.offset(),
       event.active,
       event.direction,
+      this.resourcesListStore.pageIndex(),
       this.resourcesListStore.typeKey(),
     );
   }

@@ -11,6 +11,7 @@ import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
+import EmailsController from '#controllers/emails_controller'
 const CohortsController = () => import('#controllers/cohorts_controller')
 const ConfigController = () => import('#controllers/config_controller')
 const FactTypesController = () => import('#controllers/fact_types_controller')
@@ -125,4 +126,9 @@ router.group(() => {
   router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
   router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
   router.resource('tags', TagsController).apiOnly()
+})
+
+// email routes
+router.group(() => {
+  router.post('email', [EmailsController, 'send']).as('email.send')
 })

@@ -106,6 +106,7 @@ export class EventsListComponent {
       this.eventsListStore.offset(),
       event.active,
       event.direction,
+      this.eventsListStore.pageIndex(),
       this.eventsListStore.typeKey(),
     );
   }

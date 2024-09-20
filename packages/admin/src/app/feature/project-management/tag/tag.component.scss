@@ -1,5 +1,4 @@
 // TODO: Move any of this to a mix-in when complete
-
 form {
   display: flex;
   flex-direction: column;
@@ -34,30 +33,4 @@ form {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-}
-
-$padding: 2em;
-
-.account-management-card {
-  margin-bottom: $padding;
-  display: flex;
-  flex-direction: row;
-  padding: $padding;
-  gap: $padding;
-  justify-content: space-between;
-
-  .account-info-container {
-    display: flex;
-    flex-direction: row;
-    gap: $padding;
-
-    .account-icon {
-      transform: scale(2);
-    }
-  }
-
-  .profile-actions-container {
-    display: flex;
-    flex-direction: column;
-  }
 }

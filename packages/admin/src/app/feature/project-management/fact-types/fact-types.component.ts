@@ -74,6 +74,7 @@ export class FactTypesComponent {
       this.factTypesStore.offset(),
       event.active,
       event.direction,
+      this.factTypesStore.pageIndex(),
     );
   }
 }

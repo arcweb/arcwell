@@ -22,6 +22,7 @@ import {
   ResourceType,
   ResourceUpdateType,
 } from '@app/shared/schemas/resource.schema';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 interface ResourceTypeState {
   resourceType: ResourceType | null;
@@ -46,6 +47,7 @@ export const ResourceTypeStore = signalStore(
       store,
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
+      featureStore = inject(FeatureStore),
     ) => ({
       async initialize(resourceTypeId: string) {
         patchState(store, setPending());
@@ -95,6 +97,9 @@ export const ResourceTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(
             store,
             { resourceType: resp.data, inEditMode: false },
@@ -110,6 +115,9 @@ export const ResourceTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
@@ -126,6 +134,9 @@ export const ResourceTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },

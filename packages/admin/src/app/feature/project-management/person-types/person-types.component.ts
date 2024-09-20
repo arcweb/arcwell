@@ -74,6 +74,7 @@ export class PersonTypesComponent {
       this.personTypesStore.offset(),
       event.active,
       event.direction,
+      this.personTypesStore.pageIndex(),
     );
   }
 }
