@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { PersonUpdateType } from '@shared/schemas/person.schema';
+import { TagUpdateType } from '../schemas/tag.schema';
 
 // Base interface with common properties
 interface TagBase {
@@ -25,7 +25,7 @@ export class TagModel {
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
 
-  constructor(data: PersonUpdateType) {
+  constructor(data: TagUpdateType) {
     this.id = data.id;
     this.pathname = data.pathname;
     if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
