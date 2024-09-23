@@ -18,6 +18,7 @@ import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 interface PersonTypeState {
   personType: PersonType | null;
@@ -42,6 +43,7 @@ export const PersonTypeStore = signalStore(
       store,
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
+      featureStore = inject(FeatureStore),
     ) => ({
       async initialize(personTypeId: string) {
         patchState(store, setPending());
@@ -91,6 +93,9 @@ export const PersonTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(
             store,
             { personType: resp.data, inEditMode: false },
@@ -99,7 +104,6 @@ export const PersonTypeStore = signalStore(
         }
       },
       async create(createPersonTypeFormData: PersonType) {
-        console.log('createPersonFormData', createPersonTypeFormData);
         patchState(store, setPending());
         const resp = await firstValueFrom(
           personTypeService.create(createPersonTypeFormData),
@@ -107,6 +111,9 @@ export const PersonTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
@@ -123,6 +130,9 @@ export const PersonTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },

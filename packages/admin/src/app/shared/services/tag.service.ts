@@ -22,9 +22,9 @@ export class TagService {
   private http: HttpClient = inject(HttpClient);
 
   getTags(
-    search?: string,
     limit?: number,
     offset?: number,
+    search?: string,
   ): Observable<TagsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -98,5 +98,46 @@ export class TagService {
           return defaultErrorResponseHandler(error);
         }),
       );
+  }
+
+  getTag(id: string): Observable<TagType | ErrorResponseType> {
+    return this.http.get<TagType>(`${apiUrl}/tags/${id}`).pipe(
+      map((response: TagType) => {
+        return deserializeTag(response.data);
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
+  create(tag: TagType): Observable<TagType | ErrorResponseType> {
+    return this.http.post<TagType>(`${apiUrl}/tags`, tag).pipe(
+      map((response: TagType) => {
+        return deserializeTag(response);
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
+  update(tag: TagType): Observable<TagType | ErrorResponseType> {
+    return this.http.put<TagType>(`${apiUrl}/tags/${tag.id}`, tag).pipe(
+      map((response: TagType) => {
+        return deserializeTag(response);
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
+  delete(id: string): Observable<void | ErrorResponseType> {
+    return this.http.delete<void>(`${apiUrl}/tags/${id}`).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
   }
 }
