@@ -50,6 +50,8 @@ export class ForgotPasswordComponent implements OnInit {
           this.forgotForm.controls.email.value
         ) {
           this.authStore.forgotPassword(this.forgotForm.controls.email.value);
+
+          this.router.navigate(['/']);
         }
       });
   }
