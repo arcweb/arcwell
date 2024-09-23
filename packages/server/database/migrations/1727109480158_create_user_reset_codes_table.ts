@@ -5,13 +5,13 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.string('passwordResetCode').nullable()
+      table.string('password_reset_code').nullable()
     })
   }
 
   async down() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.dropColumn('passwordResetCode')
+      table.dropColumn('password_reset_code')
     })
   }
 }

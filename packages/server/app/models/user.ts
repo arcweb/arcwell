@@ -70,8 +70,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
       code += letters[Math.floor(Math.random() * 16)]
     }
 
-    user.passwordResetCode = code
-    user.save()
+    user.merge({ passwordResetCode: code })
+    await user.save()
 
     return user.passwordResetCode
   }
