@@ -1,14 +1,13 @@
 import {
   patchState,
   signalStore,
-  withHooks,
   withMethods,
   withState,
 } from '@ngrx/signals';
-import { effect, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { AuthService } from '@shared/data-access/auth.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { Credentials } from '@shared/interfaces/credentials';
+import { Credentials, ForgotPassword } from '@shared/interfaces/credentials';
 import { EMPTY, firstValueFrom, map, pipe, switchMap, tap } from 'rxjs';
 import { UserModel } from '@shared/models/user.model';
 import { catchError } from 'rxjs/operators';
@@ -89,6 +88,11 @@ export const AuthStore = signalStore(
         this.logout();
       }
       patchState(store, { currentUser: user, loginStatus: 'success' });
+    },
+    async forgotPassword(email: string) {
+      patchState(store, { loginStatus: 'pending' });
+      await firstValueFrom(authService.sendPasswordReset(email));
+      patchState(store, { loginStatus: 'none' });
     },
   })),
   withStorageSync({

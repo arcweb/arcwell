@@ -64,4 +64,14 @@ export class AuthService {
       }),
     );
   }
+
+  sendPasswordReset(email: string): Observable<void | ErrorResponseType> {
+    return this.http
+      .post<void>(`${this.apiUrl}/auth/forgot`, { email: email })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

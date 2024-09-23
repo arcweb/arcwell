@@ -45,8 +45,11 @@ export class ForgotPasswordComponent implements OnInit {
     this.forgotForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
-        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          //this.authStore.forgotPassword(this.forgotForm.value);
+        if (
+          (event as ControlEvent) instanceof FormSubmittedEvent &&
+          this.forgotForm.controls.email.value
+        ) {
+          this.authStore.forgotPassword(this.forgotForm.controls.email.value);
         }
       });
   }
