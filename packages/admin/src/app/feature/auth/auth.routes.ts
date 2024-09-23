@@ -18,6 +18,13 @@ export const AUTH_ROUTES: Route[] = [
       ),
   },
   {
+    path: 'reset/:resetToken',
+    loadComponent: () =>
+      import('./reset-password/reset-password-form.component').then(
+        m => m.ResetPasswordComponent,
+      ),
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
