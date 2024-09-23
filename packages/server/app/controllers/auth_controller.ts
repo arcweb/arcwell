@@ -3,6 +3,8 @@ import { loginValidator } from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { paramsEmailValidator } from '#validators/email'
+import mail from '@adonisjs/mail/services/main'
 // import Person from '#models/person'
 // import PersonType from '#models/person_type'
 
@@ -115,5 +117,20 @@ export default class AuthController {
     return {
       data: auth.user.serialize(),
     }
+  }
+
+  async forgot({ request }: HttpContext) {
+    await request.validateUsing(paramsEmailValidator)
+    const cleanrequest = request.only(['email'])
+
+    const user = await User.findByOrFail('email', cleanrequest.email)
+    User.generateResetCode(user)
+
+    await mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Arcwell Password Reset')
+        .htmlView('emails/password_reset', { user })
+    })
   }
 }

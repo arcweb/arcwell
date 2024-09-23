@@ -48,6 +48,7 @@ router
     router.post('/login', [AuthController, 'login']).as('login')
     router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
     router.get('/me', [AuthController, 'me']).as('me')
+    router.post('/forgot', [AuthController, 'forgot']).as('forgot')
   })
   .as('auth')
   .prefix('auth')

@@ -1,13 +1,8 @@
-import {
-  patchState,
-  signalStore,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { inject } from '@angular/core';
 import { AuthService } from '@shared/data-access/auth.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { Credentials, ForgotPassword } from '@shared/interfaces/credentials';
+import { Credentials } from '@shared/interfaces/credentials';
 import { EMPTY, firstValueFrom, map, pipe, switchMap, tap } from 'rxjs';
 import { UserModel } from '@shared/models/user.model';
 import { catchError } from 'rxjs/operators';
