@@ -10,6 +10,7 @@ import {
   withDevtools,
   withStorageSync,
 } from '@angular-architects/ngrx-toolkit';
+import { ResetType } from '@shared/schemas/password-reset.schema';
 
 export type LoginStatus =
   | 'none'
@@ -89,6 +90,7 @@ export const AuthStore = signalStore(
       await firstValueFrom(authService.sendPasswordReset(email));
       patchState(store, { loginStatus: 'none' });
     },
+    async resetPassword(reset: ResetType) {},
   })),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage
