@@ -31,7 +31,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare personId: string
 
   @column()
-  declare passwordResetCode: string
+  declare passwordResetCode: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

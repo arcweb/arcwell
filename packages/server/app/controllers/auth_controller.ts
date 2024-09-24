@@ -144,8 +144,17 @@ export default class AuthController {
 
     const user = await User.findByOrFail('passwordResetCode', cleanrequest.code)
     user.password = cleanrequest.password
-    user.passwordResetCode = ''
+    user.passwordResetCode = null
 
-    return { data: user.save() }
+    await user.save()
+
+    mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Your Password Has Been Changed')
+        .htmlView('emails/password_changed', { user })
+    })
+
+    return { data: user }
   }
 }
