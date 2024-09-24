@@ -78,7 +78,7 @@ export default defineConfig({
   },
   metaFiles: [
     {
-      pattern: 'resources/**/*.edge',
+      pattern: 'resources/emails/*.edge',
       reloadServer: false,
     },
   ],
