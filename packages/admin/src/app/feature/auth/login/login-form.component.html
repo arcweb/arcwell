@@ -1,4 +1,7 @@
-<form [formGroup]="loginForm" (ngSubmit)="login.emit(loginForm.getRawValue())">
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
+>
   <mat-form-field appearance="fill">
     <mat-label>email</mat-label>
     <input
