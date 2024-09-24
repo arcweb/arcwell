@@ -90,7 +90,10 @@ export const AuthStore = signalStore(
       await firstValueFrom(authService.sendPasswordReset(email));
       patchState(store, { loginStatus: 'none' });
     },
-    async resetPassword(reset: ResetType) {},
+    async resetPassword(reset: ResetType) {
+      patchState(store, { loginStatus: 'pending' });
+      await firstValueFrom(authService.resetPassword(reset));
+    },
   })),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage

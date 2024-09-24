@@ -1,8 +1,8 @@
-import { string, z } from 'zod';
+import { z } from 'zod';
 
-export const ResetSchema:any = z
+export const ResetSchema: any = z
   .object({
-    token: z.string(),
+    code: z.string(),
     password: z.string(),
   })
   .strict();

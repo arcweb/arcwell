@@ -18,7 +18,7 @@ export const AUTH_ROUTES: Route[] = [
       ),
   },
   {
-    path: 'reset/:resetToken',
+    path: 'reset/:resetCode',
     loadComponent: () =>
       import('./reset-password/reset-password-form.component').then(
         m => m.ResetPasswordComponent,

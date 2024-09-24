@@ -3,13 +3,18 @@ import { catchError, map, Observable, tap } from 'rxjs';
 import { Credentials } from '@shared/interfaces/credentials';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '@shared/models/user.model';
-import { UserResponseType, deserializeUser } from '@shared/schemas/user.schema';
+import {
+  UserResponseType,
+  UsersResponseType,
+  deserializeUser,
+} from '@shared/schemas/user.schema';
 import { ErrorResponseType } from '@shared/schemas/error.schema';
 import {
   LoginResponseSchema,
   LoginResponseType,
 } from '@shared/schemas/login.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
+import { ResetType } from '../schemas/password-reset.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -73,5 +78,13 @@ export class AuthService {
           return defaultErrorResponseHandler(error);
         }),
       );
+  }
+
+  resetPassword(
+    reset: ResetType,
+  ): Observable<UserResponseType | ErrorResponseType> {
+    return this.http.post<UsersResponseType>(`${this.apiUrl}/auth/reset`, {
+      ...reset,
+    });
   }
 }

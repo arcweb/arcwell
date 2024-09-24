@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator } from '#validators/auth'
+import { loginValidator, resetPasswordValidator } from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
@@ -119,7 +119,7 @@ export default class AuthController {
     }
   }
 
-  async forgot({ request }: HttpContext) {
+  async sendForgotPasswordMessage({ request }: HttpContext) {
     await request.validateUsing(paramsEmailValidator)
     const cleanrequest = request.only(['email'])
 
@@ -132,5 +132,16 @@ export default class AuthController {
         .subject('Arcwell Password Reset')
         .htmlView('emails/password_reset', { user })
     })
+  }
+
+  async resetPassword({ request }: HttpContext) {
+    await request.validateUsing(resetPasswordValidator)
+    const cleanrequest = request.only(['code', 'password'])
+
+    const user = await User.findByOrFail('passwordResetCode', cleanrequest.code)
+    user.password = cleanrequest.password
+    user.passwordResetCode = ''
+
+    return { data: user.save() }
   }
 }
