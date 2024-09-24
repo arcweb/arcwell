@@ -18,6 +18,10 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import {
+  MatTableDataSource,
+} from '@angular/material/table';
+import { PersonModel } from '@shared/models/person.model';
 import { CohortStore } from '@feature/project-management/cohort/cohort.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
@@ -28,8 +32,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Sort } from '@angular/material/sort';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
+import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'aw-cohort',
@@ -49,6 +56,7 @@ import { TagType } from '@schemas/tag.schema';
     MatIconButton,
     FormsModule,
     TagsFormComponent,
+    PeopleTableComponent
   ],
   providers: [CohortStore],
   templateUrl: './cohort.component.html',
@@ -78,6 +86,16 @@ export class CohortComponent implements OnInit {
     ),
   });
 
+  peopleColumns: string[] = [
+    'id',
+    'familyName',
+    'givenName',
+    'personType',
+    'delete'
+  ];
+  peopleDataSource = new MatTableDataSource<PersonModel>();
+  pageSizes = [10, 20, 50];
+
   constructor() {
     effect(() => {
       if (this.cohortStore.inEditMode()) {
@@ -85,6 +103,7 @@ export class CohortComponent implements OnInit {
       } else {
         this.cohortForm.disable();
       }
+      this.peopleDataSource.data = this.cohortStore.cohort()?.people;
     });
   }
 
@@ -108,7 +127,6 @@ export class CohortComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.cohortStore.inCreateMode()) {
             this.cohortStore.createCohort(this.cohortForm.value);
-            this.router.navigate(['project-management', 'cohorts']);
           } else {
             this.cohortStore.updateCohort(this.cohortForm.value);
           }
@@ -149,5 +167,30 @@ export class CohortComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.cohortStore.setTags(tags);
+  }
+
+  peoplePageChange(event: PageEvent) {
+    const newOffset = event.pageIndex * event.pageSize;
+    this.cohortStore.loadPeoplePage(
+      event.pageSize,
+      newOffset,
+      event.pageIndex,
+      this.cohortStore.peopleListOptions().sort,
+      this.cohortStore.peopleListOptions().order,
+    );
+  }
+
+  peopleRowClick(row: PersonModel) {
+    this.router.navigate(['project-management', 'people', row.id]);
+  }
+
+  peopleSortChange(event: Sort) {
+    this.cohortStore.loadPeoplePage(
+      this.cohortStore.peopleListOptions().limit,
+      this.cohortStore.peopleListOptions().offset,
+      this.cohortStore.peopleListOptions().pageIndex,
+      event.active,
+      event.direction,
+    );
   }
 }

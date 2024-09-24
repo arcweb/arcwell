@@ -66,6 +66,37 @@ export class CohortService {
     );
   }
 
+  getCohortWithPeople(
+    id: string,
+    peopleLimit?: number,
+    peopleOffset?: number,
+    sort?: string,
+    order?: string
+  ): Observable<CohortResponseType | ErrorResponseType> {
+    let params = new HttpParams();
+
+    if (peopleLimit !== undefined) {
+      params = params.set('peopleLimit', peopleLimit.toString());
+    }
+    if (peopleOffset !== undefined) {
+      params = params.set('peopleOffset', peopleOffset.toString());
+    }
+    if (sort && order) {
+      params = params.set('peopleSort', sort);
+      params = params.set('peopleOrder', order);
+    }
+
+    return this.http.get<CohortResponseType>(`${apiUrl}/cohorts/${id}/people`, { params }).pipe(
+      map((response: CohortResponseType) => {
+        const parsedResponse = CohortResponseSchema.parse(response);
+        return { data: deserializeCohort(parsedResponse.data) };
+      }),
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
   update(
     cohort: CohortUpdateType,
   ): Observable<CohortResponseType | ErrorResponseType> {

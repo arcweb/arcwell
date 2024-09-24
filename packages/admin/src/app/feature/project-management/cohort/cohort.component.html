@@ -68,6 +68,31 @@
     </div>
   </form>
 
+  <!-- People Section -->
+  <h2>People</h2>
+  <div class="icons-container">
+    <button
+      mat-flat-button
+      type="button"
+      class="default-button"
+    >
+      Add Person to Cohort
+    </button>
+  </div>
+  <aw-people-table
+    [dataSource]="peopleDataSource"
+    [displayedColumns]="peopleColumns"
+    [matSortActive]="this.cohortStore.peopleListOptions().sort"
+    [matSortDirection]="this.cohortStore.peopleListOptions().order"
+    [length]="this.cohortStore.cohort().peopleCount"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.cohortStore.peopleListOptions().limit"
+    [pageIndex]="this.cohortStore.peopleListOptions().pageIndex"
+    (onPageChanged)="peoplePageChange($event)"
+    (onRowClicked)="peopleRowClick($event)"
+    (onSortChanged)="peopleSortChange($event)"
+  ></aw-people-table>
+
   <!--  Tags Section-->
   <aw-tags-form
     [tags]="cohortStore.tagStrings()"

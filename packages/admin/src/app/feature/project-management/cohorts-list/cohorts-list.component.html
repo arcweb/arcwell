@@ -65,7 +65,8 @@
 
   <mat-paginator
     [length]="cohortsListStore.totalData()"
-    [pageSize]=1
+    [pageSizeOptions]="pageSizes"
+    [pageSize]="cohortsListStore.limit()"
     [pageIndex]="cohortsListStore.pageIndex()"
     (page)="this.cohortsListStore.loadPage($event)"
     showFirstLastButtons="true"

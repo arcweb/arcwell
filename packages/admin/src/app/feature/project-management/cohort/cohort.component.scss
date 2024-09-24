@@ -29,6 +29,12 @@ form {
   }
 }
 
+.icons-container {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .main-container-header {
   display: flex;
   flex-direction: row;

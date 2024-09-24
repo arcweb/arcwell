@@ -10,6 +10,7 @@ interface CohortBase {
   description?: string;
   rules?: object;
   people?: PersonModel[] | undefined;
+  peopleCount?: number;
   tags?: TagModel[] | undefined;
   createdAt: DateTime;
   updatedAt: DateTime;
@@ -30,6 +31,8 @@ export class CohortModel {
   public rules?: object;
   public tags?: TagModel[] | undefined;
   public people?: PersonModel[] | undefined;
+  public peopleCount?: number;
+
   public createdAt: DateTime;
   public updatedAt: DateTime;
 
@@ -44,6 +47,7 @@ export class CohortModel {
     this.people = data.people
       ? data.people.map((person: PersonType) => new PersonModel(person))
       : undefined;
+    this.peopleCount = data.peopleCount ||= 0;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
   }

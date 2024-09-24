@@ -20,12 +20,31 @@ import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
+import { PageEvent } from '@angular/material/paginator';
+import { SortDirection } from '@angular/material/sort';
+
+interface CohortPeopleListState {
+  limit: number;
+  offset: number;
+  pageIndex: number;
+  sort: string;
+  order: SortDirection;
+}
 
 interface CohortState {
   cohort: CohortType | null;
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
+  peopleListOptions: CohortPeopleListState
+}
+
+const initialPeopleListState: CohortPeopleListState = {
+  limit: 10,
+  offset: 0,
+  pageIndex: 0,
+  sort: 'familyName',
+  order: 'asc',
 }
 
 const initialState: CohortState = {
@@ -33,6 +52,7 @@ const initialState: CohortState = {
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
+  peopleListOptions: initialPeopleListState
 };
 
 export const CohortStore = signalStore(
@@ -48,7 +68,13 @@ export const CohortStore = signalStore(
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
-        const cohortResp = await firstValueFrom(cohortService.getCohort(cohortId));
+        const cohortResp = await firstValueFrom(cohortService.getCohortWithPeople(
+          cohortId,
+          store.peopleListOptions().limit,
+          store.peopleListOptions().offset,
+          store.peopleListOptions().sort,
+          store.peopleListOptions().order,
+        ));
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
         } else {
@@ -57,6 +83,7 @@ export const CohortStore = signalStore(
             {
               cohort: cohortResp.data,
               isReady: true,
+              peopleListOptions: initialPeopleListState
             },
             setFulfilled(),
           );
@@ -70,6 +97,7 @@ export const CohortStore = signalStore(
             inCreateMode: true,
             inEditMode: true,
             isReady: true,
+            peopleListOptions: initialPeopleListState
           },
           setFulfilled(),
         );
@@ -88,7 +116,7 @@ export const CohortStore = signalStore(
         } else {
           patchState(
             store,
-            { cohort: resp.data, inEditMode: false },
+            { cohort: resp.data, inEditMode: false, peopleListOptions: initialPeopleListState },
             setFulfilled(),
           );
           toastService.sendMessage('Updated cohort.', ToastLevel.SUCCESS);
@@ -107,7 +135,7 @@ export const CohortStore = signalStore(
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { cohort: resp.data, inEditMode: false },
+            { cohort: resp.data, inEditMode: false, peopleListOptions: initialPeopleListState },
             setFulfilled(),
           );
         }
@@ -120,7 +148,7 @@ export const CohortStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(store, { inEditMode: false }, setFulfilled());
+          patchState(store, { inEditMode: false, peopleListOptions: initialPeopleListState }, setFulfilled());
         }
       },
       async setTags(tags: string[]) {
@@ -132,6 +160,50 @@ export const CohortStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, setFulfilled());
+        }
+      },
+      async loadPeoplePage(
+        limit: number,
+        offset: number,
+        pageIndex: number,
+        sort: string,
+        order: SortDirection,
+      ) {
+        patchState(
+          store,
+          {
+            peopleListOptions: {
+              ...initialPeopleListState,
+              offset,
+              pageIndex,
+              limit,
+              sort,
+              order,
+            }
+          },
+          setPending(),
+        );
+        const resp = await firstValueFrom(
+          cohortService.getCohortWithPeople(
+            store.cohort().id,
+            store.peopleListOptions().limit,
+            store.peopleListOptions().offset,
+            store.peopleListOptions().sort,
+            store.peopleListOptions().order,
+          ),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(
+            store,
+            {
+              cohort: resp.data,
+              isReady: true,
+            },
+            setFulfilled(),
+          );
         }
       },
     }),

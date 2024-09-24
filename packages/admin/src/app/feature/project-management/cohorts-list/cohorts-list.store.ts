@@ -22,7 +22,7 @@ interface CohortsListState {
 
 const initialState: CohortsListState = {
   cohorts: [],
-  limit: 1,
+  limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
