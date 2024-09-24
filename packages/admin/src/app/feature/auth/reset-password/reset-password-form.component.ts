@@ -61,8 +61,11 @@ export class ResetPasswordComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          this.authStore.resetPassword(this.resetForm.value);
-          this.router.navigate(['auth', 'login']);
+          this.authStore.resetPassword(this.resetForm.value).then(() => {
+            if (this.authStore.loginStatus() !== 'error') {
+              this.router.navigate(['auth', 'login']);
+            }
+          });
         }
       });
   }

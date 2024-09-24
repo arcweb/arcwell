@@ -83,8 +83,14 @@ export class AuthService {
   resetPassword(
     reset: ResetType,
   ): Observable<UserResponseType | ErrorResponseType> {
-    return this.http.post<UsersResponseType>(`${this.apiUrl}/auth/reset`, {
-      ...reset,
-    });
+    return this.http
+      .post<UsersResponseType>(`${this.apiUrl}/auth/reset`, {
+        ...reset,
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

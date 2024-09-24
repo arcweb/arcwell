@@ -92,7 +92,12 @@ export const AuthStore = signalStore(
     },
     async resetPassword(reset: ResetType) {
       patchState(store, { loginStatus: 'pending' });
-      await firstValueFrom(authService.resetPassword(reset));
+      const resp = await firstValueFrom(authService.resetPassword(reset));
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'none' });
+      }
     },
   })),
   withStorageSync({
