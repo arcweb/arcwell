@@ -18,6 +18,8 @@ import { FactTypeComponent } from '@feature/project-management/fact-type/fact-ty
 import { FactTypesComponent } from '@feature/project-management/fact-types/fact-types.component';
 import { CohortComponent } from '@feature/project-management/cohort/cohort.component';
 import { CohortsListComponent } from '@feature/project-management/cohorts-list/cohorts-list.component';
+import { TagsListComponent } from './tags-list/tags-list.component';
+import { TagComponent } from './tag/tag.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -138,7 +140,20 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         path: 'facts',
         redirectTo: 'facts/list',
       },
-
+      // tags routes
+      {
+        path: 'tags/list',
+        component: TagsListComponent,
+      },
+      {
+        path: 'tags/:tagId',
+        component: TagComponent,
+      },
+      {
+        path: 'tags',
+        redirectTo: 'tags/list',
+      },
+      // fallback routes
       {
         path: '',
         pathMatch: 'full',

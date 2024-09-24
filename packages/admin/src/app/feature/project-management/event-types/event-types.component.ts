@@ -74,6 +74,7 @@ export class EventTypesComponent {
       this.eventTypesStore.offset(),
       event.active,
       event.direction,
+      this.eventTypesStore.pageIndex(),
     );
   }
 }

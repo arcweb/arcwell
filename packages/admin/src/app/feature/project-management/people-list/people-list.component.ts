@@ -83,6 +83,7 @@ export class PeopleListComponent {
       this.peopleListStore.offset(),
       event.active,
       event.direction,
+      this.peopleListStore.pageIndex(),
       this.peopleListStore.typeKey(),
     );
   }

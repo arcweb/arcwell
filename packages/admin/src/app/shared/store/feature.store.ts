@@ -12,13 +12,11 @@ import {
   setPending,
   setFulfilled,
 } from '@shared/store/request-status.feature';
-import { computed, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 import { FeatureModel } from '@shared/models/feature.model';
 import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
-import { SubfeatureType } from '../schemas/subfeature.schema';
-import { FeatureType } from '../schemas/feature.schema';
 import { SubfeatureModel } from '../models/subfeature.model';
 import { cloneDeep } from 'lodash';
 

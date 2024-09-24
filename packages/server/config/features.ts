@@ -90,11 +90,6 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     name: 'Tags',
     path: 'tags',
     icon: 'sell',
-    subfeatures: [
-      {
-        name: 'All Tags',
-        path: 'list',
-      },
-    ],
+    subfeatures: [],
   },
 ]

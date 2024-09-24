@@ -12,68 +12,41 @@ import {
   setFulfilled,
   setErrors,
 } from '@shared/store/request-status.feature';
-import { FactService } from '@shared/services/fact.service';
 import { inject } from '@angular/core';
-import { FactModel } from '@shared/models/fact.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
-import { SortDirection } from '@angular/material/sort';
+import { TagModel } from '@app/shared/models/tag.model';
+import { TagService } from '@app/shared/services/tag.service';
 
-interface FactsListState {
-  facts: FactModel[];
+interface TagsListState {
+  tags: TagModel[];
   limit: number;
   offset: number;
   totalData: number;
   pageIndex: number;
-  sort: string;
-  order: SortDirection;
-  typeKey: string;
 }
 
-const initialState: FactsListState = {
-  facts: [],
+const initialState: TagsListState = {
+  tags: [],
   limit: 10,
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sort: 'familyName',
-  order: 'asc',
-  typeKey: '',
 };
 
-export const FactsListStore = signalStore(
-  withDevtools('facts'),
+export const TagsListStore = signalStore(
+  withDevtools('people'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, factService = inject(FactService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-      typeKey = '',
-    ) {
-      patchState(
-        store,
-        {
-          ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
-          typeKey: typeKey,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        factService.getFacts(limit, offset, sort, order, typeKey),
-      );
+  withMethods((store, tagService = inject(TagService)) => ({
+    async load(limit: number, offset: number) {
+      const resp = await firstValueFrom(tagService.getTags(limit, offset));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
         patchState(
           store,
-          { facts: resp.data, totalData: resp.meta.count },
+          { tags: resp.data, totalData: resp.meta.count },
           setFulfilled(),
         );
       }
@@ -90,7 +63,7 @@ export const FactsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factService.getFacts(store.limit(), store.offset(), store.typeKey()),
+        tagService.getTags(store.limit(), store.offset()),
       );
 
       if (resp.errors) {
@@ -98,10 +71,15 @@ export const FactsListStore = signalStore(
       } else {
         patchState(
           store,
-          { facts: resp.data, totalData: resp.meta.count },
+          { tags: resp.data, totalData: resp.meta.count },
           setFulfilled(),
         );
       }
     },
   })),
+  withHooks({
+    onInit(store) {
+      store.load(store.limit(), store.offset());
+    },
+  }),
 );

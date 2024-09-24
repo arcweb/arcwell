@@ -36,7 +36,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@shared/helpers/auto-slug.helper';
-import { HttpUrlEncodingCodec } from '@angular/common/http';
 
 @Component({
   selector: 'aw-person-type',

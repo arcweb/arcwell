@@ -45,11 +45,18 @@ export const PeopleListStore = signalStore(
       offset: number,
       sort = '',
       order: SortDirection = 'asc',
+      pageIndex = 0,
       typeKey = '',
     ) {
       patchState(
         store,
-        { ...initialState, sort: sort, order: order, typeKey: typeKey },
+        {
+          ...initialState,
+          sort: sort,
+          order: order,
+          pageIndex: pageIndex,
+          typeKey: typeKey,
+        },
         setPending(),
       );
       const resp = await firstValueFrom(
