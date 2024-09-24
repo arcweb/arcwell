@@ -30,6 +30,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare personId: string
 
+  @column({ serializeAs: null })
+  declare passwordResetCode: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -58,5 +61,18 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @afterDelete()
   static async detachTags(user: User) {
     await user.related('tags').detach()
+  }
+
+  static async generateResetCode(user: User) {
+    let letters = '0123456789ABCDEF'
+    let code = ''
+    for (let i = 0; i < 6; i++) {
+      code += letters[Math.floor(Math.random() * 16)]
+    }
+
+    user.merge({ passwordResetCode: code })
+    await user.save()
+
+    return user.passwordResetCode
   }
 }
