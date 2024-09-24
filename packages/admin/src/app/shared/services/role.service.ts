@@ -12,8 +12,7 @@ import {
 } from '../schemas/role.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { RoleModel } from '../models';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -34,30 +33,34 @@ export class RoleService {
       params = params.set('offset', offset.toString());
     }
 
-    return this.http.get<RolesResponseType>(`${apiUrl}/roles`, { params }).pipe(
-      map((response: RolesResponseType) => {
-        RolesResponseSchema.parse(response);
+    return this.http
+      .get<RolesResponseType>(`${environment.apiUrl}/roles`, { params })
+      .pipe(
+        map((response: RolesResponseType) => {
+          RolesResponseSchema.parse(response);
 
-        return {
-          data: response.data.map((role: RoleType) => deserializeRole(role)),
-          meta: response.meta,
-        };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+          return {
+            data: response.data.map((role: RoleType) => deserializeRole(role)),
+            meta: response.meta,
+          };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   getRole(id: string): Observable<RoleModel | ErrorResponseType> {
-    return this.http.get<RoleResponseType>(`${apiUrl}/roles/${id}`).pipe(
-      map((response: RoleResponseType) => {
-        const parsedResponse = RoleResponseSchema.parse(response);
-        return { data: deserializeRole(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<RoleResponseType>(`${environment.apiUrl}/roles/${id}`)
+      .pipe(
+        map((response: RoleResponseType) => {
+          const parsedResponse = RoleResponseSchema.parse(response);
+          return { data: deserializeRole(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

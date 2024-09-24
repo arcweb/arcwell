@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '../schemas/error.schema';
+import { environment } from '../../../environments/environment';
 
-const apiUrl = 'http://localhost:3333';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,7 +16,7 @@ export class EmailService {
     template = '',
   ): Observable<void | ErrorResponseType> {
     return this.http
-      .post<void>(`${apiUrl}/email`, {
+      .post<void>(`${environment.apiUrl}/email`, {
         email: emailAddress,
         template: template,
       })

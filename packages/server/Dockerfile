@@ -51,6 +51,6 @@ CMD npm install --no-fund; npm run dev
 #
 FROM base AS production
 
-# In production build, simply start server
-CMD ["npm", "run", "start"]
+# Eventually will need to make this production class
+CMD npm install --no-fund; npm run start
 

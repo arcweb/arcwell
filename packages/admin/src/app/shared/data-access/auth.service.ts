@@ -10,6 +10,7 @@ import {
   LoginResponseType,
 } from '@shared/schemas/login.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 export class AuthService {
   private http: HttpClient = inject(HttpClient);
 
-  apiUrl = 'http://localhost:3333';
+  apiUrl = environment.apiUrl;
 
   loginTo(credentials: Credentials): Observable<{
     token: { type: string; value: string };
