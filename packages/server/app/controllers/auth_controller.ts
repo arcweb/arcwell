@@ -81,6 +81,9 @@ export default class AuthController {
       expiresIn: '7 days',
     })
 
+    user.passwordResetCode = null
+    user.save()
+
     return {
       data: {
         token: {
