@@ -25,6 +25,13 @@ export const AUTH_ROUTES: Route[] = [
       ),
   },
   {
+    path: 'change',
+    loadComponent: () =>
+      import('./change-password/change-password-form.component').then(
+        m => m.ChangePasswordComponent,
+      ),
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',

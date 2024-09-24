@@ -99,6 +99,7 @@ export const AuthStore = signalStore(
         patchState(store, { loginStatus: 'none' });
       }
     },
+    async changePassword(change:)
   })),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage
