@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlEvent,
@@ -16,7 +16,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorContainerComponent } from '@app/feature/project-management/error-container/error-container.component';
 import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { AuthStore } from '@app/shared/store/auth.store';
-import { map } from 'lodash';
 
 @Component({
   selector: 'aw-reset-password',

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, Input, effect, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  Input,
+  effect,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {
   ControlEvent,
   FormControl,
@@ -46,7 +53,7 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
   templateUrl: './tag.component.html',
   styleUrl: './tag.component.scss',
 })
-export class TagComponent {
+export class TagComponent implements OnInit {
   readonly tagStore = inject(TagStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);

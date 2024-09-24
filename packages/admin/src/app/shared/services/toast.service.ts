@@ -32,7 +32,7 @@ export class ToastService {
   sendMessage(
     msg: string,
     level: ToastLevel,
-    timeout: number = 5000,
+    timeout = 5000,
     heading?: string,
   ) {
     const newMsg = heading
@@ -44,7 +44,7 @@ export class ToastService {
   }
 
   // send an http error toast
-  sendHttpError(error: ErrorResponseType, timeout: number = 5000) {
+  sendHttpError(error: ErrorResponseType, timeout = 5000) {
     const heading = error.title;
     const message = error.detail || '';
     this.sendMessage(message, ToastLevel.ERROR, timeout, heading);
