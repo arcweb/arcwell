@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3333',
+  apiUrl: '[INSERT_PRODUCTION_API_URL_HERE]',
 };
