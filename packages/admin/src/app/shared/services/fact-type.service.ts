@@ -13,8 +13,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +41,7 @@ export class FactTypeService {
     }
 
     return this.http
-      .get<FactTypesResponseType>(`${apiUrl}/fact_types`, { params })
+      .get<FactTypesResponseType>(`${environment.apiUrl}/fact_types`, { params })
       .pipe(
         map((response: FactTypesResponseType) => {
           FactTypesResponseSchema.parse(response);
@@ -63,7 +62,7 @@ export class FactTypeService {
     id: string,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<FactTypeResponseType>(`${apiUrl}/fact_types/${id}`)
+      .get<FactTypeResponseType>(`${environment.apiUrl}/fact_types/${id}`)
       .pipe(
         map((response: FactTypeResponseType) => {
           const parsedResponse = FactTypeResponseSchema.parse(response);
@@ -79,7 +78,7 @@ export class FactTypeService {
     fact: FactTypeUpdateType,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .patch<FactTypeResponseType>(`${apiUrl}/fact_types/${fact.id}`, fact)
+      .patch<FactTypeResponseType>(`${environment.apiUrl}/fact_types/${fact.id}`, fact)
       .pipe(
         map((response: FactTypeResponseType) => {
           const parsedResponse = FactTypeResponseSchema.parse(response);
@@ -95,7 +94,7 @@ export class FactTypeService {
     factType: FactTypeType,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<FactTypeResponseType>(`${apiUrl}/fact_types`, factType)
+      .post<FactTypeResponseType>(`${environment.apiUrl}/fact_types`, factType)
       .pipe(
         map((response: FactTypeResponseType) => {
           const parsedResponse = FactTypeResponseSchema.parse(response);
@@ -111,7 +110,7 @@ export class FactTypeService {
     factTypeId: string,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .delete<FactTypeResponseType>(`${apiUrl}/fact_types/${factTypeId}`)
+      .delete<FactTypeResponseType>(`${environment.apiUrl}/fact_types/${factTypeId}`)
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
