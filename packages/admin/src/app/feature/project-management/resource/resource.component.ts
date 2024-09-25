@@ -61,10 +61,11 @@ export class ResourceComponent implements OnInit {
   destoyRef = inject(DestroyRef);
 
   @Input() resourceId!: string;
+  @Input() typeKey?: string;
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
-    resourceType: new FormControl(
+    resourceType: new FormControl<ResourceTypeType | null>(
       { value: '', disabled: true },
       Validators.required,
     ),
@@ -76,6 +77,15 @@ export class ResourceComponent implements OnInit {
         this.resourceForm.enable();
       } else {
         this.resourceForm.disable();
+      }
+    });
+    effect(() => {
+      if (this.resourceStore.resourceTypes() && this.typeKey) {
+        this.resourceForm.patchValue({
+          resourceType: this.resourceStore
+            .resourceTypes()
+            .find(rt => rt.key === this.typeKey),
+        });
       }
     });
   }

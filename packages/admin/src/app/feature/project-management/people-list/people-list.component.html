@@ -6,6 +6,7 @@
     <button
       mat-icon-button
       [routerLink]="['/project-management/people/create']"
+      [queryParams]="{ typeKey: typeKey$ | async }"
     >
       <mat-icon aria-label="Create person icon button">
         add_circle_outline
