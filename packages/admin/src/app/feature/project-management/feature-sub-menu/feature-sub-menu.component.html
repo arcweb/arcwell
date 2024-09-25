@@ -1,4 +1,4 @@
-@if (featureStore.activeSubfeature()) {
+@if (featureStore.activeSubfeature() && featureStore.hasSubfeatures()) {
   <div class="feature-sub-menu-container">
     @for (
       subfeature of featureStore.activeFeature()?.subfeatures;

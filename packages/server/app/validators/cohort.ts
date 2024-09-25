@@ -6,7 +6,7 @@ import vine from '@vinejs/vine'
 export const createCohortValidator = vine.compile(
   vine.object({
     name: vine.string().trim(),
-    description: vine.string().trim(),
+    description: vine.string().trim().optional(),
     rules: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
