@@ -51,11 +51,13 @@ import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-fact',
   standalone: true,
   imports: [
+    BackButtonComponent,
     ReactiveFormsModule,
     MatInput,
     MatLabel,

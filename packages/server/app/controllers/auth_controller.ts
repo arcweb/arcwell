@@ -1,8 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator } from '#validators/auth'
+import { loginValidator, resetPasswordValidator } from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { paramsEmailValidator } from '#validators/email'
+import mail from '@adonisjs/mail/services/main'
 // import Person from '#models/person'
 // import PersonType from '#models/person_type'
 
@@ -79,6 +81,9 @@ export default class AuthController {
       expiresIn: '7 days',
     })
 
+    user.passwordResetCode = null
+    user.save()
+
     return {
       data: {
         token: {
@@ -115,5 +120,63 @@ export default class AuthController {
     return {
       data: auth.user.serialize(),
     }
+  }
+
+  async sendForgotPasswordMessage({ request }: HttpContext) {
+    await request.validateUsing(paramsEmailValidator)
+    const cleanrequest = request.only(['email'])
+
+    const user = await User.findBy('email', cleanrequest.email)
+    if (user) {
+      User.generateResetCode(user)
+
+      await mail.send((message) => {
+        message
+          .to(user.email)
+          .subject('Arcwell Password Reset')
+          .htmlView('emails/password_reset', { user })
+      })
+    } else {
+      return
+    }
+  }
+
+  async resetPassword({ request }: HttpContext) {
+    await request.validateUsing(resetPasswordValidator)
+    const cleanrequest = request.only(['code', 'password'])
+
+    const user = await User.findByOrFail('passwordResetCode', cleanrequest.code)
+    user.password = cleanrequest.password
+    user.passwordResetCode = null
+
+    await user.save()
+
+    mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Your Password Has Been Changed')
+        .htmlView('emails/password_changed', { user })
+    })
+
+    return { data: user }
+  }
+
+  async changePassword({ request, auth }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(loginValidator)
+    const cleanRequest = request.only(['email', 'password', 'newPassword'])
+    const user = await User.verifyCredentials(cleanRequest.email, cleanRequest.password)
+
+    user.password = cleanRequest.newPassword
+    await user.save()
+
+    mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Your Password Has Been Changed')
+        .htmlView('emails/password_changed', { user })
+    })
+
+    return { data: user }
   }
 }

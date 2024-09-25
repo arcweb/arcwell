@@ -78,7 +78,7 @@ export const FeatureStore = signalStore(
       setActiveFeatureAndSubfeatureByRoute(
         url: string,
         features: FeatureModel[],
-        fulfillRequest: boolean = false,
+        fulfillRequest = false,
       ) {
         const activeFeature = features.find(feature =>
           url.includes(feature.path),
