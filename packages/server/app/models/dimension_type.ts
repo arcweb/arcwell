@@ -3,8 +3,11 @@ import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 
 import FactType from '#models/fact_type'
 import { generateTypeKey } from '#helpers/generate_type_key'
+import { DateTime } from 'luxon'
 
 export default class DimensionType extends BaseModel {
+  // serializeExtras = true
+
   @column({ isPrimary: true })
   declare id: string
 
@@ -20,9 +23,18 @@ export default class DimensionType extends BaseModel {
   @column()
   declare dataUnit: string
 
+  @column()
+  declare isRequired: boolean
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+
   @manyToMany(() => FactType, {
     pivotTimestamps: true,
-    pivotRelatedForeignKey: 'tag_id',
+    pivotColumns: ['is_required'],
   })
   declare factTypes: ManyToMany<typeof FactType>
 
