@@ -51,6 +51,7 @@ export class PeopleTableComponent {
   pageSize = input.required<number>();
   pageIndex = input.required<number>();
 
+  onDeleteClicked = output<string>();
   onPageChanged = output<PageEvent>();
   onRowClicked = output<PersonModel>();
   onSortChanged = output<Sort>();
@@ -73,6 +74,6 @@ export class PeopleTableComponent {
   }
 
   deleteClick(personId: string) {
-    console.log('DELETE');
+    this.onDeleteClicked.emit(personId);
   }
 }

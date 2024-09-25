@@ -28,6 +28,7 @@ export class PersonService {
     sort?: string;
     order?: string;
     typeKey?: string;
+    notInCohort?: string;
     search?: [{ field: string; searchString: string }];
   }): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
@@ -40,6 +41,9 @@ export class PersonService {
     }
     if (props.typeKey) {
       params = params.set('typeKey', props.typeKey);
+    }
+    if (props.notInCohort) {
+      params = params.set('notInCohort', props.notInCohort);
     }
 
     if (props.search && props.search.length > 0) {

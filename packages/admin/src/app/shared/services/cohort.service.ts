@@ -134,4 +134,26 @@ export class CohortService {
       }),
     );
   }
+
+  attachPerson(cohortId: string, peopleId: string): Observable<void | ErrorResponseType> {
+    const payload = {
+      peopleIds: [peopleId]
+    }
+    return this.http.post<void>(`${apiUrl}/cohorts/${cohortId}/attach`, payload).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
+  detachPerson(cohortId: string, peopleId: string): Observable<void | ErrorResponseType> {
+    const payload = {
+      peopleIds: [peopleId]
+    }
+    return this.http.request<void>('delete', `${apiUrl}/cohorts/${cohortId}/detach`, { body: payload }).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
 }

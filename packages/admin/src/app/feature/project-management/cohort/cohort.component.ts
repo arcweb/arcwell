@@ -37,6 +37,8 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { TagType } from '@schemas/tag.schema';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
 import { PageEvent } from '@angular/material/paginator';
+import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
+import { PersonType } from '@schemas/person.schema';
 
 @Component({
   selector: 'aw-cohort',
@@ -56,7 +58,8 @@ import { PageEvent } from '@angular/material/paginator';
     MatIconButton,
     FormsModule,
     TagsFormComponent,
-    PeopleTableComponent
+    PeopleTableComponent,
+    ObjectSelectorFormFieldComponent
   ],
   providers: [CohortStore],
   templateUrl: './cohort.component.html',
@@ -86,6 +89,15 @@ export class CohortComponent implements OnInit {
     ),
   });
 
+  peopleForm = new FormGroup({
+    person: new FormControl<PersonType | null>(
+      {
+        value: null, disabled: true
+      },
+      Validators.required,
+    ),
+  });
+
   peopleColumns: string[] = [
     'id',
     'familyName',
@@ -100,8 +112,10 @@ export class CohortComponent implements OnInit {
     effect(() => {
       if (this.cohortStore.inEditMode()) {
         this.cohortForm.enable();
+        this.peopleForm.disable();
       } else {
         this.cohortForm.disable();
+        this.peopleForm.enable();
       }
       this.peopleDataSource.data = this.cohortStore.cohort()?.people;
     });
@@ -130,6 +144,15 @@ export class CohortComponent implements OnInit {
           } else {
             this.cohortStore.updateCohort(this.cohortForm.value);
           }
+        }
+      });
+
+    this.peopleForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          this.cohortStore.attachPerson(this.peopleForm.value.person.id);
+          this.peopleForm.reset();
         }
       });
   }
@@ -167,6 +190,22 @@ export class CohortComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.cohortStore.setTags(tags);
+  }
+
+  peopleDeleteClick(personId: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm removal of person from cohort',
+        question: 'Are you sure you want to remove this person from the cohort?',
+        okButtonText: 'Remove',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.cohortStore.detachPerson(personId);
+      }
+    });
   }
 
   peoplePageChange(event: PageEvent) {

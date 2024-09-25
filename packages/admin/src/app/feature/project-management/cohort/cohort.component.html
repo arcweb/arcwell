@@ -69,33 +69,55 @@
   </form>
 
   <!-- People Section -->
-  <h2>People</h2>
-  <div class="icons-container">
-    <button
-      mat-flat-button
-      type="button"
-      class="default-button"
-    >
-      Add Person to Cohort
-    </button>
-  </div>
-  <aw-people-table
-    [dataSource]="peopleDataSource"
-    [displayedColumns]="peopleColumns"
-    [matSortActive]="this.cohortStore.peopleListOptions().sort"
-    [matSortDirection]="this.cohortStore.peopleListOptions().order"
-    [length]="this.cohortStore.cohort().peopleCount"
-    [pageSizes]="pageSizes"
-    [pageSize]="this.cohortStore.peopleListOptions().limit"
-    [pageIndex]="this.cohortStore.peopleListOptions().pageIndex"
-    (onPageChanged)="peoplePageChange($event)"
-    (onRowClicked)="peopleRowClick($event)"
-    (onSortChanged)="peopleSortChange($event)"
-  ></aw-people-table>
+  @if (!cohortStore.inCreateMode()) {
+    <h2>People</h2>
+    <form [formGroup]="peopleForm">
+      <aw-object-selector-form-field
+        formControlName="person"
+        placeholder="Search for Person"
+        label="Person"
+        serviceType="cohortPeople"
+        displayProperty="familyName"
+        [objectIdForFiltering]="this.cohortStore.cohort().id"
+      ></aw-object-selector-form-field>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="cohortStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+      <div class="icons-container">
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="
+            cohortStore.inEditMode() || !peopleForm.valid || !peopleForm.dirty
+          "
+        >
+          Add Person to Cohort
+        </button>
+      </div>
+    </form>
+
+    @if (cohortStore.cohort().peopleCount > 0) {
+      <aw-people-table
+        [dataSource]="peopleDataSource"
+        [displayedColumns]="peopleColumns"
+        [matSortActive]="this.cohortStore.peopleListOptions().sort"
+        [matSortDirection]="this.cohortStore.peopleListOptions().order"
+        [length]="this.cohortStore.cohort().peopleCount"
+        [pageSizes]="pageSizes"
+        [pageSize]="this.cohortStore.peopleListOptions().limit"
+        [pageIndex]="this.cohortStore.peopleListOptions().pageIndex"
+        (onDeleteClicked)="peopleDeleteClick($event)"
+        (onPageChanged)="peoplePageChange($event)"
+        (onRowClicked)="peopleRowClick($event)"
+        (onSortChanged)="peopleSortChange($event)"
+      ></aw-people-table>
+    } @else {
+      <h3 class="no-people">No persons currently associated with this cohort</h3>
+    }
+
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="cohortStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
 }

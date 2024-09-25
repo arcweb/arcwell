@@ -135,7 +135,7 @@ export const CohortStore = signalStore(
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { cohort: resp.data, inEditMode: false, peopleListOptions: initialPeopleListState },
+            { cohort: resp.data, inCreateMode: false, inEditMode: false, peopleListOptions: initialPeopleListState },
             setFulfilled(),
           );
         }
@@ -204,6 +204,53 @@ export const CohortStore = signalStore(
             },
             setFulfilled(),
           );
+        }
+      },
+      async attachPerson(personId: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          cohortService.attachPerson(store.cohort().id, personId),
+        );
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          this.loadPeoplePage(
+            store.peopleListOptions().limit,
+            store.peopleListOptions().offset,
+            store.peopleListOptions().pageIndex,
+            store.peopleListOptions().sort,
+            store.peopleListOptions().order,
+          );
+          toastService.sendMessage('Person added to cohort', ToastLevel.SUCCESS);
+        }
+      },
+      async detachPerson(personId: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          cohortService.detachPerson(store.cohort().id, personId),
+        );
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          let offset = store.peopleListOptions().offset;
+          let pageIndex = store.peopleListOptions().pageIndex;
+          const newPeopleCount = store.cohort().peopleCount - 1;
+          // Special case if the detached person was the only one left on a page. Go to previous
+          // page in this case, unless this is deleting the final person
+          const maxPageIndex = Math.ceil(store.cohort().peopleCount / store.peopleListOptions().limit) - 1;
+          if (newPeopleCount !== 0 && pageIndex === maxPageIndex && newPeopleCount === offset) {
+            pageIndex--;
+            offset = offset - store.peopleListOptions().limit;
+          }
+
+          this.loadPeoplePage(
+            store.peopleListOptions().limit,
+            offset,
+            pageIndex,
+            store.peopleListOptions().sort,
+            store.peopleListOptions().order,
+          );
+          toastService.sendMessage('Person removed from cohort', ToastLevel.SUCCESS);
         }
       },
     }),
