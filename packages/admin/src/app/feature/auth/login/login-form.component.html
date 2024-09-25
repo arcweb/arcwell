@@ -1,4 +1,7 @@
-<form [formGroup]="loginForm" (ngSubmit)="login.emit(loginForm.getRawValue())">
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
+>
   <mat-form-field appearance="fill">
     <mat-label>email</mat-label>
     <input
@@ -28,21 +31,23 @@
 
   <div class="button-bar">
     <button
+      mat-button
+      type="button"
+      color="primary"
+      class="default-button"
+      [disabled]="loginStatus() === 'authenticating'"
+      (click)="forgotPassword(); $event.stopPropagation()"
+    >
+      Forgot Password
+    </button>
+
+    <button
       mat-stroked-button
       color="primary"
       type="submit"
       [disabled]="loginStatus() === 'authenticating'"
     >
       Login
-    </button>
-
-    <button
-      mat-stroked-button
-      color="primary"
-      [disabled]="loginStatus() === 'authenticating'"
-      (click)="forgotPassword()"
-    >
-      Forgot Password
     </button>
   </div>
 </form>

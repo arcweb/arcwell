@@ -81,6 +81,9 @@ export default class AuthController {
       expiresIn: '7 days',
     })
 
+    user.passwordResetCode = null
+    user.save()
+
     return {
       data: {
         token: {
@@ -123,15 +126,19 @@ export default class AuthController {
     await request.validateUsing(paramsEmailValidator)
     const cleanrequest = request.only(['email'])
 
-    const user = await User.findByOrFail('email', cleanrequest.email)
-    User.generateResetCode(user)
+    const user = await User.findBy('email', cleanrequest.email)
+    if (user) {
+      User.generateResetCode(user)
 
-    await mail.send((message) => {
-      message
-        .to(user.email)
-        .subject('Arcwell Password Reset')
-        .htmlView('emails/password_reset', { user })
-    })
+      await mail.send((message) => {
+        message
+          .to(user.email)
+          .subject('Arcwell Password Reset')
+          .htmlView('emails/password_reset', { user })
+      })
+    } else {
+      return
+    }
   }
 
   async resetPassword({ request }: HttpContext) {
@@ -140,8 +147,17 @@ export default class AuthController {
 
     const user = await User.findByOrFail('passwordResetCode', cleanrequest.code)
     user.password = cleanrequest.password
-    user.passwordResetCode = ''
+    user.passwordResetCode = null
 
-    return { data: user.save() }
+    await user.save()
+
+    mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Your Password Has Been Changed')
+        .htmlView('emails/password_changed', { user })
+    })
+
+    return { data: user }
   }
 }

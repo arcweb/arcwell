@@ -30,8 +30,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare personId: string
 
-  @column()
-  declare passwordResetCode: string
+  @column({ serializeAs: null })
+  declare passwordResetCode: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
