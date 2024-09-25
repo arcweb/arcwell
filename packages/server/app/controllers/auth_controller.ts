@@ -160,4 +160,22 @@ export default class AuthController {
 
     return { data: user }
   }
+
+  async changePassword({ request }: HttpContext) {
+    await request.validateUsing(loginValidator)
+    const cleanRequest = request.only(['email', 'password', 'newPassword'])
+    const user = await User.verifyCredentials(cleanRequest.email, cleanRequest.password)
+
+    user.password = cleanRequest.newPassword
+    await user.save()
+
+    mail.send((message) => {
+      message
+        .to(user.email)
+        .subject('Your Password Has Been Changed')
+        .htmlView('emails/password_changed', { user })
+    })
+
+    return { data: user }
+  }
 }
