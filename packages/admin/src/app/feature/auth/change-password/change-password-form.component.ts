@@ -40,7 +40,7 @@ export class ChangePasswordComponent implements OnInit {
 
   changeForm = new FormGroup(
     {
-      currentPassword: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
       newPassword: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
@@ -52,15 +52,20 @@ export class ChangePasswordComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          this.authStore.changePassword(this.changeForm.value).then(() => {
-            if (this.authStore.loginStatus() !== 'error') {
-              this.router.navigate([
-                'user-management',
-                'all-users',
-                this.authStore.currentUser()?.id,
-              ]);
-            }
-          });
+          this.authStore
+            .changePassword({
+              ...this.changeForm.value,
+              email: this.authStore.currentUser()?.email,
+            })
+            .then(() => {
+              if (this.authStore.loginStatus() !== 'error') {
+                this.router.navigate([
+                  'user-management',
+                  'all-users',
+                  this.authStore.currentUser()?.id,
+                ]);
+              }
+            });
         }
       });
   }

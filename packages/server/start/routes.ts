@@ -50,6 +50,7 @@ router
     router.get('/me', [AuthController, 'me']).as('me')
     router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
     router.post('/reset', [AuthController, 'resetPassword']).as('reset')
+    router.post('/change', [AuthController, 'changePassword']).as('change')
   })
   .as('auth')
   .prefix('auth')

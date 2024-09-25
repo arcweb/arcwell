@@ -103,6 +103,11 @@ export const AuthStore = signalStore(
     async changePassword(change: ChangeType) {
       patchState(store, { loginStatus: 'pending' });
       const resp = await firstValueFrom(authService.changePassword(change));
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'none' });
+      }
     },
   })),
   withStorageSync({
