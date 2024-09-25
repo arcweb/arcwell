@@ -11,6 +11,7 @@ import {
   withStorageSync,
 } from '@angular-architects/ngrx-toolkit';
 import { ResetType } from '@shared/schemas/password-reset.schema';
+import { ChangeType } from '../schemas/password-change.schema';
 
 export type LoginStatus =
   | 'none'
@@ -93,6 +94,15 @@ export const AuthStore = signalStore(
     async resetPassword(reset: ResetType) {
       patchState(store, { loginStatus: 'pending' });
       const resp = await firstValueFrom(authService.resetPassword(reset));
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'none' });
+      }
+    },
+    async changePassword(change: ChangeType) {
+      patchState(store, { loginStatus: 'pending' });
+      const resp = await firstValueFrom(authService.changePassword(change));
       if (resp && resp.errors) {
         patchState(store, { loginStatus: 'error' });
       } else {

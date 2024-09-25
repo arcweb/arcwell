@@ -79,6 +79,7 @@ export class ResourcesListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });

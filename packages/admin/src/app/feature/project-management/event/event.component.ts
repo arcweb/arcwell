@@ -37,14 +37,15 @@ import {
   OwlNativeDateTimeModule,
 } from '@danielmoncada/angular-datetime-picker';
 import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
-import { PersonModel } from '@shared/models/person.model';
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-event',
   standalone: true,
   imports: [
+    BackButtonComponent,
     ReactiveFormsModule,
     MatInput,
     MatLabel,

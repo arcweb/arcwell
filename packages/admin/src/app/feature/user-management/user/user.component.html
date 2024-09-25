@@ -28,7 +28,9 @@
         <div>{{ authStore.currentUser()?.email }}</div>
       </div>
       <div class="profile-actions-container">
-        <a class="change-password-link">Change Password</a>
+        <a class="change-password-link" (click)="changePassword()">
+          Change Password
+        </a>
         <a class="test-email-link" (click)="sendEmail()">Test Email</a>
       </div>
     </mat-card>

@@ -85,6 +85,7 @@ export class PeopleListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });
