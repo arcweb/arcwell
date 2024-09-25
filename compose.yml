@@ -24,9 +24,6 @@ services:
         PORT: '3333'
     env_file:
       - ./packages/server/.env.development
-    environment:
-      SMTP_HOST: mailhog
-      SMTP_PORT: 1025
     depends_on:
       - db
       - mailhog
