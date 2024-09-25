@@ -20,9 +20,9 @@ export function buildApiQuery(
   }
 
   // Add search functionality to modelQuery
-  if (typeof search === 'string') {
-    modelQuery.whereILike('familyName', search)
-    countQuery.whereILike('familyName', search)
+  if (typeof search === 'string' && defaultSearch) {
+    modelQuery.whereILike(defaultSearch, search)
+    countQuery.whereILike(defaultSearch, search)
   } else if (typeof search === 'object' && search !== null) {
     for (const key in search) {
       if (search.hasOwnProperty(key)) {
