@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TagsFormComponent } from './tags-form.component';
+import { ResetPasswordComponent } from './reset-password-form.component';
 
-describe('TagsFormComponent', () => {
-  let component: TagsFormComponent;
-  let fixture: ComponentFixture<TagsFormComponent>;
+describe('ResetComponent', () => {
+  let component: ResetPasswordComponent;
+  let fixture: ComponentFixture<ResetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TagsFormComponent],
+      imports: [ResetPasswordComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TagsFormComponent);
+    fixture = TestBed.createComponent(ResetPasswordComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -23,3 +23,10 @@ export const loginValidator = vine.compile(
     password: passwordValidation,
   })
 )
+
+export const resetPasswordValidator = vine.compile(
+  vine.object({
+    code: vine.string(),
+    password: passwordValidation,
+  })
+)

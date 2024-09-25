@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './placeholder.component.html',
-  styleUrl: './placeholder.component.scss'
+  styleUrl: './placeholder.component.scss',
 })
-export class PlaceholderComponent {
-
-}
+export class PlaceholderComponent {}

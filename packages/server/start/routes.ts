@@ -48,6 +48,8 @@ router
     router.post('/login', [AuthController, 'login']).as('login')
     router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
     router.get('/me', [AuthController, 'me']).as('me')
+    router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
+    router.post('/reset', [AuthController, 'resetPassword']).as('reset')
   })
   .as('auth')
   .prefix('auth')
