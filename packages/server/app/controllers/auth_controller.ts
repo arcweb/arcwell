@@ -161,7 +161,8 @@ export default class AuthController {
     return { data: user }
   }
 
-  async changePassword({ request }: HttpContext) {
+  async changePassword({ request, auth }: HttpContext) {
+    await auth.authenticate()
     await request.validateUsing(loginValidator)
     const cleanRequest = request.only(['email', 'password', 'newPassword'])
     const user = await User.verifyCredentials(cleanRequest.email, cleanRequest.password)
