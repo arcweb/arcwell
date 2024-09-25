@@ -10,7 +10,7 @@ export function getFullFactType(id: string, trx?: TransactionClientContract) {
   if (trx) {
     return FactType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
   } else {
-    return FactType.query().where('id', id).preload('dimensionTypes').preload('tags').firstOrFail()
+    return FactType.query().where('id', id).preload('tags').firstOrFail()
   }
 }
 
