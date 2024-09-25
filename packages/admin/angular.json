@@ -73,7 +73,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "../../../arcwell-support/admin/environments/environment.staging.ts"
+                  "with": "src/environments/environment.staging.ts"
                 }
               ]
             }
