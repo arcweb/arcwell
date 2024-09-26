@@ -18,8 +18,6 @@ export default class RolesController {
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    // const limit = queryData['limit']
-    // const offset = queryData['offset']
 
     let [query, countQuery] = buildApiQuery(Role.query(), queryData, 'roles')
 

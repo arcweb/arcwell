@@ -31,8 +31,6 @@ export default class CohortsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    // const limit = queryData['limit']
-    // const offset = queryData['offset']
     let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
 
     query.orderBy('name', 'asc').preload('tags')

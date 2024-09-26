@@ -26,10 +26,6 @@ export default class UsersController {
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    // const limit = queryData['limit']
-    // const offset = queryData['offset']
-
-    // let countQuery = db.from('users')
 
     let [query, countQuery] = buildApiQuery(User.query(), queryData, 'users')
 
