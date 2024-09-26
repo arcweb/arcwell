@@ -26,7 +26,6 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
-
 ## Added eslint and prettier with schematics
 
 ** WORK IN PROGRESS **
@@ -59,7 +58,71 @@ rules: {
 },
 
 ```
+
 ## JetBrains IDE Configurations
 
-For IDE to recognize signalstore exposed signals,  enable proper typescript highlighting of signalStore
-  * Settings > Languages & Frameworks > TypeScript > Angular > WebStorm Angular TypeScript Plugin > Auto
+For IDE to recognize signalstore exposed signals, enable proper typescript highlighting of signalStore
+
+- Settings > Languages & Frameworks > TypeScript > Angular > WebStorm Angular TypeScript Plugin > Auto
+
+## VSCODE IDE Eslint, Prettier and Stylelint configuration
+
+The admin Angular application is configured to use EsLint, Prettier and Stylelint for code styling and linting. For developers using VSCode, there are 3 plugins required:
+
+1. Name: Prettier - Code formatter\
+   Id: esbenp.prettier-vscode\
+   Description: Code formatter using prettier\
+   Publisher: Prettier\
+   VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
+
+2. Name: ESLint\
+   Id: dbaeumer.vscode-eslint\
+   Description: Integrates ESLint JavaScript into VS Code.\
+   Publisher: Microsoft\
+   VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
+
+3. Name: Stylelint\
+   Id: stylelint.vscode-stylelint\
+   Description: Official Stylelint extension for Visual Studio Code\
+   Publisher: Stylelint\
+   VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint
+
+You may also have to update your User `settings.json` by pressing `F1` and selecting `Preferences: Open User Settings`. Here is an example configuration to add to your existing user settings. This will enable formatting on save among other things:
+
+```json
+{
+  "eslint.workingDirectories": [
+    { "directory": "./packages/admin", "changeProcessCWD": true }
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "stylelint.validate": ["css", "scss"],
+  "eslint.format.enable": true,
+  "editor.formatOnSave": true,
+  "eslint.useFlatConfig": true,
+  "prettier.requireConfig": true,
+  "eslint.validate": ["javascript", "typescript", "angular"],
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
+```

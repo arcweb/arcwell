@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, AsyncPipe } from '@angular/common';
 import { PeopleListStore } from '@feature/project-management/people-list/people-list.store';
 import { MatTableDataSource } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
@@ -17,6 +17,7 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
   selector: 'aw-people-list',
   standalone: true,
   imports: [
+    AsyncPipe,
     JsonPipe,
     ErrorContainerComponent,
     MatIcon,

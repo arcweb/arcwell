@@ -64,6 +64,7 @@ export class PersonComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
 
   @Input() personId!: string;
+  @Input() typeKey?: string;
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -80,7 +81,7 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
-    personType: new FormControl(
+    personType: new FormControl<PersonTypeType | null>(
       {
         value: null,
         disabled: true,
@@ -95,6 +96,16 @@ export class PersonComponent implements OnInit {
         this.personForm.enable();
       } else {
         this.personForm.disable();
+      }
+    });
+    // update the form with the person type if typeKey is provided in the query params
+    effect(() => {
+      if (this.personStore.personTypes() && this.typeKey) {
+        this.personForm.patchValue({
+          personType: this.personStore
+            .personTypes()
+            .find(pt => pt.key === this.typeKey),
+        });
       }
     });
   }
@@ -125,8 +136,8 @@ export class PersonComponent implements OnInit {
           }
         }
         // else if (event instanceof ValueChangeEvent) {
-        // }
         // This is here for an example.  Also, there are other events that can be caught
+        // }
       });
   }
 

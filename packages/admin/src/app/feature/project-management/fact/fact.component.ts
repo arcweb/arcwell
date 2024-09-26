@@ -97,9 +97,10 @@ export class FactComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
 
   @Input() factId!: string;
+  @Input() typeKey?: string;
 
   factForm = new FormGroup({
-    factType: new FormControl(
+    factType: new FormControl<FactTypeType | null>(
       {
         value: null,
         disabled: true,
@@ -123,6 +124,16 @@ export class FactComponent implements OnInit {
         this.factForm.enable();
       } else {
         this.factForm.disable();
+      }
+    });
+    // update the form with the fact type if typeKey is provided in the query params
+    effect(() => {
+      if (this.factStore.factTypes() && this.typeKey) {
+        this.factForm.patchValue({
+          factType: this.factStore
+            .factTypes()
+            .find(pt => pt.key === this.typeKey),
+        });
       }
     });
   }
