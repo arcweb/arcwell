@@ -36,11 +36,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-fact-type',
   standalone: true,
   imports: [
+    BackButtonComponent,
     ReactiveFormsModule,
     MatInput,
     MatLabel,

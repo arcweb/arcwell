@@ -2,20 +2,9 @@ import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { PeopleListStore } from '@feature/project-management/people-list/people-list.store';
 import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
-import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
@@ -23,29 +12,19 @@ import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { MatSortModule, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
+import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
 
 @Component({
   selector: 'aw-people-list',
   standalone: true,
   imports: [
     JsonPipe,
-    MatTable,
-    MatColumnDef,
-    MatRowDef,
-    MatHeaderRowDef,
-    MatCellDef,
-    MatHeaderCellDef,
-    MatRow,
-    MatCell,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatPaginator,
     ErrorContainerComponent,
     MatIcon,
     RouterLink,
     MatIconButton,
-    MatSortModule,
+    PeopleTableComponent,
   ],
   providers: [PeopleListStore],
   templateUrl: './people-list.component.html',
@@ -85,12 +64,13 @@ export class PeopleListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });
   }
 
-  handleClick(row: PersonModel) {
+  rowClick(row: PersonModel) {
     this.router.navigate(['project-management', 'people', row.id]);
   }
 

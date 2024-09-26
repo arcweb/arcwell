@@ -12,8 +12,7 @@ import {
 } from '@shared/schemas/event.schema';
 import { EventType } from '@app/shared/schemas/event.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +57,7 @@ export class EventService {
     }
 
     return this.http
-      .get<EventsResponseType>(`${apiUrl}/events`, { params })
+      .get<EventsResponseType>(`${environment.apiUrl}/events`, { params })
       .pipe(
         map((response: EventsResponseType) => {
           EventsResponseSchema.parse(response);
@@ -77,22 +76,27 @@ export class EventService {
   }
 
   getEvent(id: string): Observable<EventResponseType | ErrorResponseType> {
-    return this.http.get<EventResponseType>(`${apiUrl}/events/${id}`).pipe(
-      map((response: EventResponseType) => {
-        const eventResponse = EventResponseSchema.parse(response);
-        return { data: deserializeEvent(eventResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<EventResponseType>(`${environment.apiUrl}/events/${id}`)
+      .pipe(
+        map((response: EventResponseType) => {
+          const eventResponse = EventResponseSchema.parse(response);
+          return { data: deserializeEvent(eventResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   update(
     event: EventUpdateType,
   ): Observable<EventResponseType | ErrorResponseType> {
     return this.http
-      .patch<EventResponseType>(`${apiUrl}/events/${event.id}`, event)
+      .patch<EventResponseType>(
+        `${environment.apiUrl}/events/${event.id}`,
+        event,
+      )
       .pipe(
         map((response: EventResponseType) => {
           const parsedResponse = EventResponseSchema.parse(response);
@@ -105,20 +109,22 @@ export class EventService {
   }
 
   create(event: EventType): Observable<EventResponseType | ErrorResponseType> {
-    return this.http.post<EventResponseType>(`${apiUrl}/events`, event).pipe(
-      map((response: EventResponseType) => {
-        const parsedResponse = EventResponseSchema.parse(response);
-        return { data: deserializeEvent(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .post<EventResponseType>(`${environment.apiUrl}/events`, event)
+      .pipe(
+        map((response: EventResponseType) => {
+          const parsedResponse = EventResponseSchema.parse(response);
+          return { data: deserializeEvent(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   delete(eventId: string): Observable<EventResponseType | ErrorResponseType> {
     return this.http
-      .delete<EventResponseType>(`${apiUrl}/events/${eventId}`)
+      .delete<EventResponseType>(`${environment.apiUrl}/events/${eventId}`)
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

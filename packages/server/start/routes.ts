@@ -11,7 +11,7 @@ import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
-import EmailsController from '#controllers/emails_controller'
+const EmailsController = () => import('#controllers/emails_controller')
 const CohortsController = () => import('#controllers/cohorts_controller')
 const ConfigController = () => import('#controllers/config_controller')
 const FactTypesController = () => import('#controllers/fact_types_controller')
@@ -48,6 +48,9 @@ router
     router.post('/login', [AuthController, 'login']).as('login')
     router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
     router.get('/me', [AuthController, 'me']).as('me')
+    router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
+    router.post('/reset', [AuthController, 'resetPassword']).as('reset')
+    router.post('/change', [AuthController, 'changePassword']).as('change')
   })
   .as('auth')
   .prefix('auth')

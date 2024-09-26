@@ -37,6 +37,7 @@ export default class PeopleController {
     const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
+    const notInCohort = queryData['notInCohort']
 
     let countQuery = db.from('people')
 
@@ -74,6 +75,20 @@ export default class PeopleController {
     }
     if (offset) {
       query.offset(offset)
+    }
+    if (notInCohort) {
+      // Get complete list of people ids associated with cohort to filter them out
+      // in add person to cohort form
+      const peopleIdInCohortQuery = await db.from('people')
+        .select('id')
+        .whereIn(
+          'id',
+          db.from('cohort_person')
+            .select('person_id')
+            .where('cohort_id', notInCohort)
+        )
+      const idList = peopleIdInCohortQuery.map(id => id['id'])
+      query.whereNotIn('id', idList)
     }
     if (sort && order) {
       const camelSortStr = string.camelCase(sort)

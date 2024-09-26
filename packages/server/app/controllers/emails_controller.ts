@@ -9,8 +9,6 @@ export default class EmailsController {
   async send({ request }: HttpContext) {
     await request.validateUsing(paramsEmailValidator)
     const cleanrequest = request.only(['email', 'template'])
-    console.log('recieved email request')
-    console.log('email ', cleanrequest)
 
     await mail.send((message) => {
       message.to(cleanrequest.email).text('Hello from arcwell')

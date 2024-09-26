@@ -85,7 +85,14 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(this.factsListStore.limit(), 0, '', '', typeKey);
+      this.factsListStore.load(
+        this.factsListStore.limit(),
+        0,
+        '',
+        '',
+        0,
+        typeKey,
+      );
     });
   }
 

@@ -7,6 +7,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { LoginStatus } from '@shared/store/auth.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'aw-login-form',
@@ -25,6 +26,7 @@ import { LoginStatus } from '@shared/store/auth.store';
   styleUrl: './login-form.component.scss',
 })
 export class LoginFormComponent {
+  private router = inject(Router);
   loginStatus = input.required<LoginStatus>();
   login = output<Credentials>();
 
@@ -34,4 +36,8 @@ export class LoginFormComponent {
     email: [''],
     password: [''],
   });
+
+  forgotPassword() {
+    this.router.navigate(['auth', 'forgot']);
+  }
 }

@@ -36,11 +36,13 @@ import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-resource-type',
   standalone: true,
   imports: [
+    BackButtonComponent,
     ReactiveFormsModule,
     MatInput,
     MatLabel,

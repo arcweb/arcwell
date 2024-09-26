@@ -87,6 +87,7 @@ export class EventsListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });

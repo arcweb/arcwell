@@ -3,13 +3,20 @@ import { catchError, map, Observable, tap } from 'rxjs';
 import { Credentials } from '@shared/interfaces/credentials';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '@shared/models/user.model';
-import { UserResponseType, deserializeUser } from '@shared/schemas/user.schema';
+import {
+  UserResponseType,
+  UsersResponseType,
+  deserializeUser,
+} from '@shared/schemas/user.schema';
 import { ErrorResponseType } from '@shared/schemas/error.schema';
 import {
   LoginResponseSchema,
   LoginResponseType,
 } from '@shared/schemas/login.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
+import { environment } from '../../../environments/environment';
+import { ResetType } from '../schemas/password-reset.schema';
+import { ChangeType } from '../schemas/password-change.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +24,7 @@ import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 export class AuthService {
   private http: HttpClient = inject(HttpClient);
 
-  apiUrl = 'http://localhost:3333';
+  apiUrl = environment.apiUrl;
 
   loginTo(credentials: Credentials): Observable<{
     token: { type: string; value: string };
@@ -63,5 +70,35 @@ export class AuthService {
         return deserializeUser(response.data);
       }),
     );
+  }
+
+  sendPasswordReset(email: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/forgot`, { email: email });
+  }
+
+  resetPassword(
+    reset: ResetType,
+  ): Observable<UserResponseType | ErrorResponseType> {
+    return this.http
+      .post<UsersResponseType>(`${this.apiUrl}/auth/reset`, {
+        ...reset,
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  changePassword(
+    change: ChangeType,
+  ): Observable<UserResponseType | ErrorResponseType> {
+    return this.http
+      .post<UserResponseType>(`${this.apiUrl}/auth/change`, { ...change })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

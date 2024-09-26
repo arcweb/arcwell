@@ -31,12 +31,14 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-person',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    BackButtonComponent,
     MatInput,
     MatLabel,
     MatFormField,

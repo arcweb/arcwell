@@ -59,5 +59,10 @@ $padding: 2em;
   .profile-actions-container {
     display: flex;
     flex-direction: column;
+
+    .change-password-link,
+    .test-email-link {
+      cursor: pointer;
+    }
   }
 }
