@@ -38,8 +38,8 @@ export default class ResourcesController {
 
     // Add search functionality to query
     if (typeof search === 'string') {
-      query.whereILike('familyName', search)
-      countQuery.whereILike('familyName', search)
+      query.whereILike('name', search)
+      countQuery.whereILike('name', search)
     } else if (typeof search === 'object' && search !== null) {
       for (const key in search) {
         if (search.hasOwnProperty(key)) {
