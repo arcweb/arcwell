@@ -1,12 +1,12 @@
 import Fact from '#models/fact'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
-import { createFactValidator, insertFactValidator, updateFactValidator } from '#validators/fact'
+import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 
-async function getFullFact(id: string) {
+export async function getFullFact(id: string) {
   return Fact.query()
     .where('id', id)
     .preload('factType')
@@ -162,47 +162,6 @@ export default class FactsController {
     const fact = await Fact.findOrFail(params.id)
     await fact.delete()
     response.status(204).send('')
-  }
-
-  /**
-   * Handle form submission for the non-admin full features insert  action
-   */
-  async insert({ auth, request }: HttpContext) {
-    await auth.authenticate()
-    await request.validateUsing(insertFactValidator)
-    const cleanRequest = request.only([
-      'typeKey',
-      'observedAt',
-      'info',
-      'dimensions',
-      'personId',
-      'resourceId',
-      'eventId',
-    ])
-
-    let newFact = null as Fact | null
-
-    await db.transaction(async (trx) => {
-      newFact = new Fact().fill(cleanRequest).useTransaction(trx)
-      await newFact.save()
-
-      if (cleanRequest.dimensions) {
-        for (const dimension of cleanRequest.dimensions) {
-          await newFact.related('dimensions').create(dimension)
-        }
-      }
-
-      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
-      // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
-    })
-
-    // Load the full object to return
-    let newCreatedFact = null
-    if (newFact) {
-      newCreatedFact = await getFullFact(newFact.id)
-    }
-
-    return { data: newCreatedFact }
   }
 
   // TODO: Temporarily removing this until we have the api endpoint discussion

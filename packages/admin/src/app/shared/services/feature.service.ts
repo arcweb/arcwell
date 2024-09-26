@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { FeatureModel } from '../models/feature.model';
-import { FeatureResponseType, FeatureType } from '../schemas/feature.schema';
+import { FeatureResponseType, FeatureType } from '@schemas/feature.schema';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

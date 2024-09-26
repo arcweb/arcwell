@@ -11,7 +11,7 @@ import {
   withStorageSync,
 } from '@angular-architects/ngrx-toolkit';
 import { ResetType } from '@shared/schemas/password-reset.schema';
-import { ChangeType } from '../schemas/password-change.schema';
+import { ChangeType } from '@schemas/password-change.schema';
 
 export type LoginStatus =
   | 'none'

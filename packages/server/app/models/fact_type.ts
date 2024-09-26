@@ -10,8 +10,15 @@ import {
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
-import DimensionType from '#models/dimension_type'
 import { generateTypeKey } from '#helpers/generate_type_key'
+
+export interface DimensionType {
+  key: string
+  name: string
+  dataType: string
+  dataUnit: string
+  isRequired: boolean
+}
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -29,17 +36,14 @@ export default class FactType extends BaseModel {
   @hasMany(() => Fact, { foreignKey: 'typeKey', localKey: 'key' })
   declare facts: HasMany<typeof Fact>
 
+  @column()
+  declare dimensionTypes: DimensionType[]
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @manyToMany(() => DimensionType, {
-    pivotTimestamps: true,
-    pivotColumns: ['is_required'],
-  })
-  declare dimensionTypes: ManyToMany<typeof DimensionType>
 
   @manyToMany(() => Tag, {
     pivotTimestamps: true,
@@ -55,10 +59,15 @@ export default class FactType extends BaseModel {
   }
 
   @beforeSave()
-  // generate a key based on the name if one is not provided
   static async generateKey(type: FactType) {
+    // generate a key based on the name if one is not provided
     if (!type.key) {
       type.key = generateTypeKey(type.name)
+    }
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (type.dimensionTypes) {
+      // @ts-ignore - ignoring because dimensionTypes has to be stringify-ed to get around knex & postgresql jsonb issue
+      type.dimensionTypes = JSON.stringify(type.dimensionTypes)
     }
   }
 }

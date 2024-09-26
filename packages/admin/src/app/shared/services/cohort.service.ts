@@ -24,7 +24,7 @@ export class CohortService {
 
   getCohorts(
     limit?: number,
-    offset?: number
+    offset?: number,
   ): Observable<CohortsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -71,7 +71,7 @@ export class CohortService {
     peopleLimit?: number,
     peopleOffset?: number,
     sort?: string,
-    order?: string
+    order?: string,
   ): Observable<CohortResponseType | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -86,15 +86,17 @@ export class CohortService {
       params = params.set('peopleOrder', order);
     }
 
-    return this.http.get<CohortResponseType>(`${apiUrl}/cohorts/${id}/people`, { params }).pipe(
-      map((response: CohortResponseType) => {
-        const parsedResponse = CohortResponseSchema.parse(response);
-        return { data: deserializeCohort(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<CohortResponseType>(`${apiUrl}/cohorts/${id}/people`, { params })
+      .pipe(
+        map((response: CohortResponseType) => {
+          const parsedResponse = CohortResponseSchema.parse(response);
+          return { data: deserializeCohort(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   update(
@@ -135,25 +137,37 @@ export class CohortService {
     );
   }
 
-  attachPerson(cohortId: string, peopleId: string): Observable<void | ErrorResponseType> {
+  attachPerson(
+    cohortId: string,
+    peopleId: string,
+  ): Observable<void | ErrorResponseType> {
     const payload = {
-      peopleIds: [peopleId]
-    }
-    return this.http.post<void>(`${apiUrl}/cohorts/${cohortId}/attach`, payload).pipe(
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+      peopleIds: [peopleId],
+    };
+    return this.http
+      .post<void>(`${apiUrl}/cohorts/${cohortId}/attach`, payload)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
-  detachPerson(cohortId: string, peopleId: string): Observable<void | ErrorResponseType> {
+  detachPerson(
+    cohortId: string,
+    peopleId: string,
+  ): Observable<void | ErrorResponseType> {
     const payload = {
-      peopleIds: [peopleId]
-    }
-    return this.http.request<void>('delete', `${apiUrl}/cohorts/${cohortId}/detach`, { body: payload }).pipe(
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+      peopleIds: [peopleId],
+    };
+    return this.http
+      .request<void>('delete', `${apiUrl}/cohorts/${cohortId}/detach`, {
+        body: payload,
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

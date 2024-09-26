@@ -20,7 +20,6 @@ import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
-import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 
 interface CohortPeopleListState {
@@ -36,7 +35,7 @@ interface CohortState {
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
-  peopleListOptions: CohortPeopleListState
+  peopleListOptions: CohortPeopleListState;
 }
 
 const initialPeopleListState: CohortPeopleListState = {
@@ -45,14 +44,14 @@ const initialPeopleListState: CohortPeopleListState = {
   pageIndex: 0,
   sort: 'familyName',
   order: 'asc',
-}
+};
 
 const initialState: CohortState = {
   cohort: null,
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
-  peopleListOptions: initialPeopleListState
+  peopleListOptions: initialPeopleListState,
 };
 
 export const CohortStore = signalStore(
@@ -68,13 +67,15 @@ export const CohortStore = signalStore(
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
-        const cohortResp = await firstValueFrom(cohortService.getCohortWithPeople(
-          cohortId,
-          store.peopleListOptions().limit,
-          store.peopleListOptions().offset,
-          store.peopleListOptions().sort,
-          store.peopleListOptions().order,
-        ));
+        const cohortResp = await firstValueFrom(
+          cohortService.getCohortWithPeople(
+            cohortId,
+            store.peopleListOptions().limit,
+            store.peopleListOptions().offset,
+            store.peopleListOptions().sort,
+            store.peopleListOptions().order,
+          ),
+        );
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
         } else {
@@ -83,7 +84,7 @@ export const CohortStore = signalStore(
             {
               cohort: cohortResp.data,
               isReady: true,
-              peopleListOptions: initialPeopleListState
+              peopleListOptions: initialPeopleListState,
             },
             setFulfilled(),
           );
@@ -97,7 +98,7 @@ export const CohortStore = signalStore(
             inCreateMode: true,
             inEditMode: true,
             isReady: true,
-            peopleListOptions: initialPeopleListState
+            peopleListOptions: initialPeopleListState,
           },
           setFulfilled(),
         );
@@ -116,7 +117,11 @@ export const CohortStore = signalStore(
         } else {
           patchState(
             store,
-            { cohort: resp.data, inEditMode: false, peopleListOptions: initialPeopleListState },
+            {
+              cohort: resp.data,
+              inEditMode: false,
+              peopleListOptions: initialPeopleListState,
+            },
             setFulfilled(),
           );
           toastService.sendMessage('Updated cohort.', ToastLevel.SUCCESS);
@@ -135,7 +140,12 @@ export const CohortStore = signalStore(
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { cohort: resp.data, inCreateMode: false, inEditMode: false, peopleListOptions: initialPeopleListState },
+            {
+              cohort: resp.data,
+              inCreateMode: false,
+              inEditMode: false,
+              peopleListOptions: initialPeopleListState,
+            },
             setFulfilled(),
           );
         }
@@ -148,7 +158,11 @@ export const CohortStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(store, { inEditMode: false, peopleListOptions: initialPeopleListState }, setFulfilled());
+          patchState(
+            store,
+            { inEditMode: false, peopleListOptions: initialPeopleListState },
+            setFulfilled(),
+          );
         }
       },
       async setTags(tags: string[]) {
@@ -179,7 +193,7 @@ export const CohortStore = signalStore(
               limit,
               sort,
               order,
-            }
+            },
           },
           setPending(),
         );
@@ -221,7 +235,10 @@ export const CohortStore = signalStore(
             store.peopleListOptions().sort,
             store.peopleListOptions().order,
           );
-          toastService.sendMessage('Person added to cohort', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            'Person added to cohort',
+            ToastLevel.SUCCESS,
+          );
         }
       },
       async detachPerson(personId: string) {
@@ -237,8 +254,15 @@ export const CohortStore = signalStore(
           const newPeopleCount = store.cohort().peopleCount - 1;
           // Special case if the detached person was the only one left on a page. Go to previous
           // page in this case, unless this is deleting the final person
-          const maxPageIndex = Math.ceil(store.cohort().peopleCount / store.peopleListOptions().limit) - 1;
-          if (newPeopleCount !== 0 && pageIndex === maxPageIndex && newPeopleCount === offset) {
+          const maxPageIndex =
+            Math.ceil(
+              store.cohort().peopleCount / store.peopleListOptions().limit,
+            ) - 1;
+          if (
+            newPeopleCount !== 0 &&
+            pageIndex === maxPageIndex &&
+            newPeopleCount === offset
+          ) {
             pageIndex--;
             offset = offset - store.peopleListOptions().limit;
           }
@@ -250,7 +274,10 @@ export const CohortStore = signalStore(
             store.peopleListOptions().sort,
             store.peopleListOptions().order,
           );
-          toastService.sendMessage('Person removed from cohort', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            'Person removed from cohort',
+            ToastLevel.SUCCESS,
+          );
         }
       },
     }),

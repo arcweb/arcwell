@@ -5,7 +5,6 @@ import {
   inject,
   Input,
   OnInit,
-  signal,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -76,9 +75,10 @@ export class EventComponent implements OnInit {
   readonly backService = inject(BackService);
 
   @Input() eventId!: string;
+  @Input() typeKey?: string;
 
   eventForm = new FormGroup({
-    eventType: new FormControl(
+    eventType: new FormControl<EventTypeType | null>(
       { value: '', disabled: true },
       Validators.required,
     ),
@@ -101,6 +101,16 @@ export class EventComponent implements OnInit {
         this.eventForm.enable();
       } else {
         this.eventForm.disable();
+      }
+    });
+    effect(() => {
+      // update the form with the event type if typeKey is provided in the query params
+      if (this.eventStore.eventTypes() && this.typeKey) {
+        this.eventForm.patchValue({
+          eventType: this.eventStore
+            .eventTypes()
+            .find(et => et.key === this.typeKey),
+        });
       }
     });
   }

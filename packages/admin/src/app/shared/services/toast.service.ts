@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ToastLevel, ToastMessage } from '../models';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +9,6 @@ import { ErrorResponseType } from '../schemas/error.schema';
 export class ToastService {
   // TODO: Make this work with signals
   private messages: ToastMessage[] = [];
-
-  constructor() {}
 
   // autoremove message after set time
   autoRemoveMessage(msgId: number, timeout: number) {

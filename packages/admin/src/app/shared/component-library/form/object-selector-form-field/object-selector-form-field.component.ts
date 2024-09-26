@@ -50,7 +50,9 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
   // Inputs
   placeholder = input<string>('Type to search...');
   label = input<string>('Object');
-  serviceType = input.required<'people' | 'cohortPeople' | 'resources' | 'events'>();
+  serviceType = input.required<
+    'people' | 'cohortPeople' | 'resources' | 'events'
+  >();
   displayProperty = input.required<string>();
   // This is to pass in an id of a related object so to screen out objects of the serviceType
   // related to it. Want to keep it generic to allow use across the app, but could use a better
@@ -123,7 +125,9 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
         break;
       case 'cohortPeople':
         if (!this.objectIdForFiltering()) {
-          console.error('objectIdForFiltering must be defined for serviceType=cohortPeople')
+          console.error(
+            'objectIdForFiltering must be defined for serviceType=cohortPeople',
+          );
           return;
         }
         this.personService
