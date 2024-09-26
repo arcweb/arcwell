@@ -37,6 +37,8 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { PersonType } from '@schemas/person.schema';
+import { BackService } from '@app/shared/services/back.service';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-cohort',
@@ -58,6 +60,7 @@ import { PersonType } from '@schemas/person.schema';
     TagsFormComponent,
     PeopleTableComponent,
     ObjectSelectorFormFieldComponent,
+    BackButtonComponent,
   ],
   providers: [CohortStore],
   templateUrl: './cohort.component.html',
@@ -68,6 +71,7 @@ export class CohortComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() cohortId!: string;
 
@@ -156,8 +160,15 @@ export class CohortComponent implements OnInit {
 
   onCancel() {
     if (this.cohortStore.inCreateMode()) {
-      this.router.navigate(['project-management', 'cohorts']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.cohortStore.inEditMode()) {
+        this.cohortForm.patchValue({
+          name: this.cohortStore.cohort()?.name,
+          description: this.cohortStore.cohort()?.description,
+        });
+      }
       this.cohortStore.toggleEditMode();
     }
   }
@@ -175,7 +186,7 @@ export class CohortComponent implements OnInit {
       if (result === true) {
         this.cohortStore.deleteCohort().then(() => {
           if (this.cohortStore.errors().length === 0) {
-            this.router.navigate(['project-management', 'cohorts']);
+            this.backService.goBack();
           }
         });
       }
