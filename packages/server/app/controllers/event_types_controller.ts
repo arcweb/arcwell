@@ -1,3 +1,4 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventTypeValidator, updateEventTypeValidator } from '#validators/event_type'
@@ -15,21 +16,13 @@ export default class EventTypesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('event_types')
+    let [query, countQuery] = buildApiQuery(EventType.query(), queryData, 'event_types')
 
-    let query = EventType.query().preload('tags')
+    query.preload('tags')
 
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
     if (sort && order) {
       const camelSortStr = string.camelCase(sort)
       query.orderBy(camelSortStr, order)

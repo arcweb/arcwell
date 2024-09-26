@@ -5,6 +5,7 @@ import { createFactValidator, insertFactValidator, updateFactValidator } from '#
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
+import { buildApiQuery } from '#helpers/query_builder'
 
 async function getFullFact(id: string) {
   return Fact.query()
@@ -35,27 +36,25 @@ export default class FactsController {
     await auth.authenticate()
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('facts')
+    let [query, countQuery] = buildApiQuery(Fact.query(), queryData, 'facts')
 
-    let query = Fact.query()
+    query
       .preload('factType')
       .preload('tags')
       .preload('dimensions')
-      .preload('person', (person) => {
+      .preload('person', (person: any) => {
         person.preload('tags')
-        person.preload('user', (user) => {
+        person.preload('user', (user: any) => {
           user.preload('tags')
         })
       })
-      .preload('resource', (resource) => {
+      .preload('resource', (resource: any) => {
         resource.preload('tags')
       })
-      .preload('event', (event) => {
+      .preload('event', (event: any) => {
         event.preload('tags')
       })
 
@@ -96,12 +95,6 @@ export default class FactsController {
       }
     } else {
       query.orderBy('observedAt', 'desc')
-    }
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
     }
 
     const queryCount = await countQuery.count('*')

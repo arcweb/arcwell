@@ -3,6 +3,7 @@ import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
 import db from '@adonisjs/lucid/services/db'
+import { buildApiQuery } from '#helpers/query_builder'
 
 export function getFullUser(id: string) {
   return User.query()
@@ -25,27 +26,23 @@ export default class UsersController {
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
+    // const limit = queryData['limit']
+    // const offset = queryData['offset']
 
-    let countQuery = db.from('users')
-    let query = User.query()
+    // let countQuery = db.from('users')
+
+    let [query, countQuery] = buildApiQuery(User.query(), queryData, 'users')
+
+    query
       .orderBy('email', 'asc')
       .preload('tags')
       .preload('role')
-      .preload('person', (person) => {
+      .preload('person', (person: any) => {
         person.preload('tags')
-        person.preload('personType', (personType) => {
+        person.preload('personType', (personType: any) => {
           personType.preload('tags')
         })
       })
-
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
 
     const queryCount = await countQuery.count('*')
 

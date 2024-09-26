@@ -5,6 +5,7 @@ import { createResourceValidator, updateResourceValidator } from '#validators/re
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
+import { buildApiQuery } from '#helpers/query_builder'
 
 export function getFullResource(id: string) {
   return Resource.query()
@@ -21,45 +22,22 @@ export default class ResourcesController {
   async index({ request }: HttpContext) {
     const queryData = request.qs()
 
-    const search = queryData['search']
     const typeKey = queryData['typeKey']
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('resources')
+    let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resoures', 'name')
 
-    let query = Resource.query()
-      .preload('resourceType', (resourceType) => {
+    query
+      .preload('resourceType', (resourceType: any) => {
         resourceType.preload('tags')
       })
       .preload('tags')
-
-    // Add search functionality to query
-    if (typeof search === 'string') {
-      query.whereILike('name', search)
-      countQuery.whereILike('name', search)
-    } else if (typeof search === 'object' && search !== null) {
-      for (const key in search) {
-        if (search.hasOwnProperty(key)) {
-          const searchString = '%' + search[key] + '%'
-          query.whereILike(string.camelCase(key), searchString)
-          countQuery.whereILike(string.snakeCase(key), searchString)
-        }
-      }
-    }
 
     if (typeKey) {
       const resourceType = await ResourceType.findByOrFail('key', typeKey)
       query.where('typeKey', resourceType.key)
       countQuery.where('type_key', resourceType.key)
-    }
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
     }
     if (sort && order) {
       const camelSortStr = string.camelCase(sort)

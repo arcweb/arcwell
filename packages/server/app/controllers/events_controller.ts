@@ -21,7 +21,7 @@ export default class EventsController {
 
     let [query, countQuery] = buildApiQuery(Event.query(), queryData, 'events', 'typeKey')
 
-    query = query
+    query
       .preload('tags')
       .preload('person', (person: any) => {
         person.preload('tags')

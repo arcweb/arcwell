@@ -1,3 +1,4 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonTypeValidator, updatePersonTypeValidator } from '#validators/person_type'
@@ -14,21 +15,13 @@ export default class PersonTypesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('person_types')
+    let [query, countQuery] = buildApiQuery(PersonType.query(), queryData, 'person_types')
 
-    let query = PersonType.query().preload('tags')
+    query.preload('tags')
 
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
     if (sort && order) {
       const camelSortStr = string.camelCase(sort)
       query.orderBy(camelSortStr, order)

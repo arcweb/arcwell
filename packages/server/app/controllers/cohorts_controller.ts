@@ -1,3 +1,4 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
 import {
   createCohortValidator,
@@ -30,18 +31,11 @@ export default class CohortsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
+    // const limit = queryData['limit']
+    // const offset = queryData['offset']
+    let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
 
-    let countQuery = db.from('cohorts')
-    let query = Cohort.query().orderBy('name', 'asc').preload('tags')
-
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
+    query.orderBy('name', 'asc').preload('tags')
 
     const queryCount = await countQuery.count('*')
 
