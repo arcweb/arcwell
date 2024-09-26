@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { FactModel } from '@shared/models/fact.model';
-import { UserSchema } from '@shared/schemas/user.schema';
 import { FactTypeSchema } from './fact-type.schema';
 import { TagSchema } from '@schemas/tag.schema';
 import { PersonSchema } from '@schemas/person.schema';
