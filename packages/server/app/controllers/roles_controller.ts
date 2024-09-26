@@ -25,7 +25,6 @@ export default class RolesController {
 
     const queryCount = await countQuery.count('*')
 
-    // NOTE: this query did not have a count, check that it doesnt break when added
     return {
       data: await query,
       meta: {
