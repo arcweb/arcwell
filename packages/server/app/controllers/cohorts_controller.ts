@@ -6,6 +6,7 @@ import {
   updateCohortValidator,
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
+import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export function getFullCohort(
@@ -109,7 +110,7 @@ export default class CohortsController {
     const queryData = request.qs()
     const peopleLimit = (queryData['peopleLimit'] ||= 10)
     const peopleOffset = (queryData['peopleOffset'] ||= 0)
-    const peopleSort = queryData['peopleSort']
+    const peopleSort = string.camelCase(queryData['peopleSort'])
     const peopleOrder = queryData['peopleOrder']
 
     return {
