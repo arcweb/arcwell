@@ -1,6 +1,5 @@
 import factory from '@adonisjs/lucid/factories'
 import DimensionType from '#models/dimension_type'
-import { FactTypeFactory } from '#database/factories/fact_type_factory'
 
 export const DimensionTypeFactory = factory
   .define(DimensionType, async ({ faker }) => {
@@ -11,5 +10,4 @@ export const DimensionTypeFactory = factory
       dataUnit: faker.science.unit().name,
     }
   })
-  .relation('factTypes', () => FactTypeFactory)
   .build()
