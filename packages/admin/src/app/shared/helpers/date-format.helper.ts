@@ -10,17 +10,16 @@ export function prepDateData(dateTime: string) {
       split[x] = '0' + split[x];
     }
   }
-  const rVal = split.join('');
-  return rVal;
+  return split.join('');
 }
 
 export function cleanDateData(form: FormGroup, controlName: string) {
-  console.log("IN FUNC",form);
+  console.log('IN FUNC', form);
   if (form.get(controlName)?.value) {
     const retObj = { ...form.value };
     retObj[controlName] = DateTime.fromFormat(
       form.get(controlName)?.value,
-      "EEE MMM dd yyyy TTTZZZ (z)",
+      'EEE MMM dd yyyy TTTZZZ (z)',
     );
     return retObj;
   } else {

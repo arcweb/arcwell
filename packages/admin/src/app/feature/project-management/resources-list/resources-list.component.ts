@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ResourcesListStore } from '@feature/project-management/resources-list/resources-list.store';
 import {
   MatCell,
@@ -29,6 +29,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
   selector: 'aw-resources-list',
   standalone: true,
   imports: [
+    AsyncPipe,
     JsonPipe,
     MatTable,
     MatColumnDef,
@@ -79,6 +80,7 @@ export class ResourcesListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });
@@ -94,6 +96,7 @@ export class ResourcesListComponent {
       this.resourcesListStore.offset(),
       event.active,
       event.direction,
+      this.resourcesListStore.pageIndex(),
       this.resourcesListStore.typeKey(),
     );
   }

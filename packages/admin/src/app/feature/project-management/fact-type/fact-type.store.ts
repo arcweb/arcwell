@@ -18,6 +18,7 @@ import { FactType, FactUpdateType } from '@schemas/fact.schema';
 import { FactTypeService } from '@shared/services/fact-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
+import { FeatureStore } from '@app/shared/store/feature.store';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -42,6 +43,7 @@ export const FactTypeStore = signalStore(
       store,
       factTypeService = inject(FactTypeService),
       tagService = inject(TagService),
+      featureStore = inject(FeatureStore),
     ) => ({
       async initialize(factTypeId: string) {
         patchState(store, setPending());
@@ -87,6 +89,9 @@ export const FactTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(
             store,
             { factType: resp.data, inEditMode: false },
@@ -103,6 +108,9 @@ export const FactTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
@@ -119,6 +127,9 @@ export const FactTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+
           patchState(store, { inEditMode: false }, setFulfilled());
         }
       },

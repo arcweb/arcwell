@@ -22,11 +22,12 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { AuthStore } from '@app/shared/store/auth.store';
+import { EmailService } from '@app/shared/services/email.service';
 
 @Component({
   selector: 'aw-user',
@@ -53,6 +54,8 @@ import { AuthStore } from '@app/shared/store/auth.store';
 export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
   readonly authStore = inject(AuthStore);
+  private router = inject(Router);
+  private emailService: EmailService = inject(EmailService);
   userAvatar = '';
 
   destroyRef = inject(DestroyRef);
@@ -111,5 +114,15 @@ export class UserComponent implements OnInit {
 
   compareRoles(r1: RoleType, r2: RoleType): boolean {
     return r1 && r2 ? r1.id === r2.id : false;
+  }
+
+  sendEmail() {
+    this.emailService
+      .sendEmail(this.authStore.currentUser()!.email)
+      .subscribe();
+  }
+
+  changePassword() {
+    this.router.navigate(['auth', 'change']);
   }
 }

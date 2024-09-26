@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { FactsListStore } from '@feature/project-management/facts-list/facts-list.store';
 import {
   MatCell,
@@ -31,6 +31,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
   selector: 'aw-all-facts',
   standalone: true,
   imports: [
+    AsyncPipe,
     JsonPipe,
     MatTable,
     MatColumnDef,
@@ -85,7 +86,14 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(this.factsListStore.limit(), 0, '', '', typeKey);
+      this.factsListStore.load(
+        this.factsListStore.limit(),
+        0,
+        '',
+        '',
+        0,
+        typeKey,
+      );
     });
   }
 
@@ -115,6 +123,7 @@ export class FactsListComponent {
       this.factsListStore.offset(),
       event.active,
       event.direction,
+      this.factsListStore.pageIndex(),
       this.factsListStore.typeKey(),
     );
   }

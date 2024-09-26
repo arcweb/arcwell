@@ -15,7 +15,7 @@ import {
 } from '@angular/material/table';
 import { EventModel } from '@app/shared/models/event.model';
 import { EventsListStore } from './events-list.store';
-import { JsonPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
@@ -31,6 +31,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
   selector: 'aw-events-list',
   standalone: true,
   imports: [
+    AsyncPipe,
     JsonPipe,
     MatTable,
     MatColumnDef,
@@ -87,6 +88,7 @@ export class EventsListComponent {
         0,
         '',
         '',
+        0,
         typeKey,
       );
     });
@@ -106,6 +108,7 @@ export class EventsListComponent {
       this.eventsListStore.offset(),
       event.active,
       event.direction,
+      this.eventsListStore.pageIndex(),
       this.eventsListStore.typeKey(),
     );
   }

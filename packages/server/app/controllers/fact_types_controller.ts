@@ -4,9 +4,14 @@ import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fa
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
-export function getFullFactType(id: string) {
-  return FactType.query().where('id', id).preload('tags').firstOrFail()
+export function getFullFactType(id: string, trx?: TransactionClientContract) {
+  if (trx) {
+    return FactType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
+  } else {
+    return FactType.query().where('id', id).preload('tags').firstOrFail()
+  }
 }
 
 export default class FactTypesController {
@@ -62,6 +67,49 @@ export default class FactTypesController {
 
     return { data: await getFullFactType(newFactType.id) }
   }
+
+  // TODO: Below is work in progress, we might pivot to jsonb for dimension types
+  // async store({ request, auth }: HttpContext) {
+  //   await auth.authenticate()
+  //   await request.validateUsing(createFactTypeValidator)
+  //
+  //   const cleanRequest = request.only(['name', 'description', 'key', 'tags', 'dimensionTypes'])
+  //
+  //   const trx = await db.transaction()
+  //
+  //   let newFactType = null
+  //
+  //   try {
+  //     const factType = new FactType().fill(cleanRequest).useTransaction(trx)
+  //
+  //     newFactType = await factType.save()
+  //
+  //     if (cleanRequest.dimensionTypes) {
+  //       for (const dimensionType of cleanRequest.dimensionTypes) {
+  //         const isRequired = dimensionType.isRequired
+  //         delete dimensionType.isRequired
+  //
+  //         // await newFactType.related('dimensionTypes').create(dimensionType)
+  //         await newFactType
+  //           .related('dimensionTypes')
+  //           .create(dimensionType, { is_required: isRequired })
+  //       }
+  //     }
+  //     await trx.commit()
+  //     const fullFactType = await getFullFactType(newFactType.id)
+  //     return { data: await this.transformObject(fullFactType) }
+  //   } catch (error) {
+  //     await trx.rollback()
+  //     throwCustomHttpError(
+  //       {
+  //         title: 'Database exception',
+  //         code: 'E_DATABASE_EXCEPTION',
+  //         detail: error && error.detail ? error.detail : 'Unknown error',
+  //       },
+  //       500
+  //     )
+  //   }
+  // }
 
   /**
    * Show individual record

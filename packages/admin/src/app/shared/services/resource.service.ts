@@ -12,8 +12,7 @@ import {
 } from '@shared/schemas/resource.schema';
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +57,7 @@ export class ResourceService {
     }
 
     return this.http
-      .get<ResourcesResponseType>(`${apiUrl}/resources`, { params })
+      .get<ResourcesResponseType>(`${environment.apiUrl}/resources`, { params })
       .pipe(
         map((response: ResourcesResponseType) => {
           ResourcesResponseSchema.parse(response);
@@ -80,7 +79,7 @@ export class ResourceService {
     id: string,
   ): Observable<ResourceResponseType | ErrorResponseType> {
     return this.http
-      .get<ResourceResponseType>(`${apiUrl}/resources/${id}`)
+      .get<ResourceResponseType>(`${environment.apiUrl}/resources/${id}`)
       .pipe(
         map((response: ResourceResponseType) => {
           const resourceResponse = ResourceResponseSchema.parse(response);
@@ -97,7 +96,7 @@ export class ResourceService {
   ): Observable<ResourceResponseType | ErrorResponseType> {
     return this.http
       .patch<ResourceResponseType>(
-        `${apiUrl}/resources/${resource.id}`,
+        `${environment.apiUrl}/resources/${resource.id}`,
         resource,
       )
       .pipe(
@@ -115,7 +114,7 @@ export class ResourceService {
     resource: ResourceType,
   ): Observable<ResourceResponseType | ErrorResponseType> {
     return this.http
-      .post<ResourceResponseType>(`${apiUrl}/resources`, resource)
+      .post<ResourceResponseType>(`${environment.apiUrl}/resources`, resource)
       .pipe(
         map((response: ResourceResponseType) => {
           const parsedResponse = ResourceResponseSchema.parse(response);
@@ -131,7 +130,9 @@ export class ResourceService {
     resourceId: string,
   ): Observable<ResourceResponseType | ErrorResponseType> {
     return this.http
-      .delete<ResourceResponseType>(`${apiUrl}/resources/${resourceId}`)
+      .delete<ResourceResponseType>(
+        `${environment.apiUrl}/resources/${resourceId}`,
+      )
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

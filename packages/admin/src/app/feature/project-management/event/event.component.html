@@ -1,4 +1,5 @@
 @if (eventStore.isReady()) {
+  <aw-back-button></aw-back-button>
   <div class="main-container-header">
     @if (eventStore.inCreateMode()) {
       <h2>Create Event</h2>
@@ -53,6 +54,7 @@
         type="datetime"
         formControlName="startedAt"
         [owlDateTime]="dt1"
+        data-lpignore="true"
       />
       <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
       <owl-date-time #dt1></owl-date-time>
@@ -71,6 +73,7 @@
         type="datetime"
         formControlName="endedAt"
         [owlDateTime]="dt2"
+        data-lpignore="true"
       />
       <mat-icon class="event-icon" [owlDateTimeTrigger]="dt2">event</mat-icon>
       <owl-date-time #dt2></owl-date-time>

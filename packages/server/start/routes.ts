@@ -11,13 +11,14 @@ import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
+const DataFactsController = () => import('#controllers/data/data_facts_controller')
+const EmailsController = () => import('#controllers/emails_controller')
 const CohortsController = () => import('#controllers/cohorts_controller')
 const ConfigController = () => import('#controllers/config_controller')
 const FactTypesController = () => import('#controllers/fact_types_controller')
 const FactsController = () => import('#controllers/facts_controller')
 const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
-// const GetAllFullUsersController = () => import('#controllers/full_user_controller')
 const PeopleController = () => import('#controllers/people_controller')
 const PersonTypesController = () => import('#controllers/person_types_controller')
 const ResourcesController = () => import('#controllers/resources_controller')
@@ -43,10 +44,13 @@ router.get('/', async () => {
 // auth routes
 router
   .group(() => {
-    router.post('/register', [AuthController, 'register']).as('register')
+    // router.post('/register', [AuthController, 'register']).as('register')
     router.post('/login', [AuthController, 'login']).as('login')
     router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
     router.get('/me', [AuthController, 'me']).as('me')
+    router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
+    router.post('/reset', [AuthController, 'resetPassword']).as('reset')
+    router.post('/change', [AuthController, 'changePassword']).as('change')
   })
   .as('auth')
   .prefix('auth')
@@ -72,11 +76,6 @@ router.group(() => {
 // fact routes
 router.group(() => {
   router.resource('facts', FactsController).apiOnly()
-  router.post('facts/insert', [FactsController, 'insert']).as('facts.insert')
-  // TODO: Temporarily removing this until we have the api endpoint discussion
-  // router
-  //   .post('facts/:fact_type_key/insert', [FactsController, 'insertWithFactType'])
-  //   .as('facts.insertWithFactType')
 })
 
 router.group(() => {
@@ -126,3 +125,22 @@ router.group(() => {
   router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
   router.resource('tags', TagsController).apiOnly()
 })
+
+// email routes
+router.group(() => {
+  router.post('email', [EmailsController, 'send']).as('email.send')
+})
+
+router
+  .group(() => {
+    router.post('/insert', [DataFactsController, 'insert']).as('facts.insert')
+    // TODO: temporarily removing until implemented
+    // router
+    //   .get('/query/:fact_type_key', [DataFactsController, 'getDimensionsByObjects'])
+    //   .as('facts.dimensions')
+    router
+      .get('/query', [DataFactsController, 'getDimensionsByObjects'])
+      .as('facts.dimensionsBuilder')
+  })
+  .as('data')
+  .prefix('data')

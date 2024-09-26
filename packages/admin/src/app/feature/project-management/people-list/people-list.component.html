@@ -6,6 +6,7 @@
     <button
       mat-icon-button
       [routerLink]="['/project-management/people/create']"
+      [queryParams]="{ typeKey: typeKey$ | async }"
     >
       <mat-icon aria-label="Create person icon button">
         add_circle_outline
@@ -24,78 +25,18 @@
   <aw-error-container [errors]="peopleListStore.errors()" />
 }
 @if (peopleListStore.people().length > 0) {
-  <table
-    mat-table
-    matSort
+  <aw-people-table
     [dataSource]="dataSource"
-    class="mat-elevation-z0"
-    (matSortChange)="sortChange($event)"
+    [displayedColumns]="displayedColumns"
     [matSortActive]="this.peopleListStore.sort()"
     [matSortDirection]="this.peopleListStore.order()"
-  >
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>Id</th>
-      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="familyName">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Family Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.familyName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="givenName">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Given Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.givenName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="personType">
-      <th mat-header-cell mat-sort-header *matHeaderCellDef>Person Type</th>
-      <td mat-cell *matCellDef="let element">{{ element.personType.name }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="tags">
-      <th mat-header-cell *matHeaderCellDef>Tags</th>
-      <td mat-cell *matCellDef="let element">
-        @if (element.tags && element.tags.length > 0) {
-          @for (tag of element.tags; track $index) {
-            <div>
-              {{ tag.pathname }}
-            </div>
-          }
-        } @else {
-          <div>--</div>
-        }
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="user">
-      <th mat-header-cell *matHeaderCellDef>User?</th>
-      <td mat-cell *matCellDef="let element">
-        @if (element.user) {
-          <mat-icon
-            class="user-icon"
-            (click)="viewAccount(element.user.id); $event.stopPropagation()"
-          >
-            account_circle
-          </mat-icon>
-        }
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      (click)="handleClick(row)"
-    ></tr>
-  </table>
-
-  <mat-paginator
-    [length]="peopleListStore.totalData()"
-    [pageSizeOptions]="pageSizes"
-    [pageSize]="peopleListStore.limit()"
-    [pageIndex]="peopleListStore.pageIndex()"
-    (page)="this.peopleListStore.loadPage($event)"
-    showFirstLastButtons="true"
-  ></mat-paginator>
+    [length]="this.peopleListStore.totalData()"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.peopleListStore.limit()"
+    [pageIndex]="this.peopleListStore.pageIndex()"
+    (onPageChanged)="this.peopleListStore.loadPage($event)"
+    (onRowClicked)="rowClick($event)"
+    (onSortChanged)="sortChange($event)"
+    (onViewAccountClicked)="viewAccount($event)"
+  ></aw-people-table>
 }

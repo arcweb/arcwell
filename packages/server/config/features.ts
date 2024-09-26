@@ -36,6 +36,12 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     ],
   },
   {
+    name: 'Cohorts',
+    path: 'cohorts',
+    icon: 'groups',
+    subfeatures: [],
+  },
+  {
     name: 'Resources',
     path: 'resources',
     icon: 'collections_bookmark',
@@ -84,11 +90,6 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     name: 'Tags',
     path: 'tags',
     icon: 'sell',
-    subfeatures: [
-      {
-        name: 'All Tags',
-        path: 'list',
-      },
-    ],
+    subfeatures: [],
   },
 ]

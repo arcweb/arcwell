@@ -13,8 +13,7 @@ import {
 } from '@shared/schemas/fact.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -45,38 +44,42 @@ export class FactService {
       params = params.set('order', order);
     }
 
-    return this.http.get<FactsResponseType>(`${apiUrl}/facts`, { params }).pipe(
-      map((response: FactsResponseType) => {
-        FactsResponseSchema.parse(response);
+    return this.http
+      .get<FactsResponseType>(`${environment.apiUrl}/facts`, { params })
+      .pipe(
+        map((response: FactsResponseType) => {
+          FactsResponseSchema.parse(response);
 
-        return {
-          data: response.data.map((fact: FactType) => deserializeFact(fact)),
-          meta: response.meta,
-        };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+          return {
+            data: response.data.map((fact: FactType) => deserializeFact(fact)),
+            meta: response.meta,
+          };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   getFact(id: string): Observable<FactResponseType | ErrorResponseType> {
-    return this.http.get<FactResponseType>(`${apiUrl}/facts/${id}`).pipe(
-      map((response: FactResponseType) => {
-        const parsedResponse = FactResponseSchema.parse(response);
-        return { data: deserializeFact(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<FactResponseType>(`${environment.apiUrl}/facts/${id}`)
+      .pipe(
+        map((response: FactResponseType) => {
+          const parsedResponse = FactResponseSchema.parse(response);
+          return { data: deserializeFact(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   update(
     fact: FactUpdateType,
   ): Observable<FactResponseType | ErrorResponseType> {
     return this.http
-      .patch<FactResponseType>(`${apiUrl}/facts/${fact.id}`, fact)
+      .patch<FactResponseType>(`${environment.apiUrl}/facts/${fact.id}`, fact)
       .pipe(
         map((response: FactResponseType) => {
           const parsedResponse = FactResponseSchema.parse(response);
@@ -89,19 +92,21 @@ export class FactService {
   }
 
   create(fact: FactType): Observable<FactResponseType | ErrorResponseType> {
-    return this.http.post<FactResponseType>(`${apiUrl}/facts`, fact).pipe(
-      map((response: FactResponseType) => {
-        const parsedResponse = FactResponseSchema.parse(response);
-        return { data: deserializeFact(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .post<FactResponseType>(`${environment.apiUrl}/facts`, fact)
+      .pipe(
+        map((response: FactResponseType) => {
+          const parsedResponse = FactResponseSchema.parse(response);
+          return { data: deserializeFact(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   delete(factId: string): Observable<void | ErrorResponseType> {
-    return this.http.delete<void>(`${apiUrl}/facts/${factId}`).pipe(
+    return this.http.delete<void>(`${environment.apiUrl}/facts/${factId}`).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);
       }),

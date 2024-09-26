@@ -31,11 +31,14 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
+import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-resource',
   standalone: true,
   imports: [
+    BackButtonComponent,
     ReactiveFormsModule,
     MatInput,
     MatLabel,
@@ -59,12 +62,14 @@ export class ResourceComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destoyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() resourceId!: string;
+  @Input() typeKey?: string;
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
-    resourceType: new FormControl(
+    resourceType: new FormControl<ResourceTypeType | null>(
       { value: '', disabled: true },
       Validators.required,
     ),
@@ -76,6 +81,15 @@ export class ResourceComponent implements OnInit {
         this.resourceForm.enable();
       } else {
         this.resourceForm.disable();
+      }
+    });
+    effect(() => {
+      if (this.resourceStore.resourceTypes() && this.typeKey) {
+        this.resourceForm.patchValue({
+          resourceType: this.resourceStore
+            .resourceTypes()
+            .find(rt => rt.key === this.typeKey),
+        });
       }
     });
   }
@@ -111,13 +125,15 @@ export class ResourceComponent implements OnInit {
 
   onCancel() {
     if (this.resourceStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate([
-        'project-management',
-        'resources',
-        'all-resources',
-      ]);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.resourceStore.inEditMode()) {
+        this.resourceForm.patchValue({
+          name: this.resourceStore.resource()?.name,
+          resourceType: this.resourceStore.resource()?.resourceType,
+        });
+      }
       this.resourceStore.toggleEditMode();
     }
   }
@@ -136,12 +152,7 @@ export class ResourceComponent implements OnInit {
       if (result === true) {
         this.resourceStore.delete().then(() => {
           if (this.resourceStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'resources',
-              'all-resources',
-            ]);
+            this.backService.goBack();
           }
         });
       }

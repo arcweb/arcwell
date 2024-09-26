@@ -11,3 +11,9 @@ mat-error {
 mat-spinner {
   margin: 1rem 0;
 }
+
+.button-bar {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}

@@ -50,6 +50,7 @@ export const FactTypesStore = signalStore(
       offset: number,
       sort = '',
       order: SortDirection = 'asc',
+      pageIndex = 0,
     ) {
       patchState(
         store,
@@ -57,6 +58,7 @@ export const FactTypesStore = signalStore(
           ...initialState,
           sort: sort,
           order: order,
+          pageIndex: pageIndex,
         },
         setPending(),
       );

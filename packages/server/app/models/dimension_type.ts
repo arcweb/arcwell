@@ -1,8 +1,7 @@
-import { BaseModel, beforeSave, column, manyToMany } from '@adonisjs/lucid/orm'
-import type { ManyToMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, beforeSave, column } from '@adonisjs/lucid/orm'
 
-import FactType from '#models/fact_type'
 import { generateTypeKey } from '#helpers/generate_type_key'
+import { DateTime } from 'luxon'
 
 export default class DimensionType extends BaseModel {
   @column({ isPrimary: true })
@@ -20,11 +19,14 @@ export default class DimensionType extends BaseModel {
   @column()
   declare dataUnit: string
 
-  @manyToMany(() => FactType, {
-    pivotTimestamps: true,
-    pivotRelatedForeignKey: 'tag_id',
-  })
-  declare factTypes: ManyToMany<typeof FactType>
+  @column()
+  declare isRequired: boolean
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
 
   @beforeSave()
   // generate a key based on the name if one is not provided

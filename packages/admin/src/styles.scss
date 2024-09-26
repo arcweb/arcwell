@@ -4,7 +4,7 @@
 @use 'fonts' as fonts;
 @use 'theme' as theme;
 @include mat.core;
-@import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+@import '@danielmoncada/angular-datetime-picker/assets/style/picker.min.css';
 
 html {
   @include mat.core-theme(theme.$light-theme);
@@ -39,4 +39,5 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  cursor: pointer;
 }

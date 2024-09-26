@@ -18,7 +18,7 @@ export const TagUpdateSchema = TagSchema.extend({
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
 
-//  Multiple People
+//  Multiple Tags
 export const TagsResponseSchema = z.object({
   data: z.array(TagSchema),
   meta: z
@@ -32,7 +32,7 @@ export const TagsSimpleResponseSchema = z.object({
   data: z.array(z.string()),
 });
 
-// Single Person
+// Single Tag
 export const TagResponseSchema = z.object({
   data: TagSchema,
 });

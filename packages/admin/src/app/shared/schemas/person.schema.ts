@@ -3,6 +3,7 @@ import { PersonModel } from '@shared/models/person.model';
 import { UserSchema } from '@shared/schemas/user.schema';
 import { PersonTypeSchema } from './person-type.schema';
 import { TagSchema } from '@schemas/tag.schema';
+import { CohortSchema } from './cohort.schema';
 
 export const PersonSchema: any = z
   .object({
@@ -13,8 +14,7 @@ export const PersonSchema: any = z
     tags: z.array(TagSchema).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
     personType: PersonTypeSchema.optional(),
-    // TODO: import schema when available
-    cohorts: CohortSchema.optional(),
+    cohorts: z.array(CohortSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })

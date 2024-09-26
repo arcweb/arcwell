@@ -74,6 +74,7 @@ export class ResourceTypesComponent {
       this.resourceTypesStore.offset(),
       event.active,
       event.direction,
+      this.resourceTypesStore.pageIndex(),
     );
   }
 }

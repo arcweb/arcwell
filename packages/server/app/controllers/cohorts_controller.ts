@@ -7,12 +7,35 @@ import {
 import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
 
-export function getFullCohort(id: string) {
+export function getFullCohort(
+  id: string,
+  peopleLimit: number = 10,
+  peopleOffset: number = 0,
+  peopleSort?: string,
+  peopleOrder?: 'asc' | 'desc'
+) {
   return Cohort.query()
     .where('id', id)
     .preload('tags')
+    .withCount('people')
     .preload('people', (people) => {
+      people.limit(peopleLimit)
+      people.offset(peopleOffset)
+      if (peopleSort && peopleOrder) {
+        const camelSortStr = string.camelCase(peopleSort)
+        if (camelSortStr === 'personType') {
+          people
+            .join('person_types', 'person_types.key', 'people.type_key')
+            .orderBy('person_types.name', peopleOrder)
+        } else {
+          people.orderBy(camelSortStr, peopleOrder)
+        }
+      } else {
+        people.orderBy('familyName', 'asc')
+        people.orderBy('givenName', 'asc')
+      }
       people.preload('tags')
       people.preload('personType', (personType) => {
         personType.preload('tags')
@@ -89,24 +112,18 @@ export default class CohortsController {
   /**
    * Show individual record with people
    */
-  async showWithPeople({ params, auth }: HttpContext) {
+  async showWithPeople({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
-    // TODO: nested people could get large.  Add pagination?
-    return {
-      data: await Cohort.query()
-        .where('id', params.id)
-        .preload('people', (people) => {
-          people.preload('tags')
-          people.preload('personType', (personType) => {
-            personType.preload('tags')
-          })
-          people.preload('user', (user) => {
-            user.preload('tags')
-          })
-        })
 
-        .firstOrFail(),
+    const queryData = request.qs()
+    const peopleLimit = (queryData['peopleLimit'] ||= 10)
+    const peopleOffset = (queryData['peopleOffset'] ||= 0)
+    const peopleSort = queryData['peopleSort']
+    const peopleOrder = queryData['peopleOrder']
+
+    return {
+      data: await getFullCohort(params.id, peopleLimit, peopleOffset, peopleSort, peopleOrder),
     }
   }
 
