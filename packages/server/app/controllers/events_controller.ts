@@ -3,10 +3,8 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery } from '#helpers/query_builder'
-import Person from '#models/person'
 
 export default class EventsController {
   /**

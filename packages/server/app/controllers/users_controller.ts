@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
-import db from '@adonisjs/lucid/services/db'
 import { buildApiQuery } from '#helpers/query_builder'
 
 export function getFullUser(id: string) {

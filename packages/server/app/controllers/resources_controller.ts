@@ -3,7 +3,6 @@ import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery } from '#helpers/query_builder'
 

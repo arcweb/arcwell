@@ -7,7 +7,6 @@ import {
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 
 export function getFullCohort(id: string) {
   return Cohort.query()

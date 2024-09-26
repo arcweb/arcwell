@@ -4,7 +4,6 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 
 export function getFullResourceType(id: string) {
   return ResourceType.query().preload('tags').where('id', id).firstOrFail()

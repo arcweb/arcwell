@@ -3,7 +3,6 @@ import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonValidator, updatePersonValidator } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery } from '#helpers/query_builder'
 
