@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon';
-import { CohortUpdateType } from '../schemas/cohort.schema';
-import { TagType } from '../schemas/tag.schema';
+import { CohortUpdateType } from '@schemas/cohort.schema';
+import { TagType } from '@schemas/tag.schema';
 import { TagModel } from './tag.model';
 import { PersonModel } from './person.model';
-import { PersonType } from '../schemas/person.schema';
+import { PersonType } from '@schemas/person.schema';
 
 interface CohortBase {
   name: string;

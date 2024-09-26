@@ -40,7 +40,9 @@ export class EventTypeService {
     }
 
     return this.http
-      .get<EventTypesResponseType>(`${environment.apiUrl}/event_types`, { params })
+      .get<EventTypesResponseType>(`${environment.apiUrl}/event_types`, {
+        params,
+      })
       .pipe(
         map((response: EventTypesResponseType) => {
           EventTypesResponseSchema.parse(response);
@@ -97,7 +99,10 @@ export class EventTypeService {
     eventType: EventTypeType,
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<EventTypeResponseType>(`${environment.apiUrl}/event_types`, eventType)
+      .post<EventTypeResponseType>(
+        `${environment.apiUrl}/event_types`,
+        eventType,
+      )
       .pipe(
         map((response: EventTypeResponseType) => {
           const parsedResponse = EventTypeResponseSchema.parse(response);
@@ -113,7 +118,9 @@ export class EventTypeService {
     eventTypeId: string,
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
-      .delete<EventTypeResponseType>(`${environment.apiUrl}/event_types/${eventTypeId}`)
+      .delete<EventTypeResponseType>(
+        `${environment.apiUrl}/event_types/${eventTypeId}`,
+      )
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

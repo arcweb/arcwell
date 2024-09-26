@@ -1,4 +1,5 @@
 @if (cohortStore.isReady()) {
+  <aw-back-button></aw-back-button>
   <div class="main-container-header">
     @if (cohortStore.inCreateMode()) {
       <h2>Create Cohort</h2>
@@ -111,7 +112,9 @@
         (onSortChanged)="peopleSortChange($event)"
       ></aw-people-table>
     } @else {
-      <h3 class="no-people">No persons currently associated with this cohort</h3>
+      <h3 class="no-people">
+        No persons currently associated with this cohort
+      </h3>
     }
 
     <!--  Tags Section-->

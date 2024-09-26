@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

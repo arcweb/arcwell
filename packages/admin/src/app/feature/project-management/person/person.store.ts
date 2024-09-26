@@ -130,7 +130,6 @@ export const PersonStore = signalStore(
         }
       },
       async createPerson(createPersonFormData: PersonType) {
-        console.log('createPersonFormData', createPersonFormData);
         patchState(store, setPending());
         createPersonFormData.typeKey = createPersonFormData.personType.key;
 

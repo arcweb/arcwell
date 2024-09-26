@@ -1,11 +1,4 @@
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   withRequestStatus,
@@ -90,7 +83,7 @@ export const FeatureStore = signalStore(
           patchState(store, {
             activeFeature: activeFeature || null,
             activeSubfeature: activeSubfeature || null,
-            hasSubfeatures: activeFeature.subfeatures.length > 0
+            hasSubfeatures: activeFeature.subfeatures.length > 0,
           });
         }
         if (fulfillRequest) {

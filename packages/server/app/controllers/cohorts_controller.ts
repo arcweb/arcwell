@@ -14,7 +14,7 @@ export function getFullCohort(
   peopleLimit: number = 10,
   peopleOffset: number = 0,
   peopleSort?: string,
-  peopleOrder?: string,
+  peopleOrder?: 'asc' | 'desc'
 ) {
   return Cohort.query()
     .where('id', id)
@@ -117,13 +117,13 @@ export default class CohortsController {
     await paramsUUIDValidator.validate(params)
 
     const queryData = request.qs()
-    const peopleLimit = queryData['peopleLimit'] ||= 10
-    const peopleOffset = queryData['peopleOffset'] ||= 0
+    const peopleLimit = (queryData['peopleLimit'] ||= 10)
+    const peopleOffset = (queryData['peopleOffset'] ||= 0)
     const peopleSort = queryData['peopleSort']
     const peopleOrder = queryData['peopleOrder']
 
     return {
-      data: await getFullCohort(params.id, peopleLimit, peopleOffset, peopleSort, peopleOrder)
+      data: await getFullCohort(params.id, peopleLimit, peopleOffset, peopleSort, peopleOrder),
     }
   }
 

@@ -8,3 +8,11 @@ export const paramsUUIDValidator = vine.compile(
     id: vine.string().trim().uuid(),
   })
 )
+
+export const paramsTripleObjectUUIDValidator = vine.compile(
+  vine.object({
+    person_id: vine.string().trim().uuid().optional().nullable(),
+    resource_id: vine.string().trim().uuid().optional().nullable(),
+    event_id: vine.string().trim().uuid().optional().nullable(),
+  })
+)

@@ -7,12 +7,12 @@ import {
   UserResponseSchema,
   UserUpdateType,
   UsersResponseSchema,
-} from '../schemas/user.schema';
+} from '@schemas/user.schema';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { UserModel } from '../models/user.model';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { UserModel } from '@shared/models';
+import { ErrorResponseType } from '@schemas/error.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
 

@@ -130,7 +130,9 @@ export class ResourceService {
     resourceId: string,
   ): Observable<ResourceResponseType | ErrorResponseType> {
     return this.http
-      .delete<ResourceResponseType>(`${environment.apiUrl}/resources/${resourceId}`)
+      .delete<ResourceResponseType>(
+        `${environment.apiUrl}/resources/${resourceId}`,
+      )
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

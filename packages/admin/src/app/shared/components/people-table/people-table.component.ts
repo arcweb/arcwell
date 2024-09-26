@@ -1,5 +1,4 @@
-import { Component, effect, inject, input, OnInit, output, } from '@angular/core';
-import { PeopleListStore } from '@feature/project-management/people-list/people-list.store';
+import { Component, input, output } from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -15,7 +14,7 @@ import {
 } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatSortModule, Sort, SortDirection } from '@angular/material/sort';
 import { PersonModel } from '@shared/models/person.model';
 
@@ -37,6 +36,7 @@ import { PersonModel } from '@shared/models/person.model';
     MatIcon,
     MatIconButton,
     MatSortModule,
+    MatButton,
   ],
   templateUrl: './people-table.component.html',
   styleUrl: './people-table.component.scss',
