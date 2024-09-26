@@ -18,9 +18,7 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import {
-  MatTableDataSource,
-} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { CohortStore } from '@feature/project-management/cohort/cohort.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
@@ -39,6 +37,8 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { PersonType } from '@schemas/person.schema';
+import { BackService } from '@app/shared/services/back.service';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-cohort',
@@ -59,7 +59,8 @@ import { PersonType } from '@schemas/person.schema';
     FormsModule,
     TagsFormComponent,
     PeopleTableComponent,
-    ObjectSelectorFormFieldComponent
+    ObjectSelectorFormFieldComponent,
+    BackButtonComponent,
   ],
   providers: [CohortStore],
   templateUrl: './cohort.component.html',
@@ -70,6 +71,7 @@ export class CohortComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() cohortId!: string;
 
@@ -81,18 +83,17 @@ export class CohortComponent implements OnInit {
       },
       Validators.required,
     ),
-    description: new FormControl(
-      {
-        value: '',
-        disabled: true,
-      },
-    ),
+    description: new FormControl({
+      value: '',
+      disabled: true,
+    }),
   });
 
   peopleForm = new FormGroup({
     person: new FormControl<PersonType | null>(
       {
-        value: null, disabled: true
+        value: null,
+        disabled: true,
       },
       Validators.required,
     ),
@@ -103,7 +104,7 @@ export class CohortComponent implements OnInit {
     'familyName',
     'givenName',
     'personType',
-    'delete'
+    'delete',
   ];
   peopleDataSource = new MatTableDataSource<PersonModel>();
   pageSizes = [10, 20, 50];
@@ -159,8 +160,15 @@ export class CohortComponent implements OnInit {
 
   onCancel() {
     if (this.cohortStore.inCreateMode()) {
-      this.router.navigate(['project-management', 'cohorts']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.cohortStore.inEditMode()) {
+        this.cohortForm.patchValue({
+          name: this.cohortStore.cohort()?.name,
+          description: this.cohortStore.cohort()?.description,
+        });
+      }
       this.cohortStore.toggleEditMode();
     }
   }
@@ -178,10 +186,7 @@ export class CohortComponent implements OnInit {
       if (result === true) {
         this.cohortStore.deleteCohort().then(() => {
           if (this.cohortStore.errors().length === 0) {
-            this.router.navigate([
-              'project-management',
-              'cohorts',
-            ]);
+            this.backService.goBack();
           }
         });
       }
@@ -196,7 +201,8 @@ export class CohortComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm removal of person from cohort',
-        question: 'Are you sure you want to remove this person from the cohort?',
+        question:
+          'Are you sure you want to remove this person from the cohort?',
         okButtonText: 'Remove',
       },
     });

@@ -32,6 +32,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-person',
@@ -62,6 +63,7 @@ export class PersonComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() personId!: string;
 
@@ -132,9 +134,16 @@ export class PersonComponent implements OnInit {
 
   onCancel() {
     if (this.personStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'all-people']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.personStore.inEditMode()) {
+        this.personForm.patchValue({
+          familyName: this.personStore.person()?.familyName,
+          givenName: this.personStore.person()?.givenName,
+          personType: this.personStore.person()?.personType,
+        });
+      }
       this.personStore.toggleEditMode();
     }
   }
@@ -152,12 +161,7 @@ export class PersonComponent implements OnInit {
       if (result === true) {
         this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'people',
-              'all-people',
-            ]);
+            this.backService.goBack();
           }
         });
       }
