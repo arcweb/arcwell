@@ -26,7 +26,7 @@ export default class ResourcesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resoures', 'name')
+    let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resources', 'name')
 
     query
       .preload('resourceType', (resourceType: any) => {
