@@ -1,10 +1,9 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
-import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export function getFullFactType(id: string, trx?: TransactionClientContract) {
   if (trx) {
@@ -20,21 +19,13 @@ export default class FactTypesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('fact_types')
+    let [query, countQuery] = buildApiQuery(FactType.query(), queryData, 'event_types')
 
-    let query = FactType.query().preload('tags')
+    query.preload('tags')
 
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
     if (sort && order) {
       const camelSortStr = string.camelCase(sort)
       query.orderBy(camelSortStr, order)

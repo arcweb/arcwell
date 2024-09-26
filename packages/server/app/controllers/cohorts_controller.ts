@@ -1,3 +1,4 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
 import {
   createCohortValidator,
@@ -6,8 +7,6 @@ import {
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
-import string from '@adonisjs/core/helpers/string'
 
 export function getFullCohort(
   id: string,
@@ -53,18 +52,9 @@ export default class CohortsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
+    let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
 
-    let countQuery = db.from('cohorts')
-    let query = Cohort.query().orderBy('name', 'asc').preload('tags')
-
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
+    query.orderBy('name', 'asc').preload('tags')
 
     const queryCount = await countQuery.count('*')
 
