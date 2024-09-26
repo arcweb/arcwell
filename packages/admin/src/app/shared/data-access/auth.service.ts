@@ -15,8 +15,8 @@ import {
 } from '@shared/schemas/login.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
-import { ResetType } from '../schemas/password-reset.schema';
-import { ChangeType } from '../schemas/password-change.schema';
+import { ResetType } from '@schemas/password-reset.schema';
+import { ChangeType } from '@schemas/password-change.schema';
 
 @Injectable({
   providedIn: 'root',

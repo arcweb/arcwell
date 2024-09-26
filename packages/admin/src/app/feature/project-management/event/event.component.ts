@@ -5,7 +5,6 @@ import {
   inject,
   Input,
   OnInit,
-  signal,
 } from '@angular/core';
 import {
   ControlEvent,

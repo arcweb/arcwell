@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, map } from 'rxjs';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
 import {
   deserializeRole,
   RoleResponseSchema,
@@ -9,7 +9,7 @@ import {
   RolesResponseSchema,
   RolesResponseType,
   RoleType,
-} from '../schemas/role.schema';
+} from '@schemas/role.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { RoleModel } from '../models';
 import { environment } from '../../../environments/environment';

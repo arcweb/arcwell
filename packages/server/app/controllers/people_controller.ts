@@ -79,15 +79,11 @@ export default class PeopleController {
     if (notInCohort) {
       // Get complete list of people ids associated with cohort to filter them out
       // in add person to cohort form
-      const peopleIdInCohortQuery = await db.from('people')
+      const peopleIdInCohortQuery = await db
+        .from('people')
         .select('id')
-        .whereIn(
-          'id',
-          db.from('cohort_person')
-            .select('person_id')
-            .where('cohort_id', notInCohort)
-        )
-      const idList = peopleIdInCohortQuery.map(id => id['id'])
+        .whereIn('id', db.from('cohort_person').select('person_id').where('cohort_id', notInCohort))
+      const idList = peopleIdInCohortQuery.map((id) => id['id'])
       query.whereNotIn('id', idList)
     }
     if (sort && order) {

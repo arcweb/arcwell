@@ -44,7 +44,7 @@ export default class Cohort extends BaseModel {
 
   serializeExtras() {
     return {
-      peopleCount: parseInt(this.$extras.people_count)
+      peopleCount: Number.parseInt(this.$extras.people_count),
     }
   }
 }

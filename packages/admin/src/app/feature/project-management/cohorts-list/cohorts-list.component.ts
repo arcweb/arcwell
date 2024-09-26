@@ -20,7 +20,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 
@@ -65,12 +65,7 @@ export class CohortsListComponent {
   dataSource = new MatTableDataSource<CohortModel>();
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
-  displayedColumns: string[] = [
-    'id',
-    'name',
-    'description',
-    'tags',
-  ];
+  displayedColumns: string[] = ['id', 'name', 'description', 'tags'];
 
   constructor() {
     effect(() => {
