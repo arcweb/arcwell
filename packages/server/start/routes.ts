@@ -134,9 +134,10 @@ router.group(() => {
 router
   .group(() => {
     router.post('/insert', [DataFactsController, 'insert']).as('facts.insert')
-    router
-      .get('/query/:fact_id', [DataFactsController, 'getDimensionsByObjects'])
-      .as('facts.dimensions')
+    // TODO: temporarily removing until implemented
+    // router
+    //   .get('/query/:fact_type_key', [DataFactsController, 'getDimensionsByObjects'])
+    //   .as('facts.dimensions')
     router
       .get('/query', [DataFactsController, 'getDimensionsByObjects'])
       .as('facts.dimensionsBuilder')
