@@ -37,6 +37,7 @@ import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-person-type',
@@ -66,6 +67,7 @@ export class PersonTypeComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() personTypeId!: string;
 
@@ -149,9 +151,16 @@ export class PersonTypeComponent implements OnInit {
 
   onCancel() {
     if (this.personTypeStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'types']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.personTypeStore.inEditMode()) {
+        this.personTypeForm.patchValue({
+          key: this.personTypeStore.personType()?.key,
+          name: this.personTypeStore.personType()?.name,
+          description: this.personTypeStore.personType()?.description,
+        });
+      }
       this.personTypeStore.toggleEditMode();
     }
   }
@@ -170,8 +179,7 @@ export class PersonTypeComponent implements OnInit {
       if (result === true) {
         this.personTypeStore.delete().then(() => {
           if (this.personTypeStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'people', 'types']);
+            this.backService.goBack();
           }
         });
       }

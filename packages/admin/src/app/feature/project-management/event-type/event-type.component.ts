@@ -37,6 +37,7 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { TagType } from '@schemas/tag.schema';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-event-type',
@@ -66,6 +67,7 @@ export class EventTypeComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() eventTypeId!: string;
 
@@ -149,9 +151,16 @@ export class EventTypeComponent implements OnInit {
 
   onCancel() {
     if (this.eventTypeStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'events', 'types']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.eventTypeStore.inEditMode()) {
+        this.eventTypeForm.patchValue({
+          key: this.eventTypeStore.eventType()?.key,
+          name: this.eventTypeStore.eventType()?.name,
+          description: this.eventTypeStore.eventType()?.description,
+        });
+      }
       this.eventTypeStore.toggleEditMode();
     }
   }
@@ -170,8 +179,7 @@ export class EventTypeComponent implements OnInit {
       if (result === true) {
         this.eventTypeStore.delete().then(() => {
           if (this.eventTypeStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'events', 'types']);
+            this.backService.goBack();
           }
         });
       }
