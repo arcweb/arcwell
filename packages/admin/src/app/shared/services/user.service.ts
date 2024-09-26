@@ -7,15 +7,14 @@ import {
   UserResponseSchema,
   UserUpdateType,
   UsersResponseSchema,
-} from '../schemas/user.schema';
+} from '@schemas/user.schema';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { UserModel } from '../models/user.model';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { UserModel } from '@shared/models';
+import { ErrorResponseType } from '@schemas/error.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -36,23 +35,25 @@ export class UserService {
       params = params.set('offset', offset.toString());
     }
 
-    return this.http.get<UsersResponseType>(`${apiUrl}/users`, { params }).pipe(
-      map((response: UsersResponseType) => {
-        UsersResponseSchema.parse(response);
+    return this.http
+      .get<UsersResponseType>(`${environment.apiUrl}/users`, { params })
+      .pipe(
+        map((response: UsersResponseType) => {
+          UsersResponseSchema.parse(response);
 
-        return {
-          data: response.data.map((user: UserType) => deserializeUser(user)),
-          meta: response.meta,
-        };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+          return {
+            data: response.data.map((user: UserType) => deserializeUser(user)),
+            meta: response.meta,
+          };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
   // // TODO: test this once we get auth working
   // postUser(user: UserModel): Observable<UserModel | null> {
-  //   return this.http.post<UserResponseType>(`${apiUrl}/users`, user).pipe(
+  //   return this.http.post<UserResponseType>(`${environment.apiUrl}/users`, user).pipe(
   //     tap((response: UserResponseType | ErrorResponseType) => {
   //       // validate response is success
   //       if (response.errors && response.errors.length > 0) {
@@ -72,20 +73,22 @@ export class UserService {
   // }
 
   getUser(id: string): Observable<UserModel | ErrorResponseType> {
-    return this.http.get<UserResponseType>(`${apiUrl}/users/${id}`).pipe(
-      map((response: UserResponseType) => {
-        const parsedResponse = UserResponseSchema.parse(response);
-        return { data: deserializeUser(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<UserResponseType>(`${environment.apiUrl}/users/${id}`)
+      .pipe(
+        map((response: UserResponseType) => {
+          const parsedResponse = UserResponseSchema.parse(response);
+          return { data: deserializeUser(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   update(user: UserUpdateType): Observable<UserModel | ErrorResponseType> {
     return this.http
-      .patch<UserResponseType>(`${apiUrl}/users/${user.id}`, user)
+      .patch<UserResponseType>(`${environment.apiUrl}/users/${user.id}`, user)
       .pipe(
         tap((response: UserResponseType | ErrorResponseType) => {
           // validate response is success

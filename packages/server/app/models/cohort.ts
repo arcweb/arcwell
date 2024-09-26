@@ -12,7 +12,7 @@ export default class Cohort extends BaseModel {
   declare name: string
 
   @column()
-  declare description: string
+  declare description: string | null
 
   @column()
   declare rules: Object | null
@@ -40,5 +40,11 @@ export default class Cohort extends BaseModel {
   @afterDelete()
   static async detachTags(cohort: Cohort) {
     await cohort.related('tags').detach()
+  }
+
+  serializeExtras() {
+    return {
+      peopleCount: Number.parseInt(this.$extras.people_count),
+    }
   }
 }

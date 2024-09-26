@@ -12,8 +12,7 @@ import {
 import { ErrorResponseType } from '@schemas/error.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -38,19 +37,21 @@ export class TagService {
       params = params.set('offset', offset.toString());
     }
 
-    return this.http.get<TagsResponseType>(`${apiUrl}/tags`, { params }).pipe(
-      map((response: TagsResponseType) => {
-        TagsResponseSchema.parse(response);
+    return this.http
+      .get<TagsResponseType>(`${environment.apiUrl}/tags`, { params })
+      .pipe(
+        map((response: TagsResponseType) => {
+          TagsResponseSchema.parse(response);
 
-        return {
-          data: response.data.map((tag: TagType) => deserializeTag(tag)),
-          meta: response.meta,
-        };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+          return {
+            data: response.data.map((tag: TagType) => deserializeTag(tag)),
+            meta: response.meta,
+          };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   getTagsSimple(
@@ -71,7 +72,9 @@ export class TagService {
     }
 
     return this.http
-      .get<TagsSimpleResponseType>(`${apiUrl}/tags/simple`, { params })
+      .get<TagsSimpleResponseType>(`${environment.apiUrl}/tags/simple`, {
+        params,
+      })
       .pipe(
         map((response: TagsSimpleResponseType) => {
           TagsSimpleResponseSchema.parse(response);
@@ -92,7 +95,10 @@ export class TagService {
     tags: string[],
   ): Observable<void | ErrorResponseType> {
     return this.http
-      .post<void>(`${apiUrl}/tags/${objectId}/set`, { objectType, tags })
+      .post<void>(`${environment.apiUrl}/tags/${objectId}/set`, {
+        objectType,
+        tags,
+      })
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
@@ -101,7 +107,7 @@ export class TagService {
   }
 
   getTag(id: string): Observable<TagType | ErrorResponseType> {
-    return this.http.get<TagType>(`${apiUrl}/tags/${id}`).pipe(
+    return this.http.get<TagType>(`${environment.apiUrl}/tags/${id}`).pipe(
       map((response: TagType) => {
         return deserializeTag(response.data);
       }),
@@ -112,7 +118,7 @@ export class TagService {
   }
 
   create(tag: TagType): Observable<TagType | ErrorResponseType> {
-    return this.http.post<TagType>(`${apiUrl}/tags`, tag).pipe(
+    return this.http.post<TagType>(`${environment.apiUrl}/tags`, tag).pipe(
       map((response: TagType) => {
         return deserializeTag(response);
       }),
@@ -123,18 +129,20 @@ export class TagService {
   }
 
   update(tag: TagType): Observable<TagType | ErrorResponseType> {
-    return this.http.put<TagType>(`${apiUrl}/tags/${tag.id}`, tag).pipe(
-      map((response: TagType) => {
-        return deserializeTag(response);
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .put<TagType>(`${environment.apiUrl}/tags/${tag.id}`, tag)
+      .pipe(
+        map((response: TagType) => {
+          return deserializeTag(response);
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   delete(id: string): Observable<void | ErrorResponseType> {
-    return this.http.delete<void>(`${apiUrl}/tags/${id}`).pipe(
+    return this.http.delete<void>(`${environment.apiUrl}/tags/${id}`).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);
       }),

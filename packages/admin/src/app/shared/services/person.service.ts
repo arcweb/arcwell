@@ -13,8 +13,7 @@ import {
 } from '@shared/schemas/person.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +27,7 @@ export class PersonService {
     sort?: string;
     order?: string;
     typeKey?: string;
+    notInCohort?: string;
     search?: [{ field: string; searchString: string }];
   }): Observable<PeopleResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
@@ -40,6 +40,9 @@ export class PersonService {
     }
     if (props.typeKey) {
       params = params.set('typeKey', props.typeKey);
+    }
+    if (props.notInCohort) {
+      params = params.set('notInCohort', props.notInCohort);
     }
 
     if (props.search && props.search.length > 0) {
@@ -59,7 +62,7 @@ export class PersonService {
     }
 
     return this.http
-      .get<PeopleResponseType>(`${apiUrl}/people`, { params })
+      .get<PeopleResponseType>(`${environment.apiUrl}/people`, { params })
       .pipe(
         map((response: PeopleResponseType) => {
           PeopleResponseSchema.parse(response);
@@ -78,22 +81,27 @@ export class PersonService {
   }
 
   getPerson(id: string): Observable<PersonResponseType | ErrorResponseType> {
-    return this.http.get<PersonResponseType>(`${apiUrl}/people/${id}`).pipe(
-      map((response: PersonResponseType) => {
-        const parsedResponse = PersonResponseSchema.parse(response);
-        return { data: deserializePerson(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .get<PersonResponseType>(`${environment.apiUrl}/people/${id}`)
+      .pipe(
+        map((response: PersonResponseType) => {
+          const parsedResponse = PersonResponseSchema.parse(response);
+          return { data: deserializePerson(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   update(
     person: PersonUpdateType,
   ): Observable<PersonResponseType | ErrorResponseType> {
     return this.http
-      .patch<PersonResponseType>(`${apiUrl}/people/${person.id}`, person)
+      .patch<PersonResponseType>(
+        `${environment.apiUrl}/people/${person.id}`,
+        person,
+      )
       .pipe(
         map((response: PersonResponseType) => {
           const parsedResponse = PersonResponseSchema.parse(response);
@@ -108,22 +116,26 @@ export class PersonService {
   create(
     person: PersonType,
   ): Observable<PersonResponseType | ErrorResponseType> {
-    return this.http.post<PersonResponseType>(`${apiUrl}/people`, person).pipe(
-      map((response: PersonResponseType) => {
-        const parsedResponse = PersonResponseSchema.parse(response);
-        return { data: deserializePerson(parsedResponse.data) };
-      }),
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .post<PersonResponseType>(`${environment.apiUrl}/people`, person)
+      .pipe(
+        map((response: PersonResponseType) => {
+          const parsedResponse = PersonResponseSchema.parse(response);
+          return { data: deserializePerson(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 
   delete(personId: string): Observable<void | ErrorResponseType> {
-    return this.http.delete<void>(`${apiUrl}/people/${personId}`).pipe(
-      catchError(error => {
-        return defaultErrorResponseHandler(error);
-      }),
-    );
+    return this.http
+      .delete<void>(`${environment.apiUrl}/people/${personId}`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }
