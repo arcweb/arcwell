@@ -5,6 +5,8 @@ import { UserModel } from '@shared/models/user.model';
 import { UserType } from '@schemas/user.schema';
 import { TagModel } from '@shared/models/tag.model';
 import { TagType } from '@schemas/tag.schema';
+import { CohortModel } from '@shared/models/cohort.model';
+import { CohortType } from '@schemas/cohort.schema';
 
 // Base interface with common properties
 interface PersonBase {
@@ -13,6 +15,8 @@ interface PersonBase {
   typeKey: string;
   tags?: TagModel[];
   info?: object;
+  cohorts?: CohortModel[] | undefined;
+  cohortsCount?: number;
   createdAt: DateTime;
   updatedAt: DateTime;
   personType?: PersonTypeModel;
@@ -37,6 +41,8 @@ export class PersonModel {
   public typeKey: string;
   public tags?: TagModel[];
   public info?: object;
+  public cohorts?: CohortModel[] | undefined;
+  public cohortsCount?: number;
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public personType?: PersonTypeModel;
@@ -51,6 +57,10 @@ export class PersonModel {
       ? data.tags.map((tag: TagType) => new TagModel(tag))
       : undefined;
     this.info = data.info;
+    this.cohorts = data.cohorts
+      ? data.cohorts.map((cohort: CohortType) => new CohortModel(cohort))
+      : undefined;
+    this.cohortsCount = data.cohortsCount ||= 0;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.personType = data.personType

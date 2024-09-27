@@ -21,6 +21,7 @@ import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { SortDirection } from '@angular/material/sort';
+import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 
 interface CohortPeopleListState {
   limit: number;
@@ -249,23 +250,19 @@ export const CohortStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          let offset = store.peopleListOptions().offset;
-          let pageIndex = store.peopleListOptions().pageIndex;
-          const newPeopleCount = store.cohort().peopleCount - 1;
-          // Special case if the detached person was the only one left on a page. Go to previous
-          // page in this case, unless this is deleting the final person
-          const maxPageIndex =
-            Math.ceil(
-              store.cohort().peopleCount / store.peopleListOptions().limit,
-            ) - 1;
-          if (
-            newPeopleCount !== 0 &&
-            pageIndex === maxPageIndex &&
-            newPeopleCount === offset
-          ) {
-            pageIndex--;
-            offset = offset - store.peopleListOptions().limit;
-          }
+          const isLastPersonOnPage = isRelationLastOnPage(
+            store.cohort().peopleCount,
+            store.peopleListOptions().limit,
+            store.peopleListOptions().pageIndex,
+            store.peopleListOptions().offset,
+          );
+          // Go to previous page if last person in page other than final one
+          const pageIndex = isLastPersonOnPage
+            ? store.peopleListOptions().pageIndex - 1
+            : store.peopleListOptions().pageIndex;
+          const offset = isLastPersonOnPage
+            ? store.peopleListOptions().offset - store.peopleListOptions().limit
+            : store.peopleListOptions().offset;
 
           this.loadPeoplePage(
             store.peopleListOptions().limit,

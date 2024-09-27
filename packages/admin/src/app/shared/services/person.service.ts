@@ -94,6 +94,33 @@ export class PersonService {
       );
   }
 
+  getPersonWithCohorts(
+    id: string,
+    cohortLimit?: number,
+    cohortOffset?: number,
+  ): Observable<PersonResponseType | ErrorResponseType> {
+    let params = new HttpParams();
+
+    if (cohortLimit !== undefined) {
+      params = params.set('cohortLimit', cohortLimit.toString());
+    }
+    if (cohortOffset !== undefined) {
+      params = params.set('cohortOffset', cohortOffset.toString());
+    }
+
+    return this.http
+      .get<PersonResponseType>(`${environment.apiUrl}/people/${id}/cohorts`, { params })
+      .pipe(
+        map((response: PersonResponseType) => {
+          const parsedResponse = PersonResponseSchema.parse(response);
+          return { data: deserializePerson(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
   update(
     person: PersonUpdateType,
   ): Observable<PersonResponseType | ErrorResponseType> {
@@ -132,6 +159,40 @@ export class PersonService {
   delete(personId: string): Observable<void | ErrorResponseType> {
     return this.http
       .delete<void>(`${environment.apiUrl}/people/${personId}`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  attachCohort(
+    personId: string,
+    cohortId: string,
+  ): Observable<void | ErrorResponseType> {
+    const payload = {
+      cohortIds: [cohortId],
+    };
+    return this.http
+      .post<void>(`${environment.apiUrl}/people/${personId}/attach`, payload)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  detachCohort(
+    personId: string,
+    cohortId: string,
+  ): Observable<void | ErrorResponseType> {
+    const payload = {
+      cohortIds: [cohortId],
+    };
+    return this.http
+      .request<void>('delete', `${environment.apiUrl}/people/${personId}/detach`, {
+        body: payload,
+      })
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
