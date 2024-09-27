@@ -95,9 +95,55 @@
     </div>
   </form>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="personStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+  @if (!personStore.inCreateMode()) {
+    <!-- Cohorts Section -->
+    <h2>Cohorts</h2>
+    <form [formGroup]="cohortForm">
+      <aw-object-selector-form-field
+        formControlName="cohort"
+        placeholder="Search for Cohort"
+        label="Cohort"
+        serviceType="personCohorts"
+        displayProperty="name"
+        [objectIdForFiltering]="this.personStore.person().id"
+      ></aw-object-selector-form-field>
+
+      <div class="icons-container">
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="
+            personStore.inEditMode() || !cohortForm.valid || !cohortForm.dirty
+          "
+        >
+          Add Cohort to Person
+        </button>
+      </div>
+    </form>
+
+    @if (personStore.person().cohortsCount > 0) {
+      <aw-cohort-table
+        [dataSource]="cohortsDataSource"
+        [displayedColumns]="cohortColumns"
+        [length]="this.personStore.person().cohortsCount"
+        [pageSizes]="pageSizes"
+        [pageSize]="this.personStore.cohortsListOptions().limit"
+        [pageIndex]="this.personStore.cohortsListOptions().pageIndex"
+        (onDeleteClicked)="cohortsDeleteClick($event)"
+        (onPageChanged)="cohortsPageChange($event)"
+        (onRowClicked)="cohortsRowClick($event)"
+      ></aw-cohort-table>
+    } @else {
+      <h3 class="no-cohorts">
+        No cohorts currently associated with this person
+      </h3>
+    }
+
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="personStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
 }

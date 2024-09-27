@@ -95,8 +95,15 @@ router.group(() => {
 })
 
 // people routes
-router.resource('people', PeopleController).apiOnly()
 router.group(() => {
+  router.resource('people', PeopleController).apiOnly()
+  router
+    .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
+    .as('people.showWithCohorts')
+  router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
+  router
+    .delete('people/:id/detach', [PeopleController, 'detachCohort'])
+    .as('people.detachCohort')
   router.resource('person_types', PersonTypesController).apiOnly()
   router
     .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
