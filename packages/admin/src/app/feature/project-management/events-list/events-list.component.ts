@@ -68,7 +68,6 @@ export class EventsListComponent {
   pageSizes = [10, 20, 50];
   dataSource = new MatTableDataSource<EventModel>();
   displayedColumns: string[] = [
-    'id',
     'startedAt',
     'endedAt',
     'eventType',
