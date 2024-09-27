@@ -33,11 +33,6 @@
     [matSortActive]="this.eventsListStore.sort()"
     [matSortDirection]="this.eventsListStore.order()"
   >
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
-
     <ng-container matColumnDef="startedAt">
       <th mat-header-cell mat-sort-header *matHeaderCellDef>Started At</th>
       <td mat-cell *matCellDef="let element">

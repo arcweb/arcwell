@@ -22,6 +22,7 @@ import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { SortDirection } from '@angular/material/sort';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
+import { Router } from '@angular/router';
 
 interface CohortPeopleListState {
   limit: number;
@@ -65,6 +66,7 @@ export const CohortStore = signalStore(
       cohortService = inject(CohortService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
@@ -138,7 +140,6 @@ export const CohortStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
             {
@@ -149,6 +150,13 @@ export const CohortStore = signalStore(
             },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Created cohort.', ToastLevel.SUCCESS);
+
+          // navigate to the newly created cohort and don't save the current route in history
+          router.navigateByUrl(`/project-management/cohorts/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async deleteCohort() {

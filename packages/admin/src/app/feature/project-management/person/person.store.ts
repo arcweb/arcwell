@@ -22,6 +22,7 @@ import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
+import { Router } from '@angular/router';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 
 interface PersonCohortsListState {
@@ -51,7 +52,7 @@ const initialState: PersonState = {
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
-  cohortsListOptions: initialCohortsListState
+  cohortsListOptions: initialCohortsListState,
 };
 
 export const PersonStore = signalStore(
@@ -65,6 +66,7 @@ export const PersonStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -144,7 +146,11 @@ export const PersonStore = signalStore(
         } else {
           patchState(
             store,
-            { person: resp.data, inEditMode: false, cohortsListOptions: initialCohortsListState, },
+            {
+              person: resp.data,
+              inEditMode: false,
+              cohortsListOptions: initialCohortsListState,
+            },
             setFulfilled(),
           );
           toastService.sendMessage('Updated person.', ToastLevel.SUCCESS);
@@ -160,7 +166,6 @@ export const PersonStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
             {
@@ -171,6 +176,11 @@ export const PersonStore = signalStore(
             },
             setFulfilled(),
           );
+          toastService.sendMessage('Created person.', ToastLevel.SUCCESS);
+          // navigate the user to the newly created item
+          router.navigateByUrl(`/project-management/people/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async deletePerson() {
@@ -181,7 +191,11 @@ export const PersonStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(store, { inEditMode: false, cohortsListOptions: initialCohortsListState, }, setFulfilled());
+          patchState(
+            store,
+            { inEditMode: false, cohortsListOptions: initialCohortsListState },
+            setFulfilled(),
+          );
         }
       },
       async setTags(tags: string[]) {
@@ -195,11 +209,7 @@ export const PersonStore = signalStore(
           patchState(store, setFulfilled());
         }
       },
-      async loadCohortsPage(
-        limit: number,
-        offset: number,
-        pageIndex: number,
-      ) {
+      async loadCohortsPage(limit: number, offset: number, pageIndex: number) {
         patchState(
           store,
           {
@@ -271,7 +281,8 @@ export const PersonStore = signalStore(
             ? store.cohortsListOptions().pageIndex - 1
             : store.cohortsListOptions().pageIndex;
           const offset = isLastCohortOnPage
-            ? store.cohortsListOptions().offset - store.cohortsListOptions().limit
+            ? store.cohortsListOptions().offset -
+              store.cohortsListOptions().limit
             : store.cohortsListOptions().offset;
 
           this.loadCohortsPage(

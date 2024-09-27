@@ -45,7 +45,7 @@ export class CohortsListComponent {
   dataSource = new MatTableDataSource<CohortModel>();
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
-  displayedColumns: string[] = ['id', 'name', 'description', 'tags'];
+  displayedColumns: string[] = ['name', 'description', 'tags'];
 
   constructor() {
     effect(() => {
