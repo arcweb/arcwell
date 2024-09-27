@@ -2,7 +2,7 @@ import PersonType from '#models/person_type'
 import User from '#models/user'
 import { test } from '@japa/runner'
 
-const PERSON_TYPE_URL = '/person_types'
+const PERSON_TYPE_URL = '/people/types'
 
 test.group('Router person type', () => {
   test('person type index test', async ({ assert, client }) => {
@@ -28,7 +28,7 @@ test.group('Router person type', () => {
   })
 
   test('person type show with people test', async ({ assert, client }) => {
-    const personType = await PersonType.findBy('key', 'Staff')
+    const personType = await PersonType.findBy('key', 'staff')
 
     const response = await client.get(`${PERSON_TYPE_URL}/${personType?.id}/people`)
 
@@ -46,6 +46,7 @@ test.group('Router person type', () => {
     const personType = await PersonType.first()
 
     const newData = {
+      id: personType?.id,
       name: 'New Name',
     }
 
