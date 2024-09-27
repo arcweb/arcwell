@@ -56,7 +56,7 @@ export class EventTypesComponent {
 
   pageSizes = [10, 20, 50];
 
-  displayedColumns: string[] = ['id', 'key', 'name', 'tags'];
+  displayedColumns: string[] = ['key', 'name', 'tags'];
 
   constructor() {
     effect(() => {

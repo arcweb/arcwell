@@ -3,8 +3,8 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
+import { buildApiQuery } from '#helpers/query_builder'
 
 export default class EventsController {
   /**
@@ -13,27 +13,24 @@ export default class EventsController {
   async index({ request }: HttpContext) {
     const queryData = request.qs()
 
-    const search = queryData['search']
     const typeKey = queryData['typeKey']
-    const limit = queryData['limit']
-    const offset = queryData['offset']
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let countQuery = db.from('events')
+    let [query, countQuery] = buildApiQuery(Event.query(), queryData, 'events', 'typeKey')
 
-    let query = Event.query()
+    query
       .preload('tags')
-      .preload('person', (person) => {
+      .preload('person', (person: any) => {
         person.preload('tags')
-        person.preload('user', (user) => {
+        person.preload('user', (user: any) => {
           user.preload('tags')
         })
       })
-      .preload('resource', (resource) => {
+      .preload('resource', (resource: any) => {
         resource.preload('tags')
       })
-      .preload('eventType', (tags) => {
+      .preload('eventType', (tags: any) => {
         tags.preload('tags')
       })
 
@@ -64,30 +61,10 @@ export default class EventsController {
       query.orderBy('startedAt', 'desc')
     }
 
-    // Add search functionality to query
-    if (typeof search === 'string') {
-      query.whereILike('familyName', search)
-      countQuery.whereILike('familyName', search)
-    } else if (typeof search === 'object' && search !== null) {
-      for (const key in search) {
-        if (search.hasOwnProperty(key)) {
-          const searchString = '%' + search[key] + '%'
-          query.whereILike(string.camelCase(key), searchString)
-          countQuery.whereILike(string.snakeCase(key), searchString)
-        }
-      }
-    }
-
     if (typeKey) {
       const eventType = await EventType.findByOrFail('key', typeKey)
       query.where('typeKey', eventType.key)
       countQuery.where('type_key', eventType.key)
-    }
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
     }
 
     const queryCount = await countQuery.count('*')

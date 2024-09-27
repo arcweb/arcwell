@@ -67,7 +67,7 @@ export class ResourcesListComponent {
   dataSource = new MatTableDataSource<ResourceModel>();
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
-  displayedColumns: string[] = ['id', 'name', 'resourceType', 'tags'];
+  displayedColumns: string[] = ['name', 'resourceType', 'tags'];
 
   constructor() {
     effect(() => {

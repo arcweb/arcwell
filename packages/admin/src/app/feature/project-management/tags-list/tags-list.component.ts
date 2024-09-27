@@ -62,7 +62,7 @@ export class TagsListComponent {
   }
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
-  displayedColumns: string[] = ['id', 'pathname'];
+  displayedColumns: string[] = ['pathname'];
 
   handleClick(row: TagModel) {
     this.router.navigate(['project-management', 'tags', row.id]);
