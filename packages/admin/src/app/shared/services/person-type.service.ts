@@ -41,7 +41,7 @@ export class PersonTypeService {
     }
 
     return this.http
-      .get<PersonTypesResponseType>(`${environment.apiUrl}/person_types`, {
+      .get<PersonTypesResponseType>(`${environment.apiUrl}/people/types`, {
         params,
       })
       .pipe(
@@ -64,7 +64,7 @@ export class PersonTypeService {
     id: string,
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<PersonTypeResponseType>(`${environment.apiUrl}/person_types/${id}`)
+      .get<PersonTypeResponseType>(`${environment.apiUrl}/people/types/${id}`)
       .pipe(
         map((response: PersonTypeResponseType) => {
           const parsedResponse = PersonTypeResponseSchema.parse(response);
@@ -81,7 +81,7 @@ export class PersonTypeService {
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<PersonTypeResponseType>(
-        `${environment.apiUrl}/person_types/${person.id}`,
+        `${environment.apiUrl}/people/types/${person.id}`,
         person,
       )
       .pipe(
@@ -100,7 +100,7 @@ export class PersonTypeService {
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
       .post<PersonTypeResponseType>(
-        `${environment.apiUrl}/person_types`,
+        `${environment.apiUrl}/people/types`,
         personType,
       )
       .pipe(
@@ -119,7 +119,7 @@ export class PersonTypeService {
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
       .delete<PersonTypeResponseType>(
-        `${environment.apiUrl}/person_types/${personTypeId}`,
+        `${environment.apiUrl}/people/types/${personTypeId}`,
       )
       .pipe(
         catchError(error => {

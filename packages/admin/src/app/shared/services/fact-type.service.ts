@@ -41,7 +41,7 @@ export class FactTypeService {
     }
 
     return this.http
-      .get<FactTypesResponseType>(`${environment.apiUrl}/fact_types`, {
+      .get<FactTypesResponseType>(`${environment.apiUrl}/facts/types`, {
         params,
       })
       .pipe(
@@ -64,7 +64,7 @@ export class FactTypeService {
     id: string,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<FactTypeResponseType>(`${environment.apiUrl}/fact_types/${id}`)
+      .get<FactTypeResponseType>(`${environment.apiUrl}/facts/types/${id}`)
       .pipe(
         map((response: FactTypeResponseType) => {
           const parsedResponse = FactTypeResponseSchema.parse(response);
@@ -81,7 +81,7 @@ export class FactTypeService {
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<FactTypeResponseType>(
-        `${environment.apiUrl}/fact_types/${fact.id}`,
+        `${environment.apiUrl}/facts/types/${fact.id}`,
         fact,
       )
       .pipe(
@@ -99,7 +99,7 @@ export class FactTypeService {
     factType: FactTypeType,
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<FactTypeResponseType>(`${environment.apiUrl}/fact_types`, factType)
+      .post<FactTypeResponseType>(`${environment.apiUrl}/facts/types`, factType)
       .pipe(
         map((response: FactTypeResponseType) => {
           const parsedResponse = FactTypeResponseSchema.parse(response);
@@ -116,7 +116,7 @@ export class FactTypeService {
   ): Observable<FactTypeResponseType | ErrorResponseType> {
     return this.http
       .delete<FactTypeResponseType>(
-        `${environment.apiUrl}/fact_types/${factTypeId}`,
+        `${environment.apiUrl}/facts/types/${factTypeId}`,
       )
       .pipe(
         catchError(error => {

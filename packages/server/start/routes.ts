@@ -57,7 +57,6 @@ router
 
 // cohort routes
 router.group(() => {
-  router.resource('cohorts', CohortsController).apiOnly()
   router
     .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
     .as('cohorts.showWithPeople')
@@ -66,6 +65,7 @@ router.group(() => {
     .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
     .as('cohorts.detachPeople')
   router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+  router.resource('cohorts', CohortsController).apiOnly()
 })
 
 // config routes
@@ -74,47 +74,45 @@ router.group(() => {
 })
 
 // fact routes
-router.group(() => {
-  router.resource('facts', FactsController).apiOnly()
-})
 
 router.group(() => {
   router.resource('facts/types', FactTypesController).apiOnly()
   router
     .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
     .as('facts/types.showWithFacts')
+  router.resource('facts', FactsController).apiOnly()
 })
 
 // event routes
-router.resource('events', EventController).apiOnly()
 router.group(() => {
   router.resource('events/types', EventTypeController).apiOnly()
   router
     .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
     .as('events/types.showWithEvents')
+  router.resource('events', EventController).apiOnly()
 })
 
 // people routes
 router.group(() => {
-  router.resource('people', PeopleController).apiOnly()
   router
     .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
     .as('people.showWithCohorts')
   router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
   router.delete('people/:id/detach', [PeopleController, 'detachCohort']).as('people.detachCohort')
-  router.resource('person_types', PersonTypesController).apiOnly()
+  router.resource('people/types', PersonTypesController).apiOnly()
   router
     .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
     .as('people/types.showWithPeople')
+  router.resource('people', PeopleController).apiOnly()
 })
 
 // resource routes
-router.resource('resources', ResourcesController).apiOnly()
 router.group(() => {
   router.resource('resources/types', ResourceTypesController).apiOnly()
   router
     .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
     .as('resources/types.showWithResources')
+  router.resource('resources', ResourcesController).apiOnly()
 })
 
 // role routes

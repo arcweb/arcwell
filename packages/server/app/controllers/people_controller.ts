@@ -36,6 +36,7 @@ export default class PeopleController {
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
+    console.log('PEOPLE INDEXING')
 
     const queryData = request.qs()
 
