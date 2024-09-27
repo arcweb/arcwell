@@ -79,37 +79,37 @@ router.group(() => {
 })
 
 router.group(() => {
-  router.resource('fact_types', FactTypesController).apiOnly()
+  router.resource('facts/types', FactTypesController).apiOnly()
   router
-    .get('fact_types/:id/facts', [FactTypesController, 'showWithFacts'])
-    .as('fact_types.showWithFacts')
+    .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
+    .as('facts/types.showWithFacts')
 })
 
 // event routes
 router.resource('events', EventController).apiOnly()
 router.group(() => {
-  router.resource('event_types', EventTypeController).apiOnly()
+  router.resource('events/types', EventTypeController).apiOnly()
   router
-    .get('event_types/:id/events', [EventTypeController, 'showWithEvents'])
-    .as('event_types.showWithEvents')
+    .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
+    .as('events/types.showWithEvents')
 })
 
 // people routes
 router.resource('people', PeopleController).apiOnly()
 router.group(() => {
-  router.resource('person_types', PersonTypesController).apiOnly()
+  router.resource('people/types', PersonTypesController).apiOnly()
   router
-    .get('/person_types/:id/people', [PersonTypesController, 'showWithPeople'])
-    .as('person_types.showWithPeople')
+    .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
+    .as('people/types.showWithPeople')
 })
 
 // resource routes
 router.resource('resources', ResourcesController).apiOnly()
 router.group(() => {
-  router.resource('resource_types', ResourceTypesController).apiOnly()
+  router.resource('resources/types', ResourceTypesController).apiOnly()
   router
-    .get('resource_types/:id/resources', [ResourceTypesController, 'showWithResources'])
-    .as('resource_types.showWithResources')
+    .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
+    .as('resources/types.showWithResources')
 })
 
 // role routes
