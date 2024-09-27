@@ -3,6 +3,7 @@ import { createTagValidator, setTagsValidator, updateTagValidator } from '#valid
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { paramsUUIDValidator } from '#validators/common'
+import { buildApiQuery } from '#helpers/query_builder'
 
 export default class TagsController {
   /**
@@ -11,30 +12,14 @@ export default class TagsController {
   async index({ request }: HttpContext) {
     const queryData = request.qs()
     const parentStr = queryData['parentStr']
-    const limit = queryData['limit']
-    const offset = queryData['offset']
-    const search = queryData['search']
 
-    let countQuery = db.from('tags')
+    let [query, countQuery] = buildApiQuery(Tag.query(), queryData, 'tags', 'pathname')
 
-    let query = Tag.query().orderBy('pathname', 'asc')
+    query.orderBy('pathname', 'asc')
 
     if (parentStr) {
       query.where('parent', parentStr)
       countQuery.where('parent', parentStr)
-    }
-
-    if (search) {
-      const searchString = '%' + search + '%'
-      query.whereILike('pathname', searchString)
-      countQuery.whereILike('pathname', searchString)
-    }
-
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
     }
 
     const queryCount = await countQuery.count('*')

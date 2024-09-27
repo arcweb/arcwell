@@ -1,3 +1,4 @@
+import { buildApiQuery } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
 import {
   createCohortValidator,
@@ -5,9 +6,9 @@ import {
   updateCohortValidator,
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
+import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import string from '@adonisjs/core/helpers/string'
 
 export function getFullCohort(
   id: string,
@@ -53,41 +54,24 @@ export default class CohortsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
+    let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
+
+    query.orderBy('name', 'asc').preload('tags')
+
     const notRelatedToPerson = queryData['notRelatedToPerson']
-    const search = queryData['search']
 
-    let countQuery = db.from('cohorts')
-    let query = Cohort.query().orderBy('name', 'asc').preload('tags')
+    query.orderBy('name', 'asc').preload('tags')
 
-    if (limit) {
-      query.limit(limit)
-    }
-    if (offset) {
-      query.offset(offset)
-    }
-    if (search) {
-      if (typeof search === 'string') {
-        query.whereILike('name', search)
-        countQuery.whereILike('name', search)
-      } else if (typeof search === 'object' && search !== null) {
-        for (const key in search) {
-          if (search.hasOwnProperty(key)) {
-            const searchString = '%' + search[key] + '%'
-            query.whereILike(string.camelCase(key), searchString)
-            countQuery.whereILike(string.snakeCase(key), searchString)
-          }
-        }
-      }
-    }
     if (notRelatedToPerson) {
       // Get complete list of cohort ids associated with person to filter them out
       // in add cohort to person form
       const cohortIdInPersonQuery = await db
         .from('cohorts')
         .select('id')
-        .whereIn('id', db.from('cohort_person').select('cohort_id').where('person_id', notRelatedToPerson))
+        .whereIn(
+          'id',
+          db.from('cohort_person').select('cohort_id').where('person_id', notRelatedToPerson)
+        )
       const idList = cohortIdInPersonQuery.map((id) => id['id'])
       query.whereNotIn('id', idList)
     }
