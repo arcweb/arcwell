@@ -40,7 +40,7 @@ export class ResourceTypeService {
     }
 
     return this.http
-      .get<ResourceTypesResponseType>(`${environment.apiUrl}/resource_types`, {
+      .get<ResourceTypesResponseType>(`${environment.apiUrl}/resources/types`, {
         params,
       })
       .pipe(
@@ -65,7 +65,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .get<ResourceTypeResponseType>(
-        `${environment.apiUrl}/resource_types/${id}`,
+        `${environment.apiUrl}/resources/types/${id}`,
       )
       .pipe(
         map((response: ResourceTypeResponseType) => {
@@ -84,7 +84,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<ResourceTypeResponseType>(
-        `${environment.apiUrl}/resource_types/${resourceType.id}`,
+        `${environment.apiUrl}/resources/types/${resourceType.id}`,
         resourceType,
       )
       .pipe(
@@ -103,7 +103,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .post<ResourceTypeResponseType>(
-        `${environment.apiUrl}/resource_types`,
+        `${environment.apiUrl}/resources/types`,
         resourceType,
       )
       .pipe(
@@ -122,7 +122,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .delete<ResourceTypeResponseType>(
-        `${environment.apiUrl}/resource_types/${resourceTypeId}`,
+        `${environment.apiUrl}/resources/types/${resourceTypeId}`,
       )
       .pipe(
         catchError(error => {

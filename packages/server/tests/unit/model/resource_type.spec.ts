@@ -34,6 +34,7 @@ test.group('Model resource type', (group) => {
     }
 
     const newResourceType = await ResourceType.create(resourceTypeInfo)
+    console.log(newResourceType)
 
     assert.equal(newResourceType.tags, resourceTypeInfo.tags)
   })

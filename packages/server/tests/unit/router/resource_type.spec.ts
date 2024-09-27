@@ -2,7 +2,7 @@ import ResourceType from '#models/resource_type'
 import User from '#models/user'
 import { test } from '@japa/runner'
 
-const RESOURCE_TYPE_URL = '/resource_types'
+const RESOURCE_TYPE_URL = '/resources/types'
 
 test.group('Router resource type', () => {
   test('resource type index test', async ({ assert, client }) => {
@@ -11,7 +11,7 @@ test.group('Router resource type', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 2)
+    assert.equal(data.data.length, 3)
   })
 
   test('resource type show test', async ({ assert, client }) => {
@@ -28,7 +28,7 @@ test.group('Router resource type', () => {
   })
 
   test('resource type show with resources test', async ({ assert, client }) => {
-    const resourceType = await ResourceType.findBy('key', 'device')
+    const resourceType = await ResourceType.findBy('key', 'medical-device')
 
     const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`)
 
@@ -38,7 +38,7 @@ test.group('Router resource type', () => {
     assert.equal(data.data.id, resourceType?.id)
     assert.equal(data.data.key, resourceType?.key)
     assert.equal(data.data.name, resourceType?.name)
-    assert.equal(data.data.resources.length, 6)
+    assert.equal(data.data.resources.length, 3)
   })
 
   test('resource type update test', async ({ assert, client }) => {
@@ -46,6 +46,7 @@ test.group('Router resource type', () => {
     const resourceType = await ResourceType.first()
 
     const newData = {
+      id: resourceType?.id,
       name: 'New Name',
     }
 

@@ -64,6 +64,7 @@ export default class ResourceTypesController {
    * SHow record with related resources
    */
   async showWithResources({ params }: HttpContext) {
+    console.log('\n\n', params, '\n\n')
     await paramsUUIDValidator.validate(params)
     return {
       data: await ResourceType.query().preload('resources').where('id', params.id).firstOrFail(),
