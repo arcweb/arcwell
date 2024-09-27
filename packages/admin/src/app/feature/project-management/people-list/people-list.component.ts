@@ -44,7 +44,6 @@ export class PeopleListComponent {
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.
   displayedColumns: string[] = [
-    'id',
     'familyName',
     'givenName',
     'personType',

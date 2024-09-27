@@ -33,11 +33,6 @@
     [matSortActive]="this.resourcesListStore.sort()"
     [matSortDirection]="this.resourcesListStore.order()"
   >
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
-    </ng-container>
-
     <ng-container matColumnDef="name">
       <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let element">{{ element.name }}</td>
