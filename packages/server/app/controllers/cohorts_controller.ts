@@ -8,6 +8,7 @@ import {
 import { paramsUUIDValidator } from '#validators/common'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullCohort(
   id: string,
@@ -56,6 +57,24 @@ export default class CohortsController {
     let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
 
     query.orderBy('name', 'asc').preload('tags')
+
+    const notRelatedToPerson = queryData['notRelatedToPerson']
+
+    query.orderBy('name', 'asc').preload('tags')
+
+    if (notRelatedToPerson) {
+      // Get complete list of cohort ids associated with person to filter them out
+      // in add cohort to person form
+      const cohortIdInPersonQuery = await db
+        .from('cohorts')
+        .select('id')
+        .whereIn(
+          'id',
+          db.from('cohort_person').select('cohort_id').where('person_id', notRelatedToPerson)
+        )
+      const idList = cohortIdInPersonQuery.map((id) => id['id'])
+      query.whereNotIn('id', idList)
+    }
 
     const queryCount = await countQuery.count('*')
 

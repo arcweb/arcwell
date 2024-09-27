@@ -65,4 +65,10 @@ export default class Person extends BaseModel {
   static async detachTags(person: Person) {
     await person.related('tags').detach()
   }
+
+  serializeExtras() {
+    return {
+      cohortsCount: Number.parseInt(this.$extras.cohorts_count),
+    }
+  }
 }
