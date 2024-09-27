@@ -36,7 +36,7 @@
     "#helpers/*": "./app/helpers/*.js"
   },
   "devDependencies": {
-    "@adonisjs/assembler": "^7.7.0",
+    "@adonisjs/assembler": "^7.8.2",
     "@adonisjs/eslint-config": "^1.3.0",
     "@adonisjs/prettier-config": "^1.3.0",
     "@adonisjs/tsconfig": "^1.3.0",
@@ -51,7 +51,7 @@
     "hot-hook": "^0.2.6",
     "pino-pretty": "^11.2.1",
     "prettier": "^3.3.2",
-    "ts-node": "^10.9.2",
+    "ts-node-maintained": "^10.9.4",
     "typescript": "~5.4"
   },
   "dependencies": {
