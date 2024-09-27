@@ -129,7 +129,7 @@ export default class CohortsController {
     const queryData = request.qs()
     const peopleLimit = (queryData['peopleLimit'] ||= 10)
     const peopleOffset = (queryData['peopleOffset'] ||= 0)
-    const peopleSort = queryData['peopleSort']
+    const peopleSort = string.camelCase(queryData['peopleSort'])
     const peopleOrder = queryData['peopleOrder']
 
     return {
