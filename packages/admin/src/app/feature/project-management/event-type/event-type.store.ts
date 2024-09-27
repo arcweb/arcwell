@@ -19,6 +19,9 @@ import { EventTypeService } from '@shared/services/event-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { Router } from '@angular/router';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface EventTypeState {
   eventType: EventType | null;
@@ -44,6 +47,8 @@ export const EventTypeStore = signalStore(
       eventTypeService = inject(EventTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
+      router = inject(Router),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(eventTypeId: string) {
         patchState(store, setPending());
@@ -97,6 +102,8 @@ export const EventTypeStore = signalStore(
             { eventType: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Updated event type.', ToastLevel.SUCCESS);
         }
       },
       async create(createEventTypeFormData: EventType) {
@@ -110,12 +117,18 @@ export const EventTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { eventType: resp.data, inEditMode: false },
+            { eventType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Created event type.', ToastLevel.SUCCESS);
+
+          // navigate the user to the newly created item and dont save the current route in history
+          router.navigateByUrl(`/project-management/events/types/${resp.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async delete() {
@@ -129,7 +142,11 @@ export const EventTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
-          patchState(store, { inEditMode: false }, setFulfilled());
+          patchState(
+            store,
+            { inEditMode: false, inCreateMode: false },
+            setFulfilled(),
+          );
         }
       },
       async setTags(tags: string[]) {

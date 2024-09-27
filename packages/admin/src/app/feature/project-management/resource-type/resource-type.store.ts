@@ -23,6 +23,9 @@ import {
   ResourceUpdateType,
 } from '@app/shared/schemas/resource.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { Router } from '@angular/router';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface ResourceTypeState {
   resourceType: ResourceType | null;
@@ -48,6 +51,8 @@ export const ResourceTypeStore = signalStore(
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
+      router = inject(Router),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(resourceTypeId: string) {
         patchState(store, setPending());
@@ -100,6 +105,11 @@ export const ResourceTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
+          toastService.sendMessage(
+            'Updated resource type.',
+            ToastLevel.SUCCESS,
+          );
+
           patchState(
             store,
             { resourceType: resp.data, inEditMode: false },
@@ -118,11 +128,21 @@ export const ResourceTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { resourceType: resp.data, inEditMode: false },
+            { resourceType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
+          );
+
+          toastService.sendMessage(
+            'Created resource type.',
+            ToastLevel.SUCCESS,
+          );
+
+          // navigate to the newly created item and don't save the current route in the history
+          router.navigateByUrl(
+            `/project-management/resources/types/${resp.data.id}`,
+            { replaceUrl: true },
           );
         }
       },

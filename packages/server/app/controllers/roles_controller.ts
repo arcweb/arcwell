@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
+import { buildApiQuery } from '#helpers/query_builder'
 
 export function getFullRole(id: string) {
   return Role.query()
@@ -17,19 +18,19 @@ export default class RolesController {
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    const limit = queryData['limit']
-    const offset = queryData['offset']
 
-    let query = Role.query().orderBy('name', 'asc').preload('users')
+    let [query, countQuery] = buildApiQuery(Role.query(), queryData, 'roles')
 
-    if (limit) {
-      query.limit(limit)
+    query.orderBy('name', 'asc').preload('users')
+
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: await query,
+      meta: {
+        count: +queryCount[0].count,
+      },
     }
-    if (offset) {
-      query.offset(offset)
-    }
-
-    return { data: await query }
   }
 
   /**

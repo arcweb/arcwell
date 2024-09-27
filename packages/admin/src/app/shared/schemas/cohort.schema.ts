@@ -10,7 +10,7 @@ export const CohortSchema: any = z
     description: z.string().optional().nullable(),
     rules: z.object({}).passthrough(),
     tags: z.array(TagSchema).optional(),
-    people: z.array(PersonSchema).optional(),
+    people: z.lazy(() => z.array(PersonSchema).optional()),
     peopleCount: z.number().optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),

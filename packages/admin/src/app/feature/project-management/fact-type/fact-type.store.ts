@@ -19,6 +19,9 @@ import { FactTypeService } from '@shared/services/fact-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { ToastService } from '@app/shared/services/toast.service';
+import { Router } from '@angular/router';
+import { ToastLevel } from '@app/shared/models';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -44,6 +47,8 @@ export const FactTypeStore = signalStore(
       factTypeService = inject(FactTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
+      toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(factTypeId: string) {
         patchState(store, setPending());
@@ -92,6 +97,8 @@ export const FactTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
+          toastService.sendMessage('Updated Fact Type.', ToastLevel.SUCCESS);
+
           patchState(
             store,
             { factType: resp.data, inEditMode: false },
@@ -100,7 +107,6 @@ export const FactTypeStore = signalStore(
         }
       },
       async create(createFactTypeFormData: FactType) {
-        console.log('createFactFormData', createFactTypeFormData);
         patchState(store, setPending());
         const resp = await firstValueFrom(
           factTypeService.create(createFactTypeFormData),
@@ -111,11 +117,17 @@ export const FactTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
-          // TODO: Do we need to do this if we are navigating away?
+          toastService.sendMessage('Created Fact Type.', ToastLevel.SUCCESS);
           patchState(
             store,
-            { factType: resp.data, inEditMode: false },
+            { factType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
+          );
+
+          // navigate the user to the newly created item and dont save the current route in the history
+          router.navigateByUrl(
+            `/project-management/facts/types/${resp.data.id}`,
+            { replaceUrl: true },
           );
         }
       },

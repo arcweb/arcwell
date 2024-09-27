@@ -13,12 +13,15 @@ import {
   setErrors,
 } from '@shared/store/request-status.feature';
 import { computed, inject } from '@angular/core';
-import { firstValueFrom, forkJoin } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
+import { Router } from '@angular/router';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface PersonTypeState {
   personType: PersonType | null;
@@ -44,6 +47,8 @@ export const PersonTypeStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
+      router = inject(Router),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(personTypeId: string) {
         patchState(store, setPending());
@@ -96,6 +101,8 @@ export const PersonTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
+          toastService.sendMessage('Person Type updated.', ToastLevel.SUCCESS);
+
           patchState(
             store,
             { personType: resp.data, inEditMode: false },
@@ -114,11 +121,20 @@ export const PersonTypeStore = signalStore(
           // load the feature list with the latest list of subfeatures
           featureStore.load();
 
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { personType: resp.data, inEditMode: false },
+            { personType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
+          );
+
+          toastService.sendMessage('Person Type created.', ToastLevel.SUCCESS);
+
+          // navigate to the newly created item and don't save the current route in history`
+          router.navigateByUrl(
+            `project-management/people/types/${resp.data.id}`,
+            {
+              replaceUrl: true,
+            },
           );
         }
       },
