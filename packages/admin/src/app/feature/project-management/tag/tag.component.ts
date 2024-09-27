@@ -31,6 +31,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-tag',
@@ -48,6 +50,7 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
     RouterLink,
     MatIconButton,
     FormsModule,
+    BackButtonComponent,
   ],
   providers: [TagStore],
   templateUrl: './tag.component.html',
@@ -58,6 +61,7 @@ export class TagComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() tagId!: string;
 
@@ -109,9 +113,14 @@ export class TagComponent implements OnInit {
 
   onCancel() {
     if (this.tagStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'tags', 'list']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.tagStore.inEditMode()) {
+        this.tagForm.patchValue({
+          pathname: this.tagStore.tag()?.pathname,
+        });
+      }
       this.tagStore.toggleEditMode();
     }
   }
@@ -129,8 +138,7 @@ export class TagComponent implements OnInit {
       if (result === true) {
         this.tagStore.deleteTag().then(() => {
           if (this.tagStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'tags', 'list']);
+            this.backService.goBack();
           }
         });
       }

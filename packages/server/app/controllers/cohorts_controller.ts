@@ -6,13 +6,37 @@ import {
   updateCohortValidator,
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
+import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
-export function getFullCohort(id: string) {
+export function getFullCohort(
+  id: string,
+  peopleLimit: number = 10,
+  peopleOffset: number = 0,
+  peopleSort?: string,
+  peopleOrder?: 'asc' | 'desc'
+) {
   return Cohort.query()
     .where('id', id)
     .preload('tags')
+    .withCount('people')
     .preload('people', (people) => {
+      people.limit(peopleLimit)
+      people.offset(peopleOffset)
+      if (peopleSort && peopleOrder) {
+        const camelSortStr = string.camelCase(peopleSort)
+        if (camelSortStr === 'personType') {
+          people
+            .join('person_types', 'person_types.key', 'people.type_key')
+            .orderBy('person_types.name', peopleOrder)
+        } else {
+          people.orderBy(camelSortStr, peopleOrder)
+        }
+      } else {
+        people.orderBy('familyName', 'asc')
+        people.orderBy('givenName', 'asc')
+      }
       people.preload('tags')
       people.preload('personType', (personType) => {
         personType.preload('tags')
@@ -33,6 +57,24 @@ export default class CohortsController {
     let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
 
     query.orderBy('name', 'asc').preload('tags')
+
+    const notRelatedToPerson = queryData['notRelatedToPerson']
+
+    query.orderBy('name', 'asc').preload('tags')
+
+    if (notRelatedToPerson) {
+      // Get complete list of cohort ids associated with person to filter them out
+      // in add cohort to person form
+      const cohortIdInPersonQuery = await db
+        .from('cohorts')
+        .select('id')
+        .whereIn(
+          'id',
+          db.from('cohort_person').select('cohort_id').where('person_id', notRelatedToPerson)
+        )
+      const idList = cohortIdInPersonQuery.map((id) => id['id'])
+      query.whereNotIn('id', idList)
+    }
 
     const queryCount = await countQuery.count('*')
 
@@ -80,24 +122,18 @@ export default class CohortsController {
   /**
    * Show individual record with people
    */
-  async showWithPeople({ params, auth }: HttpContext) {
+  async showWithPeople({ params, request, auth }: HttpContext) {
     await auth.authenticate()
     await paramsUUIDValidator.validate(params)
-    // TODO: nested people could get large.  Add pagination?
-    return {
-      data: await Cohort.query()
-        .where('id', params.id)
-        .preload('people', (people) => {
-          people.preload('tags')
-          people.preload('personType', (personType) => {
-            personType.preload('tags')
-          })
-          people.preload('user', (user) => {
-            user.preload('tags')
-          })
-        })
 
-        .firstOrFail(),
+    const queryData = request.qs()
+    const peopleLimit = (queryData['peopleLimit'] ||= 10)
+    const peopleOffset = (queryData['peopleOffset'] ||= 0)
+    const peopleSort = queryData['peopleSort']
+    const peopleOrder = queryData['peopleOrder']
+
+    return {
+      data: await getFullCohort(params.id, peopleLimit, peopleOffset, peopleSort, peopleOrder),
     }
   }
 

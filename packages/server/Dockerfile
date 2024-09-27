@@ -53,4 +53,3 @@ FROM base AS production
 
 # In production build, simply start server
 CMD ["npm", "run", "start"]
-

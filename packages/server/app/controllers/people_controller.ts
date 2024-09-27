@@ -1,12 +1,16 @@
 import Person from '#models/person'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
-import { createPersonValidator, updatePersonValidator } from '#validators/person'
+import {
+  createPersonValidator,
+  updatePersonValidator,
+  cohortIdsValidator,
+} from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
 import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery } from '#helpers/query_builder'
 
-export function getFullPerson(id: string) {
+export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset: number = 0) {
   return Person.query()
     .where('id', id)
     .preload('tags')
@@ -16,8 +20,12 @@ export function getFullPerson(id: string) {
     .preload('personType', (personType) => {
       personType.preload('tags')
     })
+    .withCount('cohorts')
     .preload('cohorts', (cohorts) => {
+      cohorts.limit(cohortLimit)
+      cohorts.offset(cohortOffset)
       cohorts.preload('tags')
+      cohorts.orderBy('name', 'asc')
     })
     .firstOrFail()
 }
@@ -34,6 +42,7 @@ export default class PeopleController {
     const typeKey = queryData['typeKey']
     const sort = queryData['sort']
     const order = queryData['order']
+    const notInCohort = queryData['notInCohort']
 
     let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people', 'familyName')
 
@@ -108,6 +117,22 @@ export default class PeopleController {
   }
 
   /**
+   * Show individual record with cohorts
+   */
+  async showWithCohorts({ params, request, auth }: HttpContext) {
+    await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
+
+    const queryData = request.qs()
+    const cohortLimit = (queryData['cohortLimit'] ||= 10)
+    const cohortOffset = (queryData['cohortOffset'] ||= 0)
+
+    return {
+      data: await getFullPerson(params.id, cohortLimit, cohortOffset),
+    }
+  }
+
+  /**
    * Handle form submission for the edit action
    */
   async update({ params, request, auth }: HttpContext) {
@@ -129,6 +154,36 @@ export default class PeopleController {
     await paramsUUIDValidator.validate(params)
     const person = await Person.findOrFail(params.id)
     await person.delete()
+    response.status(204).send('')
+  }
+
+  /**
+   * Assign Cohort to Person
+   */
+  async attachCohort({ params, request, auth, response }: HttpContext) {
+    await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
+    await request.validateUsing(cohortIdsValidator)
+    const cleanRequest = request.only(['cohortIds'])
+    const person = await Person.findOrFail(params.id)
+
+    await person.related('cohorts').attach(cleanRequest.cohortIds)
+
+    response.status(201).send('')
+  }
+
+  /**
+   * Unassign Cohort from Person
+   */
+  async detachCohort({ params, request, auth, response }: HttpContext) {
+    await auth.authenticate()
+    await paramsUUIDValidator.validate(params)
+    await request.validateUsing(cohortIdsValidator)
+    const cleanRequest = request.only(['cohortIds'])
+    const person = await Person.findOrFail(params.id)
+
+    await person.related('cohorts').detach(cleanRequest.cohortIds)
+
     response.status(204).send('')
   }
 }

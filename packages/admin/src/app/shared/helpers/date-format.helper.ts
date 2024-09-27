@@ -10,8 +10,7 @@ export function prepDateData(dateTime: string) {
       split[x] = '0' + split[x];
     }
   }
-  const rVal = split.join('');
-  return rVal;
+  return split.join('');
 }
 
 export function cleanDateData(form: FormGroup, controlName: string) {

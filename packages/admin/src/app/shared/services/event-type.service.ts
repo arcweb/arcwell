@@ -12,8 +12,7 @@ import {
 } from '@shared/schemas/event-type.schema';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +40,9 @@ export class EventTypeService {
     }
 
     return this.http
-      .get<EventTypesResponseType>(`${apiUrl}/event_types`, { params })
+      .get<EventTypesResponseType>(`${environment.apiUrl}/event_types`, {
+        params,
+      })
       .pipe(
         map((response: EventTypesResponseType) => {
           EventTypesResponseSchema.parse(response);
@@ -63,7 +64,7 @@ export class EventTypeService {
     id: string,
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<EventTypeResponseType>(`${apiUrl}/event_types/${id}`)
+      .get<EventTypeResponseType>(`${environment.apiUrl}/event_types/${id}`)
       .pipe(
         map((response: EventTypeResponseType) => {
           const eventTypeResponse = EventTypeResponseSchema.parse(response);
@@ -80,7 +81,7 @@ export class EventTypeService {
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<EventTypeResponseType>(
-        `${apiUrl}/event_types/${eventType.id}`,
+        `${environment.apiUrl}/event_types/${eventType.id}`,
         eventType,
       )
       .pipe(
@@ -98,7 +99,10 @@ export class EventTypeService {
     eventType: EventTypeType,
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<EventTypeResponseType>(`${apiUrl}/event_types`, eventType)
+      .post<EventTypeResponseType>(
+        `${environment.apiUrl}/event_types`,
+        eventType,
+      )
       .pipe(
         map((response: EventTypeResponseType) => {
           const parsedResponse = EventTypeResponseSchema.parse(response);
@@ -114,7 +118,9 @@ export class EventTypeService {
     eventTypeId: string,
   ): Observable<EventTypeResponseType | ErrorResponseType> {
     return this.http
-      .delete<EventTypeResponseType>(`${apiUrl}/event_types/${eventTypeId}`)
+      .delete<EventTypeResponseType>(
+        `${environment.apiUrl}/event_types/${eventTypeId}`,
+      )
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

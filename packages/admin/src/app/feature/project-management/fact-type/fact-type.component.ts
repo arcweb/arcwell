@@ -37,6 +37,7 @@ import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-fact-type',
@@ -66,6 +67,7 @@ export class FactTypeComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() factTypeId!: string;
 
@@ -149,9 +151,16 @@ export class FactTypeComponent implements OnInit {
 
   onCancel() {
     if (this.factTypeStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'facts', 'types']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.factTypeStore.inEditMode()) {
+        this.factTypeForm.patchValue({
+          key: this.factTypeStore.factType()?.key,
+          name: this.factTypeStore.factType()?.name,
+          description: this.factTypeStore.factType()?.description,
+        });
+      }
       this.factTypeStore.toggleEditMode();
     }
   }
@@ -170,8 +179,7 @@ export class FactTypeComponent implements OnInit {
       if (result === true) {
         this.factTypeStore.delete().then(() => {
           if (this.factTypeStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'facts', 'types']);
+            this.backService.goBack();
           }
         });
       }

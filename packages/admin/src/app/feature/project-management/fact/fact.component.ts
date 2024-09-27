@@ -52,6 +52,7 @@ import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-fact',
@@ -95,11 +96,13 @@ export class FactComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() factId!: string;
+  @Input() typeKey?: string;
 
   factForm = new FormGroup({
-    factType: new FormControl(
+    factType: new FormControl<FactTypeType | null>(
       {
         value: null,
         disabled: true,
@@ -123,6 +126,16 @@ export class FactComponent implements OnInit {
         this.factForm.enable();
       } else {
         this.factForm.disable();
+      }
+    });
+    // update the form with the fact type if typeKey is provided in the query params
+    effect(() => {
+      if (this.factStore.factTypes() && this.typeKey) {
+        this.factForm.patchValue({
+          factType: this.factStore
+            .factTypes()
+            .find(pt => pt.key === this.typeKey),
+        });
       }
     });
   }
@@ -186,9 +199,18 @@ export class FactComponent implements OnInit {
 
   onCancel() {
     if (this.factStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'facts', 'all-facts']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.factStore.inEditMode()) {
+        this.factForm.patchValue({
+          factType: this.factStore.fact()?.factType,
+          observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+          person: this.factStore.fact()?.person,
+          resource: this.factStore.fact()?.resource,
+          event: this.factStore.fact()?.event,
+        });
+      }
       this.factStore.toggleEditMode();
     }
   }
@@ -206,8 +228,7 @@ export class FactComponent implements OnInit {
       if (result === true) {
         this.factStore.deleteFact().then(() => {
           if (this.factStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'facts', 'all-facts']);
+            this.backService.goBack();
           }
         });
       }

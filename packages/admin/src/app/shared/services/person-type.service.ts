@@ -13,8 +13,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +41,9 @@ export class PersonTypeService {
     }
 
     return this.http
-      .get<PersonTypesResponseType>(`${apiUrl}/person_types`, { params })
+      .get<PersonTypesResponseType>(`${environment.apiUrl}/person_types`, {
+        params,
+      })
       .pipe(
         map((response: PersonTypesResponseType) => {
           PersonTypesResponseSchema.parse(response);
@@ -63,7 +64,7 @@ export class PersonTypeService {
     id: string,
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<PersonTypeResponseType>(`${apiUrl}/person_types/${id}`)
+      .get<PersonTypeResponseType>(`${environment.apiUrl}/person_types/${id}`)
       .pipe(
         map((response: PersonTypeResponseType) => {
           const parsedResponse = PersonTypeResponseSchema.parse(response);
@@ -80,7 +81,7 @@ export class PersonTypeService {
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<PersonTypeResponseType>(
-        `${apiUrl}/person_types/${person.id}`,
+        `${environment.apiUrl}/person_types/${person.id}`,
         person,
       )
       .pipe(
@@ -98,7 +99,10 @@ export class PersonTypeService {
     personType: PersonTypeType,
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<PersonTypeResponseType>(`${apiUrl}/person_types`, personType)
+      .post<PersonTypeResponseType>(
+        `${environment.apiUrl}/person_types`,
+        personType,
+      )
       .pipe(
         map((response: PersonTypeResponseType) => {
           const parsedResponse = PersonTypeResponseSchema.parse(response);
@@ -114,7 +118,9 @@ export class PersonTypeService {
     personTypeId: string,
   ): Observable<PersonTypeResponseType | ErrorResponseType> {
     return this.http
-      .delete<PersonTypeResponseType>(`${apiUrl}/person_types/${personTypeId}`)
+      .delete<PersonTypeResponseType>(
+        `${environment.apiUrl}/person_types/${personTypeId}`,
+      )
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

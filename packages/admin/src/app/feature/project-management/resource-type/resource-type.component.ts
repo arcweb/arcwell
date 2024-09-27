@@ -37,6 +37,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-resource-type',
@@ -66,6 +67,7 @@ export class ResourceTypeComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() resourceTypeId!: string;
 
@@ -150,9 +152,16 @@ export class ResourceTypeComponent implements OnInit {
 
   onCancel() {
     if (this.resourceTypeStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'resources', 'types']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.resourceTypeStore.inEditMode()) {
+        this.resourceTypeForm.patchValue({
+          key: this.resourceTypeStore.resourceType()?.key,
+          name: this.resourceTypeStore.resourceType()?.name,
+          description: this.resourceTypeStore.resourceType()?.description,
+        });
+      }
       this.resourceTypeStore.toggleEditMode();
     }
   }
@@ -171,8 +180,7 @@ export class ResourceTypeComponent implements OnInit {
       if (result === true) {
         this.resourceTypeStore.delete().then(() => {
           if (this.resourceTypeStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate(['project-management', 'resources', 'types']);
+            this.backService.goBack();
           }
         });
       }

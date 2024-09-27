@@ -12,8 +12,7 @@ import {
 } from '@shared/schemas/resource-type.schema';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
-
-const apiUrl = 'http://localhost:3333';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +40,9 @@ export class ResourceTypeService {
     }
 
     return this.http
-      .get<ResourceTypesResponseType>(`${apiUrl}/resource_types`, { params })
+      .get<ResourceTypesResponseType>(`${environment.apiUrl}/resource_types`, {
+        params,
+      })
       .pipe(
         map((response: ResourceTypesResponseType) => {
           ResourceTypesResponseSchema.parse(response);
@@ -63,7 +64,9 @@ export class ResourceTypeService {
     id: string,
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
-      .get<ResourceTypeResponseType>(`${apiUrl}/resource_types/${id}`)
+      .get<ResourceTypeResponseType>(
+        `${environment.apiUrl}/resource_types/${id}`,
+      )
       .pipe(
         map((response: ResourceTypeResponseType) => {
           const resourceTypeResponse =
@@ -81,7 +84,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .patch<ResourceTypeResponseType>(
-        `${apiUrl}/resource_types/${resourceType.id}`,
+        `${environment.apiUrl}/resource_types/${resourceType.id}`,
         resourceType,
       )
       .pipe(
@@ -99,7 +102,10 @@ export class ResourceTypeService {
     resourceType: ResourceTypeType,
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
-      .post<ResourceTypeResponseType>(`${apiUrl}/resource_types`, resourceType)
+      .post<ResourceTypeResponseType>(
+        `${environment.apiUrl}/resource_types`,
+        resourceType,
+      )
       .pipe(
         map((response: ResourceTypeResponseType) => {
           const parsedResponse = ResourceTypeResponseSchema.parse(response);
@@ -116,7 +122,7 @@ export class ResourceTypeService {
   ): Observable<ResourceTypeResponseType | ErrorResponseType> {
     return this.http
       .delete<ResourceTypeResponseType>(
-        `${apiUrl}/resource_types/${resourceTypeId}`,
+        `${environment.apiUrl}/resource_types/${resourceTypeId}`,
       )
       .pipe(
         catchError(error => {

@@ -22,16 +22,23 @@ import { PersonStore } from '@feature/project-management/person/person.store';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
+import { PageEvent } from '@angular/material/paginator';
 import { PersonTypeType } from '@schemas/person-type.schema';
 import { Router, RouterLink } from '@angular/router';
 import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { TagType } from '@schemas/tag.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
+import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
+import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
+import { CohortType } from '@app/shared/schemas/cohort.schema';
+import { CohortModel } from '@app/shared/models/cohort.model';
 
 @Component({
   selector: 'aw-person',
@@ -52,6 +59,8 @@ import { BackButtonComponent } from '@app/shared/components/back-button/back-but
     MatIconButton,
     FormsModule,
     TagsFormComponent,
+    ObjectSelectorFormFieldComponent,
+    CohortTableComponent,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
@@ -62,8 +71,10 @@ export class PersonComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() personId!: string;
+  @Input() typeKey?: string;
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -80,7 +91,7 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
-    personType: new FormControl(
+    personType: new FormControl<PersonTypeType | null>(
       {
         value: null,
         disabled: true,
@@ -89,12 +100,44 @@ export class PersonComponent implements OnInit {
     ),
   });
 
+  cohortForm = new FormGroup({
+    cohort: new FormControl<CohortType | null>(
+      {
+        value: null,
+        disabled: true,
+      },
+      Validators.required,
+    ),
+  });
+
+  cohortColumns: string[] = [
+    'id',
+    'name',
+    'description',
+    'delete',
+  ];
+  cohortsDataSource = new MatTableDataSource<CohortModel>();
+  pageSizes = [10, 20, 50];
+
   constructor() {
     effect(() => {
       if (this.personStore.inEditMode()) {
         this.personForm.enable();
+        this.cohortForm.disable();
       } else {
         this.personForm.disable();
+        this.cohortForm.enable();
+      }
+      this.cohortsDataSource.data = this.personStore.person()?.cohorts;
+    });
+    // update the form with the person type if typeKey is provided in the query params
+    effect(() => {
+      if (this.personStore.personTypes() && this.typeKey) {
+        this.personForm.patchValue({
+          personType: this.personStore
+            .personTypes()
+            .find(pt => pt.key === this.typeKey),
+        });
       }
     });
   }
@@ -125,16 +168,32 @@ export class PersonComponent implements OnInit {
           }
         }
         // else if (event instanceof ValueChangeEvent) {
-        // }
         // This is here for an example.  Also, there are other events that can be caught
+        // }
+      });
+
+    this.cohortForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          this.personStore.attachCohort(this.cohortForm.value.cohort.id);
+          this.cohortForm.reset();
+        }
       });
   }
 
   onCancel() {
     if (this.personStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'people', 'all-people']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.personStore.inEditMode()) {
+        this.personForm.patchValue({
+          familyName: this.personStore.person()?.familyName,
+          givenName: this.personStore.person()?.givenName,
+          personType: this.personStore.person()?.personType,
+        });
+      }
       this.personStore.toggleEditMode();
     }
   }
@@ -152,12 +211,7 @@ export class PersonComponent implements OnInit {
       if (result === true) {
         this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'people',
-              'all-people',
-            ]);
+            this.backService.goBack();
           }
         });
       }
@@ -170,5 +224,35 @@ export class PersonComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.personStore.setTags(tags);
+  }
+
+  cohortsDeleteClick(cohortId: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm removal of cohort from person',
+        question:
+          'Are you sure you want to remove this cohort from the person?',
+        okButtonText: 'Remove',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.personStore.detachCohort(cohortId);
+      }
+    });
+  }
+
+  cohortsPageChange(event: PageEvent) {
+    const newOffset = event.pageIndex * event.pageSize;
+    this.personStore.loadCohortsPage(
+      event.pageSize,
+      newOffset,
+      event.pageIndex,
+    );
+  }
+
+  cohortsRowClick(row: CohortModel) {
+    this.router.navigate(['project-management', 'cohorts', row.id]);
   }
 }

@@ -14,8 +14,9 @@ import {
   LoginResponseType,
 } from '@shared/schemas/login.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
-import { ResetType } from '../schemas/password-reset.schema';
-import { ChangeType } from '../schemas/password-change.schema';
+import { environment } from '../../../environments/environment';
+import { ResetType } from '@schemas/password-reset.schema';
+import { ChangeType } from '@schemas/password-change.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,7 @@ import { ChangeType } from '../schemas/password-change.schema';
 export class AuthService {
   private http: HttpClient = inject(HttpClient);
 
-  apiUrl = 'http://localhost:3333';
+  apiUrl = environment.apiUrl;
 
   loginTo(credentials: Credentials): Observable<{
     token: { type: string; value: string };

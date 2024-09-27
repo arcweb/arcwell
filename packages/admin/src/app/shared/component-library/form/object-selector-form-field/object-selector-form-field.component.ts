@@ -19,6 +19,7 @@ import { PersonType } from '@schemas/person.schema';
 import { EventType } from '@schemas/event.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { EventService } from '@shared/services/event.service';
+import { CohortService } from '@app/shared/services/cohort.service';
 
 @Component({
   standalone: true,
@@ -46,12 +47,19 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
   personService = inject(PersonService);
   resourceService = inject(ResourceService);
   eventService = inject(EventService);
+  cohortService = inject(CohortService);
 
   // Inputs
   placeholder = input<string>('Type to search...');
   label = input<string>('Object');
-  serviceType = input.required<'people' | 'resources' | 'events'>();
+  serviceType = input.required<
+    'people' | 'cohortPeople' | 'personCohorts' | 'resources' | 'events'
+  >();
   displayProperty = input.required<string>();
+  // This is to pass in an id of a related object so to screen out objects of the serviceType
+  // related to it. Want to keep it generic to allow use across the app, but could use a better
+  // name if possible.
+  objectIdForFiltering = input<string>();
 
   valueSignal = signal<string>('');
   optionsSignal = signal<PersonType[] | EventType[] | ResourceType[]>([]);
@@ -109,6 +117,45 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
             offset: 0,
             search: [{ field: 'familyName', searchString: query }],
           })
+          .subscribe(resp => {
+            if (resp.errors) {
+              console.error(resp.errors);
+            } else {
+              this.optionsSignal.set(resp.data);
+            }
+          });
+        break;
+      case 'cohortPeople':
+        if (!this.objectIdForFiltering()) {
+          console.error(
+            'objectIdForFiltering must be defined for serviceType=cohortPeople',
+          );
+          return;
+        }
+        this.personService
+          .getPeople({
+            limit: 20,
+            offset: 0,
+            notInCohort: this.objectIdForFiltering(),
+            search: [{ field: 'familyName', searchString: query }],
+          })
+          .subscribe(resp => {
+            if (resp.errors) {
+              console.error(resp.errors);
+            } else {
+              this.optionsSignal.set(resp.data);
+            }
+          });
+        break;
+      case 'personCohorts':
+        if (!this.objectIdForFiltering()) {
+          console.error(
+            'objectIdForFiltering must be defined for serviceType=personCohorts',
+          );
+          return;
+        }
+        this.cohortService
+          .getCohorts(20, 0, this.objectIdForFiltering(), [{ field: 'name', searchString: query }])
           .subscribe(resp => {
             if (resp.errors) {
               console.error(resp.errors);

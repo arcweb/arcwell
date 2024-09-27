@@ -1,0 +1,47 @@
+// TODO: Move any of this to a mix-in when complete
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .form-button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .edit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    gap: 20px;
+  }
+}
+
+.icons-container {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.no-people {
+  text-align: center;
+}

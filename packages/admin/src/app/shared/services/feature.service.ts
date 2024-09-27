@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { FeatureModel } from '../models/feature.model';
-import { FeatureResponseType, FeatureType } from '../schemas/feature.schema';
+import { FeatureResponseType, FeatureType } from '@schemas/feature.schema';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
-import { ErrorResponseType } from '../schemas/error.schema';
+import { ErrorResponseType } from '@schemas/error.schema';
+import { environment } from '../../../environments/environment';
 
-const apiUrl = 'http://localhost:3333';
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +15,7 @@ export class FeatureService {
 
   getFeatures(): Observable<FeatureModel[]> {
     return this.http
-      .get<FeatureResponseType>(`${apiUrl}/config/features-menu`)
+      .get<FeatureResponseType>(`${environment.apiUrl}/config/features-menu`)
       .pipe(
         tap((response: FeatureResponseType | ErrorResponseType) => {
           // validate response is success

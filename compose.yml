@@ -26,6 +26,7 @@ services:
       - ./packages/server/.env.development
     depends_on:
       - db
+      - mailhog
     networks:
       - application
       - data

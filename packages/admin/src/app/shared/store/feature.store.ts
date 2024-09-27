@@ -1,11 +1,4 @@
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   withRequestStatus,
@@ -24,12 +17,14 @@ interface FeatureState {
   features: FeatureModel[];
   activeFeature: FeatureModel | null;
   activeSubfeature: SubfeatureModel | null;
+  hasSubfeatures: boolean;
 }
 
 const initialState: FeatureState = {
   features: [],
   activeFeature: null,
   activeSubfeature: null,
+  hasSubfeatures: true,
 };
 
 export const FeatureStore = signalStore(
@@ -68,6 +63,11 @@ export const FeatureStore = signalStore(
           activeSubfeature: subfeature,
         });
       },
+      setHasSubfeatures(val: boolean) {
+        patchState(store, {
+          hasSubfeatures: val,
+        });
+      },
       setActiveFeatureAndSubfeatureByRoute(
         url: string,
         features: FeatureModel[],
@@ -83,6 +83,7 @@ export const FeatureStore = signalStore(
           patchState(store, {
             activeFeature: activeFeature || null,
             activeSubfeature: activeSubfeature || null,
+            hasSubfeatures: activeFeature.subfeatures.length > 0,
           });
         }
         if (fulfillRequest) {

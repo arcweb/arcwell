@@ -5,6 +5,7 @@
       <button
         mat-icon-button
         [routerLink]="['/project-management/events/create']"
+        [queryParams]="{ typeKey: typeKey$ | async }"
       >
         <mat-icon aria-label="Create event icon button">
           add_circle_outline

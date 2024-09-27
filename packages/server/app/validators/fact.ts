@@ -31,6 +31,9 @@ export const insertFactValidator = vine.compile(
   vine.object({
     typeKey: vine.string().trim().optional(),
     observedAt: vine.date({ formats: { utc: true } }).optional(),
+    person_id: vine.string().trim().uuid().optional().nullable(),
+    resource_id: vine.string().trim().uuid().optional().nullable(),
+    event_id: vine.string().trim().uuid().optional().nullable(),
     info: vine.object({}).allowUnknownProperties().optional(),
     dimensions: dimensions,
   })

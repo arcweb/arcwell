@@ -5,7 +5,6 @@ import {
   inject,
   Input,
   OnInit,
-  signal,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -40,6 +39,7 @@ import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
+import { BackService } from '@app/shared/services/back.service';
 
 @Component({
   selector: 'aw-event',
@@ -72,11 +72,13 @@ export class EventComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
+  readonly backService = inject(BackService);
 
   @Input() eventId!: string;
+  @Input() typeKey?: string;
 
   eventForm = new FormGroup({
-    eventType: new FormControl(
+    eventType: new FormControl<EventTypeType | null>(
       { value: '', disabled: true },
       Validators.required,
     ),
@@ -99,6 +101,16 @@ export class EventComponent implements OnInit {
         this.eventForm.enable();
       } else {
         this.eventForm.disable();
+      }
+    });
+    effect(() => {
+      // update the form with the event type if typeKey is provided in the query params
+      if (this.eventStore.eventTypes() && this.typeKey) {
+        this.eventForm.patchValue({
+          eventType: this.eventStore
+            .eventTypes()
+            .find(et => et.key === this.typeKey),
+        });
       }
     });
   }
@@ -163,9 +175,23 @@ export class EventComponent implements OnInit {
 
   onCancel() {
     if (this.eventStore.inCreateMode()) {
-      // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-      this.router.navigate(['project-management', 'events', 'all-events']);
+      this.backService.goBack();
     } else {
+      // reset the form
+      if (this.eventStore.inEditMode()) {
+        this.eventForm.patchValue({
+          eventType: this.eventStore.event()?.eventType,
+          startedAt: this.eventStore.event()?.startedAt
+            ? this.eventStore.event()?.startedAt.toJSDate()
+            : null,
+          endedAt: this.eventStore.event()?.endedAt
+            ? this.eventStore.event()?.endedAt.toJSDate()
+            : null,
+          // info: this.eventStore.event()?.info,
+          person: this.eventStore.event()?.person,
+          resource: this.eventStore.event()?.resource,
+        });
+      }
       this.eventStore.toggleEditMode();
     }
   }
@@ -184,12 +210,7 @@ export class EventComponent implements OnInit {
       if (result === true) {
         this.eventStore.delete().then(() => {
           if (this.eventStore.errors().length === 0) {
-            // TODO: This should be a back instead, but only if back doesn't take you out of app, otherwise should be the following
-            this.router.navigate([
-              'project-management',
-              'events',
-              'all-events',
-            ]);
+            this.backService.goBack();
           }
         });
       }
