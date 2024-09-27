@@ -12,6 +12,7 @@ import { TagType, TagUpdateType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
+import { Router } from '@angular/router';
 
 interface TagState {
   tag: TagType | null;
@@ -36,6 +37,7 @@ export const TagStore = signalStore(
       store,
       tagService = inject(TagService),
       toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(tagId: string) {
         patchState(store, setPending());
@@ -94,9 +96,16 @@ export const TagStore = signalStore(
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { tag: resp.data, inEditMode: false },
+            { tag: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
+
+          // navigate to the newly created item and don't save the current route in the history
+          router.navigateByUrl(`/project-management/tags/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
 

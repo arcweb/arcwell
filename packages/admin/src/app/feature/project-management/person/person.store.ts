@@ -22,6 +22,7 @@ import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
+import { Router } from '@angular/router';
 
 interface PersonState {
   person: PersonType | null;
@@ -50,6 +51,7 @@ export const PersonStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -139,12 +141,16 @@ export const PersonStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { person: resp.data, inEditMode: false },
+            { person: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Created person.', ToastLevel.SUCCESS);
+          // navigate the user to the newly created item
+          router.navigateByUrl(`/project-management/people/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async deletePerson() {
