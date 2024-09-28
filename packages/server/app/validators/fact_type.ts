@@ -1,7 +1,7 @@
 import { TYPE_KEY_PATTERN } from '#constants/validation_constants'
 import vine from '@vinejs/vine'
 
-const dimensionTypes = vine.array(
+const dimensionSchemas = vine.array(
   vine.object({
     key: vine.string().trim(),
     name: vine.string().trim(),
@@ -17,7 +17,7 @@ export const createFactTypeValidator = vine.compile(
   vine.object({
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
     name: vine.string().trim(),
-    dimensionTypes: dimensionTypes.optional(),
+    dimensionSchemas: dimensionSchemas.optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )
@@ -30,7 +30,7 @@ export const updateFactTypeValidator = vine.compile(
     id: vine.string().trim().uuid(),
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
     name: vine.string().trim().optional(),
-    dimensionTypes: dimensionTypes.optional(),
+    dimensionSchemas: dimensionSchemas.optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )

@@ -136,7 +136,7 @@ export default class extends BaseSeeder {
       description: 'Recording of patient weight',
     }).create()
 
-    // const factType2 = await FactTypeFactory.with('dimensionTypes', 8).create()
+    // const factType2 = await FactTypeFactory.with('dimensionSchemas', 8).create()
 
     const person = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
     const event = await EventFactory.merge({ typeKey: apptEventType.key }).create()

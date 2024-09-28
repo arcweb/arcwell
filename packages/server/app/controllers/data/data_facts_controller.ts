@@ -5,7 +5,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { getFullFact } from '#controllers/facts_controller'
 import string from '@adonisjs/core/helpers/string'
-import FactType, { DimensionType } from '#models/fact_type'
+import FactType, { DimensionSchema } from '#models/fact_type'
 import Dimension from '#models/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import vine from '@vinejs/vine'
@@ -47,7 +47,7 @@ const vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
 const vineNumberStringSchema = vine.compile(vine.number({ strict: true }))
 const vineBooleanSchema = vine.compile(vine.boolean())
 
-async function validateDimensionType(value: string, dataType: string): Promise<string | null> {
+async function validateDimensionSchema(value: string, dataType: string): Promise<string | null> {
   switch (dataType.toLowerCase()) {
     case DimensionDataTypeEnum.string:
       // Likely don't need to check for string, since type is string by default.
@@ -90,9 +90,9 @@ async function validateDimensionType(value: string, dataType: string): Promise<s
 export default class DataFactsController {
   private async validateDimensions(
     dimensions: Dimension[],
-    dimensionTypes: DimensionType[]
+    dimensionSchemas: DimensionSchema[]
   ): Promise<string | null> {
-    const requiredKeys = dimensionTypes.filter((item) => item.isRequired).map((item) => item.key)
+    const requiredKeys = dimensionSchemas.filter((item) => item.isRequired).map((item) => item.key)
     const missingKeys = requiredKeys.filter((key) => !dimensions.some((data) => data.key === key))
 
     if (missingKeys.length > 0) {
@@ -100,9 +100,9 @@ export default class DataFactsController {
     }
 
     for (const dimension of dimensions) {
-      const dimensionType = dimensionTypes.find((item) => item.key === dimension.key)
-      if (dimensionType) {
-        const typeError = await validateDimensionType(dimension.value, dimensionType.dataType)
+      const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
+      if (dimensionSchema) {
+        const typeError = await validateDimensionSchema(dimension.value, dimensionSchema.dataType)
         if (typeError) {
           return `Dimension Validation Failed: ${typeError} for dimension key: ${dimension.key}`
         }
@@ -181,7 +181,7 @@ export default class DataFactsController {
 
     const validationErrorMessage = await this.validateDimensions(
       cleanRequest.dimensions,
-      factType.dimensionTypes
+      factType.dimensionSchemas
     )
 
     if (validationErrorMessage) {

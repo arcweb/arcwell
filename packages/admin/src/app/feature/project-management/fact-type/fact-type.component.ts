@@ -114,7 +114,7 @@ export class FactTypeComponent implements OnInit {
       value: '',
       disabled: true,
     }),
-    dimensionTypes: new FormControl({
+    dimensionSchemas: new FormControl({
       value: [],
       disabled: true,
     }),
@@ -148,7 +148,7 @@ export class FactTypeComponent implements OnInit {
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
             description: this.factTypeStore.factType()?.description,
-            dimensionTypes: this.factTypeStore.factType()?.dimensionTypes,
+            dimensionSchemas: this.factTypeStore.factType()?.dimensionSchemas,
           });
         });
       }

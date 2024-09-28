@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { FactUpdateType } from '@shared/schemas/fact.schema';
 
-export class DimensionTypeModel {
+export class DimensionSchemaModel {
   public key: string;
   public name: string;
   public dataType: string;

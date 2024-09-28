@@ -46,7 +46,7 @@
       <input matInput placeholder="Key" formControlName="key" />
       @if (factTypeForm.controls.key.hasError('pattern')) {
         <mat-error>
-          Lowercase alpha-numeric characters, underscores and hypens
+          Lowercase alpha-numeric characters, underscores and hyphens
           <strong>only</strong>
         </mat-error>
       }
@@ -57,11 +57,11 @@
       <input matInput placeholder="Name" formControlName="description" />
     </mat-form-field>
 
-    @if (factTypeStore.factType()?.dimensionTypes?.length > 0) {
+    @if (factTypeStore.factType()?.dimensionSchemas?.length > 0) {
       <h2>Dimensions Types</h2>
       <table
         mat-table
-        [dataSource]="factTypeStore.factType().dimensionTypes"
+        [dataSource]="factTypeStore.factType().dimensionSchemas"
         class="mat-elevation-z8"
       >
         <ng-container matColumnDef="key">
@@ -94,16 +94,16 @@
       </table>
     } @else {
       <mat-form-field>
-        <mat-label>Dimension Types</mat-label>
+        <mat-label>Dimension Schemas</mat-label>
         <textarea
           matInput
-          placeholder="Dimension Types"
-          formControlName="dimensionTypes"
+          placeholder="Dimension Schemas"
+          formControlName="dimensionSchemas"
           rows="10"
         ></textarea>
-        @if (factTypeForm.controls.dimensionTypes.hasError('required')) {
+        @if (factTypeForm.controls.dimensionSchemas.hasError('required')) {
           <mat-error>
-            DimensionTypes are
+            Dimension Schemas are
             <strong>required</strong>
           </mat-error>
         }

@@ -11,7 +11,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
-import { DimensionTypeModel } from '@arcweb/arcwell-admin/src/app/shared/models/dimension-type.model'
+import DimensionSchemaModel from '#models/dimension_schema'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -30,7 +30,7 @@ export default class FactType extends BaseModel {
   declare facts: HasMany<typeof Fact>
 
   @column()
-  declare dimensionTypes: DimensionTypeModel[]
+  declare dimensionSchemas: DimensionSchemaModel[]
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -58,9 +58,9 @@ export default class FactType extends BaseModel {
       type.key = generateTypeKey(type.name)
     }
     // stringify jsonb column to circumvent issue with knex and postgresql
-    if (type.dimensionTypes) {
-      // @ts-ignore - ignoring because dimensionTypes has to be stringify-ed to get around knex & postgresql jsonb issue
-      type.dimensionTypes = JSON.stringify(type.dimensionTypes)
+    if (type.dimensionSchemas) {
+      // @ts-ignore - ignoring because dimensionSchemas has to be stringify-ed to get around knex & postgresql jsonb issue
+      type.dimensionSchemas = JSON.stringify(type.dimensionSchemas)
     }
   }
 }

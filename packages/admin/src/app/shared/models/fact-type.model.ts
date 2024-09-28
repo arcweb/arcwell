@@ -2,15 +2,15 @@ import { DateTime } from 'luxon';
 import { FactType } from '@shared/schemas/fact.schema';
 import { TagType } from '@schemas/tag.schema';
 import { TagModel } from '@shared/models/tag.model';
-import { DimensionTypeModel } from '@shared/models/dimension-type.model';
-import { DimensionTypeType } from '@schemas/dimension-type.schema';
+import { DimensionSchemaModel } from '@shared/models/dimension-schema.model';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 export class FactTypeModel {
   public id?: string;
   public key: string;
   public name: string;
   public description?: string;
-  public dimensionTypes: DimensionTypeModel[] | undefined;
+  public dimensionSchemas: DimensionSchemaModel[] | undefined;
   public tags?: TagModel[];
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
@@ -24,10 +24,10 @@ export class FactTypeModel {
       ? data.tags.map((tag: TagType) => new TagModel(tag))
       : undefined;
 
-    if (data.dimensionTypes) {
-      this.dimensionTypes = data.dimensionTypes.map(
-        (dimensionType: DimensionTypeType) =>
-          new DimensionTypeModel(dimensionType),
+    if (data.dimensionSchemas) {
+      this.dimensionSchemas = data.dimensionSchemas.map(
+        (dimensionSchema: DimensionSchemaType) =>
+          new DimensionSchemaModel(dimensionSchema),
       );
     }
 
