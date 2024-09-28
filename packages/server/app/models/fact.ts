@@ -75,7 +75,7 @@ export default class Fact extends BaseModel {
   static async generateJson(fact: Fact) {
     // stringify jsonb column to circumvent issue with knex and postgresql
     if (fact.dimensions) {
-      // @ts-ignore - ignoring because dimensionTypes has to be stringify-ed to get around knex & postgresql jsonb issue
+      // @ts-ignore - ignoring because dimensions have to be stringify-ed to get around knex & postgresql jsonb issue
       fact.dimensions = JSON.stringify(fact.dimensions)
     }
   }

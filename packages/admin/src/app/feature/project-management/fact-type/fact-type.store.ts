@@ -7,10 +7,10 @@ import {
 } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
-  withRequestStatus,
-  setPending,
-  setFulfilled,
   setErrors,
+  setFulfilled,
+  setPending,
+  withRequestStatus,
 } from '@shared/store/request-status.feature';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
@@ -110,11 +110,10 @@ export const FactTypeStore = signalStore(
         }
       },
       async create(createFactTypeFormData: FactType) {
-        if (createFactTypeFormData.dimensionTypes) {
-          const dimensionTypesJson = JSON.parse(
-            createFactTypeFormData.dimensionTypes,
+        if (createFactTypeFormData.dimensionSchemas) {
+          createFactTypeFormData.dimensionSchemas = JSON.parse(
+            createFactTypeFormData.dimensionSchemas,
           );
-          createFactTypeFormData.dimensionTypes = dimensionTypesJson;
         }
 
         patchState(store, setPending());

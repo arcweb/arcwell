@@ -3,7 +3,7 @@ import { BaseModel, beforeSave, column } from '@adonisjs/lucid/orm'
 import { generateTypeKey } from '#helpers/generate_type_key'
 import { DateTime } from 'luxon'
 
-export default class DimensionType extends BaseModel {
+export default class DimensionSchemaModel extends BaseModel {
   @column({ isPrimary: true })
   declare id: string
 
@@ -30,7 +30,7 @@ export default class DimensionType extends BaseModel {
 
   @beforeSave()
   // generate a key based on the name if one is not provided
-  static async generateKey(type: DimensionType) {
+  static async generateKey(type: DimensionSchemaModel) {
     if (!type.key) {
       type.key = generateTypeKey(type.name)
     }

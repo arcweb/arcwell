@@ -11,12 +11,13 @@ export default class extends BaseSchema {
       table.index(['dimensions'], 'facts_dimensions_gin', 'gin')
     })
     this.schema.alterTable('fact_types', (table) => {
-      table.index(['dimension_types'], 'fact_types_dimensions_types_gin', 'gin')
+      table.renameColumn('dimension_types', 'dimension_schemas')
+      table.index(['dimension_schemas'], 'fact_types_dimension_schemas_gin', 'gin')
     })
   }
   async down() {
     this.schema.alterTable('fact_types', (table) => {
-      table.dropIndex(['fact_types'], 'fact_types_dimensions_types_gin')
+      table.dropIndex(['fact_types'], 'fact_types_dimension_schemas_gin')
     })
     this.schema.alterTable('facts', (table) => {
       table.dropIndex(['dimensions'], 'facts_dimensions_gin')

@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { FactSchema } from './fact.schema';
 import { FactTypeModel } from '../models/fact-type.model';
 import { TagSchema } from '@schemas/tag.schema';
-import { DimensionTypeSchema } from '@schemas/dimension-type.schema';
+import { DimensionSchemaSchema } from '@schemas/dimension-schema.schema';
 
 export const FactTypeSchema = z
   .object({
@@ -12,7 +12,7 @@ export const FactTypeSchema = z
     description: z.string().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional(),
     facts: z.array(FactSchema).optional(),
-    dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
+    dimensionSchemas: z.array(DimensionSchemaSchema.optional()).optional(),
     tags: z.array(TagSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional().nullable(),
     updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
@@ -27,7 +27,7 @@ export const FactTypeUpdateSchema = z
     description: z.string().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional(),
     facts: z.array(FactSchema).optional(),
-    dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
+    dimensionSchemas: z.array(DimensionSchemaSchema.optional()).optional(),
     tags: z.array(TagSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional().nullable(),
     updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
