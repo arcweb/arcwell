@@ -8,7 +8,7 @@ export const DimensionTypeSchema: any = z
     name: z.string(),
     dataType: z.string(),
     dataUnit: z.string(),
-    isRequired: z.string(), // z.boolean(),
+    isRequired: z.boolean(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -21,7 +21,7 @@ export const DimensionTypeUpdateSchema = DimensionTypeSchema.extend({
   name: z.string().optional(),
   dataType: z.string(),
   dataUnit: z.string(),
-  isRequired: z.string(), // z.boolean(),
+  isRequired: z.boolean(),
   factId: z.string().uuid().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),

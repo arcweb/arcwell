@@ -59,7 +59,7 @@ export default class FactType extends BaseModel {
   }
 
   @beforeSave()
-  static async generateKey(type: FactType) {
+  static async generateKeyAndJson(type: FactType) {
     // generate a key based on the name if one is not provided
     if (!type.key) {
       type.key = generateTypeKey(type.name)
