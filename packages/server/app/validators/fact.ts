@@ -11,6 +11,7 @@ export const createFactValidator = vine.compile(
     observedAt: vine.date({ formats: { utc: true } }).optional(),
     info: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
+    dimensions: dimensions,
   })
 )
 

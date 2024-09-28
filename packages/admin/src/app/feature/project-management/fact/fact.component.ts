@@ -116,6 +116,10 @@ export class FactComponent implements OnInit {
       disabled: true,
     }),
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
+    dimensions: new FormControl({
+      value: [],
+      disabled: true,
+    }),
   });
 
   displayedColumns: string[] = ['key', 'value'];
@@ -148,10 +152,11 @@ export class FactComponent implements OnInit {
         this.factStore.initialize(this.factId).then(() => {
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
-            observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+            observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
             person: this.factStore.fact()?.person,
             resource: this.factStore.fact()?.resource,
             event: this.factStore.fact()?.event,
+            dimensions: this.factStore.fact()?.dimensions,
           });
         });
       }
@@ -205,7 +210,7 @@ export class FactComponent implements OnInit {
       if (this.factStore.inEditMode()) {
         this.factForm.patchValue({
           factType: this.factStore.fact()?.factType,
-          observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+          observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
           person: this.factStore.fact()?.person,
           resource: this.factStore.fact()?.resource,
           event: this.factStore.fact()?.event,

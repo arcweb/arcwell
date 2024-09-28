@@ -114,6 +114,10 @@ export class FactTypeComponent implements OnInit {
       value: '',
       disabled: true,
     }),
+    dimensionTypes: new FormControl({
+      value: [],
+      disabled: true,
+    }),
   });
 
   displayedColumns: string[] = [
@@ -144,6 +148,7 @@ export class FactTypeComponent implements OnInit {
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
             description: this.factTypeStore.factType()?.description,
+            dimensionTypes: this.factTypeStore.factType()?.dimensionTypes,
           });
         });
       }
