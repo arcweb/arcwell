@@ -149,9 +149,8 @@ export default class extends BaseSeeder {
       personId: person.id,
       resourceId: resource.id,
       eventId: event.id,
-    })
-      .with('dimensions', 6)
-      .create()
+      dimensions: [],
+    }).create()
     // create a fact with just a person
     await FactFactory.merge({ typeKey: factType.key, personId: person.id }).create()
     // create a fact with just a resource
