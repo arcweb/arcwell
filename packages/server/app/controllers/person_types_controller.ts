@@ -10,7 +10,11 @@ export function getFullPersonType(id: string) {
 }
 export default class PersonTypesController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List People Types
+   * @description Returns a list of People Type definitions, including name, key, and custom schema.
+   * @paramUse(sortable, filterable)
+   * @responseBody 200 - {}
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -39,7 +43,9 @@ export default class PersonTypesController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create PersonType
+   * @description Create a new class type of Person, specificying schema and storage rules.
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -50,7 +56,9 @@ export default class PersonTypesController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get PersonType
+   * @description Return details about an individual class of Person, including schema and storage rules.
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -60,7 +68,11 @@ export default class PersonTypesController {
   }
 
   /**
-   * Show record with related people
+   * @showWithPeople
+   * @summary List People of Type
+   * @description Returns a list of People within a specific PersonType
+   * @paramUse(sortable, filterable)
+   * @responseBody 200 - { data: [People] }
    */
   async showWithPeople({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -70,7 +82,9 @@ export default class PersonTypesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update PersonType
+   * @description Update the definition for an existing individual Person Type.
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -83,7 +97,9 @@ export default class PersonTypesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete PersonType
+   * @description Remove the definition for an existing Person Type from Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

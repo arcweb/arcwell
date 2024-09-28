@@ -12,7 +12,9 @@ import FactType from '#models/fact_type'
 
 export default class ConfigController {
   /**
-   * Return a list of all features and subfeatures
+   * @featuresMenu
+   * @summary Features Menu
+   * @description Returns a nested list representing all current top-level features and sub-features/types active in Arcwell.
    */
   async featuresMenu({ auth }: HttpContext) {
     await auth.authenticate()

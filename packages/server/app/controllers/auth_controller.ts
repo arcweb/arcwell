@@ -73,6 +73,11 @@ export default class AuthController {
   //   }
   // }
 
+  /**
+   * @login
+   * @summary Login
+   * @description Accepts user credentials and attempts to login to this Arcwell instance.
+   */
   async login({ request }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
     const user = await User.verifyCredentials(email, password)
@@ -96,6 +101,11 @@ export default class AuthController {
     }
   }
 
+  /**
+   * @logout
+   * @summary Logout
+   * @description Invalidates active access token and effectively logs out the calling user.
+   */
   async logout({ auth, response }: HttpContext) {
     const user = auth.user!
     await User.accessTokens.delete(user, user.currentAccessToken.identifier)
@@ -103,6 +113,11 @@ export default class AuthController {
     response.status(204).send('')
   }
 
+  /**
+   * @me
+   * @summary Me
+   * @description Convenience method to return the authenticated user's User record.
+   */
   async me({ auth }: HttpContext) {
     await auth.check()
 
@@ -122,6 +137,11 @@ export default class AuthController {
     }
   }
 
+  /**
+   * @sendForgotPasswordMessage
+   * @summary Forgot Password
+   * @description Sends email to user upon request to start a password reset workflow.
+   */
   async sendForgotPasswordMessage({ request }: HttpContext) {
     await request.validateUsing(paramsEmailValidator)
     const cleanrequest = request.only(['email'])
@@ -141,6 +161,11 @@ export default class AuthController {
     }
   }
 
+  /**
+   * @resetPassword
+   * @summary Reset Password
+   * @description Resets a user's password.
+   */
   async resetPassword({ request }: HttpContext) {
     await request.validateUsing(resetPasswordValidator)
     const cleanrequest = request.only(['code', 'password'])
@@ -161,6 +186,11 @@ export default class AuthController {
     return { data: user }
   }
 
+  /**
+   * @changePassword
+   * @summary Change Password
+   * @description Processes a user's attempt to change their password.
+   */
   async changePassword({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(loginValidator)

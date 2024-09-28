@@ -8,7 +8,7 @@ export default {
   info: {
     title: 'Arcwell Server',
     version: '0.0.1.internal',
-    description: 'Arcwell Digital Medicine Platform',
+    description: 'Arcwell Digital Medicine Platform<br/><br/>Hello.',
     license: {
       name: 'Apache-2.0',
       url: 'http://www.apache.org/licenses/LICENSE-2.0.html',
@@ -24,7 +24,27 @@ export default {
   ignore: ['/docs/*'],
   preferredPutPatch: 'PATCH',
   common: {
-    parameters: {}, // OpenAPI conform parameters that are commonly used
+    parameters: {
+      sortable: [
+        {
+          in: 'query',
+          name: 'sort',
+          schema: { type: 'string', example: 'foo' },
+        },
+        {
+          in: 'query',
+          name: 'order',
+          schema: { type: 'string', example: 'ASC' },
+        },
+      ],
+      filterable: [
+        {
+          in: 'query',
+          name: 'filter',
+          schema: { type: 'object', example: '[eq]=bar' },
+        },
+      ],
+    }, // OpenAPI conform parameters that are commonly used
     headers: {}, // OpenAPI conform headers that are commonly used
   },
   securitySchemes: {}, // optional
