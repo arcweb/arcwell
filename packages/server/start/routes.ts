@@ -42,17 +42,6 @@ router.get('/docs', async () => {
   //return AutoSwagger.default.rapidoc('/swagger.yml', 'read') //to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
 })
 
-router.get('/', async () => {
-  return {
-    arcwell: {
-      node: env.get('ARCWELL_NODE'),
-      key: env.get('ARCWELL_KEY'),
-      server: true,
-    },
-    hello: 'world',
-  }
-})
-
 // auth routes
 router
   .group(() => {
