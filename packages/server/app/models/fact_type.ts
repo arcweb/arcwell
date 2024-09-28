@@ -11,14 +11,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
-
-export interface DimensionType {
-  key: string
-  name: string
-  dataType: string
-  dataUnit: string
-  isRequired: boolean
-}
+import { DimensionTypeModel } from '@arcweb/arcwell-admin/src/app/shared/models/dimension-type.model'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -37,7 +30,7 @@ export default class FactType extends BaseModel {
   declare facts: HasMany<typeof Fact>
 
   @column()
-  declare dimensionTypes: DimensionType[]
+  declare dimensionTypes: DimensionTypeModel[]
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

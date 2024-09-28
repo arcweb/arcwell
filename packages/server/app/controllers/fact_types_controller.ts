@@ -55,6 +55,7 @@ export default class FactTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
+
     // TODO: remove this when we change the type of tags
     if (request.body().tags) {
       request.body().tags = JSON.stringify(request.body().tags)
@@ -64,49 +65,6 @@ export default class FactTypesController {
 
     return { data: await getFullFactType(newFactType.id) }
   }
-
-  // TODO: Below is work in progress, we might pivot to jsonb for dimension types
-  // async store({ request, auth }: HttpContext) {
-  //   await auth.authenticate()
-  //   await request.validateUsing(createFactTypeValidator)
-  //
-  //   const cleanRequest = request.only(['name', 'description', 'key', 'tags', 'dimensionTypes'])
-  //
-  //   const trx = await db.transaction()
-  //
-  //   let newFactType = null
-  //
-  //   try {
-  //     const factType = new FactType().fill(cleanRequest).useTransaction(trx)
-  //
-  //     newFactType = await factType.save()
-  //
-  //     if (cleanRequest.dimensionTypes) {
-  //       for (const dimensionType of cleanRequest.dimensionTypes) {
-  //         const isRequired = dimensionType.isRequired
-  //         delete dimensionType.isRequired
-  //
-  //         // await newFactType.related('dimensionTypes').create(dimensionType)
-  //         await newFactType
-  //           .related('dimensionTypes')
-  //           .create(dimensionType, { is_required: isRequired })
-  //       }
-  //     }
-  //     await trx.commit()
-  //     const fullFactType = await getFullFactType(newFactType.id)
-  //     return { data: await this.transformObject(fullFactType) }
-  //   } catch (error) {
-  //     await trx.rollback()
-  //     throwCustomHttpError(
-  //       {
-  //         title: 'Database exception',
-  //         code: 'E_DATABASE_EXCEPTION',
-  //         detail: error && error.detail ? error.detail : 'Unknown error',
-  //       },
-  //       500
-  //     )
-  //   }
-  // }
 
   /**
    * @show
