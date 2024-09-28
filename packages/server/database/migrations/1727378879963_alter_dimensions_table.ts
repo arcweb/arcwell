@@ -17,6 +17,7 @@ export default class extends BaseSchema {
   }
   async down() {
     this.schema.alterTable('fact_types', (table) => {
+      table.renameColumn('dimension_schemas', 'dimension_types')
       table.dropIndex(['fact_types'], 'fact_types_dimension_schemas_gin')
     })
     this.schema.alterTable('facts', (table) => {
