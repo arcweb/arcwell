@@ -7,7 +7,7 @@ export default {
   tagIndex: 1,
   info: {
     title: 'Arcwell Server',
-    version: '0.1.0',
+    version: '0.0.1.internal',
     description: 'Arcwell Digital Medicine Platform',
     license: {
       name: 'Apache-2.0',
@@ -21,7 +21,7 @@ export default {
   snakeCase: false,
 
   debug: true, // set to true, to get some useful debug output
-  ignore: ['/swagger.yml', '/docs'],
+  ignore: ['/docs/*'],
   preferredPutPatch: 'PATCH',
   common: {
     parameters: {}, // OpenAPI conform parameters that are commonly used

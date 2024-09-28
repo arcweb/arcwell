@@ -33,13 +33,8 @@ router.get('/health', [HealthChecksController])
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
 
-router.get('/swagger.yml', async () => {
+router.get('/docs/swagger.yaml', async () => {
   return AutoSwagger.default.docs(router.toJSON(), swagger)
-})
-router.get('/docs', async () => {
-  //return AutoSwagger.default.ui('/swagger.yml', swagger)
-  return AutoSwagger.default.scalar('/swagger.yml') // to use Scalar instead
-  //return AutoSwagger.default.rapidoc('/swagger.yml', 'read') //to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
 })
 
 // auth routes
