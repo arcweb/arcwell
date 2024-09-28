@@ -1,9 +1,10 @@
 {
   "name": "@arcweb/arcwell-server",
+  "description": "Server, data model, and API backend for Arcwell software platform",
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "start": "node ace serve",
     "build": "node ace build",

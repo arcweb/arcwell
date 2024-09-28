@@ -2,7 +2,7 @@
   "name": "arcwell-root",
   "version": "0.0.1",
   "private": true,
-  "description": "Arcwell Digital Medicine Platform",
+  "description": "Arcwell Digital Medicine Platform, umbrella repository",
   "homepage": "https://github.com/arcweb/arcwell#readme",
   "bugs": {
     "url": "https://github.com/arcweb/arcwell/issues"

@@ -1,7 +1,9 @@
 {
   "name": "@arcweb/arcwell-admin",
+  "description": "Administrative UI application for managing Arcwell servers and stored data",
   "version": "0.0.0",
   "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "build": "ng build",
     "ng": "ng",
