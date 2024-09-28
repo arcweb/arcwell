@@ -88,6 +88,9 @@ export const FactTypeStore = signalStore(
         if (updateFactFormData.factType && updateFactFormData.factType.id) {
           updateFactFormData.factTypeId = updateFactFormData.factType.id;
         }
+        updateFactFormData.dimensions = JSON.parse(
+          updateFactFormData.dimensions,
+        );
         const resp = await firstValueFrom(
           factTypeService.update(updateFactFormData),
         );
@@ -107,6 +110,13 @@ export const FactTypeStore = signalStore(
         }
       },
       async create(createFactTypeFormData: FactType) {
+        if (createFactTypeFormData.dimensionTypes) {
+          const dimensionTypesJson = JSON.parse(
+            createFactTypeFormData.dimensionTypes,
+          );
+          createFactTypeFormData.dimensionTypes = dimensionTypesJson;
+        }
+
         patchState(store, setPending());
         const resp = await firstValueFrom(
           factTypeService.create(createFactTypeFormData),

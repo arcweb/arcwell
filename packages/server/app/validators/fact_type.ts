@@ -23,7 +23,7 @@ export const updateFactTypeValidator = vine.compile(
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
     name: vine.string().trim().optional(),
     // TODO: Add validation to the dimensionTypes
-    dimensionsTypes: vine.array(vine.object({}).allowUnknownProperties()).optional(),
+    dimensionTypes: vine.array(vine.object({}).allowUnknownProperties()).optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )

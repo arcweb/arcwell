@@ -85,13 +85,14 @@
       displayProperty="name"
     ></aw-object-selector-form-field>
 
-    <aw-object-selector-form-field
-      formControlName="event"
-      placeholder="Search for Event"
-      label="Event"
-      serviceType="events"
-      displayProperty="id"
-    ></aw-object-selector-form-field>
+    <h4>Note: Currently, events can only be added via the api</h4>
+    <!--    <aw-object-selector-form-field-->
+    <!--      formControlName="event"-->
+    <!--      placeholder="Search for Event"-->
+    <!--      label="Event"-->
+    <!--      serviceType="events"-->
+    <!--      displayProperty="id"-->
+    <!--    ></aw-object-selector-form-field>-->
 
     @if (factStore.fact()?.dimensions?.length > 0) {
       <h2>Dimensions</h2>
@@ -113,6 +114,27 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+    } @else {
+      <mat-form-field>
+        <mat-label>Dimensions</mat-label>
+        <textarea
+          matInput
+          placeholder="Dimensions"
+          formControlName="dimensions"
+          rows="10"
+        ></textarea>
+        @if (factForm.controls.dimensions.hasError('required')) {
+          <mat-error>
+            DimensionTypes are
+            <strong>required</strong>
+          </mat-error>
+        }
+      </mat-form-field>
+      <h4>
+        Note: Dimensions will not be validated by the fact type's dimension
+        schema. Use with extreme caution. Suggested fact creation is done via
+        the data insert api.
+      </h4>
     }
 
     <div class="form-button-container">
