@@ -1,8 +1,9 @@
 @if (featureStore.activeSubfeature() && featureStore.hasSubfeatures()) {
   <div class="feature-sub-menu-container">
+    <!--    Since we allow duplicate fact type names, need to use less efficient $index-->
     @for (
       subfeature of featureStore.activeFeature()?.subfeatures;
-      track subfeature.name
+      track $index
     ) {
       <button
         mat-button

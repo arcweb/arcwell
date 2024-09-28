@@ -3,9 +3,8 @@ import { DimensionModel } from '@shared/models/dimension.model';
 
 export const DimensionSchema: any = z
   .object({
-    id: z.string().uuid().optional(),
     key: z.string(),
-    value: z.string(),
+    value: z.string().or(z.number()),
     factId: z.string().uuid().optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -14,9 +13,8 @@ export const DimensionSchema: any = z
 
 // Validate data going to the API for update
 export const DimensionUpdateSchema = DimensionSchema.extend({
-  id: z.string().uuid(),
   key: z.string().optional(),
-  value: z.string().optional(),
+  value: z.string().or(z.number()).optional(),
   factId: z.string().uuid().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),

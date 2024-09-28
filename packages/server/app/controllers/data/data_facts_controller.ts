@@ -25,7 +25,68 @@ interface TransformedDataFact {
   [key: string]: string
 }
 
-//TODO: Currently returns after first validation error.  Would be better to collect all validation errors and return in the response
+enum SqlOperatorEnum {
+  eq = 'eq',
+  gt = 'gt',
+  gte = 'gte',
+  lt = 'lt',
+  lte = 'lte',
+  ne = 'ne',
+}
+
+enum DimensionDataTypeEnum {
+  boolean = 'boolean',
+  number = 'number',
+  date = 'date',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  string = 'string',
+}
+// Validations
+const vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
+// const vineDateSchema = vine.compile(vine.date())
+const vineNumberStringSchema = vine.compile(vine.number({ strict: true }))
+const vineBooleanSchema = vine.compile(vine.boolean())
+
+async function validateDimensionType(value: string, dataType: string): Promise<string | null> {
+  switch (dataType.toLowerCase()) {
+    case DimensionDataTypeEnum.string:
+      // Likely don't need to check for string, since type is string by default.
+      if (vine.helpers.isString(value)) {
+        return null
+      } else {
+        return `Expected string but got '${value}'`
+      }
+    case DimensionDataTypeEnum.boolean:
+      try {
+        await vineBooleanSchema.validate(value)
+      } catch (error) {
+        return `Expected boolean but got '${value}'`
+      }
+      return null
+    case DimensionDataTypeEnum.number:
+      try {
+        await vineNumberStringSchema.validate(value)
+      } catch (error) {
+        return `Expected number but got '${value}'`
+      }
+      return null
+
+    // TODO: Currently is strict on format.  e.g. 2024-09-20T16:31:13.692+00:00
+    // TODO Write a custom validator that is accepting to all date formats we want considered valid
+    case 'date':
+      try {
+        await vineDateUtcSchema.validate(value)
+      } catch (error) {
+        return `Expected date but got '${value}'`
+      }
+      return null
+
+    default:
+      return `Unknown data type: '${dataType}'`
+  }
+}
+
+// TODO: Currently returns after first validation error.  Would be better to collect all validation errors and return in the response
 export default class DataFactsController {
   private async validateDimensions(
     dimensions: Dimension[],
@@ -41,7 +102,7 @@ export default class DataFactsController {
     for (const dimension of dimensions) {
       const dimensionType = dimensionTypes.find((item) => item.key === dimension.key)
       if (dimensionType) {
-        const typeError = await this.validateDimensionType(dimension.value, dimensionType.dataType)
+        const typeError = await validateDimensionType(dimension.value, dimensionType.dataType)
         if (typeError) {
           return `Dimension Validation Failed: ${typeError} for dimension key: ${dimension.key}`
         }
@@ -51,44 +112,7 @@ export default class DataFactsController {
     return null
   }
 
-  vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
-  vineDateSchema = vine.compile(vine.date())
-  vineNumberStringSchema = vine.compile(vine.number({ strict: false }))
-
-  private async validateDimensionType(value: string, dataType: string): Promise<string | null> {
-    switch (dataType.toLowerCase()) {
-      case 'string':
-        // Likely don't need to check for string, since type is string by default.
-        if (vine.helpers.isString(value)) {
-          return null
-        } else {
-          return `Expected string but got '${value}'`
-        }
-
-      case 'number':
-        try {
-          await this.vineNumberStringSchema.validate(value)
-        } catch (error) {
-          return `Expected number but got '${value}'`
-        }
-        return null
-
-      // TODO: Currently is strict on format.  e.g. 2024-09-20T16:31:13.692+00:00
-      // TODO Write a custom validator that is accepting to all date formats we want considered valid?
-      case 'date':
-        try {
-          await this.vineDateUtcSchema.validate(value)
-        } catch (error) {
-          return `Expected date but got '${value}'`
-        }
-        return null
-
-      default:
-        return `Unknown data type: '${dataType}'`
-    }
-  }
-
-  private transformDataFact(dataFact: DataFact[]): TransformedDataFact[] {
+  private transformDataFactResponse(dataFact: DataFact[]): TransformedDataFact[] {
     const transformedData: TransformedDataFact[] = []
 
     dataFact.forEach((item) => {
@@ -112,16 +136,22 @@ export default class DataFactsController {
     return transformedData
   }
 
-  private parseFilters(filter: Record<string, Record<string, string>>) {
+  private parseFilters(filter: Record<string, Record<string, string | undefined> | string>) {
     const result: { field: string; operator: string; value: string }[] = []
 
     for (const field in filter) {
       if (filter.hasOwnProperty(field)) {
         const operators = filter[field]
-        for (const operator in operators) {
-          if (operators.hasOwnProperty(operator)) {
-            const value = operators[operator]
-            result.push({ field, operator, value })
+
+        if (typeof operators === 'string') {
+          // If operators is a string, it means the operator is missing, so use 'eq' as default
+          result.push({ field, operator: 'eq', value: operators })
+        } else {
+          for (const operator in operators) {
+            if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
+              const value = operators[operator]!
+              result.push({ field, operator, value })
+            }
           }
         }
       }
@@ -139,7 +169,6 @@ export default class DataFactsController {
     const cleanRequest = request.only([
       'typeKey',
       'observedAt',
-      'info',
       'dimensions',
       'personId',
       'resourceId',
@@ -156,7 +185,7 @@ export default class DataFactsController {
     )
 
     if (validationErrorMessage) {
-      throwCustomHttpError(
+      return throwCustomHttpError(
         {
           title: 'Dimension validation failed',
           code: 'E_VALIDATION_ERROR',
@@ -169,12 +198,6 @@ export default class DataFactsController {
     await db.transaction(async (trx) => {
       newFact = new Fact().fill(cleanRequest).useTransaction(trx)
       await newFact.save()
-
-      if (cleanRequest.dimensions) {
-        for (const dimension of cleanRequest.dimensions) {
-          await newFact.related('dimensions').create(dimension)
-        }
-      }
 
       // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
       // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
@@ -206,97 +229,109 @@ export default class DataFactsController {
     const filter = params['filter']
     const dim = params['dim']
 
-    const dataQuery = db
-      .from('dimensions')
-      .join('facts', 'dimensions.fact_id', '=', 'facts.id')
-      .select(
-        'facts.id as fact_id',
-        'facts.type_key',
-        'facts.observed_at',
-        'dimensions.key',
-        'dimensions.value'
-      )
+    // TODO: The following is the raw query I used, because LATERAL is not supported in knex/lucid. Would prefer query builder support.  See GROUP BY example below
+    // SELECT
+    //    facts.id AS fact_id,
+    //    facts.type_key,
+    //    facts.observed_at,
+    //    dimension_element ->> 'key' AS key,
+    //    dimension_element ->> 'value' AS value
+    // FROM facts
+    // JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
+    // WHERE
+    //     facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b'
+    //     AND EXISTS (
+    //         SELECT 1
+    //         FROM jsonb_array_elements(facts.dimensions) AS inner_element
+    //         WHERE
+    //             inner_element ->> 'key' = 'diastolic'
+    //             AND (inner_element -> 'value')::numeric > 70.1
 
-    console.log('filter=', filter)
+    // You can do the same with group but not sure if the selects will work with json commands, e.g. dimension_element ->> 'key' AS key
+    // and query building this seems complicated.
+    // Here is the equivalent non-literal SQL
+    // SELECT
+    //    facts.id AS fact_id,
+    //    facts.type_key,
+    //    facts.observed_at,
+    //    dimension_element ->> 'key' AS key,
+    //    dimension_element ->> 'value' AS value
+    // FROM facts,
+    //    jsonb_array_elements(facts.dimensions) AS dimension_element
+    // WHERE
+    //     facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b'
+    //     AND facts.id IN (
+    //         SELECT facts.id
+    //         FROM facts,
+    //             jsonb_array_elements(facts.dimensions) AS inner_element
+    //         WHERE
+    //             facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b' -- Repeat condition to filter on person_id
+    //             AND inner_element ->> 'key' = 'diastolic'
+    //             AND (inner_element -> 'value')::numeric > 70.1
+    //     )
+    // GROUP BY
+    //     facts.id,
+    //     facts.type_key,
+    //     facts.observed_at,
+    //     key,
+    //     value;
+
+    let rawQueryString = `
+  SELECT
+    facts.id AS fact_id,
+    facts.type_key,
+    facts.observed_at,
+    dimension_element ->> 'key' AS key,
+    dimension_element ->> 'value' AS value
+  FROM facts
+  JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
+`
+
+    let whereClause = ''
+    let bindings: Record<string, any> = {}
+    let paramIndex = 1 // Counter to generate unique binding names
+
+    // Handle standard filters
     const parsedFilters = filter ? this.parseFilters(filter) : []
 
     for (let filterItem of parsedFilters) {
-      console.log('filterItem=', filterItem)
-      console.log('filterItem.field=', filterItem.field)
       const fieldName = string.snakeCase(filterItem.field)
-      dataQuery.andWhere(`facts.${fieldName}`, `${filterItem.value}`)
+      const paramName = `fieldValue${paramIndex}` // Generate a unique parameter name
+
+      whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
+      whereClause += `facts.${fieldName} = :${paramName}`
+
+      bindings[paramName] = filterItem.value
+      paramIndex++
     }
 
+    // Handle dimension filters
     const parsedDims = dim ? this.parseFilters(dim) : []
-    for (let dimItem of parsedDims) {
-      // TODO: Check for any SQL injection issues
-      const dimFieldName = string.snakeCase(dimItem.field)
-      const dimValueNumber = +dimItem.value
 
-      // Works assuming number
+    for (let dimItem of parsedDims) {
+      let sqlOperator: string
+
       switch (dimItem.operator) {
-        case 'eq':
-          dataQuery.andWhereIn(
-            'facts.id',
-            db
-              .from('dimensions')
-              .select('fact_id')
-              .andWhereRaw('key = ? AND CAST("value" as numeric) = ?', [
-                dimFieldName,
-                dimValueNumber,
-              ])
-          )
+        case SqlOperatorEnum.eq:
+          sqlOperator = '='
           break
-        case 'gt':
-          dataQuery.andWhereIn(
-            'facts.id',
-            db
-              .from('dimensions')
-              .select('fact_id')
-              .andWhereRaw('key = ? AND CAST("value" as numeric) > ?', [
-                dimFieldName,
-                dimValueNumber,
-              ])
-          )
+        case SqlOperatorEnum.gt:
+          sqlOperator = '>'
           break
-        case 'gte':
-          dataQuery.andWhereIn(
-            'facts.id',
-            db
-              .from('dimensions')
-              .select('fact_id')
-              .andWhereRaw('key = ? AND CAST("value" as numeric) >= ?', [
-                dimFieldName,
-                dimValueNumber,
-              ])
-          )
+        case SqlOperatorEnum.gte:
+          sqlOperator = '>='
           break
-        case 'lt':
-          dataQuery.andWhereIn(
-            'facts.id',
-            db
-              .from('dimensions')
-              .select('fact_id')
-              .andWhereRaw('key = ? AND CAST("value" as numeric) < ?', [
-                dimFieldName,
-                dimValueNumber,
-              ])
-          )
+        case SqlOperatorEnum.lt:
+          sqlOperator = '<'
           break
-        case 'lte':
-          dataQuery.andWhereIn(
-            'facts.id',
-            db
-              .from('dimensions')
-              .select('fact_id')
-              .andWhereRaw('key = ? AND CAST("value" as numeric) <= ?', [
-                dimFieldName,
-                dimValueNumber,
-              ])
-          )
+        case SqlOperatorEnum.lte:
+          sqlOperator = '<='
+          break
+        case SqlOperatorEnum.ne:
+          sqlOperator = '<>'
           break
         default:
-          throwCustomHttpError(
+          return throwCustomHttpError(
             {
               title: 'Bad Request',
               code: 'E_BAD_REQUEST',
@@ -305,10 +340,33 @@ export default class DataFactsController {
             400
           )
       }
+
+      const fieldParam = `fieldKey${paramIndex}`
+      const valueParam = `fieldValue${paramIndex}`
+
+      whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
+      whereClause += `
+                      EXISTS (
+                        SELECT 1
+                        FROM jsonb_array_elements(facts.dimensions) AS inner_element
+                        WHERE
+                          inner_element ->> 'key' = :${fieldParam}
+                          AND inner_element -> 'value' ${sqlOperator} :${valueParam}
+                      )
+                    `
+
+      bindings[fieldParam] = dimItem.field
+      bindings[valueParam] = dimItem.value
+      paramIndex++
     }
 
-    const result = await dataQuery
-    const transformedData = this.transformDataFact(result)
+    // Combine the base query with the dynamically generated WHERE clause
+    rawQueryString += whereClause
+
+    // Execute the query using the database client with bindings as an object
+    const result = await db.rawQuery(rawQueryString, bindings, { mode: 'read' })
+
+    const transformedData = this.transformDataFactResponse(result.rows)
 
     return { data: transformedData }
   }

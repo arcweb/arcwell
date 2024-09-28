@@ -118,7 +118,7 @@ export class FactComponent implements OnInit {
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
   });
 
-  displayedColumns: string[] = ['id', 'key', 'value'];
+  displayedColumns: string[] = ['key', 'value'];
 
   constructor() {
     effect(() => {

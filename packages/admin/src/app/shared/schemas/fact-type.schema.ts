@@ -14,8 +14,8 @@ export const FactTypeSchema = z
     facts: z.array(FactSchema).optional(),
     dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
     tags: z.array(TagSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
+    createdAt: z.string().datetime({ offset: true }).optional().nullable(),
+    updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .strict();
 
@@ -29,8 +29,8 @@ export const FactTypeUpdateSchema = z
     facts: z.array(FactSchema).optional(),
     dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
     tags: z.array(TagSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
+    createdAt: z.string().datetime({ offset: true }).optional().nullable(),
+    updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .strict();
 
@@ -59,7 +59,7 @@ export const deserializeFactType = (data: FactTypeType): FactTypeModel => {
 export const serializeFactType = (data: FactTypeModel): FactTypeType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt ? data.createdAt.toISO() : undefined,
+    updatedAt: data.updatedAt ? data.updatedAt.toISO() : undefined,
   };
 };

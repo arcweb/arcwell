@@ -38,6 +38,19 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'aw-fact-type',
@@ -57,6 +70,17 @@ import { BackService } from '@app/shared/services/back.service';
     RouterLink,
     MatIconButton,
     TagsFormComponent,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    JsonPipe,
+    MatHeaderCellDef,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -91,6 +115,14 @@ export class FactTypeComponent implements OnInit {
       disabled: true,
     }),
   });
+
+  displayedColumns: string[] = [
+    'key',
+    'name',
+    'dataType',
+    'dataUnit',
+    'isRequired',
+  ];
 
   constructor() {
     effect(() => {
