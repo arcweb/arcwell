@@ -23,6 +23,9 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
+import { Router } from '@angular/router';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface ResourceState {
   resource: ResourceType | null;
@@ -50,6 +53,8 @@ export const ResourceStore = signalStore(
       resourceService = inject(ResourceService),
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
+      router = inject(Router),
+      toastService = inject(ToastService),
     ) => ({
       async initialize(resourceId: string) {
         patchState(store, setPending());
@@ -132,6 +137,8 @@ export const ResourceStore = signalStore(
             { resource: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Resource updated.', ToastLevel.SUCCESS);
         }
       },
       async create(createResourceFormData: ResourceType) {
@@ -147,8 +154,16 @@ export const ResourceStore = signalStore(
         } else {
           patchState(
             store,
-            { resource: resp.data, inEditMode: false },
+            { resource: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
+          );
+
+          toastService.sendMessage('Resource created.', ToastLevel.SUCCESS);
+
+          // navigate to the new resource
+          router.navigateByUrl(
+            `/project-management/resources/${resp.data.id}`,
+            { replaceUrl: true },
           );
         }
       },

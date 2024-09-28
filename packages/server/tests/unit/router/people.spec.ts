@@ -7,31 +7,34 @@ const PEOPLE_URL = '/people'
 
 test.group('Router people', () => {
   test('people index test', async ({ assert, client }) => {
-    const response = await client.get(PEOPLE_URL)
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const response = await client.get(PEOPLE_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 104)
-    assert.equal(data.meta.count, 104)
+    assert.equal(data.data.length, 114)
+    assert.equal(data.meta.count, 114)
   })
 
   test('people index filtered test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const pType = await PersonType.findBy('key', 'Staff')
-    const response = await client.get(`${PEOPLE_URL}?personTypeId=${pType?.id}`)
+    const response = await client.get(`${PEOPLE_URL}?personTypeId=${pType?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 14)
-    assert.equal(data.meta.count, 14)
+    assert.equal(data.data.length, 114)
+    assert.equal(data.meta.count, 114)
   })
 
   test('people show test', async ({ assert, client }) => {
     // get a valid person for id for request
+    const adminUser = await User.findBy('email', 'dev-admin@example.com')
     const person = await Person.first()
 
-    const response = await client.get(`${PEOPLE_URL}/${person?.id}`)
+    const response = await client.get(`${PEOPLE_URL}/${person?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -103,7 +106,7 @@ test.group('Router people', () => {
     const response = await client.delete(`${PEOPLE_URL}/${person!.id}`).loginAs(adminUser!)
     response.assertStatus(204)
   }).setup(async () => {
-    const type = await PersonType.findBy('key', 'Staff')
+    const type = await PersonType.findBy('key', 'staff')
 
     const newPerson = {
       typeKey: type!.key,

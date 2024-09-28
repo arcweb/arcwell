@@ -20,6 +20,9 @@ import { EventTypeService } from '@app/shared/services/event-type.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
+import { ToastService } from '@app/shared/services/toast.service';
+import { Router } from '@angular/router';
+import { ToastLevel } from '@app/shared/models';
 
 interface EventState {
   event: EventType | null;
@@ -47,6 +50,8 @@ export const EventStore = signalStore(
       eventService = inject(EventService),
       eventTypeService = inject(EventTypeService),
       tagService = inject(TagService),
+      toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(eventId: string) {
         patchState(store, setPending());
@@ -120,6 +125,7 @@ export const EventStore = signalStore(
             { event: resp.data, inEditMode: false },
             setFulfilled(),
           );
+          toastService.sendMessage('Updated Event.', ToastLevel.SUCCESS);
         }
       },
       async create(createEventFormData: EventType) {
@@ -134,9 +140,16 @@ export const EventStore = signalStore(
         } else {
           patchState(
             store,
-            { event: resp.data, inEditMode: false },
+            { event: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Created event.', ToastLevel.SUCCESS);
+
+          // navigate to the new item and dont save the current route in history
+          router.navigateByUrl(`/project-management/events/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async delete() {

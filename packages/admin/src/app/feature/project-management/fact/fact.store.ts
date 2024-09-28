@@ -22,6 +22,7 @@ import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
+import { Router } from '@angular/router';
 
 interface FactState {
   fact: FactType | null;
@@ -50,6 +51,7 @@ export const FactStore = signalStore(
       factTypeService = inject(FactTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(factId: string) {
         patchState(store, setPending());
@@ -116,6 +118,7 @@ export const FactStore = signalStore(
             { fact: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
           toastService.sendMessage('Updated fact.', ToastLevel.SUCCESS);
         }
       },
@@ -130,13 +133,17 @@ export const FactStore = signalStore(
           patchState(store, setErrors(resp.errors));
           toastService.sendMessage('Error creating facts.', ToastLevel.ERROR);
         } else {
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { fact: resp.data, inEditMode: false },
+            { fact: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
           toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
+
+          // navigate to the new item and do not save the current route in history
+          router.navigateByUrl(`/project-management/facts/${resp.data.id}`, {
+            replaceUrl: true,
+          });
         }
       },
       async deleteFact() {

@@ -25,6 +25,8 @@ export class CohortService {
   getCohorts(
     limit?: number,
     offset?: number,
+    notRelatedToPerson?: string,
+    search?: [{ field: string; searchString: string }],
   ): Observable<CohortsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -33,6 +35,20 @@ export class CohortService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (notRelatedToPerson !== undefined) {
+      params = params.set('notRelatedToPerson', notRelatedToPerson);
+    }
+    if (search && search.length > 0) {
+      search.forEach(searchItem => {
+        if (searchItem.field && searchItem.searchString) {
+          // Format: search[field]=searchString
+          params = params.set(
+            `search[${searchItem.field}]`,
+            searchItem.searchString,
+          );
+        }
+      });
     }
 
     return this.http

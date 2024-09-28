@@ -12,7 +12,7 @@ test.group('Router resource', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 13)
+    assert.equal(data.data.length, 4)
   })
 
   test('resource index filtered test', async ({ assert, client }) => {
@@ -22,8 +22,8 @@ test.group('Router resource', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 7)
-    assert.equal(data.meta.count, 7)
+    assert.equal(data.data.length, 4)
+    assert.equal(data.meta.count, 4)
   })
 
   test('resource show test', async ({ assert, client }) => {
@@ -98,7 +98,7 @@ test.group('Router resource', () => {
     const response = await client.delete(`${RESOURCE_URL}/${resource?.id}`).loginAs(adminUser!)
     response.assertStatus(204)
   }).setup(async () => {
-    const type = await ResourceType.findBy('key', 'dme')
+    const type = await ResourceType.findBy('key', 'room')
 
     const newResource = {
       typeKey: type!.key,
