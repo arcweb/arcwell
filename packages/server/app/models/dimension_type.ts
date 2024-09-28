@@ -17,7 +17,7 @@ export default class DimensionType extends BaseModel {
   declare dataType: string
 
   @column()
-  declare dataUnit: string
+  declare dataUnit: string | null
 
   @column()
   declare isRequired: boolean
