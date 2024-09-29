@@ -28,13 +28,27 @@ export const updateFactValidator = vine.compile(
   })
 )
 
-export const insertFactValidator = vine.compile(
+export const insertDataFactValidator = vine.compile(
   vine.object({
-    typeKey: vine.string().trim().optional(),
+    typeKey: vine.string().trim(),
     observedAt: vine.date({ formats: { utc: true } }).optional(),
     person_id: vine.string().trim().uuid().optional().nullable(),
     resource_id: vine.string().trim().uuid().optional().nullable(),
     event_id: vine.string().trim().uuid().optional().nullable(),
     dimensions: dimensions,
+  })
+)
+
+export const updateDataFactValidator = vine.compile(
+  vine.object({
+    typeKey: vine.string().trim(),
+    observedAt: vine
+      .date({ formats: { utc: true } })
+      .optional()
+      .optional(),
+    person_id: vine.string().trim().uuid().optional().nullable().optional(),
+    resource_id: vine.string().trim().uuid().optional().nullable().optional(),
+    event_id: vine.string().trim().uuid().optional().nullable().optional(),
+    dimensions: dimensions.optional(),
   })
 )
