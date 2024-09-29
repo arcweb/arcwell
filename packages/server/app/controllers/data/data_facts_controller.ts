@@ -356,15 +356,15 @@ export default class DataFactsController {
     //     value;
 
     let rawQueryString = `
-  SELECT
-    facts.id AS fact_id,
-    facts.type_key,
-    facts.observed_at,
-    dimension_element ->> 'key' AS key,
-    dimension_element ->> 'value' AS value
-  FROM facts
-  JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
-`
+                          SELECT
+                            facts.id AS fact_id,
+                            facts.type_key,
+                            facts.observed_at,
+                            dimension_element ->> 'key' AS key,
+                            dimension_element ->> 'value' AS value
+                          FROM facts
+                          JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
+                        `
 
     let whereClause = ''
     let bindings: Record<string, any> = {}
