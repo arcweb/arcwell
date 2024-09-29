@@ -11,7 +11,7 @@ export function getFullPersonType(id: string) {
 export default class PersonTypesController {
   /**
    * @index
-   * @summary List People Types
+   * @summary List Person Types
    * @description Returns a list of People Type definitions, including name, key, and custom schema.
    * @paramUse(sortable, filterable)
    * @responseBody 200 - {}

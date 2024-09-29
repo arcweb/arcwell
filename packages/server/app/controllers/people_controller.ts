@@ -91,7 +91,7 @@ export default class PeopleController {
 
   /**
    * @store
-   * @summary Insert Person
+   * @summary Create Person
    * @description Create a new Person record within Arcwell.
    */
   async store({ request, auth }: HttpContext) {
@@ -126,7 +126,7 @@ export default class PeopleController {
 
   /**
    * @showWithCohorts
-   * @summary Get Person w/ Cohorts
+   * @summary Get Person with Cohorts
    * @description Return details about a Person and include Cohorts of which they are a member.
    */
   async showWithCohorts({ params, request, auth }: HttpContext) {

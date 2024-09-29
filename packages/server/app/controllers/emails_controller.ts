@@ -4,7 +4,11 @@ import mail from '@adonisjs/mail/services/main'
 
 export default class EmailsController {
   /**
-   * Send an email with a addressa and template
+   * @send
+   * @summary Send Email
+   * @description Send an email message to an address with template
+   * @paramQuery email - Destination email address
+   * @paramQuery template - Template of body to send email
    */
   async send({ request }: HttpContext) {
     await request.validateUsing(paramsEmailValidator)

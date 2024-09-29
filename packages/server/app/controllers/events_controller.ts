@@ -8,7 +8,10 @@ import { buildApiQuery } from '#helpers/query_builder'
 
 export default class EventsController {
   /**
-   * Display a list of events
+   * @index
+   * @summary List Events
+   * @description Retrieve a list of Event records
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -78,7 +81,9 @@ export default class EventsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Event
+   * @description Create a new Event record within Arcwell
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -118,7 +123,9 @@ export default class EventsController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Event
+   * @description Retrieve an individual Event record from Arcwell
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -143,7 +150,9 @@ export default class EventsController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Event
+   * @description Update an individual Event record within Arcwell
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -178,7 +187,9 @@ export default class EventsController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Event
+   * @description Remove an individual Event from this Arcwell instance
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

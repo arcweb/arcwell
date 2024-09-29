@@ -30,7 +30,10 @@ export async function getFullFact(id: string) {
 
 export default class FactsController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Facts
+   * @description Retrieve a list of Fact records. This method is best used for administrative and management functions. Consider the Data API for querying facts with dimension for statistical and review purposes.
+   * @paramUse(sortable, filterable)
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -108,7 +111,9 @@ export default class FactsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Fact
+   * @description Create a Fact within Arcwell's data system. This method is intended for administrative and management use. Consider the Data API for inserting facts with dimension for application and statistical purposes.
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -118,7 +123,9 @@ export default class FactsController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Fact
+   * @description Retrieve an individual Fact record. This method is best used for administrative and management functions. Consider the Data API for querying facts with dimension for statistical and review purposes.
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -130,7 +137,9 @@ export default class FactsController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Fact
+   * @description Update an existing Fact record. This method is best used for administrative and management functions. Consider the Data API for inserting and manipulating facts with dimension for statistical and review purposes.
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -147,7 +156,9 @@ export default class FactsController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Fact
+   * @description Remove a Fact record. This method is best used for administrative and management functions. Consider the Data API for data set manipulation.
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

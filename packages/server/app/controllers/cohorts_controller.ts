@@ -49,7 +49,10 @@ export function getFullCohort(
 }
 export default class CohortsController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Cohorts
+   * @description Returns a list of Cohort objects and their details. Sortable and filterable.
+   * @paramUse(sortable, filterable)
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -87,7 +90,9 @@ export default class CohortsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Cohort
+   * @description Insert a new Cohort record into Arcwell
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -105,7 +110,9 @@ export default class CohortsController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Cohort
+   * @description Retrieve the details of an individual Cohort record.
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -120,7 +127,9 @@ export default class CohortsController {
   }
 
   /**
-   * Show individual record with people
+   * @showWithPeople
+   * @summary Get Cohort with People List
+   * @description Retrieve the details of an individual Cohorot, but include a list of the member People records.
    */
   async showWithPeople({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -138,7 +147,9 @@ export default class CohortsController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Cohort
+   * @description Update the details for an existing individual Cohort record.
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -156,7 +167,9 @@ export default class CohortsController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Cohort
+   * @description Remove the indicated Cohort from the Arcwell instance.
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -167,7 +180,10 @@ export default class CohortsController {
   }
 
   /**
-   * Assign Multiple People to Cohort
+   * @attachPeople
+   * @summary Add People to Cohort
+   * @description Manage grouping by adding People to this Cohort.
+   * @paramQuery peopleIds - Array of IDs of Person records to add
    */
   async attachPeople({ params, request, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -182,7 +198,10 @@ export default class CohortsController {
   }
 
   /**
-   * Unassign Multiple People from Cohort
+   * @detachPeople
+   * @summary Remove People from Cohort
+   * @description Manage grouping by removing People from this Cohort.
+   * @paramQuery peopleIds - Array of IDs of Person records to remove
    */
   async detachPeople({ params, request, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -197,7 +216,10 @@ export default class CohortsController {
   }
 
   /**
-   * Set All People for Cohort, any ids not in the request body will be removed
+   * @setPeople
+   * @summary Set People in Cohort
+   * @description Manage grouping by setting the complete membership of People within this Cohort.
+   * @paramQuery peopleIds - Array of IDs of Person records to set as the membership of the Cohort
    */
   async setPeople({ params, request, auth, response }: HttpContext) {
     await auth.authenticate()
