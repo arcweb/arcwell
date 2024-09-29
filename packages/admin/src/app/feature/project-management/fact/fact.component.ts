@@ -168,7 +168,7 @@ export class FactComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factForm.value;
 
-          const eventFormPayload = {
+          const factFormPayload = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -182,9 +182,9 @@ export class FactComponent implements OnInit {
           };
 
           if (this.factStore.inCreateMode()) {
-            this.factStore.createFact(eventFormPayload);
+            this.factStore.createFact(factFormPayload);
           } else {
-            this.factStore.updateFact(eventFormPayload);
+            this.factStore.updateFact(factFormPayload);
           }
         }
         // else if (event instanceof ValueChangeEvent) {

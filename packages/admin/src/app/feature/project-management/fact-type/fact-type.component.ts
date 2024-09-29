@@ -115,7 +115,7 @@ export class FactTypeComponent implements OnInit {
       disabled: true,
     }),
     dimensionSchemas: new FormControl({
-      value: [],
+      value: null,
       disabled: true,
     }),
   });
@@ -158,10 +158,20 @@ export class FactTypeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const formValue = this.factTypeForm.value;
+          const dimensionsSquemaJson = formValue.dimensionSchemas
+            ? JSON.parse(formValue.dimensionSchemas)
+            : [];
+
+          const factTypeFormPayload = {
+            ...formValue,
+            dimensionSchemas: dimensionsSquemaJson,
+          };
+
           if (this.factTypeStore.inCreateMode()) {
-            this.factTypeStore.create(this.factTypeForm.value);
+            this.factTypeStore.create(factTypeFormPayload);
           } else {
-            this.factTypeStore.update(this.factTypeForm.value);
+            this.factTypeStore.update(factTypeFormPayload);
           }
         } else if (event instanceof ValueChangeEvent) {
           // auto-generate key from the user provided name

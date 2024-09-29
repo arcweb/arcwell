@@ -51,10 +51,6 @@ export default class FactTypesController {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
 
-    // TODO: remove this when we change the type of tags
-    if (request.body().tags) {
-      request.body().tags = JSON.stringify(request.body().tags)
-    }
     // @ts-ignore - stringify is required for knex and jsonb arrays
     const newFactType = await FactType.create(request.body())
 
@@ -98,7 +94,7 @@ export default class FactTypesController {
     await request.validateUsing(updateFactTypeValidator)
 
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['key', 'name', 'description', 'tags'])
+    const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
     if (cleanRequest.tags) {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }

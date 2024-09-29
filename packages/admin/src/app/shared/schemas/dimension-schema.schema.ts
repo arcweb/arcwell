@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { DimensionSchemaModel } from '@shared/models/dimension-schema.model';
 
 export const DimensionSchemaSchema: any = z.object({
-  id: z.string().uuid().optional(),
   key: z.string(),
   name: z.string(),
   dataType: z.string(),
@@ -14,7 +13,6 @@ export const DimensionSchemaSchema: any = z.object({
 
 // Validate data going to the API for update
 export const DimensionSchemaUpdateSchema = DimensionSchemaSchema.extend({
-  id: z.string().uuid(),
   key: z.string().optional(),
   name: z.string().optional(),
   dataType: z.string(),
