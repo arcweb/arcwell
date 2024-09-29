@@ -86,7 +86,6 @@ async function validateDimensionSchema(value: string, dataType: string): Promise
   return errors
 }
 
-// TODO: Currently returns after first validation error.  Would be better to collect all validation errors and return in the response
 export default class DataFactsController {
   private async validateDimensions(
     dimensions: Dimension[],
