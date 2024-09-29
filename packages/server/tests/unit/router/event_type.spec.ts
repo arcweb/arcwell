@@ -2,7 +2,7 @@ import EventType from '#models/event_type'
 import User from '#models/user'
 import { test } from '@japa/runner'
 
-const EVENT_TYPE_URL = '/event_types'
+const EVENT_TYPE_URL = '/events/types'
 
 test.group('Router event type', () => {
   test('event type index test', async ({ assert, client }) => {
@@ -11,7 +11,7 @@ test.group('Router event type', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 2)
+    assert.equal(data.data.length, 4)
   })
 
   test('event type show test', async ({ assert, client }) => {
@@ -28,7 +28,7 @@ test.group('Router event type', () => {
   })
 
   test('event type show with events test', async ({ assert, client }) => {
-    const eventType = await EventType.findBy('key', 'appt')
+    const eventType = await EventType.findBy('key', 'appointment')
 
     const response = await client.get(`${EVENT_TYPE_URL}/${eventType?.id}/events`)
 
@@ -38,7 +38,7 @@ test.group('Router event type', () => {
     assert.equal(data.data.id, eventType?.id)
     assert.equal(data.data.key, eventType?.key)
     assert.equal(data.data.name, eventType?.name)
-    assert.equal(data.data.events.length, 6)
+    assert.equal(data.data.events.length, 101)
   })
 
   test('event type update test', async ({ assert, client }) => {
@@ -46,6 +46,7 @@ test.group('Router event type', () => {
     const eventType = await EventType.first()
 
     const newData = {
+      id: eventType?.id,
       name: 'New Name',
     }
 

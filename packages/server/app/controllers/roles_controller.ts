@@ -13,7 +13,10 @@ export function getFullRole(id: string) {
 
 export default class RolesController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Roles
+   * @description Returns a list of Roles defined within Arcwell
+   * @paramUse(sortable, filterable)
    */
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
@@ -34,7 +37,9 @@ export default class RolesController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Role
+   * @description Retrieve details on an individual Role within Arcwell
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -43,7 +48,9 @@ export default class RolesController {
   }
 
   /**
-   * Handle form submission for the creation action
+   * @store
+   * @summary Create Role
+   * @description Create a new Role within Arcwell
    */
   async store({ request, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -53,7 +60,9 @@ export default class RolesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Role
+   * @description Update the details of an existing Role within Arcwell
    */
   async update({ params, auth, request }: HttpContext) {
     await auth.authenticate()
@@ -66,7 +75,9 @@ export default class RolesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Role
+   * @description Remove a specific Role from this instance of Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

@@ -131,7 +131,9 @@ export default class DataFactsController {
   }
 
   /**
-   * Handle form submission for the non-admin full features insert  action
+   * @insert
+   * @summary Insert Fact
+   * @description Accepts new Fact data including dimensions for storage in Arcwell data system.
    */
   async insert({ auth, request }: HttpContext) {
     await auth.authenticate()
@@ -196,6 +198,13 @@ export default class DataFactsController {
   // https://www.mongodb.com/docs/manual/reference/operator/query/
 
   // TODO: Update to support numbers and dates, now that validation for those types was added
+  /**
+   * @getDimensionsByObjects
+   * @summary Query Facts
+   * @description Returns facts with dimensions matching search queries.
+   * @paramUse(sortable, filterable)
+   * @param dim Filtering by dimenion
+   */
   async getDimensionsByObjects({ auth, request }: HttpContext) {
     await auth.authenticate()
     const params = request.qs()

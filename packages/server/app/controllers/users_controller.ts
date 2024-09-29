@@ -20,7 +20,10 @@ export function getFullUser(id: string) {
 
 export default class UsersController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Users
+   * @description Returns a list of User records
+   * @paramUse(sortable, filterable)
    */
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
@@ -50,7 +53,9 @@ export default class UsersController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get User
+   * @description Returns an individual User record
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -71,7 +76,9 @@ export default class UsersController {
   }
 
   /**
-   * Handle form submission for the creation action
+   * @store
+   * @summary Create User
+   * @description Create a new User record within Arcwell
    */
   async store({ request, auth }: HttpContext) {
     // TODO: Add create user functionality back in...
@@ -83,7 +90,9 @@ export default class UsersController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update User
+   * @description Update details of an existing User record within Arcwell
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -96,7 +105,9 @@ export default class UsersController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete User
+   * @description Remove a User from this instance of Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

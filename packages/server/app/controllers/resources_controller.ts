@@ -16,7 +16,10 @@ export function getFullResource(id: string) {
 
 export default class ResourcesController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Resources
+   * @description Returns a list of Resources defined within Arcwell
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -62,7 +65,9 @@ export default class ResourcesController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Resource
+   * @description Create a new Resource within Arcwell
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -73,7 +78,9 @@ export default class ResourcesController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Resource
+   * @description Retrieve details of an individual Resource within Arcwell
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -90,7 +97,9 @@ export default class ResourcesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Resource
+   * @description Update an existing Resource within Arcwell
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -103,7 +112,9 @@ export default class ResourcesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Resource
+   * @description Remove an individual Resource from this Arcwell instance
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

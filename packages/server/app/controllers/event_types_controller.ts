@@ -11,7 +11,10 @@ export function getFullEventType(id: string) {
 
 export default class EventTypesController {
   /**
-   * Display a list of event
+   * @index
+   * @summary List EventTypes
+   * @description Retrieve a list of type definitions and schemas for Events
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -40,7 +43,9 @@ export default class EventTypesController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create EventType
+   * @description Create a new type definition and schema for Events
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -50,7 +55,9 @@ export default class EventTypesController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get EventType
+   * @description Retrieve an individual EventType definition
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -60,7 +67,10 @@ export default class EventTypesController {
   }
 
   /**
-   * Show record with related events
+   * @showWithEvents
+   * @summary List Events of Type
+   * @description Retrieve a list of Event records of a specific type
+   * @paramUse(sortable, filterable)
    */
   async showWithEvents({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -78,7 +88,9 @@ export default class EventTypesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update EventType
+   * @description Update an individual EventType definition
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -91,7 +103,9 @@ export default class EventTypesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete EventType
+   * @description Remove an individual EventType definition from this Arcwell instance
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

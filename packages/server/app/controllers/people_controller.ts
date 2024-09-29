@@ -32,10 +32,14 @@ export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset
 
 export default class PeopleController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List People
+   * @description Returns a list of People objects and their details. Sortable and filterable.
+   * @paramUse(sortable, filterable)
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
+    console.log('PEOPLE INDEXING')
 
     const queryData = request.qs()
 
@@ -86,7 +90,9 @@ export default class PeopleController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Person
+   * @description Create a new Person record within Arcwell.
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -97,7 +103,9 @@ export default class PeopleController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Person
+   * @description Return individual details about a single Person record.
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -117,7 +125,9 @@ export default class PeopleController {
   }
 
   /**
-   * Show individual record with cohorts
+   * @showWithCohorts
+   * @summary Get Person with Cohorts
+   * @description Return details about a Person and include Cohorts of which they are a member.
    */
   async showWithCohorts({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -133,7 +143,9 @@ export default class PeopleController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Person
+   * @description Update the details for an existing individual Person record.
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -147,7 +159,9 @@ export default class PeopleController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Person
+   * @description Remove an individual Person record from Arcwell.
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -158,7 +172,9 @@ export default class PeopleController {
   }
 
   /**
-   * Assign Cohort to Person
+   * @attachCohort
+   * @summary Add Person to Cohort
+   * @description Manage grouping by adding a Person to a Cohort.
    */
   async attachCohort({ params, request, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -173,7 +189,9 @@ export default class PeopleController {
   }
 
   /**
-   * Unassign Cohort from Person
+   * @detachCohort
+   * @summary Remove Person from Cohort
+   * @description Manage grouping by removing a Person from a Cohort.
    */
   async detachCohort({ params, request, auth, response }: HttpContext) {
     await auth.authenticate()
