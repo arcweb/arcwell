@@ -106,9 +106,15 @@ export const FactStore = signalStore(
         if (updateFactFormData.factType && updateFactFormData.factType.id) {
           updateFactFormData.typeKey = updateFactFormData.factType.key;
         }
-        updateFactFormData.dimensions = JSON.parse(
-          updateFactFormData.dimensions,
-        );
+        if (
+          updateFactFormData.dimensions &&
+          typeof updateFactFormData.dimensions === 'string'
+        ) {
+          updateFactFormData.dimensions = JSON.parse(
+            updateFactFormData.dimensions,
+          );
+        }
+
         const resp = await firstValueFrom(
           factService.update(updateFactFormData),
         );
