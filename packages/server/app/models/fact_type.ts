@@ -11,7 +11,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
-import DimensionSchemaModel from '#models/dimension_schema'
+import DimensionSchema from '#models/dimension_schema'
 
 export default class FactType extends BaseModel {
   @column({ isPrimary: true })
@@ -30,7 +30,7 @@ export default class FactType extends BaseModel {
   declare facts: HasMany<typeof Fact>
 
   @column()
-  declare dimensionSchemas: DimensionSchemaModel[]
+  declare dimensionSchemas: DimensionSchema[]
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

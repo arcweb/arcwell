@@ -1,14 +1,16 @@
 import Fact from '#models/fact'
 import { paramsTripleObjectUUIDValidator } from '#validators/common'
-import { insertFactValidator } from '#validators/fact'
+import { insertDataFactValidator, updateDataFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { getFullFact } from '#controllers/facts_controller'
 import string from '@adonisjs/core/helpers/string'
-import FactType, { DimensionSchema } from '#models/fact_type'
+import FactType from '#models/fact_type'
+
 import Dimension from '#models/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import vine from '@vinejs/vine'
+import DimensionSchema from '#models/dimension_schema'
 
 interface DataFact {
   fact_id: string
@@ -47,43 +49,41 @@ const vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
 const vineNumberStringSchema = vine.compile(vine.number({ strict: true }))
 const vineBooleanSchema = vine.compile(vine.boolean())
 
-async function validateDimensionSchema(value: string, dataType: string): Promise<string | null> {
+async function validateDimensionSchema(value: string, dataType: string): Promise<string[]> {
+  const errors: string[] = []
+
   switch (dataType.toLowerCase()) {
     case DimensionDataTypeEnum.string:
-      // Likely don't need to check for string, since type is string by default.
-      if (vine.helpers.isString(value)) {
-        return null
-      } else {
-        return `Expected string but got '${value}'`
+      if (!vine.helpers.isString(value)) {
+        errors.push(`Expected string but got '${value}'`)
       }
+      break
     case DimensionDataTypeEnum.boolean:
       try {
         await vineBooleanSchema.validate(value)
-      } catch (error) {
-        return `Expected boolean but got '${value}'`
+      } catch {
+        errors.push(`Expected boolean but got '${value}'`)
       }
-      return null
+      break
     case DimensionDataTypeEnum.number:
       try {
         await vineNumberStringSchema.validate(value)
-      } catch (error) {
-        return `Expected number but got '${value}'`
+      } catch {
+        errors.push(`Expected number but got '${value}'`)
       }
-      return null
-
-    // TODO: Currently is strict on format.  e.g. 2024-09-20T16:31:13.692+00:00
-    // TODO Write a custom validator that is accepting to all date formats we want considered valid
-    case 'date':
+      break
+    case DimensionDataTypeEnum.date:
       try {
         await vineDateUtcSchema.validate(value)
-      } catch (error) {
-        return `Expected date but got '${value}'`
+      } catch {
+        errors.push(`Expected date but got '${value}'`)
       }
-      return null
-
+      break
     default:
-      return `Unknown data type: '${dataType}'`
+      errors.push(`Unknown data type: '${dataType}'`)
   }
+
+  return errors
 }
 
 // TODO: Currently returns after first validation error.  Would be better to collect all validation errors and return in the response
@@ -92,24 +92,43 @@ export default class DataFactsController {
     dimensions: Dimension[],
     dimensionSchemas: DimensionSchema[]
   ): Promise<string | null> {
+    const errors: string[] = []
+
+    // Get all the valid keys from the dimensionSchemas
+    const validKeys = dimensionSchemas.map((item) => item.key)
+
+    // Check for missing required keys
     const requiredKeys = dimensionSchemas.filter((item) => item.isRequired).map((item) => item.key)
     const missingKeys = requiredKeys.filter((key) => !dimensions.some((data) => data.key === key))
 
     if (missingKeys.length > 0) {
-      return `Dimension Validation Failed: Missing required fields: ${missingKeys.join(', ')}`
+      errors.push(`Missing required fields: ${missingKeys.join(', ')}`)
     }
 
+    // Validate each dimension
     for (const dimension of dimensions) {
-      const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
-      if (dimensionSchema) {
-        const typeError = await validateDimensionSchema(dimension.value, dimensionSchema.dataType)
-        if (typeError) {
-          return `Dimension Validation Failed: ${typeError} for dimension key: ${dimension.key}`
+      // Check if the dimension key exists in the validKeys
+      if (!validKeys.includes(dimension.key)) {
+        errors.push(`Unexpected dimension key: '${dimension.key}'`)
+      } else {
+        // If the key is valid, validate its value against the schema
+        const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
+        if (dimensionSchema) {
+          const validationErrors = await validateDimensionSchema(
+            dimension.value,
+            dimensionSchema.dataType
+          )
+          if (validationErrors && validationErrors.length > 0) {
+            errors.push(
+              `Validation failed for key '${dimension.key}': ${validationErrors.join(', ')}`
+            )
+          }
         }
       }
     }
 
-    return null
+    // Return the collected errors, or null if no errors were found
+    return errors.length > 0 ? errors.join('; ') : null
   }
 
   private transformDataFactResponse(dataFact: DataFact[]): TransformedDataFact[] {
@@ -167,7 +186,7 @@ export default class DataFactsController {
    */
   async insert({ auth, request }: HttpContext) {
     await auth.authenticate()
-    await request.validateUsing(insertFactValidator)
+    await request.validateUsing(insertDataFactValidator)
     const cleanRequest = request.only([
       'typeKey',
       'observedAt',
@@ -212,6 +231,58 @@ export default class DataFactsController {
     }
 
     return { data: newCreatedFact }
+  }
+
+  /**
+   * Handle form submission for the non-admin full features insert  action
+   */
+  async update({ auth, request, params }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(updateDataFactValidator)
+    const cleanRequest = request.only([
+      'typeKey',
+      'observedAt',
+      'dimensions',
+      'personId',
+      'resourceId',
+      'eventId',
+    ])
+
+    let updatedFact = null as Fact | null
+
+    const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+    const validationErrorMessage = await this.validateDimensions(
+      cleanRequest.dimensions,
+      factType.dimensionSchemas
+    )
+
+    if (validationErrorMessage) {
+      return throwCustomHttpError(
+        {
+          title: 'Dimension validation failed',
+          code: 'E_VALIDATION_ERROR',
+          detail: validationErrorMessage,
+        },
+        400
+      )
+    }
+
+    await db.transaction(async (trx) => {
+      const currentFact = await Fact.findOrFail(params.id)
+      updatedFact = await currentFact.merge(cleanRequest).useTransaction(trx).save()
+
+      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
+      // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
+    })
+
+    // Load the full object to return
+    let newUpdatedFact = null
+    if (updatedFact) {
+      newUpdatedFact = await getFullFact(updatedFact.id)
+    }
+
+    return { data: newUpdatedFact }
   }
 
   // OLD WAY - {{base_url}}/data/query?person_id=08379671-17e8-42cc-872d-6bac65599eb4
