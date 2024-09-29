@@ -11,16 +11,8 @@ import { HealthService } from '@services/health/health.service';
   providers: [HealthService],
 })
 export class AppComponent implements OnInit {
-  constructor(private healthService: HealthService) {}
+  constructor(private healthService: HealthService) { }
 
   ngOnInit(): void {
-    this.healthService.checkHealth().subscribe({
-      next: (healthCheck) => {
-        console.log(healthCheck);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
   }
 }

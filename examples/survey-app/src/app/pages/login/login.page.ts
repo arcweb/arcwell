@@ -29,12 +29,12 @@ export class LoginPage {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   async login() {
     try {
       await this.authService.login(this.email, this.password);
-      this.router.navigate(['/home']);
+      this.router.navigate(['/phq9']);
     } catch (error) {
       this.errorMessage = 'Invalid login credentials';
     }

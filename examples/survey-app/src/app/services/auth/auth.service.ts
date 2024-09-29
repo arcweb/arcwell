@@ -11,13 +11,15 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
   private tokenKey = 'auth-token';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   async login(email: string, password: string) {
     const body = { email, password };
 
     try {
       const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/auth/login`, body));
+
+      console.log('response', response);
 
       await SecureStoragePlugin.set({ key: this.tokenKey, value: response.data.token.value });
 
@@ -68,7 +70,11 @@ export class AuthService {
   }
 
   async getToken(): Promise<string | null> {
-    const result = await SecureStoragePlugin.get({ key: this.tokenKey });
-    return result.value;
+    try {
+      const token = await SecureStoragePlugin.get({ key: this.tokenKey });
+      return token?.value || null;  // Return the token value, or null if not present
+    } catch (error) {
+      return null;
+    }
   }
 }

@@ -1,10 +1,12 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import PersonType from '#models/person_type'
-import User from '#models/user'
-import FactType from '#models/fact_type'
+
 import DimensionType from '#models/dimension_type'
-import { PersonFactory } from '#database/factories/person_factory'
+import FactType from '#models/fact_type'
+import PersonType from '#models/person_type'
 import Role from '#models/role'
+import User from '#models/user'
+
+import { PersonFactory } from '#database/factories/person_factory'
 
 export default class SurveyAppSeeder extends BaseSeeder {
   static environment = ['development']
@@ -36,7 +38,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'survey_phq9' },
       {
         key: 'survey_phq9',
-        name: 'Patient Health Questionnaire 9',
+        name: 'PHQ-9 Survey',
         description: 'Patient Health Questionnaire 9 (PHQ-9) for assessing depression severity.',
       }
     )
@@ -81,9 +83,9 @@ export default class SurveyAppSeeder extends BaseSeeder {
     dimensionTypes.push(assessmentScore)
 
     const followUpResponse = await DimensionType.firstOrCreate(
-      { key: 'phq9_follow_up_response' },
+      { key: 'phq9_follow_up' },
       {
-        key: 'phq9_follow_up_response',
+        key: 'phq9_follow_up',
         name: 'If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?',
         dataType: 'number', // Response will be a number (0 - 3)
         dataUnit: '',
