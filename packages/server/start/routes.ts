@@ -7,7 +7,6 @@
 |
 */
 
-import env from '#start/env'
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
 import { middleware } from '#start/kernel'
@@ -65,12 +64,15 @@ router.group(() => {
 })
 
 // config routes
-router.group(() => {
-  router.get('config/features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
-})
+router
+  .group(() => {
+    router.get('', [ConfigController, 'index']).as('index')
+    router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
+  })
+  .as('config')
+  .prefix('config')
 
 // fact routes
-
 router.group(() => {
   router.resource('facts/types', FactTypesController).apiOnly()
   router

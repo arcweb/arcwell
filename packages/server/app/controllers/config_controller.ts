@@ -1,3 +1,4 @@
+import env from '#start/env'
 import type { HttpContext } from '@adonisjs/core/http'
 import {
   featureMenuConfig,
@@ -11,6 +12,24 @@ import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
 
 export default class ConfigController {
+  /**
+   * @index
+   * @summary Config Index
+   * @description Returns a set of public server configuration fields for introspection by integrating apps.
+   */
+  async index() {
+    return {
+      arcwell: {
+        name: env.get('ARCWELL_INSTANCE_NAME'),
+        id: env.get('ARCWELL_INSTANCE_ID'),
+      },
+      mail: {
+        host: env.get('SMTP_HOST'),
+        port: env.get('SMTP_PORT'),
+      },
+    }
+  }
+
   /**
    * @featuresMenu
    * @summary Features Menu
