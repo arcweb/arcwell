@@ -16,7 +16,10 @@ export function getFullFactType(id: string, trx?: TransactionClientContract) {
 
 export default class FactTypesController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List FactTypes
+   * @description Retrieve a list of type definitions used for Fact records.
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -45,7 +48,9 @@ export default class FactTypesController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create FactType
+   * @description Create a new type definition for use by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -104,7 +109,9 @@ export default class FactTypesController {
   // }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get FactType
+   * @description Retrieve an individual type definition used by Fact records. See schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
   async show({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -116,7 +123,10 @@ export default class FactTypesController {
   }
 
   /**
-   * Show record with related facts
+   * @showWithFacts
+   * @summary List Facts by Type
+   * @description Retireve a list of Fact records of a given FactType
+   * @paramUse(sortable, filterable)
    */
   async showWithFacts({ params, auth }: HttpContext) {
     await auth.authenticate()
@@ -133,7 +143,9 @@ export default class FactTypesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update FactType
+   * @description Update an existing type definition used by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -151,7 +163,9 @@ export default class FactTypesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete FactType
+   * @description Remove a type definition used by Fact records from Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()

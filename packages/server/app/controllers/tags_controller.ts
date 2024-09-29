@@ -7,7 +7,10 @@ import { buildApiQuery } from '#helpers/query_builder'
 
 export default class TagsController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Tags
+   * @description Returns a list of Tags.
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -33,7 +36,9 @@ export default class TagsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create Tag
+   * @description Create a new Tag within Arcwell
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -43,7 +48,9 @@ export default class TagsController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Tag
+   * @description Return details about an individual Tag
    */
   async show({ params }: HttpContext) {
     return {
@@ -52,7 +59,9 @@ export default class TagsController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update Tag
+   * @description Update an existing Tag
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -64,7 +73,9 @@ export default class TagsController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete Tag
+   * @description Remove the indicated Tag from Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
@@ -73,6 +84,12 @@ export default class TagsController {
     response.status(204).send('')
   }
 
+  /**
+   * @getStrings
+   * @summary List Tags (Simple)
+   * @description Return a list of Tags within Arcwell as text strings
+   * @paramUse(filterable, sortable)
+   */
   async getStrings({ request }: HttpContext) {
     const queryData = request.qs()
     const parentStr = queryData['parentStr']
@@ -105,6 +122,11 @@ export default class TagsController {
     }
   }
 
+  /**
+   * @setTags
+   * @summary Set Tags
+   * @description Set the tags associated with a given Arcwell object
+   */
   async setTags({ params, response, request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(setTagsValidator)

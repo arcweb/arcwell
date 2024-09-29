@@ -30,15 +30,11 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 router.get('/health', [HealthChecksController])
 
-router.get('/', async () => {
-  return {
-    arcwell: {
-      node: env.get('ARCWELL_NODE'),
-      key: env.get('ARCWELL_KEY'),
-      server: true,
-    },
-    hello: 'world',
-  }
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
+
+router.get('/docs/swagger.yaml', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
 })
 
 // auth routes

@@ -11,7 +11,10 @@ export function getFullResourceType(id: string) {
 
 export default class ResourceTypesController {
   /**
-   * Display a list of resource
+   * @index
+   * @summary List Resource Types
+   * @description Retrieve a list of known type definitions for Resource objects
+   * @paramUse(sortable, filterable)
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
@@ -40,7 +43,9 @@ export default class ResourceTypesController {
   }
 
   /**
-   * Handle form submission for the create action
+   * @store
+   * @summary Create ResourceType
+   * @description Create a new type definition and schema for Resource objects in Arcwell
    */
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
@@ -51,7 +56,9 @@ export default class ResourceTypesController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @summary Get Resource Type
+   * @description Retrieve an individual ResourceType definition
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
@@ -61,7 +68,10 @@ export default class ResourceTypesController {
   }
 
   /**
-   * SHow record with related resources
+   * @showWithResources
+   * @summary List Resources of Type
+   * @description Retrieve a list of Resource objects of the indicated ResourceType
+   * @paramUse(sortable, filterable)
    */
   async showWithResources({ params }: HttpContext) {
     console.log('\n\n', params, '\n\n')
@@ -72,7 +82,9 @@ export default class ResourceTypesController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @summary Update ResourceType
+   * @description Update a specific ResourceType definition within Arcwell
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
@@ -85,7 +97,9 @@ export default class ResourceTypesController {
   }
 
   /**
-   * Delete record
+   * @destroy
+   * @summary Delete ResourceType
+   * @description Remove a specific ResourceType definition from Arcwell
    */
   async destroy({ params, auth, response }: HttpContext) {
     await auth.authenticate()
