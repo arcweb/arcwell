@@ -123,6 +123,7 @@ router.resource('users', UsersController).apiOnly()
 // tag routes
 router.group(() => {
   router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+  router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
   router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
   router.resource('tags', TagsController).apiOnly()
 })

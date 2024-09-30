@@ -7,6 +7,10 @@ export const TagSchema: any = z
     pathname: z.string(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
+    peopleCount: z.number().optional().nullable(),
+    resourcesCount: z.number().optional().nullable(),
+    eventsCount: z.number().optional().nullable(),
+    factsCount: z.number().optional().nullable(),
   })
   .strict();
 

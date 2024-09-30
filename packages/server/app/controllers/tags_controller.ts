@@ -3,7 +3,14 @@ import { createTagValidator, setTagsValidator, updateTagValidator } from '#valid
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import { paramsUUIDValidator } from '#validators/common'
-import { buildApiQuery } from '#helpers/query_builder'
+import {
+  buildApiQuery,
+  buildEventsSort,
+  buildFactsSort,
+  buildPeopleSort,
+  buildResourcesSort,
+} from '#helpers/query_builder'
+import string from '@adonisjs/core/helpers/string'
 
 export default class TagsController {
   /**
@@ -60,8 +67,63 @@ export default class TagsController {
 
   /**
    * @update
+   * @summary Return details about individual Tag along with its related objects
+   * of the given object_type
+   * @description Return details about an individual Tag along with related data
+   */
+  async showRelated({ params, request }: HttpContext) {
+    const queryData = request.qs()
+
+    const query = Tag.query()
+      .where('id', params.id)
+      .withCount(params.object_name)
+      .preload(params.object_name, (query) => {
+        switch (params.object_name) {
+          case 'people':
+            let [peopleQuery] = buildApiQuery(query, queryData, 'people')
+            peopleQuery.preload('personType')
+            buildPeopleSort(peopleQuery, queryData)
+            break
+          case 'resources':
+            let [resourcesQuery] = buildApiQuery(query, queryData, 'resources')
+            resourcesQuery.preload('resourceType')
+            buildResourcesSort(resourcesQuery, queryData)
+            break
+          case 'events':
+            let [eventsQuery] = buildApiQuery(query, queryData, 'events')
+            eventsQuery.preload('eventType')
+            eventsQuery.preload('resource')
+            eventsQuery.preload('person')
+            buildEventsSort(eventsQuery, queryData)
+            break
+          case 'facts':
+            let [factsQuery] = buildApiQuery(query, queryData, 'facts')
+            factsQuery.preload('factType')
+            factsQuery.preload('resource')
+            factsQuery.preload('person')
+            factsQuery.preload('event')
+            buildFactsSort(query, queryData)
+            break
+          case 'users':
+            let [usersQuery] = buildApiQuery(query, queryData, 'users')
+            usersQuery.preload('role')
+            usersQuery.preload('person')
+            usersQuery.orderBy('email', 'asc')
+            break
+        }
+      })
+      .firstOrFail()
+
+    return {
+      data: await query,
+    }
+  }
+
+  /**
+   * @update
    * @summary Update Tag
    * @description Update an existing Tag
+   * Show the related records of the tag for the given object type
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
