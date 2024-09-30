@@ -5,12 +5,12 @@ const mailConfig = defineConfig({
   default: 'smtp',
 
   from: {
-    address: 'demo@example.com',
-    name: 'Demo Person',
+    address: env.get('SMTP_FROM_ADDRESS'),
+    name: env.get('SMTP_FROM_NAME'),
   },
   replyTo: {
-    address: 'demo-reply@example.com',
-    name: 'Reply Person',
+    address: env.get('SMTP_FROM_ADDRESS'),
+    name: env.get('SMTP_FROM_NAME'),
   },
 
   /**
@@ -22,15 +22,11 @@ const mailConfig = defineConfig({
     smtp: transports.smtp({
       host: env.get('SMTP_HOST'),
       port: env.get('SMTP_PORT'),
-      /**
-       * Uncomment the auth block if your SMTP
-       * server needs authentication
-       */
-      /* auth: {
+      auth: {
         type: 'login',
-        user: env.get('SMTP_USERNAME'),
+        user: env.get('SMTP_USER'),
         pass: env.get('SMTP_PASSWORD'),
-      }, */
+      },
     }),
   },
 })
