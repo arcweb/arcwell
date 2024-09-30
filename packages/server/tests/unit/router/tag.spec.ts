@@ -34,7 +34,7 @@ test.group('Router tag', () => {
       pathname: 'NewName',
     }
     const response = await client
-      .put(`${TAG_URL}/${tag?.id}`)
+      .patch(`${TAG_URL}/${tag?.id}`)
       .json({ ...newData })
       .loginAs(adminUser!)
 

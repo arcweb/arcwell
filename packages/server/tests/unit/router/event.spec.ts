@@ -48,7 +48,7 @@ test.group('Router event', () => {
   //     name: 'NewName',
   //   }
   //   const response = await client
-  //     .put(`${EVENT_URL}/${event?.id}`)
+  //     .patch(`${EVENT_URL}/${event?.id}`)
   //     .json({ ...newData })
   //     .loginAs(adminUser!)
 

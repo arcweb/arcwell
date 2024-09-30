@@ -51,7 +51,7 @@ test.group('Router event type', () => {
     }
 
     const response = await client
-      .put(`${EVENT_TYPE_URL}/${eventType?.id}`)
+      .patch(`${EVENT_TYPE_URL}/${eventType?.id}`)
       .json({ ...newData })
       .loginAs(adminUser!)
 

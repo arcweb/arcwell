@@ -53,7 +53,7 @@ test.group('Router people', () => {
       givenName: 'NewPerson',
     }
     const response = await client
-      .put(`${PEOPLE_URL}/${person?.id}`)
+      .patch(`${PEOPLE_URL}/${person?.id}`)
       .json({ ...newData })
       .loginAs(adminUser!)
     response.assertStatus(200)
