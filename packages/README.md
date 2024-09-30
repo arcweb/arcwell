@@ -38,7 +38,9 @@ DELETE /roles/:id (roles.destroy) ..............................................
 
 WARNING: Ignore the /auth endpoint. This is a work in progress login method.  It does successfully validate a users email/password.
 
-POST and PUT will require a request body with a name field e.g. { "name": "New Role Name"}
+POST and PATCH will require a request body with a name field e.g. { "name": "New Role Name"}
+
+PATCH is the standard when updating a server asset.
 
 name must be at least 3 characters long (uses the vine.js validation)
 

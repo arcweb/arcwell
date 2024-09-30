@@ -130,7 +130,7 @@ export class TagService {
 
   update(tag: TagType): Observable<TagType | ErrorResponseType> {
     return this.http
-      .put<TagType>(`${environment.apiUrl}/tags/${tag.id}`, tag)
+      .patch<TagType>(`${environment.apiUrl}/tags/${tag.id}`, tag)
       .pipe(
         map((response: TagType) => {
           return deserializeTag(response);
