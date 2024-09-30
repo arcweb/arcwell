@@ -40,12 +40,12 @@ export class FactTypeService {
     }
 
     return this.http.get<{ data: FactType[], meta: { count: number } }>(
-      `${this.apiUrl}/fact_types`,
+      `${this.apiUrl}/facts/types`,
       { params }
     );
   }
 
   getFactTypeById(id: string): Observable<FactType> {
-    return this.http.get<FactType>(`${this.apiUrl}/fact_types/${id}`);
+    return this.http.get<FactType>(`${this.apiUrl}/facts/types/${id}`);
   }
 }

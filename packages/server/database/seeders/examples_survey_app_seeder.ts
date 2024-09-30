@@ -87,7 +87,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       {
         key: 'phq9_follow_up',
         name: 'If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?',
-        dataType: 'number', // Response will be a number (0 - 3)
+        dataType: 'number',
         dataUnit: '',
       }
     )

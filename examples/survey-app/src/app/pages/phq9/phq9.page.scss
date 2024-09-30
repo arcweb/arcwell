@@ -25,7 +25,7 @@ ion-radio::part(mark) {
 }
 
 ion-radio.radio-checked::part(container) {
-  background: #006AFF;
+  background: var(--ion-color-primary);
   border-color: transparent;
 }
 
