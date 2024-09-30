@@ -40,16 +40,17 @@ test.group('Model resource', (group) => {
     assert.equal(resource?.name, 'New Object')
   })
 
-  test('resource tagging test', async ({ assert }) => {
-    const rTypeT = await ResourceType.findBy('key', 'tester')
-    const resourceInfo = {
-      name: 'TEST',
-      typeKey: rTypeT?.key,
-      tags: JSON.stringify(['first/list']),
-    }
+  // We no longer use model level taggin, the controler uses raw SQl
+  // test('resource tagging test', async ({ assert }) => {
+  //   const rTypeT = await ResourceType.findBy('key', 'tester')
+  //   const resourceInfo = {
+  //     name: 'TEST',
+  //     typeKey: rTypeT?.key,
+  //     tags: JSON.stringify(['first/list']),
+  //   }
 
-    const newResource = await Resource.create(resourceInfo)
+  //   const newResource = await Resource.create(resourceInfo)
 
-    assert.equal(newResource.tags, resourceInfo.tags)
-  })
+  //   assert.equal(newResource.tags, resourceInfo.tags)
+  // })
 })
