@@ -49,6 +49,15 @@ const vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
 const vineNumberStringSchema = vine.compile(vine.number({ strict: true }))
 const vineBooleanSchema = vine.compile(vine.boolean())
 
+/**
+ * Validates a dimension value against its expected data type.
+ *
+ * @async
+ * @param {string} value - The dimension value to validate.
+ * @param {string} dataType - The expected data type of the dimension (e.g., 'string', 'boolean', 'number', 'date'). See {DimensionDataTypeEnum}
+ * @returns {Promise<string[]>} - Returns an array of error messages if validation fails, or an empty array if the value is valid.
+ * @throws {Error} - Throws an error if the data type is unrecognized.
+ */
 async function validateDimensionSchema(value: string, dataType: string): Promise<string[]> {
   const errors: string[] = []
 
@@ -86,102 +95,135 @@ async function validateDimensionSchema(value: string, dataType: string): Promise
   return errors
 }
 
-export default class DataFactsController {
-  private async validateDimensions(
-    dimensions: Dimension[],
-    dimensionSchemas: DimensionSchema[]
-  ): Promise<string | null> {
-    const errors: string[] = []
+/**
+ * Validates the schema of each dimension against the provided dimension schemas.
+ * Ensures required keys are present and values match their expected data types.
+ *
+ * @private
+ * @async
+ * @param {Dimension[]} dimensions - Array of dimension objects to validate.
+ * @param {DimensionSchema[]} dimensionSchemas - Array of schema objects describing valid dimensions.
+ * @returns {Promise<string | null>} - Returns an error message string if validation fails, otherwise null.
+ */
+async function validateDimensions(
+  dimensions: Dimension[],
+  dimensionSchemas: DimensionSchema[]
+): Promise<string | null> {
+  const errors: string[] = []
 
-    // Get all the valid keys from the dimensionSchemas
-    const validKeys = dimensionSchemas.map((item) => item.key)
+  // Get all the valid keys from the dimensionSchemas
+  const validKeys = dimensionSchemas.map((item) => item.key)
 
-    // Check for missing required keys
-    const requiredKeys = dimensionSchemas.filter((item) => item.isRequired).map((item) => item.key)
-    const missingKeys = requiredKeys.filter((key) => !dimensions.some((data) => data.key === key))
+  // Check for missing required keys
+  const requiredKeys = dimensionSchemas.filter((item) => item.isRequired).map((item) => item.key)
+  const missingKeys = requiredKeys.filter((key) => !dimensions.some((data) => data.key === key))
 
-    if (missingKeys.length > 0) {
-      errors.push(`Missing required fields: ${missingKeys.join(', ')}`)
-    }
+  if (missingKeys.length > 0) {
+    errors.push(`Missing required fields: ${missingKeys.join(', ')}`)
+  }
 
-    // Validate each dimension
-    for (const dimension of dimensions) {
-      // Check if the dimension key exists in the validKeys
-      if (!validKeys.includes(dimension.key)) {
-        errors.push(`Unexpected dimension key: '${dimension.key}'`)
-      } else {
-        // If the key is valid, validate its value against the schema
-        const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
-        if (dimensionSchema) {
-          const validationErrors = await validateDimensionSchema(
-            dimension.value,
-            dimensionSchema.dataType
+  // Validate each dimension
+  for (const dimension of dimensions) {
+    // Check if the dimension key exists in the validKeys
+    if (!validKeys.includes(dimension.key)) {
+      errors.push(`Unexpected dimension key: '${dimension.key}'`)
+    } else {
+      // If the key is valid, validate its value against the schema
+      const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
+      if (dimensionSchema) {
+        const validationErrors = await validateDimensionSchema(
+          dimension.value,
+          dimensionSchema.dataType
+        )
+        if (validationErrors && validationErrors.length > 0) {
+          errors.push(
+            `Validation failed for key '${dimension.key}': ${validationErrors.join(', ')}`
           )
-          if (validationErrors && validationErrors.length > 0) {
-            errors.push(
-              `Validation failed for key '${dimension.key}': ${validationErrors.join(', ')}`
-            )
+        }
+      }
+    }
+  }
+
+  // Return the collected errors, or null if no errors were found
+  return errors.length > 0 ? errors.join('; ') : null
+}
+
+/**
+ * Transforms the array of DataFact objects into a more structured format where
+ * the key-value pairs are grouped under each fact using the fact_id.
+ *
+ * @private
+ * @param {DataFact[]} dataFact - Array of data fact objects.
+ * @returns {TransformedDataFact[]} - Transformed array where each fact has the corresponding key-value pairs.
+ */
+function transformDataFactResponse(dataFact: DataFact[]): TransformedDataFact[] {
+  const transformedData: TransformedDataFact[] = []
+
+  dataFact.forEach((item) => {
+    // Check if there is an existing transformed fact with the same fact_id
+    let existingFact = transformedData.find((fact) => fact.fact_id === item.fact_id)
+
+    // If not, create a new fact and add it to the array
+    if (!existingFact) {
+      existingFact = {
+        fact_id: item.fact_id,
+        type_key: item.type_key,
+        observed_at: item.observed_at,
+      }
+      transformedData.push(existingFact)
+    }
+
+    // Append the key-value pair to the existing fact
+    existingFact[item.key] = item.value
+  })
+
+  return transformedData
+}
+
+/**
+ * Parses filter parameters from a nested object structure and returns an array of parsed filters.
+ * Each filter contains a field, operator, and value.
+ *
+ * @private
+ * @param {Record<string, Record<string, string | undefined> | string>} filter - The raw filter object to parse.
+ * @returns {{ field: string; operator: string; value: string }[]} - Parsed filter conditions.
+ */
+function parseFilters(
+  filter: Record<string, Record<string, string | undefined> | string>
+): { field: string; operator: string; value: string }[] {
+  const result: { field: string; operator: string; value: string }[] = []
+
+  for (const field in filter) {
+    if (filter.hasOwnProperty(field)) {
+      const operators = filter[field]
+
+      if (typeof operators === 'string') {
+        // If operators is a string, it means the operator is missing, so use 'eq' as default
+        result.push({ field, operator: 'eq', value: operators })
+      } else {
+        for (const operator in operators) {
+          if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
+            const value = operators[operator]!
+            result.push({ field, operator, value })
           }
         }
       }
     }
-
-    // Return the collected errors, or null if no errors were found
-    return errors.length > 0 ? errors.join('; ') : null
   }
 
-  private transformDataFactResponse(dataFact: DataFact[]): TransformedDataFact[] {
-    const transformedData: TransformedDataFact[] = []
+  return result
+}
 
-    dataFact.forEach((item) => {
-      // Check if there is an existing transformed fact with the same fact_id
-      let existingFact = transformedData.find((fact) => fact.fact_id === item.fact_id)
-
-      // If not, create a new fact and add it to the array
-      if (!existingFact) {
-        existingFact = {
-          fact_id: item.fact_id,
-          type_key: item.type_key,
-          observed_at: item.observed_at,
-        }
-        transformedData.push(existingFact)
-      }
-
-      // Append the key-value pair to the existing fact
-      existingFact[item.key] = item.value
-    })
-
-    return transformedData
-  }
-
-  private parseFilters(filter: Record<string, Record<string, string | undefined> | string>) {
-    const result: { field: string; operator: string; value: string }[] = []
-
-    for (const field in filter) {
-      if (filter.hasOwnProperty(field)) {
-        const operators = filter[field]
-
-        if (typeof operators === 'string') {
-          // If operators is a string, it means the operator is missing, so use 'eq' as default
-          result.push({ field, operator: 'eq', value: operators })
-        } else {
-          for (const operator in operators) {
-            if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
-              const value = operators[operator]!
-              result.push({ field, operator, value })
-            }
-          }
-        }
-      }
-    }
-
-    return result
-  }
-
+export default class DataFactsController {
   /**
-   * Handle form submission for the non-admin full features insert  action
+   * Handles the form submission to insert a new data fact.
+   * Validates the dimensions against the fact's dimension schemas before saving.
+   *
+   * @async
+   * @param {HttpContext} context - The HTTP context containing authentication and request information.
+   * @returns {Promise<object>} - Returns the newly created fact along with all related data.
    */
-  async insert({ auth, request }: HttpContext) {
+  async insert({ auth, request }: HttpContext): Promise<object> {
     await auth.authenticate()
     await request.validateUsing(insertDataFactValidator)
     const cleanRequest = request.only([
@@ -197,13 +239,13 @@ export default class DataFactsController {
 
     const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
 
-    const validationErrorMessage = await this.validateDimensions(
+    const validationErrorMessage = await validateDimensions(
       cleanRequest.dimensions,
       factType.dimensionSchemas
     )
 
     if (validationErrorMessage) {
-      return throwCustomHttpError(
+      throwCustomHttpError(
         {
           title: 'Dimension validation failed',
           code: 'E_VALIDATION_ERROR',
@@ -217,7 +259,7 @@ export default class DataFactsController {
       newFact = new Fact().fill(cleanRequest).useTransaction(trx)
       await newFact.save()
 
-      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
+      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i believe)
       // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
     })
 
@@ -231,9 +273,14 @@ export default class DataFactsController {
   }
 
   /**
-   * Handle form submission for the non-admin full features insert  action
+   * Handles the form submission to update an existing data fact.
+   * Validates the dimensions against the fact's dimension schemas before saving updates.
+   *
+   * @async
+   * @param {HttpContext} context - The HTTP context containing authentication, request, and params information.
+   * @returns {Promise<object>} - Returns the updated fact along with all related data.
    */
-  async update({ auth, request, params }: HttpContext) {
+  async update({ auth, request, params }: HttpContext): Promise<object> {
     await auth.authenticate()
     await request.validateUsing(updateDataFactValidator)
     const cleanRequest = request.only([
@@ -249,13 +296,13 @@ export default class DataFactsController {
 
     const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
 
-    const validationErrorMessage = await this.validateDimensions(
+    const validationErrorMessage = await validateDimensions(
       cleanRequest.dimensions,
       factType.dimensionSchemas
     )
 
     if (validationErrorMessage) {
-      return throwCustomHttpError(
+      throwCustomHttpError(
         {
           title: 'Dimension validation failed',
           code: 'E_VALIDATION_ERROR',
@@ -269,7 +316,7 @@ export default class DataFactsController {
       const currentFact = await Fact.findOrFail(params.id)
       updatedFact = await currentFact.merge(cleanRequest).useTransaction(trx).save()
 
-      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i beleive)
+      // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i believe)
       // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
     })
 
@@ -282,14 +329,28 @@ export default class DataFactsController {
     return { data: newUpdatedFact }
   }
 
-  // OLD WAY - {{base_url}}/data/query?person_id=08379671-17e8-42cc-872d-6bac65599eb4
-  // NEW WAY - {{base_url}}/data/query?filter=[person_id][eq]=08379671-17e8-42cc-872d-6bac65599eb4
-  // DIM - {{base_url}}/data/query?filter[person_id][eq]=08379671-17e8-42cc-872d-6bac65599eb4&dim[diastolic][gt]=64&dim[systolic][lte]=1000
-
-  // https://www.mongodb.com/docs/manual/reference/operator/query/
-
-  // TODO: Update to support numbers and dates, now that validation for those types was added
-  async getDimensionsByObjects({ auth, request }: HttpContext) {
+  /**
+   * Handles the retrieval of facts and associated dimensions based on filter and dimension conditions.
+   * Supports filtering by both fact attributes and dimension values with various operators.
+   *
+   * @async
+   * @param {HttpContext} context - The HTTP context containing authentication and request information.
+   *
+   * Example of params:
+   *
+   *  /data/query?filter[person_id][eq]=08379671-17e8-42cc-872d-6bac65599eb4&dim[diastolic][gt]=64&dim[systolic][lte]=1000
+   *  /data/query?filter[person_id]=d81fb1c5-3d24-45a2-83e2-13e0b08a6a2b&dim[hr][eq]=123123312&dim[systolic][gt]=90&filter[type_key]=blood_pressure_demo_44
+   *
+   * Use filter[KEY]= or filter[KEY][eq]= for columns on the fact
+   * use dim[KEY][OPERATOR]= for dimension key query logic
+   *
+   * See {SqlOperatorEnum} for valid operators
+   *
+   *
+   * @returns {Promise<object>} - Returns an object containing the filtered facts and their dimensions.
+   * @throws {Error} - Throws an error if an unsupported operator is provided or validation fails.
+   */
+  async query({ auth, request }: HttpContext): Promise<object> {
     await auth.authenticate()
     const params = request.qs()
     await paramsTripleObjectUUIDValidator.validate(params)
@@ -362,7 +423,7 @@ export default class DataFactsController {
     let paramIndex = 1 // Counter to generate unique binding names
 
     // Handle standard filters
-    const parsedFilters = filter ? this.parseFilters(filter) : []
+    const parsedFilters = filter ? parseFilters(filter) : []
 
     for (let filterItem of parsedFilters) {
       const fieldName = string.snakeCase(filterItem.field)
@@ -376,10 +437,10 @@ export default class DataFactsController {
     }
 
     // Handle dimension filters
-    const parsedDims = dim ? this.parseFilters(dim) : []
+    const parsedDims = dim ? parseFilters(dim) : []
 
     for (let dimItem of parsedDims) {
-      let sqlOperator: string
+      let sqlOperator: string = '='
 
       switch (dimItem.operator) {
         case SqlOperatorEnum.eq:
@@ -401,7 +462,7 @@ export default class DataFactsController {
           sqlOperator = '<>'
           break
         default:
-          return throwCustomHttpError(
+          throwCustomHttpError(
             {
               title: 'Bad Request',
               code: 'E_BAD_REQUEST',
@@ -436,7 +497,7 @@ export default class DataFactsController {
     // Execute the query using the database client with bindings as an object
     const result = await db.rawQuery(rawQueryString, bindings, { mode: 'read' })
 
-    const transformedData = this.transformDataFactResponse(result.rows)
+    const transformedData = transformDataFactResponse(result.rows)
 
     return { data: transformedData }
   }
