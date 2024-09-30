@@ -3,6 +3,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 
 import Person from '#models/person'
 import PersonType from '#models/person_type'
+import Tag from '#models/tag'
 
 test.group('Model people', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
@@ -46,16 +47,10 @@ test.group('Model people', (group) => {
 
   // We no longer use model level taggin, the controler uses raw SQl
   // test('people tagging test', async ({ assert }) => {
-  //   const pTypeT = await PersonType.findBy('key', 'Tester')
-  //   const personInfo = {
-  //     familyName: 'TEST',
-  //     givenName: 'TEST',
-  //     typeKey: pTypeT?.key,
-  //     tags: JSON.stringify(['first/list']),
-  //   }
+  //   const person = await Person.firstOrFail()
+  //   const tag = await Tag.firstOrFail()
 
-  //   const newPerson = await Person.create(personInfo)
-
-  //   assert.equal(newPerson.tags, personInfo.tags)
+  //   await person.related('tags').attach([tag.id])
+  //   assert.equal(person.tags, tag.id)
   // })
 })
