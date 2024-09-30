@@ -34,7 +34,7 @@ export class LoginPage {
   async login() {
     try {
       await this.authService.login(this.email, this.password);
-      this.router.navigate(['/phq9']);
+      this.router.navigate(['/surveys']);
     } catch (error) {
       this.errorMessage = 'Invalid login credentials';
     }

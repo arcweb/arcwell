@@ -44,10 +44,12 @@ ion-radio.radio-checked::part(mark) {
   display: flex;
   justify-content: space-between;
   padding: 16px;
+
+  ion-button {
+    width: 45%;
+  }
 }
 
 ion-button {
-  padding: 12px 24px;
-  font-weight: 600;
-  border-radius: 8px;
+  margin: 0px 12px;
 }

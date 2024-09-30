@@ -10,18 +10,18 @@ export const routes: Routes = [
     canActivate: [LoginGuard],
   },
   {
-    path: 'home',
-    loadComponent: () => import('./pages/home/home.page').then((m) => m.HomePage),
-    canActivate: [AuthGuard],
-  },
-  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'surveys',
     pathMatch: 'full',
   },
   {
-    path: 'phq9',
-    loadComponent: () => import('./pages/phq9/phq9.page').then(m => m.Phq9Page),
+    path: 'surveys',
+    loadComponent: () => import('./pages/surveys/surveys.page').then(m => m.SurveysPage),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'survey/:id',
+    loadComponent: () => import('./pages/survey/survey.page').then(m => m.SurveyPage),
     canActivate: [AuthGuard],
   },
 ];
