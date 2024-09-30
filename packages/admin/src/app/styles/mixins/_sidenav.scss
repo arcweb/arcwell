@@ -1,0 +1,77 @@
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+@use 'layout' as layout;
+
+@mixin sidenav-theme($theme) {
+  $spacing: 8px;
+
+  %feature-active-state {
+    color: colors.$on-primary;
+    background-color: colors.$secondary;
+  }
+
+  .sidenav-container {
+    width: 320px;
+    border-radius: layout.$card-border-radius;
+    background-color: colors.$dark-blue;
+
+    .feature-menu-container {
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing;
+      align-items: flex-start;
+      padding: $spacing;
+
+      .mat-expansion-panel {
+        border-radius: layout.$card-border-radius;
+        background-color: transparent;
+        width: 100%;
+
+        @include mat.elevation(0);
+
+        .mat-expansion-panel-header {
+          background-color: colors.$dark-blue;
+          color: colors.$on-primary;
+          border-radius: 16px 0 0;
+
+          &.feature-active {
+            @extend %feature-active-state;
+          }
+
+          .feature-title {
+            display: flex;
+            gap: $spacing;
+          }
+        }
+
+        .mat-expansion-panel-content {
+          background-color: colors.$white;
+          color: colors.$primary;
+          border-radius: layout.$card-border-radius;
+
+          .mat-expansion-panel-body {
+            display: flex;
+            flex-direction: column;
+            max-height: 200px;
+            overflow-y: auto;
+          }
+        }
+      }
+
+      .subfeature-button-active {
+        @extend %feature-active-state;
+
+        border-radius: 0;
+      }
+    }
+  }
+
+  .route-content-container {
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    overflow-y: auto;
+  }
+}

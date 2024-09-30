@@ -1,17 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { FeatureStore } from '@shared/store/feature.store';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { cloneDeep } from 'lodash';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'aw-features-menu',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, RouterModule, NgClass],
+  imports: [MatExpansionModule, MatIconModule, RouterModule, NgClass],
   templateUrl: './features-menu.component.html',
   styleUrl: './features-menu.component.scss',
 })

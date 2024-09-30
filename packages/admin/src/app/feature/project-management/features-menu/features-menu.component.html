@@ -1,16 +1,29 @@
-<div class="feature-menu-container">
+<mat-accordion [multi]="false" class="feature-menu-container">
   @for (feature of featureStore.features(); track feature.name) {
-    <div class="feature-button-container">
-      <button
-        class="feature-button"
-        mat-icon-button
-        [attr.aria-label]="feature.name"
+    <mat-expansion-panel
+      hideToggle
+      [expanded]="featureStore.activeFeature()?.path === feature.path"
+      [disabled]="featureStore.activeFeature()?.path === feature.path"
+    >
+      <mat-expansion-panel-header
         [routerLink]="feature.path"
-        routerLinkActive="feature-button-active"
+        routerLinkActive="feature-active"
       >
-        <mat-icon>{{ feature.icon }}</mat-icon>
-      </button>
-      {{ feature.name }}
-    </div>
+        <mat-panel-title [attr.aria-label]="feature.name" class="feature-title">
+          <mat-icon>{{ feature.icon }}</mat-icon>
+          {{ feature.name }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @for (subfeature of feature.subfeatures; track subfeature.name) {
+        <a
+          mat-list-item
+          [routerLink]="subfeature.path"
+          routerLinkActive="feature-button-active"
+        >
+          <mat-icon>{{ subfeature.icon }}</mat-icon>
+          {{ subfeature.name }}
+        </a>
+      }
+    </mat-expansion-panel>
   }
-</div>
+</mat-accordion>
