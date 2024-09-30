@@ -26,6 +26,8 @@ export default class ConfigController {
       mail: {
         host: env.get('SMTP_HOST'),
         port: env.get('SMTP_PORT'),
+        fromAddress: env.get('SMTP_FROM_ADDRESS'),
+        fromName: env.get('SMTP_FROM_NAME'),
       },
     }
   }
