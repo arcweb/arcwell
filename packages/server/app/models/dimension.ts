@@ -1,12 +1,6 @@
-import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Fact from '#models/fact'
+import { column } from '@adonisjs/lucid/orm'
 
-export default class Dimension extends BaseModel {
-  @column({ isPrimary: true })
-  declare id: string
-
+export default class Dimension {
   @column()
   declare key: string
 
@@ -15,13 +9,4 @@ export default class Dimension extends BaseModel {
 
   @column()
   declare factId: string
-
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
-
-  @belongsTo(() => Fact)
-  declare fact: BelongsTo<typeof Fact>
 }

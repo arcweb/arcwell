@@ -38,6 +38,19 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'aw-fact-type',
@@ -57,6 +70,17 @@ import { BackService } from '@app/shared/services/back.service';
     RouterLink,
     MatIconButton,
     TagsFormComponent,
+    MatCell,
+    MatCellDef,
+    MatColumnDef,
+    MatHeaderCell,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatTable,
+    JsonPipe,
+    MatHeaderCellDef,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -90,7 +114,19 @@ export class FactTypeComponent implements OnInit {
       value: '',
       disabled: true,
     }),
+    dimensionSchemas: new FormControl({
+      value: null,
+      disabled: true,
+    }),
   });
+
+  displayedColumns: string[] = [
+    'key',
+    'name',
+    'dataType',
+    'dataUnit',
+    'isRequired',
+  ];
 
   constructor() {
     effect(() => {
@@ -112,6 +148,7 @@ export class FactTypeComponent implements OnInit {
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
             description: this.factTypeStore.factType()?.description,
+            dimensionSchemas: this.factTypeStore.factType()?.dimensionSchemas,
           });
         });
       }
@@ -121,10 +158,20 @@ export class FactTypeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const formValue = this.factTypeForm.value;
+          const dimensionsSquemaJson = formValue.dimensionSchemas
+            ? JSON.parse(formValue.dimensionSchemas)
+            : [];
+
+          const factTypeFormPayload = {
+            ...formValue,
+            dimensionSchemas: dimensionsSquemaJson,
+          };
+
           if (this.factTypeStore.inCreateMode()) {
-            this.factTypeStore.create(this.factTypeForm.value);
+            this.factTypeStore.create(factTypeFormPayload);
           } else {
-            this.factTypeStore.update(this.factTypeForm.value);
+            this.factTypeStore.update(factTypeFormPayload);
           }
         } else if (event instanceof ValueChangeEvent) {
           // auto-generate key from the user provided name

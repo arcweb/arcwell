@@ -2,7 +2,10 @@ import { z } from 'zod';
 import { FactSchema } from './fact.schema';
 import { FactTypeModel } from '../models/fact-type.model';
 import { TagSchema } from '@schemas/tag.schema';
-import { DimensionTypeSchema } from '@schemas/dimension-type.schema';
+import {
+  DimensionSchemaSchema,
+  DimensionSchemaUpdateSchema,
+} from '@schemas/dimension-schema.schema';
 
 export const FactTypeSchema = z
   .object({
@@ -12,10 +15,10 @@ export const FactTypeSchema = z
     description: z.string().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional(),
     facts: z.array(FactSchema).optional(),
-    dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
+    dimensionSchemas: z.array(DimensionSchemaSchema.optional()).optional(),
     tags: z.array(TagSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
+    createdAt: z.string().datetime({ offset: true }).optional().nullable(),
+    updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .strict();
 
@@ -27,10 +30,12 @@ export const FactTypeUpdateSchema = z
     description: z.string().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional(),
     facts: z.array(FactSchema).optional(),
-    dimensionTypes: z.array(DimensionTypeSchema.optional()).optional(),
+    dimensionSchemas: z
+      .array(DimensionSchemaUpdateSchema.optional())
+      .optional(),
     tags: z.array(TagSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
+    createdAt: z.string().datetime({ offset: true }).optional().nullable(),
+    updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .strict();
 
@@ -59,7 +64,7 @@ export const deserializeFactType = (data: FactTypeType): FactTypeModel => {
 export const serializeFactType = (data: FactTypeModel): FactTypeType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt ? data.createdAt.toISO() : undefined,
+    updatedAt: data.updatedAt ? data.updatedAt.toISO() : undefined,
   };
 };

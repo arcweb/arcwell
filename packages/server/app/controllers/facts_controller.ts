@@ -3,7 +3,6 @@ import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
-import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery, buildFactsSort } from '#helpers/query_builder'
 
@@ -12,7 +11,6 @@ export async function getFullFact(id: string) {
     .where('id', id)
     .preload('factType')
     .preload('tags')
-    .preload('dimensions')
     .preload('person', (person) => {
       person.preload('tags')
       person.preload('user', (user) => {
@@ -45,7 +43,6 @@ export default class FactsController {
     query
       .preload('factType')
       .preload('tags')
-      .preload('dimensions')
       .preload('person', (person: any) => {
         person.preload('tags')
         person.preload('user', (user: any) => {
@@ -113,7 +110,7 @@ export default class FactsController {
     await request.validateUsing(updateFactValidator)
 
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'info', 'tags'])
+    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
     if (cleanRequest.tags) {
       cleanRequest.tags = JSON.stringify(cleanRequest.tags)
     }
