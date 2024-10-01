@@ -1,7 +1,8 @@
-<div class="project-management-content-container">
-  <aw-features-menu></aw-features-menu>
-  <aw-feature-sub-menu></aw-feature-sub-menu>
-  <div class="route-content-container">
+<mat-sidenav-container class="project-management-content-container">
+  <mat-sidenav mode="side" opened class="sidenav-container">
+    <aw-features-menu></aw-features-menu>
+  </mat-sidenav>
+  <mat-sidenav-content class="route-content-container">
     <router-outlet />
-  </div>
-</div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

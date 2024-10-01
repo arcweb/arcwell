@@ -4,7 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import string from '@adonisjs/core/helpers/string'
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, buildFactsSort } from '#helpers/query_builder'
 
 export async function getFullFact(id: string) {
   return Fact.query()
@@ -37,8 +37,6 @@ export default class FactsController {
     await auth.authenticate()
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
-    const sort = queryData['sort']
-    const order = queryData['order']
 
     let [query, countQuery] = buildApiQuery(Fact.query(), queryData, 'facts')
 
@@ -64,38 +62,7 @@ export default class FactsController {
       // DB context use sql column names
       countQuery.where('type_key', factType.key)
     }
-    if (sort && order) {
-      const camelSortStr = string.camelCase(sort)
-      switch (camelSortStr) {
-        case 'factType':
-          query
-            .join('fact_types', 'fact_types.key', 'facts.type_key')
-            .orderBy('fact_types.name', order)
-          break
-        case 'person':
-          query
-            .leftOuterJoin('people', 'people.id', 'facts.person_id')
-            .orderBy('people.family_name', order)
-            .select('facts.*')
-          break
-        case 'resource':
-          query
-            .leftOuterJoin('resources', 'resources.id', 'facts.resource_id')
-            .orderBy('resources.name', order)
-            .select('facts.*')
-          break
-        case 'event':
-          query
-            .leftOuterJoin('events', 'events.id', 'facts.event_id')
-            .orderBy('events.started_at', order)
-            .select('facts.*')
-          break
-        default:
-          query.orderBy(camelSortStr, order)
-      }
-    } else {
-      query.orderBy('observedAt', 'desc')
-    }
+    buildFactsSort(query, queryData)
 
     const queryCount = await countQuery.count('*')
 

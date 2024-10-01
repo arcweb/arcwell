@@ -216,7 +216,9 @@ function parseFilters(
 
 export default class DataFactsController {
   /**
-   * Handles the form submission to insert a new data fact.
+   * @insert
+   * @summary Insert Fact
+   * @description Accepts new Fact data including dimensions for storage in Arcwell data system.
    * Validates the dimensions against the fact's dimension schemas before saving.
    *
    * @async
@@ -273,7 +275,9 @@ export default class DataFactsController {
   }
 
   /**
-   * Handles the form submission to update an existing data fact.
+   * @update
+   * @summary Insert Fact
+   * @description Accepts new Fact data including dimensions for storage in Arcwell data system.
    * Validates the dimensions against the fact's dimension schemas before saving updates.
    *
    * @async
@@ -330,11 +334,15 @@ export default class DataFactsController {
   }
 
   /**
-   * Handles the retrieval of facts and associated dimensions based on filter and dimension conditions.
+   *
+   * @query
+   * @summary Query Facts -Handles the retrieval of facts and associated dimensions based on filter and dimension conditions.
    * Supports filtering by both fact attributes and dimension values with various operators.
+   * @description Returns facts with dimensions matching search queries.
+   * @paramUse(sortable, filterable)
    *
    * @async
-   * @param {HttpContext} context - The HTTP context containing authentication and request information.
+   * @param dim Filtering by dimenion
    *
    * Example of params:
    *

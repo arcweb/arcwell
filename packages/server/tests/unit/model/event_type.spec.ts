@@ -26,15 +26,16 @@ test.group('Model event type', (group) => {
     assert.equal(eventType?.name, newData.name)
   })
 
-  test('event type tagging test', async ({ assert }) => {
-    const eventTypeInfo = {
-      key: 'TEST',
-      name: 'TEST',
-      tags: JSON.stringify(['first/list']),
-    }
+  // We no longer use model level taggin, the controler uses raw SQl
+  // test('event type tagging test', async ({ assert }) => {
+  //   const eventTypeInfo = {
+  //     key: 'TEST',
+  //     name: 'TEST',
+  //     tags: JSON.stringify(['first/list']),
+  //   }
 
-    const newEventType = await EventType.create(eventTypeInfo)
+  //   const newEventType = await EventType.create(eventTypeInfo)
 
-    assert.equal(newEventType.tags, eventTypeInfo.tags)
-  })
+  //   assert.equal(newEventType.tags, eventTypeInfo.tags)
+  // })
 })

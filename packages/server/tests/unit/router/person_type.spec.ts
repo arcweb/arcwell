@@ -51,7 +51,7 @@ test.group('Router person type', () => {
     }
 
     const response = await client
-      .put(`${PERSON_TYPE_URL}/${personType?.id}`)
+      .patch(`${PERSON_TYPE_URL}/${personType?.id}`)
       .json({ ...newData })
       .loginAs(adminUser!)
 

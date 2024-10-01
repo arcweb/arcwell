@@ -21,6 +21,12 @@ export enum FeatureMenuItemNames {
 
 export const featureMenuConfig: FeatureMenuItem[] = [
   {
+    name: 'Dashboard',
+    path: 'dashboard',
+    icon: 'home',
+    subfeatures: [],
+  },
+  {
     name: 'People',
     path: 'people',
     icon: 'people',
@@ -91,5 +97,30 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     path: 'tags',
     icon: 'sell',
     subfeatures: [],
+  },
+  // TODO: do we want settings to be absolute paths?
+  {
+    name: 'Settings',
+    path: 'settings',
+    icon: 'settings',
+    subfeatures: [
+      {
+        name: 'Settings',
+        path: '',
+      },
+      {
+        name: 'Users',
+        path: 'user-management/all-users',
+      },
+      // TODO: fix path/active styling on this link on next pass
+      {
+        name: 'Profile',
+        path: 'user-management/all-users/:userId',
+      },
+      {
+        name: 'Log Out',
+        path: 'logout',
+      },
+    ],
   },
 ]
