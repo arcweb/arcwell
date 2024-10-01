@@ -1,9 +1,20 @@
 import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import Event from '#models/event'
+import Resource from '#models/resource'
+import Person from '#models/person'
+
+function getSortSettings(queryData: Record<string, any> = {}) {
+  const sort = queryData['sort']
+  const order = queryData['order']
+
+  return [sort, order]
+}
 
 export function buildApiQuery(
   modelQuery: any,
-  queryData: Record<string, any>,
+  queryData: Record<string, any> = { limit: 10, offset: 0 },
   tableName: string,
   defaultSearch?: string
 ) {
@@ -34,4 +45,119 @@ export function buildApiQuery(
   }
 
   return [modelQuery, countQuery]
+}
+
+export function buildEventsSort(
+  eventsQuery: ModelQueryBuilderContract<typeof Event, any>,
+  queryData: Record<string, any> = {}
+) {
+  const [sort, order] = getSortSettings(queryData)
+
+  if (sort && order) {
+    const camelSortStr = string.camelCase(sort)
+    switch (camelSortStr) {
+      case 'eventType':
+        eventsQuery
+          .join('event_types', 'event_types.key', 'events.type_key')
+          .orderBy('event_types.name', order)
+        break
+      case 'person':
+        eventsQuery
+          .leftOuterJoin('people', 'people.id', 'events.person_id')
+          .orderBy('people.family_name', order)
+          .select('events.*')
+        break
+      case 'resource':
+        eventsQuery
+          .leftOuterJoin('resources', 'resources.id', 'events.resource_id')
+          .orderBy('resources.name', order)
+          .select('events.*')
+        break
+      default:
+        eventsQuery.orderBy(camelSortStr, order)
+    }
+  } else {
+    eventsQuery.orderBy('startedAt', 'desc')
+  }
+}
+
+export function buildFactsSort(
+  factsQuery: ModelQueryBuilderContract<typeof Event, any>,
+  queryData: Record<string, any> = {}
+) {
+  const [sort, order] = getSortSettings(queryData)
+
+  if (sort && order) {
+    const camelSortStr = string.camelCase(sort)
+    switch (camelSortStr) {
+      case 'factType':
+        factsQuery
+          .join('fact_types', 'fact_types.key', 'facts.type_key')
+          .orderBy('fact_types.name', order)
+        break
+      case 'person':
+        factsQuery
+          .leftOuterJoin('people', 'people.id', 'facts.person_id')
+          .orderBy('people.family_name', order)
+          .select('facts.*')
+        break
+      case 'resource':
+        factsQuery
+          .leftOuterJoin('resources', 'resources.id', 'facts.resource_id')
+          .orderBy('resources.name', order)
+          .select('facts.*')
+        break
+      case 'event':
+        factsQuery
+          .leftOuterJoin('events', 'events.id', 'facts.event_id')
+          .orderBy('events.started_at', order)
+          .select('facts.*')
+        break
+      default:
+        factsQuery.orderBy(camelSortStr, order)
+    }
+  } else {
+    factsQuery.orderBy('observedAt', 'desc')
+  }
+}
+
+export function buildPeopleSort(
+  peopleQuery: ModelQueryBuilderContract<typeof Person, any>,
+  queryData: Record<string, any> = {}
+) {
+  const [sort, order] = getSortSettings(queryData)
+
+  if (sort && order) {
+    const camelSortStr = string.camelCase(sort)
+    if (camelSortStr === 'personType') {
+      peopleQuery
+        .join('person_types', 'person_types.key', 'people.type_key')
+        .orderBy('person_types.name', order)
+    } else {
+      peopleQuery.orderBy(camelSortStr, order)
+    }
+  } else {
+    peopleQuery.orderBy('familyName', 'asc')
+    peopleQuery.orderBy('givenName', 'asc')
+  }
+}
+
+export function buildResourcesSort(
+  resourcesQuery: ModelQueryBuilderContract<typeof Resource, any>,
+  queryData: Record<string, any> = {}
+) {
+  const [sort, order] = getSortSettings(queryData)
+
+  if (sort && order) {
+    const camelSortStr = string.camelCase(sort)
+    if (camelSortStr === 'resourceType') {
+      resourcesQuery
+        .join('resource_types', 'resource_types.key', 'resources.type_key')
+        .orderBy('resource_types.name', order)
+    } else {
+      resourcesQuery.orderBy(camelSortStr, order)
+    }
+  } else {
+    resourcesQuery.orderBy('name', 'asc')
+  }
 }
