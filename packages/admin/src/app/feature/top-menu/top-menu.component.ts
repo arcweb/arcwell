@@ -76,7 +76,7 @@ export class TopMenuComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
         this.authStore.logout().then(() => {
-          this.router.navigate(['']);
+          this.router.navigate(['/login']);
         });
       }
     });
