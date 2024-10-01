@@ -78,7 +78,7 @@ export class SurveyPage implements OnInit {
   }
 
   checkAllQuestionsAnswered() {
-    const totalQuestions = this.factType?.dimensionTypes
+    const totalQuestions = this.factType?.dimensionSchemas
       .filter(dimension => dimension.key.includes('response')).length || 0;
 
     const answeredQuestions = Object.keys(this.answers)
@@ -96,11 +96,11 @@ export class SurveyPage implements OnInit {
   }
 
   followUpQuestionText(): string {
-    return this.factType?.dimensionTypes.find(dimension => dimension.key === 'phq9_follow_up')?.name || '';
+    return this.factType?.dimensionSchemas.find(dimension => dimension.key === 'phq9_follow_up')?.name || '';
   }
 
-  questionDimensionTypes() {
-    return this.factType?.dimensionTypes.filter(dimension => dimension.key.includes('response')) || [];
+  questionDimensionSchemas() {
+    return this.factType?.dimensionSchemas.filter(dimension => dimension.key.includes('response')) || [];
   }
 
   saveQuestionnaire() {
@@ -109,7 +109,6 @@ export class SurveyPage implements OnInit {
 
   setFollowUpResponse(value: number) {
     this.answers['phq9_follow_up'] = Number(value);
-    console.log(`Follow-up response: ${value}`);
   }
 
   goToPrevious() {

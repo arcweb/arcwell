@@ -7,15 +7,15 @@
 <ion-content>
   <ng-container *ngIf="factType?.key === 'survey_phq9'">
     <swiper-container #swiperEl [slides-per-view]="1" pagination="false" navigation="false">
-      <swiper-slide *ngFor=" let dimensionType of questionDimensionTypes(); let i=index">
+      <swiper-slide *ngFor=" let dimensionSchema of questionDimensionSchemas(); let i=index">
         <ion-card>
           <ion-card-header>
             <ion-card-title>Question {{ i + 1 }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <div class="question-text">{{ dimensionType.name }}</div>
+            <div class="question-text">{{ dimensionSchema.name }}</div>
 
-            <ion-radio-group (ionChange)="setAnswer(dimensionType.key, $event.target.value)">
+            <ion-radio-group (ionChange)="setAnswer(dimensionSchema.key, $event.target.value)">
 
               <ion-radio labelPlacement="end" justify="start" value="0">Not at all (0)</ion-radio>
 

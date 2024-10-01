@@ -3,11 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
-export interface DimensionType {
+export interface DimensionSchema {
   id: string;
   key: string;
   name: string;
-  unit: string;
+  dataUnit: string;
+  dataType: string;
   isRequired: boolean;
 }
 
@@ -17,7 +18,7 @@ export interface FactType {
   name: string;
   description?: string;
   tags: string[];
-  dimensionTypes: DimensionType[];
+  dimensionSchemas: DimensionSchema[];
 }
 
 @Injectable({
