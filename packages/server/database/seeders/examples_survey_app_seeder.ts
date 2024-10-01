@@ -1,6 +1,6 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
-import DimensionType from '#models/dimension_type'
+import DimensionType from '#models/dimension_schema'
 import FactType from '#models/fact_type'
 import PersonType from '#models/person_type'
 import Role from '#models/role'
@@ -94,7 +94,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
     dimensionTypes.push(followUpResponse)
 
     // Update the fact type to include all dimension types as JSONB array
-    factType.merge({ dimensionTypes: dimensionTypes.map((d) => d.toJSON()) as DimensionType[] })
+    // factType.merge({ dimensionTypes: dimensionTypes.map((d) => d.toJSON()) as DimensionType[] })
     await factType.save()
 
     console.log('SurveyAppSeeder has been run successfully with one patient user and PHQ-9 survey data.')
