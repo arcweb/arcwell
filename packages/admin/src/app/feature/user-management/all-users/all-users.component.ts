@@ -52,7 +52,7 @@ export class AllUsersComponent {
 
   dataSource = new MatTableDataSource<UserModel>();
 
-  displayedColumns: string[] = ['id', 'email', 'role', 'person', 'tags'];
+  displayedColumns: string[] = ['email', 'role', 'person', 'tags'];
 
   constructor() {
     effect(() => {
@@ -61,7 +61,13 @@ export class AllUsersComponent {
   }
 
   handleClick(row: UserModel) {
-    this.router.navigate(['user-management', 'all-users', row.id]);
+    this.router.navigate([
+      'project-management',
+      'settings',
+      'user-management',
+      'all-users',
+      row.id,
+    ]);
   }
 
   formatName(person: PersonModel) {
