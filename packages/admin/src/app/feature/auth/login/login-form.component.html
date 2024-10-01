@@ -2,11 +2,7 @@
   [formGroup]="loginForm"
   (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
 >
-  <img
-    src="../../../../assets/arcwell-logo-blue.png"
-    alt="arcwell type face"
-    class="typed-logo"
-  />
+  <mat-icon class="logo" svgIcon="arcwell-logo-blue"></mat-icon>
 
   <div class="header-text">
     <h2 class="headline-large">Welcome</h2>

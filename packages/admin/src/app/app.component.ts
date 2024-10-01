@@ -26,6 +26,13 @@ export class AppComponent {
       ),
     );
 
+    this.matIconRegistry.addSvgIcon(
+      'arcwell-logo-blue',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        'assets/arcwell-logo-blue.svg',
+      ),
+    );
+
     if (!this.authStore.currentUser() && this.authStore.token()) {
       this.authStore.loadCurrentUser();
     }
