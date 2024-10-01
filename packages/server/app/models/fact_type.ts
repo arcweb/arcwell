@@ -58,7 +58,7 @@ export default class FactType extends BaseModel {
       type.key = generateTypeKey(type.name)
     }
     // stringify jsonb column to circumvent issue with knex and postgresql
-    if (type.dimensionSchemas) {
+    if (type.dimensionSchemas && typeof type.dimensionSchemas !== 'string') {
       // @ts-ignore - ignoring because dimensionSchemas has to be stringify-ed to get around knex & postgresql jsonb issue
       type.dimensionSchemas = JSON.stringify(type.dimensionSchemas)
     }

@@ -1,12 +1,6 @@
-import { BaseModel, beforeSave, column } from '@adonisjs/lucid/orm'
+import { column } from '@adonisjs/lucid/orm'
 
-import { generateTypeKey } from '#helpers/generate_type_key'
-import { DateTime } from 'luxon'
-
-export default class DimensionSchema extends BaseModel {
-  @column({ isPrimary: true })
-  declare id: string
-
+export default class DimensionSchema {
   @column()
   declare key: string
 
@@ -21,18 +15,4 @@ export default class DimensionSchema extends BaseModel {
 
   @column()
   declare isRequired: boolean
-
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
-
-  @beforeSave()
-  // generate a key based on the name if one is not provided
-  static async generateKey(type: DimensionSchema) {
-    if (!type.key) {
-      type.key = generateTypeKey(type.name)
-    }
-  }
 }
