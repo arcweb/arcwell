@@ -8,7 +8,10 @@
       hideToggle
       [expanded]="featureStore.activeFeature()?.path === feature.path"
       [disabled]="featureStore.activeFeature()?.path === feature.path"
-      [ngClass]="feature.name === 'Settings' ? 'settings' : ''"
+      [ngClass]="{
+        settings: feature.name.toLowerCase() === 'settings',
+        'hide-content': feature.subfeatures.length === 0,
+      }"
     >
       <mat-expansion-panel-header
         [routerLink]="feature.path"
@@ -25,9 +28,17 @@
       @if (feature.subfeatures.length > 0) {
         @for (subfeature of feature.subfeatures; track subfeature.name) {
           <a
-            [routerLink]="subfeature.path"
-            routerLinkActive="feature-active"
+            [routerLink]="
+              subfeature.path !== 'logout' && subfeature.path !== 'profile'
+                ? featureStore.activeFeature()?.path + '/' + subfeature.path
+                : null
+            "
+            routerLinkActive="subfeature-active"
+            [routerLinkActiveOptions]="{ exact: true }"
             class="body-large"
+            (click)="
+              feature.name === 'Settings' ? onSettingsClick(subfeature) : null
+            "
           >
             <mat-icon>{{ subfeature.icon }}</mat-icon>
             {{ subfeature.name }}

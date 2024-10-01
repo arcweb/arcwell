@@ -54,6 +54,10 @@
             font-weight: layout.$font-weight-regular;
           }
 
+          &:hover {
+            background-color: colors.$secondary;
+          }
+
           &.feature-active {
             @extend %feature-active-state;
 
@@ -75,6 +79,10 @@
             max-height: 200px;
             overflow-y: auto;
           }
+
+          .subfeature-active {
+            font-weight: layout.$font-weight-bold;
+          }
         }
       }
 
@@ -85,7 +93,10 @@
         width: 229px;
       }
 
-      .subfeature-button-active {
+      .hide-content {
+        .mat-expansion-panel-content {
+          display: none;
+        }
       }
     }
   }
