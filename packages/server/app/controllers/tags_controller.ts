@@ -66,7 +66,7 @@ export default class TagsController {
   }
 
   /**
-   * @update
+   * @showRelated
    * @summary Return details about individual Tag along with its related objects
    * of the given object_type
    * @description Return details about an individual Tag along with related data
