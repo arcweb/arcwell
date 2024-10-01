@@ -16,7 +16,7 @@ test.group('Model person type', (group) => {
     assert.equal(newPersonType.name, personTypeInfo.name)
   })
 
-  test('person type update test', async({ assert }) => {
+  test('person type update test', async ({ assert }) => {
     const personType = await PersonType.first()
     const newData = {
       name: 'TEST',
@@ -26,15 +26,16 @@ test.group('Model person type', (group) => {
     assert.equal(personType?.name, newData.name)
   })
 
-  test('person type tagging test', async ({ assert }) => {
-    const personTypeInfo = {
-      key: 'TEST',
-      name: 'TEST',
-      tags: JSON.stringify(['first/list']),
-    }
+  // We no longer use model level taggin, the controler uses raw SQl
+  // test('person type tagging test', async ({ assert }) => {
+  //   const personTypeInfo = {
+  //     key: 'TEST',
+  //     name: 'TEST',
+  //     tags: JSON.stringify(['first/list']),
+  //   }
 
-    const newPersonType = await PersonType.create(personTypeInfo)
+  //   const newPersonType = await PersonType.create(personTypeInfo)
 
-    assert.equal(newPersonType.tags, personTypeInfo.tags)
-  })
+  //   assert.equal(newPersonType.tags, personTypeInfo.tags)
+  // })
 })
