@@ -6,9 +6,11 @@ import { AuthInterceptor } from '@interceptors/auth.interceptor';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+
 import { HealthService } from '@services/health/health.service';
 import { FactTypeService } from '@services/fact-type/fact-type.service';
 import { AuthService } from '@services/auth/auth.service';
+import { FactService } from '@services/fact/fact.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -19,9 +21,10 @@ bootstrapApplication(AppComponent, {
       withFetch(),
       withInterceptorsFromDi()
     ),
+    AuthService,
+    FactService,
     FactTypeService,
     HealthService,
-    AuthService,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
 });

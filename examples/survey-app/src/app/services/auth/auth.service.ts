@@ -8,7 +8,7 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/auth';
   private tokenKey = 'auth-token';
 
   constructor(private http: HttpClient) { }
@@ -17,7 +17,7 @@ export class AuthService {
     const body = { email, password };
 
     try {
-      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/auth/login`, body));
+      const response: any = await firstValueFrom(this.http.post(`${this.apiUrl}/login`, body));
 
       console.log('response', response);
 
@@ -41,7 +41,7 @@ export class AuthService {
     });
 
     try {
-      await firstValueFrom(this.http.delete(`${this.apiUrl}/auth/logout`, { headers }));
+      await firstValueFrom(this.http.delete(`${this.apiUrl}/logout`, { headers }));
 
       await SecureStoragePlugin.remove({ key: this.tokenKey });
     } catch (error) {
@@ -58,7 +58,7 @@ export class AuthService {
     });
 
     try {
-      await firstValueFrom(this.http.get(`${this.apiUrl}/auth/me`, { headers }));
+      await firstValueFrom(this.http.get(`${this.apiUrl}/me`, { headers }));
       return true;
     } catch (error) {
       return false;
@@ -76,5 +76,9 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  currentUser() {
+    return this.http.get(`${this.apiUrl}/me`);
   }
 }

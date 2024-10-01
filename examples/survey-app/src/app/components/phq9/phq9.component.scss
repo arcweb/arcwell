@@ -1,0 +1,55 @@
+.question-text {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+ion-radio {
+  width: 100%;
+  margin: 12px 0px;
+}
+
+ion-radio::part(container) {
+  width: 30px;
+  height: 30px;
+
+  border-radius: 25px;
+  border: 2px solid #ddd;
+}
+
+ion-radio::part(mark) {
+  background: none;
+  transition: none;
+  transform: none;
+  border-radius: 0;
+}
+
+ion-radio.radio-checked::part(container) {
+  background: var(--ion-color-primary);
+  border-color: transparent;
+}
+
+ion-radio.radio-checked::part(mark) {
+  width: 6px;
+  height: 10px;
+
+  border-width: 0px 2px 2px 0px;
+  border-style: solid;
+  border-color: #fff;
+
+  transform: rotate(45deg);
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+
+  ion-button {
+    width: 45%;
+  }
+}
+
+ion-button {
+  margin: 0px 12px;
+}

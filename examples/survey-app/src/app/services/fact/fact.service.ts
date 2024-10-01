@@ -17,8 +17,8 @@ export interface Fact {
 export interface Dimension {
   id?: string;
   key: string;
-  value: string;
-  factId: string;
+  value: any;
+  factId?: string;
 }
 
 @Injectable({

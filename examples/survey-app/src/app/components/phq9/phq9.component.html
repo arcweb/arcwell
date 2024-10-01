@@ -1,0 +1,54 @@
+<swiper-container #swiperEl [slides-per-view]="1" pagination="false" navigation="false">
+  <swiper-slide *ngFor="let dimensionSchema of questionDimensionSchemas(); let i=index">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Question {{ i + 1 }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="question-text">{{ dimensionSchema.name }}</div>
+
+        <ion-radio-group (ionChange)="setAnswer(dimensionSchema.key, $event.target.value)">
+          <ion-radio labelPlacement="end" justify="start" value="0">Not at all (0)</ion-radio>
+          <ion-radio labelPlacement="end" justify="start" value="1">Several days (1)</ion-radio>
+          <ion-radio labelPlacement="end" justify="start" value="2">More than half the days (2)</ion-radio>
+          <ion-radio labelPlacement="end" justify="start" value="3">Nearly every day (3)</ion-radio>
+        </ion-radio-group>
+      </ion-card-content>
+
+      <div class="button-container">
+        <ion-button expand="block" fill="outline" (click)="goToPrevious()">Previous</ion-button>
+        <ion-button expand="block" fill="solid" color="primary" (click)="goToNext()">Next</ion-button>
+      </div>
+    </ion-card>
+  </swiper-slide>
+
+  <swiper-slide *ngIf="showScore">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Total PHQ-9 Score</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Your total score is: {{ totalScore }}</p>
+
+        <ng-container *ngIf="totalScore > 0">
+          <div class="question-text">
+            {{ followUpQuestionText() }}
+          </div>
+
+          <ion-radio-group (ionChange)="setFollowUpResponse($event.target.value)">
+            <ion-radio labelPlacement="end" justify="start" value="0">Not difficult at all</ion-radio>
+            <ion-radio labelPlacement="end" justify="start" value="1">Somewhat difficult</ion-radio>
+            <ion-radio labelPlacement="end" justify="start" value="2">Very difficult</ion-radio>
+            <ion-radio labelPlacement="end" justify="start" value="3">Extremely difficult</ion-radio>
+          </ion-radio-group>
+        </ng-container>
+
+        <ion-button [disabled]="saveAllowed()" expand="block" fill="solid" color="primary"
+          (click)="saveQuestionnaire()">
+          Save
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </swiper-slide>
+
+</swiper-container>
