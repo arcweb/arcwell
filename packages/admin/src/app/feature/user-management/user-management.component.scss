@@ -2,7 +2,8 @@
 
 .user-management-content-container {
   display: flex;
-  height: layout.$content-height;
+
+  // height: layout.$content-height;
 
   .route-content-container {
     height: 100%;
