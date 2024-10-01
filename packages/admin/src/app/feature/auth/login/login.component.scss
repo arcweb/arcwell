@@ -1,22 +1,29 @@
+@use 'layout.scss' as layout;
+
 .login-container {
   display: flex;
   flex-direction: row;
   height: 100%;
-
-  * {
-    width: 50%;
-  }
 
   .logo-container {
     background-image: url('../../../../assets/arcwell-logo.svg');
     background-repeat: no-repeat;
     background-size: cover;
     opacity: .4;
+
+    @media screen and (min-width: layout.$breakpoint-width) {
+      display: block;
+      flex-grow: 4;
+    }
+    @media screen and (max-width: layout.$breakpoint-width) {
+      display: none;
+    }
   }
 
   .form-container {
     padding: 15vh 10vh;
     height: 100%;
+    flex-grow: 1;
   }
 
   .create-account {
