@@ -5,11 +5,12 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@shared/data-access/auth.service';
 import { AuthStore } from '@shared/store/auth.store';
 import { Credentials } from '@shared/interfaces/credentials';
+import { MatButton } from '@angular/material/button';
 
 @Component({
   selector: 'aw-login',
   standalone: true,
-  imports: [RouterModule, MatProgressSpinner, LoginFormComponent],
+  imports: [RouterModule, MatProgressSpinner, LoginFormComponent, MatButton],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

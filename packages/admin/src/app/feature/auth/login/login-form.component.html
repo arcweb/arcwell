@@ -2,8 +2,18 @@
   [formGroup]="loginForm"
   (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
 >
-  <mat-form-field appearance="fill">
-    <mat-label>email</mat-label>
+  <img
+    src="../../../../assets/arcwell-type-face.png"
+    alt="arcwell type face"
+    class="typed-logo"
+  />
+
+  <div class="header-text">
+    <h2>Welcome</h2>
+    <p>Log into your existing account or create a new one</p>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
     <input
       matNativeControl
       formControlName="email"
@@ -12,8 +22,8 @@
     />
     <mat-icon matPrefix>mail</mat-icon>
   </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-label>password</mat-label>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
     <input
       matNativeControl
       formControlName="password"
@@ -29,25 +39,24 @@
     <mat-spinner diameter="50"></mat-spinner>
   }
 
-  <div class="button-bar">
-    <button
-      mat-button
-      type="button"
-      color="primary"
-      class="default-button"
-      [disabled]="loginStatus() === 'authenticating'"
-      (click)="forgotPassword(); $event.stopPropagation()"
-    >
-      Forgot Password
-    </button>
+  <button
+    mat-button
+    type="button"
+    color="primary"
+    class="default-button forgot-button form-button"
+    [disabled]="loginStatus() === 'authenticating'"
+    (click)="forgotPassword(); $event.stopPropagation()"
+  >
+    Forgot Password?
+  </button>
 
-    <button
-      mat-stroked-button
-      color="primary"
-      type="submit"
-      [disabled]="loginStatus() === 'authenticating'"
-    >
-      Login
-    </button>
-  </div>
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    class="submit-button form-button"
+    [disabled]="loginStatus() === 'authenticating'"
+  >
+    Log In
+  </button>
 </form>

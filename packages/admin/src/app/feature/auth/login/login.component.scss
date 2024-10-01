@@ -1,0 +1,26 @@
+.login-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  * {
+    width: 50%;
+  }
+
+  .logo-container {
+    background-image: url('../../../../assets/arcwell-logo.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .4;
+  }
+
+  .form-container {
+    padding: 15vh 10vh;
+    height: 100%;
+  }
+
+  .create-account {
+    width: 100%;
+    margin-top: 25px;
+  }
+}
