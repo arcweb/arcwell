@@ -1,13 +1,11 @@
 import { Component, effect, inject } from '@angular/core';
 import { AuthStore } from '@shared/store/auth.store';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { ToastComponent } from '@app/shared/components/toast/toast.component';
-import { TopMenuComponent } from '../top-menu/top-menu.component';
 
 @Component({
   selector: 'aw-home',
   standalone: true,
-  imports: [RouterLink, RouterOutlet, ToastComponent, TopMenuComponent],
+  imports: [RouterLink, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
