@@ -32,7 +32,7 @@ export const AUTH_ROUTES: Route[] = [
   },
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: '/login',
     pathMatch: 'full',
   },
 ];

@@ -9,8 +9,10 @@
   />
 
   <div class="header-text">
-    <h2>Welcome</h2>
-    <p>Log into your existing account or create a new one</p>
+    <h2 class="headline-large">Welcome</h2>
+    <p class="headline-small">
+      Log into your existing account or create a new one
+    </p>
   </div>
   <mat-form-field appearance="outline">
     <mat-label>Email</mat-label>
@@ -43,7 +45,7 @@
     mat-button
     type="button"
     color="primary"
-    class="default-button forgot-button form-button"
+    class="default-button forgot-button form-button body-small"
     [disabled]="loginStatus() === 'authenticating'"
     (click)="forgotPassword(); $event.stopPropagation()"
   >
@@ -54,7 +56,7 @@
     mat-flat-button
     color="primary"
     type="submit"
-    class="submit-button form-button"
+    class="submit-button form-button body-small"
     [disabled]="loginStatus() === 'authenticating'"
   >
     Log In
