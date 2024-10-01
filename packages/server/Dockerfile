@@ -52,4 +52,7 @@ CMD npm install --no-fund; npm run dev
 FROM base AS production
 
 # In production build, simply start server
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]
+
+# tempory production command
+CMD npm install --no-fund; npm run start
