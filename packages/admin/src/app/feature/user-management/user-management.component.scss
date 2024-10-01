@@ -2,12 +2,11 @@
 
 .user-management-content-container {
   display: flex;
-  height: layout.$content-height;
+  height: 100%;
 
   .route-content-container {
     height: 100%;
     width: 100%;
-    padding: 2em;
     overflow-y: auto;
   }
 }

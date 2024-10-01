@@ -1,0 +1,110 @@
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+@use 'layout' as layout;
+@use 'typography' as typography;
+
+@mixin sidenav-theme($theme) {
+  $spacing: 8px;
+  $image-size: 160px;
+
+  %feature-active-state {
+    color: colors.$on-primary;
+    background-color: colors.$secondary;
+  }
+
+  .sidenav-container {
+    width: 320px;
+    border-radius: 0 0 16px;
+    background-color: colors.$dark-blue;
+    padding: 32px;
+
+    .logo {
+      width: $image-size;
+      height: unset;
+    }
+
+    .features-menu-divider {
+      margin: 24px 0;
+      border-top: 2px solid colors.$on-primary;
+    }
+
+    .feature-accordion {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing;
+      align-items: flex-start;
+      padding: $spacing;
+
+      .mat-expansion-panel {
+        background-color: transparent;
+        width: 100%;
+
+        @include mat.elevation(0);
+
+        .mat-expansion-panel-header {
+          background-color: colors.$dark-blue;
+          height: 48px;
+          border-radius: 16px 0 0;
+
+          .feature-title {
+            display: flex;
+            color: colors.$on-primary;
+            gap: $spacing;
+            font-weight: layout.$font-weight-regular;
+          }
+
+          &:hover {
+            background-color: colors.$secondary;
+          }
+
+          &.feature-active {
+            @extend %feature-active-state;
+
+            .feature-title {
+              font-weight: layout.$font-weight-bold;
+            }
+          }
+        }
+
+        .mat-expansion-panel-content {
+          background-color: colors.$white;
+          color: colors.$primary;
+          border-radius: layout.$card-border-radius;
+          padding-top: 8px;
+
+          .mat-expansion-panel-body {
+            display: flex;
+            flex-direction: column;
+            max-height: 200px;
+            overflow-y: auto;
+          }
+
+          .subfeature-active {
+            font-weight: layout.$font-weight-bold;
+          }
+        }
+      }
+
+      // TODO: figure out how to do this more eligantly
+      .settings {
+        position: absolute;
+        bottom: 32px;
+        width: 229px;
+      }
+
+      .hide-content {
+        .mat-expansion-panel-content {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .route-content-container {
+    height: 100%;
+    width: 100%;
+    padding: 1em;
+    overflow-y: auto;
+  }
+}

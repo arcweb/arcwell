@@ -84,22 +84,22 @@ export class CohortService {
 
   getCohortWithPeople(
     id: string,
-    peopleLimit?: number,
-    peopleOffset?: number,
+    limit?: number,
+    offset?: number,
     sort?: string,
     order?: string,
   ): Observable<CohortResponseType | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (peopleLimit !== undefined) {
-      params = params.set('peopleLimit', peopleLimit.toString());
+    if (limit !== undefined) {
+      params = params.set('limit', limit.toString());
     }
-    if (peopleOffset !== undefined) {
-      params = params.set('peopleOffset', peopleOffset.toString());
+    if (offset !== undefined) {
+      params = params.set('offset', offset.toString());
     }
     if (sort && order) {
-      params = params.set('peopleSort', sort);
-      params = params.set('peopleOrder', order);
+      params = params.set('sort', sort);
+      params = params.set('order', order);
     }
 
     return this.http

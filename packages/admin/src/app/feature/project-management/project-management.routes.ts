@@ -20,6 +20,8 @@ import { CohortComponent } from '@feature/project-management/cohort/cohort.compo
 import { CohortsListComponent } from '@feature/project-management/cohorts-list/cohorts-list.component';
 import { TagsListComponent } from './tags-list/tags-list.component';
 import { TagComponent } from './tag/tag.component';
+import { SettingsComponent } from './settings/settings.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -27,6 +29,11 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
     component: ProjectManagementComponent,
     children: [
       // TODO: Move these child routes into their own routing config
+      // dashboard routes
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+      },
       // people routes
       {
         path: 'people/list',
@@ -153,15 +160,26 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         path: 'tags',
         redirectTo: 'tags/list',
       },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+      },
+      {
+        path: 'settings/user-management',
+        loadChildren: () =>
+          import('../user-management/user-management.routes').then(
+            m => m.USER_MANAGEMENT_ROUTES,
+          ),
+      },
       // fallback routes
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'people/list',
+        redirectTo: 'dashboard',
       },
       {
         path: '**',
-        redirectTo: 'people/list',
+        redirectTo: 'dashboard',
       },
     ],
   },

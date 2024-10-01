@@ -7,22 +7,6 @@
   $secondary: mat.get-theme-color($theme, secondary);
   $error: mat.get-theme-color($theme, error);
 
-  // add button styles here
-  %feature-button-active-state {
-    color: $primary;
-    background: colors.$primary-90;
-  }
-
-  .feature-button-active {
-    @extend %feature-button-active-state;
-  }
-
-  .subfeature-button-active {
-    @extend %feature-button-active-state;
-
-    border-radius: 0;
-  }
-
   .default-button {
     width: auto;
     min-width: 200px;

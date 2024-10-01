@@ -28,6 +28,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { AuthStore } from '@app/shared/store/auth.store';
 import { EmailService } from '@app/shared/services/email.service';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'aw-user',
@@ -46,6 +47,7 @@ import { EmailService } from '@app/shared/services/email.service';
     RouterLink,
     MatIconButton,
     MatCardModule,
+    BackButtonComponent,
   ],
   providers: [UserStore],
   templateUrl: './user.component.html',

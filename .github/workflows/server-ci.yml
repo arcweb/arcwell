@@ -152,4 +152,3 @@ jobs:
         run: |
           docker pull ${{ env.SERVER_IMAGE }}
           docker compose run server npm run test
-        continue-on-error: true

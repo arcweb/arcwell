@@ -1,5 +1,6 @@
 import Resource from '#models/resource'
 import ResourceType from '#models/resource_type'
+import Tag from '#models/tag'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 
@@ -40,16 +41,12 @@ test.group('Model resource', (group) => {
     assert.equal(resource?.name, 'New Object')
   })
 
-  test('resource tagging test', async ({ assert }) => {
-    const rTypeT = await ResourceType.findBy('key', 'tester')
-    const resourceInfo = {
-      name: 'TEST',
-      typeKey: rTypeT?.key,
-      tags: JSON.stringify(['first/list']),
-    }
+  // We no longer use model level taggin, the controler uses raw SQl
+  // test('resource tagging test', async ({ assert }) => {
+  //   const resource = await Resource.firstOrFail()
+  //   const tag = await Tag.firstOrFail()
 
-    const newResource = await Resource.create(resourceInfo)
-
-    assert.equal(newResource.tags, resourceInfo.tags)
-  })
+  //   await resource.related('tags').attach([tag.id])
+  //   assert.equal(resource.tags, tag.id)
+  // })
 })

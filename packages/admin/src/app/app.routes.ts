@@ -19,11 +19,9 @@ export const routes: Routes = [
       },
       {
         path: '',
-        canActivate: [isAuthenticatedGuard()],
-        loadChildren: () =>
-          import('./feature/home/home.routes').then(m => m.HOME_ROUTES),
+        loadComponent: () =>
+          import('./feature/home/home.component').then(m => m.HomeComponent),
       },
-      // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],
   },
 ];

@@ -1,4 +1,4 @@
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
 import {
   createCohortValidator,
@@ -10,40 +10,15 @@ import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
-export function getFullCohort(
-  id: string,
-  peopleLimit: number = 10,
-  peopleOffset: number = 0,
-  peopleSort?: string,
-  peopleOrder?: 'asc' | 'desc'
-) {
+export function getFullCohort(id: string, queryData?: Record<string, any>) {
   return Cohort.query()
     .where('id', id)
     .preload('tags')
     .withCount('people')
     .preload('people', (people) => {
-      people.limit(peopleLimit)
-      people.offset(peopleOffset)
-      if (peopleSort && peopleOrder) {
-        const camelSortStr = string.camelCase(peopleSort)
-        if (camelSortStr === 'personType') {
-          people
-            .join('person_types', 'person_types.key', 'people.type_key')
-            .orderBy('person_types.name', peopleOrder)
-        } else {
-          people.orderBy(camelSortStr, peopleOrder)
-        }
-      } else {
-        people.orderBy('familyName', 'asc')
-        people.orderBy('givenName', 'asc')
-      }
-      people.preload('tags')
-      people.preload('personType', (personType) => {
-        personType.preload('tags')
-      })
-      people.preload('user', (user) => {
-        user.preload('tags')
-      })
+      let [peopleQuery] = buildApiQuery(people, queryData, 'people')
+      peopleQuery.preload('personType')
+      buildPeopleSort(peopleQuery, queryData)
     })
     .firstOrFail()
 }
@@ -136,13 +111,8 @@ export default class CohortsController {
     await paramsUUIDValidator.validate(params)
 
     const queryData = request.qs()
-    const peopleLimit = (queryData['peopleLimit'] ||= 10)
-    const peopleOffset = (queryData['peopleOffset'] ||= 0)
-    const peopleSort = string.camelCase(queryData['peopleSort'])
-    const peopleOrder = queryData['peopleOrder']
-
     return {
-      data: await getFullCohort(params.id, peopleLimit, peopleOffset, peopleSort, peopleOrder),
+      data: await getFullCohort(params.id, queryData),
     }
   }
 

@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthStore } from './shared/store/auth.store';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'aw-app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

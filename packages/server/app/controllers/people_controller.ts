@@ -7,8 +7,8 @@ import {
   cohortIdsValidator,
 } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
-import string from '@adonisjs/core/helpers/string'
-import { buildApiQuery } from '#helpers/query_builder'
+import db from '@adonisjs/lucid/services/db'
+import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
 
 export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset: number = 0) {
   return Person.query()
@@ -44,8 +44,6 @@ export default class PeopleController {
     const queryData = request.qs()
 
     const typeKey = queryData['typeKey']
-    const sort = queryData['sort']
-    const order = queryData['order']
     const notInCohort = queryData['notInCohort']
 
     let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people', 'familyName')
@@ -65,18 +63,16 @@ export default class PeopleController {
       // DB context use sql column names
       countQuery.where('type_key', personType.key)
     }
-    if (sort && order) {
-      const camelSortStr = string.camelCase(sort)
-      if (camelSortStr === 'personType') {
-        query
-          .join('person_types', 'person_types.key', 'people.type_key')
-          .orderBy('person_types.name', order)
-      } else {
-        query.orderBy(camelSortStr, order)
-      }
-    } else {
-      query.orderBy('familyName', 'asc')
-      query.orderBy('givenName', 'asc')
+    buildPeopleSort(query, queryData)
+    if (notInCohort) {
+      // Get complete list of people ids associated with cohort to filter them out
+      // in add person to cohort form
+      const peopleIdInCohortQuery = await db
+        .from('people')
+        .select('id')
+        .whereIn('id', db.from('cohort_person').select('person_id').where('cohort_id', notInCohort))
+      const idList = peopleIdInCohortQuery.map((id) => id['id'])
+      query.whereNotIn('id', idList)
     }
 
     const queryCount = await countQuery.count('*')
