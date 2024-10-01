@@ -32,4 +32,10 @@
   .top-menu-nav-link-active {
     border-bottom: 2px solid colors.$gray-94;
   }
+
+  .submit-button {
+    margin-top: 50px;
+    border-radius: 4px;
+    align-self: stretch;
+  }
 }
