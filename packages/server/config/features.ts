@@ -92,4 +92,27 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     icon: 'sell',
     subfeatures: [],
   },
+  {
+    name: 'Settings',
+    path: 'settings',
+    icon: 'settings',
+    subfeatures: [
+      {
+        name: 'Settings',
+        path: '',
+      },
+      {
+        name: 'Users',
+        path: 'user-management',
+      },
+      {
+        name: 'Profile',
+        path: 'profile',
+      },
+      {
+        name: 'Log Out',
+        path: 'logout',
+      },
+    ],
+  },
 ]

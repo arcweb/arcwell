@@ -31,14 +31,14 @@ export const routes: Routes = [
             './feature/account-management/account-management.component'
           ).then(m => m.AccountManagementComponent),
       },
-      {
-        path: 'user-management',
-        canActivate: [isAuthenticatedGuard()],
-        loadChildren: () =>
-          import('./feature/user-management/user-management.routes').then(
-            m => m.USER_MANAGEMENT_ROUTES,
-          ),
-      },
+      // {
+      //   path: 'user-management',
+      //   canActivate: [isAuthenticatedGuard()],
+      //   loadChildren: () =>
+      //     import('./feature/user-management/user-management.routes').then(
+      //       m => m.USER_MANAGEMENT_ROUTES,
+      //     ),
+      // },
       // add data driven route matcher here.  Documentation: https://angular.dev/guide/routing/routing-with-urlmatcher
     ],
   },

@@ -20,6 +20,7 @@ import { CohortComponent } from '@feature/project-management/cohort/cohort.compo
 import { CohortsListComponent } from '@feature/project-management/cohorts-list/cohorts-list.component';
 import { TagsListComponent } from './tags-list/tags-list.component';
 import { TagComponent } from './tag/tag.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -152,6 +153,17 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'tags',
         redirectTo: 'tags/list',
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+      },
+      {
+        path: 'settings/user-management',
+        loadChildren: () =>
+          import('../user-management/user-management.routes').then(
+            m => m.USER_MANAGEMENT_ROUTES,
+          ),
       },
       // fallback routes
       {

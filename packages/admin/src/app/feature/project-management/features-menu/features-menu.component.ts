@@ -6,11 +6,18 @@ import { FeatureStore } from '@shared/store/feature.store';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'aw-features-menu',
   standalone: true,
-  imports: [MatExpansionModule, MatIconModule, RouterModule, NgClass],
+  imports: [
+    MatExpansionModule,
+    MatIconModule,
+    RouterModule,
+    NgClass,
+    MatDividerModule,
+  ],
   templateUrl: './features-menu.component.html',
   styleUrl: './features-menu.component.scss',
 })

@@ -20,6 +20,7 @@ html {
   @include mixins.table-theme(theme.$light-theme);
   @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
+  @include mixins.typography-theme(theme.$light-theme);
 }
 
 * {

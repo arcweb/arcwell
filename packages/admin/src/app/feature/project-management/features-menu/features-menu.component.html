@@ -1,28 +1,38 @@
-<mat-accordion [multi]="false" class="feature-menu-container">
+<div class="info-container">
+  <mat-icon class="logo" svgIcon="arcwell-logo"></mat-icon>
+</div>
+<mat-divider class="features-menu-divider"></mat-divider>
+<mat-accordion [multi]="false" class="feature-accordion">
   @for (feature of featureStore.features(); track feature.name) {
     <mat-expansion-panel
       hideToggle
       [expanded]="featureStore.activeFeature()?.path === feature.path"
       [disabled]="featureStore.activeFeature()?.path === feature.path"
+      [ngClass]="feature.name === 'Settings' ? 'settings' : ''"
     >
       <mat-expansion-panel-header
         [routerLink]="feature.path"
         routerLinkActive="feature-active"
       >
-        <mat-panel-title [attr.aria-label]="feature.name" class="feature-title">
+        <mat-panel-title
+          [attr.aria-label]="feature.name"
+          class="feature-title body-large"
+        >
           <mat-icon>{{ feature.icon }}</mat-icon>
           {{ feature.name }}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      @for (subfeature of feature.subfeatures; track subfeature.name) {
-        <a
-          mat-list-item
-          [routerLink]="subfeature.path"
-          routerLinkActive="feature-button-active"
-        >
-          <mat-icon>{{ subfeature.icon }}</mat-icon>
-          {{ subfeature.name }}
-        </a>
+      @if (feature.subfeatures.length > 0) {
+        @for (subfeature of feature.subfeatures; track subfeature.name) {
+          <a
+            [routerLink]="subfeature.path"
+            routerLinkActive="feature-active"
+            class="body-large"
+          >
+            <mat-icon>{{ subfeature.icon }}</mat-icon>
+            {{ subfeature.name }}
+          </a>
+        }
       }
     </mat-expansion-panel>
   }
