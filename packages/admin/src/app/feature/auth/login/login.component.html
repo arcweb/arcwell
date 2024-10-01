@@ -1,11 +1,22 @@
-<div class="container gradient-bg">
-  @if (authStore.currentUser() === null) {
-    <aw-login-form
-      [loginStatus]="authStore.loginStatus()"
-      (login)="loginNow($event)"
-    ></aw-login-form>
-    <a routerLink="/auth/register">Create account</a>
-  } @else {
-    <mat-spinner diameter="50" />
-  }
+<div class="login-container">
+  <div class="logo-container"></div>
+  <div class="form-container">
+    @if (authStore.currentUser() === null) {
+      <aw-login-form
+        [loginStatus]="authStore.loginStatus()"
+        (login)="loginNow($event)"
+      ></aw-login-form>
+      <button
+        mat-button
+        type="button"
+        color="primary"
+        class="default-button create-account body-small"
+        routerLink="/auth/register"
+      >
+        Create Account
+      </button>
+    } @else {
+      <mat-spinner diameter="50" />
+    }
+  </div>
 </div>

@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ToastComponent } from './shared/components/toast/toast.component';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthStore } from './shared/store/auth.store';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'aw-app-root',
@@ -20,9 +20,16 @@ export class AppComponent {
 
   constructor() {
     this.matIconRegistry.addSvgIcon(
-      'arcwell-logo',
+      'arcwell-logo-white',
       this.domSanitizer.bypassSecurityTrustResourceUrl(
-        'assets/arcwell-logo.svg',
+        'assets/arcwell-logo-white.svg',
+      ),
+    );
+
+    this.matIconRegistry.addSvgIcon(
+      'arcwell-logo-blue',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        'assets/arcwell-logo-blue.svg',
       ),
     );
 
