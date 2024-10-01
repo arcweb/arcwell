@@ -4,7 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
 import string from '@adonisjs/core/helpers/string'
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, buildResourcesSort } from '#helpers/query_builder'
 
 export function getFullResource(id: string) {
   return Resource.query()
@@ -23,10 +23,7 @@ export default class ResourcesController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-
     const typeKey = queryData['typeKey']
-    const sort = queryData['sort']
-    const order = queryData['order']
 
     let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resources', 'name')
 
@@ -41,18 +38,7 @@ export default class ResourcesController {
       query.where('typeKey', resourceType.key)
       countQuery.where('type_key', resourceType.key)
     }
-    if (sort && order) {
-      const camelSortStr = string.camelCase(sort)
-      if (camelSortStr === 'resourceType') {
-        query
-          .join('resource_types', 'resource_types.key', 'resources.type_key')
-          .orderBy('resource_types.name', order)
-      } else {
-        query.orderBy(camelSortStr, order)
-      }
-    } else {
-      query.orderBy('name', 'asc')
-    }
+    buildResourcesSort(query, queryData)
 
     const queryCount = await countQuery.count('*')
 

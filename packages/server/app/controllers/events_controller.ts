@@ -4,7 +4,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
 import string from '@adonisjs/core/helpers/string'
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, buildEventsSort } from '#helpers/query_builder'
 
 export default class EventsController {
   /**
@@ -15,10 +15,7 @@ export default class EventsController {
    */
   async index({ request }: HttpContext) {
     const queryData = request.qs()
-
     const typeKey = queryData['typeKey']
-    const sort = queryData['sort']
-    const order = queryData['order']
 
     let [query, countQuery] = buildApiQuery(Event.query(), queryData, 'events', 'typeKey')
 
@@ -37,32 +34,7 @@ export default class EventsController {
         tags.preload('tags')
       })
 
-    if (sort && order) {
-      const camelSortStr = string.camelCase(sort)
-      switch (camelSortStr) {
-        case 'eventType':
-          query
-            .join('event_types', 'event_types.key', 'events.type_key')
-            .orderBy('event_types.name', order)
-          break
-        case 'person':
-          query
-            .leftOuterJoin('people', 'people.id', 'events.person_id')
-            .orderBy('people.family_name', order)
-            .select('events.*')
-          break
-        case 'resource':
-          query
-            .leftOuterJoin('resources', 'resources.id', 'events.resource_id')
-            .orderBy('resources.name', order)
-            .select('events.*')
-          break
-        default:
-          query.orderBy(camelSortStr, order)
-      }
-    } else {
-      query.orderBy('startedAt', 'desc')
-    }
+    buildEventsSort(query, queryData)
 
     if (typeKey) {
       const eventType = await EventType.findByOrFail('key', typeKey)

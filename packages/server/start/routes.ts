@@ -123,6 +123,7 @@ router.resource('users', UsersController).apiOnly()
 // tag routes
 router.group(() => {
   router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+  router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
   router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
   router.resource('tags', TagsController).apiOnly()
 })
@@ -134,14 +135,9 @@ router.group(() => {
 
 router
   .group(() => {
-    router.post('/insert', [DataFactsController, 'insert']).as('facts.insert')
-    // TODO: temporarily removing until implemented
-    // router
-    //   .get('/query/:fact_type_key', [DataFactsController, 'getDimensionsByObjects'])
-    //   .as('facts.dimensions')
-    router
-      .get('/query', [DataFactsController, 'getDimensionsByObjects'])
-      .as('facts.dimensionsBuilder')
+    router.post('/insert', [DataFactsController, 'insert']).as('data.insert')
+    router.patch('/update/:id', [DataFactsController, 'update']).as('data.update')
+    router.get('/query', [DataFactsController, 'query']).as('facts.query')
   })
   .as('data')
   .prefix('data')

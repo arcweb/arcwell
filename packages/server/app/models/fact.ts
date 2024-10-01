@@ -1,7 +1,14 @@
 import { DateTime } from 'luxon'
-import { afterDelete, BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterDelete,
+  BaseModel,
+  beforeSave,
+  belongsTo,
+  column,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import FactType from '#models/fact_type'
-import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 import Resource from '#models/resource'
 import Event from '#models/event'
@@ -36,6 +43,9 @@ export default class Fact extends BaseModel {
   @column()
   declare info: Object
 
+  @column()
+  declare dimensions: Dimension[]
+
   @belongsTo(() => FactType, { foreignKey: 'typeKey', localKey: 'key' })
   declare factType: BelongsTo<typeof FactType>
 
@@ -48,9 +58,6 @@ export default class Fact extends BaseModel {
   @belongsTo(() => Event)
   declare event: BelongsTo<typeof Event>
 
-  @hasMany(() => Dimension)
-  declare dimensions: HasMany<typeof Dimension>
-
   @manyToMany(() => Tag, {
     pivotTimestamps: true,
     pivotTable: 'tag_object',
@@ -62,5 +69,14 @@ export default class Fact extends BaseModel {
   @afterDelete()
   static async detachTags(fact: Fact) {
     await fact.related('tags').detach()
+  }
+
+  @beforeSave()
+  static async generateJson(fact: Fact) {
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (fact.dimensions) {
+      // @ts-ignore - ignoring because dimensions have to be stringify-ed to get around knex & postgresql jsonb issue
+      fact.dimensions = JSON.stringify(fact.dimensions)
+    }
   }
 }

@@ -109,7 +109,7 @@ export class FactsListComponent {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'facts', personId]);
+    this.router.navigate(['project-management', 'people', personId]);
   }
 
   convertDateTimeToLocal(dateTime: DateTime | undefined): string {
