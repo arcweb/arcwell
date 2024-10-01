@@ -20,9 +20,9 @@ export class AppComponent {
 
   constructor() {
     this.matIconRegistry.addSvgIcon(
-      'arcwell-logo',
+      'arcwell-logo-white',
       this.domSanitizer.bypassSecurityTrustResourceUrl(
-        'assets/arcwell-logo.svg',
+        'assets/arcwell-logo-white.svg',
       ),
     );
 
