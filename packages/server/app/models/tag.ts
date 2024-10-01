@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
+import Resource from './resource'
 
 export default class Tag extends BaseModel {
   @column({ isPrimary: true })
