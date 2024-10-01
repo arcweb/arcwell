@@ -7,10 +7,10 @@ import {
 } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
-  withRequestStatus,
-  setPending,
-  setFulfilled,
   setErrors,
+  setFulfilled,
+  setPending,
+  withRequestStatus,
 } from '@shared/store/request-status.feature';
 import { FactService } from '@shared/services/fact.service';
 import { computed, inject } from '@angular/core';
@@ -106,6 +106,15 @@ export const FactStore = signalStore(
         if (updateFactFormData.factType && updateFactFormData.factType.id) {
           updateFactFormData.typeKey = updateFactFormData.factType.key;
         }
+        if (
+          updateFactFormData.dimensions &&
+          typeof updateFactFormData.dimensions === 'string'
+        ) {
+          updateFactFormData.dimensions = JSON.parse(
+            updateFactFormData.dimensions,
+          );
+        }
+
         const resp = await firstValueFrom(
           factService.update(updateFactFormData),
         );
@@ -123,6 +132,8 @@ export const FactStore = signalStore(
         }
       },
       async createFact(createFactFormData: FactType) {
+        const dimensionsJson = JSON.parse(createFactFormData.dimensions);
+        createFactFormData.dimensions = dimensionsJson;
         patchState(store, setPending());
         createFactFormData.typeKey = createFactFormData.factType.key;
 

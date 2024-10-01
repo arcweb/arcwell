@@ -116,9 +116,13 @@ export class FactComponent implements OnInit {
       disabled: true,
     }),
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
+    dimensions: new FormControl({
+      value: [],
+      disabled: true,
+    }),
   });
 
-  displayedColumns: string[] = ['id', 'key', 'value'];
+  displayedColumns: string[] = ['key', 'value'];
 
   constructor() {
     effect(() => {
@@ -148,10 +152,11 @@ export class FactComponent implements OnInit {
         this.factStore.initialize(this.factId).then(() => {
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
-            observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+            observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
             person: this.factStore.fact()?.person,
             resource: this.factStore.fact()?.resource,
             event: this.factStore.fact()?.event,
+            dimensions: this.factStore.fact()?.dimensions,
           });
         });
       }
@@ -163,7 +168,7 @@ export class FactComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factForm.value;
 
-          const eventFormPayload = {
+          const factFormPayload = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -177,9 +182,9 @@ export class FactComponent implements OnInit {
           };
 
           if (this.factStore.inCreateMode()) {
-            this.factStore.createFact(eventFormPayload);
+            this.factStore.createFact(factFormPayload);
           } else {
-            this.factStore.updateFact(eventFormPayload);
+            this.factStore.updateFact(factFormPayload);
           }
         }
         // else if (event instanceof ValueChangeEvent) {
@@ -205,7 +210,7 @@ export class FactComponent implements OnInit {
       if (this.factStore.inEditMode()) {
         this.factForm.patchValue({
           factType: this.factStore.fact()?.factType,
-          observedAt: this.factStore.fact()?.observedAt.toJSDate(),
+          observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
           person: this.factStore.fact()?.person,
           resource: this.factStore.fact()?.resource,
           event: this.factStore.fact()?.event,

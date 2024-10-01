@@ -7,14 +7,14 @@ import {
 } from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
-  withRequestStatus,
-  setPending,
-  setFulfilled,
   setErrors,
+  setFulfilled,
+  setPending,
+  withRequestStatus,
 } from '@shared/store/request-status.feature';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { FactType, FactUpdateType } from '@schemas/fact.schema';
+import { FactType } from '@schemas/fact.schema';
 import { FactTypeService } from '@shared/services/fact-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
@@ -22,6 +22,8 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
+import { FactTypeType, FactTypeUpdateType } from '@schemas/fact-type.schema';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -82,14 +84,11 @@ export const FactTypeStore = signalStore(
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
       },
-      async update(updateFactFormData: FactUpdateType) {
+      async update(updateFactTypeFormData: FactType) {
+        updateFactTypeFormData.id = store.factType().id;
         patchState(store, setPending());
-        updateFactFormData.id = store.factType().id;
-        if (updateFactFormData.factType && updateFactFormData.factType.id) {
-          updateFactFormData.factTypeId = updateFactFormData.factType.id;
-        }
         const resp = await firstValueFrom(
-          factTypeService.update(updateFactFormData),
+          factTypeService.update(updateFactTypeFormData),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));

@@ -136,7 +136,7 @@ export default class extends BaseSeeder {
       description: 'Recording of patient weight',
     }).create()
 
-    // const factType2 = await FactTypeFactory.with('dimensionTypes', 8).create()
+    // const factType2 = await FactTypeFactory.with('dimensionSchemas', 8).create()
 
     const person = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
     const event = await EventFactory.merge({ typeKey: apptEventType.key }).create()
@@ -149,9 +149,8 @@ export default class extends BaseSeeder {
       personId: person.id,
       resourceId: resource.id,
       eventId: event.id,
-    })
-      .with('dimensions', 6)
-      .create()
+      dimensions: [],
+    }).create()
     // create a fact with just a person
     await FactFactory.merge({ typeKey: factType.key, personId: person.id }).create()
     // create a fact with just a resource
