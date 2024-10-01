@@ -16,6 +16,11 @@ export const USER_MANAGEMENT_ROUTES: Route[] = [
         path: 'all-users/:userId',
         component: UserComponent,
       },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'all-users',
+      },
     ],
   },
 ];

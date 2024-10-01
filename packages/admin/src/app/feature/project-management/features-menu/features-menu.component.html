@@ -1,16 +1,50 @@
-<div class="feature-menu-container">
-  @for (feature of featureStore.features(); track feature.name) {
-    <div class="feature-button-container">
-      <button
-        class="feature-button"
-        mat-icon-button
-        [attr.aria-label]="feature.name"
-        [routerLink]="feature.path"
-        routerLinkActive="feature-button-active"
-      >
-        <mat-icon>{{ feature.icon }}</mat-icon>
-      </button>
-      {{ feature.name }}
-    </div>
-  }
+<div class="info-container">
+  <mat-icon class="logo" svgIcon="arcwell-logo"></mat-icon>
 </div>
+<mat-divider class="features-menu-divider"></mat-divider>
+<mat-accordion [multi]="false" class="feature-accordion">
+  @for (feature of featureStore.features(); track feature.name) {
+    <mat-expansion-panel
+      hideToggle
+      [expanded]="featureStore.activeFeature()?.path === feature.path"
+      [disabled]="featureStore.activeFeature()?.path === feature.path"
+      [ngClass]="{
+        settings: feature.name.toLowerCase() === 'settings',
+        'hide-content': feature.subfeatures.length === 0,
+      }"
+    >
+      <mat-expansion-panel-header
+        [routerLink]="feature.path"
+        routerLinkActive="feature-active"
+      >
+        <mat-panel-title
+          [attr.aria-label]="feature.name"
+          class="feature-title body-large"
+        >
+          <mat-icon>{{ feature.icon }}</mat-icon>
+          {{ feature.name }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @if (feature.subfeatures.length > 0) {
+        @for (subfeature of feature.subfeatures; track subfeature.name) {
+          <a
+            [routerLink]="
+              subfeature.path !== 'logout' && subfeature.path !== 'profile'
+                ? featureStore.activeFeature()?.path + '/' + subfeature.path
+                : null
+            "
+            routerLinkActive="subfeature-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="body-large"
+            (click)="
+              feature.name === 'Settings' ? onSettingsClick(subfeature) : null
+            "
+          >
+            <mat-icon>{{ subfeature.icon }}</mat-icon>
+            {{ subfeature.name }}
+          </a>
+        }
+      }
+    </mat-expansion-panel>
+  }
+</mat-accordion>
