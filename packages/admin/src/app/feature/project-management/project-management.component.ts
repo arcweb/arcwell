@@ -4,11 +4,18 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FeaturesMenuComponent } from '@feature/project-management/features-menu/features-menu.component';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { ConfigBarComponent } from '../../shared/components/config-bar/config-bar.component';
 
 @Component({
   selector: 'aw-home',
   standalone: true,
-  imports: [RouterLink, FeaturesMenuComponent, RouterOutlet, MatSidenavModule],
+  imports: [
+    RouterLink,
+    FeaturesMenuComponent,
+    RouterOutlet,
+    MatSidenavModule,
+    ConfigBarComponent,
+  ],
   templateUrl: './project-management.component.html',
   styleUrl: './project-management.component.scss',
 })
