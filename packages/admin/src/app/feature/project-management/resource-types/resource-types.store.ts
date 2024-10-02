@@ -56,19 +56,12 @@ export const ResourceTypesStore = signalStore(
         store,
         {
           ...initialState,
-          sort: props.sort ?? undefined,
-          order: props.order ?? undefined,
-          pageIndex: props.pageIndex ?? undefined,
+          ...props,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes({
-          limit: props.limit,
-          offset: props.offset,
-          sort: props.sort,
-          order: props.order,
-        }),
+        resourceTypesService.getResourceTypes(props),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));

@@ -56,20 +56,11 @@ export const EventTypesStore = signalStore(
         store,
         {
           ...initialState,
-          sort: props.sort ?? undefined,
-          order: props.order ?? undefined,
-          pageIndex: props.pageIndex ?? undefined,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        eventTypesService.getEventTypes({
-          limit: props.limit,
-          offset: props.offset,
-          sort: props.sort,
-          order: props.order,
-        }),
-      );
+      const resp = await firstValueFrom(eventTypesService.getEventTypes(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {

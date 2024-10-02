@@ -197,11 +197,7 @@ export const CohortStore = signalStore(
           {
             peopleListOptions: {
               ...initialPeopleListState,
-              offset: props.offset ?? undefined,
-              pageIndex: props.pageIndex ?? undefined,
-              limit: props.limit ?? undefined,
-              sort: props.sort ?? undefined,
-              order: props.order ?? undefined,
+              ...props,
             },
           },
           setPending(),

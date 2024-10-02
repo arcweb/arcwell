@@ -58,22 +58,11 @@ export const FactsListStore = signalStore(
         store,
         {
           ...initialState,
-          sort: props.sort ?? undefined,
-          order: props.order ?? undefined,
-          pageIndex: props.pageIndex ?? undefined,
-          typeKey: props.typeKey ?? undefined,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        factService.getFacts({
-          limit: props.limit,
-          offset: props.offset,
-          sort: props.sort,
-          order: props.order,
-          typeKey: props.typeKey,
-        }),
-      );
+      const resp = await firstValueFrom(factService.getFacts(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {

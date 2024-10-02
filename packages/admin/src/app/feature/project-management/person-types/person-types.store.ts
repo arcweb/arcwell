@@ -56,19 +56,12 @@ export const PersonTypesStore = signalStore(
         store,
         {
           ...initialState,
-          sort: props.sort ?? undefined,
-          order: props.order ?? undefined,
-          pageIndex: props.pageIndex ?? undefined,
+          ...props,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        personTypesService.getPersonTypes({
-          limit: props.limit,
-          offset: props.offset,
-          sort: props.sort,
-          order: props.order,
-        }),
+        personTypesService.getPersonTypes(props),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
