@@ -1,9 +1,7 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
-import { PersonType } from '@app/shared/schemas/person.schema';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { UserType, UserUpdateType } from '@app/shared/schemas/user.schema';
-import { PersonService } from '@app/shared/services/person.service';
 import { RoleService } from '@app/shared/services/role.service';
 import { UserService } from '@app/shared/services/user.service';
 import {
@@ -12,13 +10,7 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import {
-  patchState,
-  signalStore,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { firstValueFrom, forkJoin } from 'rxjs';
 
 interface UserState {

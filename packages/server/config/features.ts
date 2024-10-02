@@ -23,13 +23,13 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'Dashboard',
     path: 'dashboard',
-    icon: 'home',
+    icon: 'faHouse',
     subfeatures: [],
   },
   {
     name: 'People',
     path: 'people',
-    icon: 'people',
+    icon: 'faUser',
     subfeatures: [
       {
         name: 'Person Types',
@@ -44,28 +44,13 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'Cohorts',
     path: 'cohorts',
-    icon: 'groups',
+    icon: 'faUsers',
     subfeatures: [],
-  },
-  {
-    name: 'Resources',
-    path: 'resources',
-    icon: 'collections_bookmark',
-    subfeatures: [
-      {
-        name: 'Resource Types',
-        path: 'types',
-      },
-      {
-        name: 'All Resources',
-        path: 'list',
-      },
-    ],
   },
   {
     name: 'Events',
     path: 'events',
-    icon: 'event',
+    icon: 'faCalendarDay',
     subfeatures: [
       {
         name: 'Event Types',
@@ -78,9 +63,24 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     ],
   },
   {
+    name: 'Resources',
+    path: 'resources',
+    icon: 'faCubes',
+    subfeatures: [
+      {
+        name: 'Resource Types',
+        path: 'types',
+      },
+      {
+        name: 'All Resources',
+        path: 'list',
+      },
+    ],
+  },
+  {
     name: 'Facts',
     path: 'facts',
-    icon: 'fact_check',
+    icon: 'faRectangleList',
     subfeatures: [
       {
         name: 'Fact Types',
@@ -95,14 +95,14 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'Tags',
     path: 'tags',
-    icon: 'sell',
+    icon: 'faTags',
     subfeatures: [],
   },
   // TODO: do we want settings to be absolute paths?
   {
     name: 'Settings',
     path: 'settings',
-    icon: 'settings',
+    icon: 'faGear',
     subfeatures: [
       {
         name: 'Settings',
@@ -115,7 +115,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
       // TODO: fix path/active styling on this link on next pass
       {
         name: 'Profile',
-        path: 'user-management/all-users/:userId',
+        path: 'profile',
       },
       {
         name: 'Log Out',
