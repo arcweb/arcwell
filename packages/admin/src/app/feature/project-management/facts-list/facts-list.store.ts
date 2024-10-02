@@ -46,32 +46,32 @@ export const FactsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, factService = inject(FactService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-      typeKey = '',
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+      typeKey?: string;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
-          typeKey: typeKey,
+          sort: props.sort ?? undefined,
+          order: props.order ?? undefined,
+          pageIndex: props.pageIndex ?? undefined,
+          typeKey: props.typeKey ?? undefined,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
         factService.getFacts({
-          limit: limit,
-          offset: offset,
-          sort: sort,
-          order: order,
-          typeKey: typeKey,
+          limit: props.limit,
+          offset: props.offset,
+          sort: props.sort,
+          order: props.order,
+          typeKey: props.typeKey,
         }),
       );
       if (resp.errors) {

@@ -45,29 +45,29 @@ export const PersonTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personTypesService = inject(PersonTypeService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
+          sort: props.sort ?? undefined,
+          order: props.order ?? undefined,
+          pageIndex: props.pageIndex ?? undefined,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
         personTypesService.getPersonTypes({
-          limit: limit,
-          offset: offset,
-          sort: sort,
-          order: order,
+          limit: props.limit,
+          offset: props.offset,
+          sort: props.sort,
+          order: props.order,
         }),
       );
       if (resp.errors) {
@@ -111,7 +111,7 @@ export const PersonTypesStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load({ limit: store.limit(), offset: store.offset() });
     },
   }),
 );

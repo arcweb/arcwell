@@ -69,12 +69,12 @@ export class FactTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.factTypesStore.load(
-      this.factTypesStore.limit(),
-      this.factTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.factTypesStore.pageIndex(),
-    );
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: this.factTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.factTypesStore.pageIndex(),
+    });
   }
 }

@@ -185,23 +185,23 @@ export const CohortStore = signalStore(
           patchState(store, setFulfilled());
         }
       },
-      async loadPeoplePage(
-        limit: number,
-        offset: number,
-        pageIndex: number,
-        sort: string,
-        order: SortDirection,
-      ) {
+      async loadPeoplePage(props: {
+        limit: number;
+        offset: number;
+        pageIndex: number;
+        sort: string;
+        order: SortDirection;
+      }) {
         patchState(
           store,
           {
             peopleListOptions: {
               ...initialPeopleListState,
-              offset,
-              pageIndex,
-              limit,
-              sort,
-              order,
+              offset: props.offset ?? undefined,
+              pageIndex: props.pageIndex ?? undefined,
+              limit: props.limit ?? undefined,
+              sort: props.sort ?? undefined,
+              order: props.order ?? undefined,
             },
           },
           setPending(),
@@ -237,13 +237,13 @@ export const CohortStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          this.loadPeoplePage(
-            store.peopleListOptions().limit,
-            store.peopleListOptions().offset,
-            store.peopleListOptions().pageIndex,
-            store.peopleListOptions().sort,
-            store.peopleListOptions().order,
-          );
+          this.loadPeoplePage({
+            limit: store.peopleListOptions().limit,
+            offset: store.peopleListOptions().offset,
+            pageIndex: store.peopleListOptions().pageIndex,
+            sort: store.peopleListOptions().sort,
+            order: store.peopleListOptions().order,
+          });
           toastService.sendMessage(
             'Person added to cohort',
             ToastLevel.SUCCESS,
@@ -272,13 +272,13 @@ export const CohortStore = signalStore(
             ? store.peopleListOptions().offset - store.peopleListOptions().limit
             : store.peopleListOptions().offset;
 
-          this.loadPeoplePage(
-            store.peopleListOptions().limit,
-            offset,
-            pageIndex,
-            store.peopleListOptions().sort,
-            store.peopleListOptions().order,
-          );
+          this.loadPeoplePage({
+            limit: store.peopleListOptions().limit,
+            offset: offset,
+            pageIndex: pageIndex,
+            sort: store.peopleListOptions().sort,
+            order: store.peopleListOptions().order,
+          });
           toastService.sendMessage(
             'Person removed from cohort',
             ToastLevel.SUCCESS,

@@ -69,12 +69,12 @@ export class EventTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.eventTypesStore.load(
-      this.eventTypesStore.limit(),
-      this.eventTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.eventTypesStore.pageIndex(),
-    );
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: this.eventTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.eventTypesStore.pageIndex(),
+    });
   }
 }

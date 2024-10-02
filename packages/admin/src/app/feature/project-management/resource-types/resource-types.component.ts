@@ -69,12 +69,12 @@ export class ResourceTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.resourceTypesStore.load(
-      this.resourceTypesStore.limit(),
-      this.resourceTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.resourceTypesStore.pageIndex(),
-    );
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: this.resourceTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.resourceTypesStore.pageIndex(),
+    });
   }
 }
