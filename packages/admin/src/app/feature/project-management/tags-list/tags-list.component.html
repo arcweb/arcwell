@@ -1,21 +1,7 @@
-<div class="main-container-header">
-  <h2>
-    {{ featureStore.activeSubfeature()?.name || 'Tags' }}
-  </h2>
-  <div class="icons-container">
-    <button mat-icon-button [routerLink]="['/project-management/tags/create']">
-      <mat-icon aria-label="Create tag icon button">
-        add_circle_outline
-      </mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Search icon button">search</mat-icon>
-    </button>
-  </div>
-</div>
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Tags'"
+  createLink="/project-management/tags/create"
+></aw-table-header>
 
 @if (tagsListStore.isErrored()) {
   <aw-error-container [errors]="tagsListStore.errors()" />

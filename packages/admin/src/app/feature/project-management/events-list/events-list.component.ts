@@ -26,6 +26,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-events-list',
@@ -50,6 +51,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatIconButton,
     MatSortModule,
     MatButton,
+    TableHeaderComponent,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',

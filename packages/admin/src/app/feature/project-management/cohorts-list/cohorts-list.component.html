@@ -1,24 +1,7 @@
-<div class="main-container-header">
-  <h2>
-    {{ featureStore.activeSubfeature()?.name || 'Cohorts' }}
-  </h2>
-  <div class="icons-container">
-    <button
-      mat-icon-button
-      [routerLink]="['/project-management/cohorts/create']"
-    >
-      <mat-icon aria-label="Create cohort icon button">
-        add_circle_outline
-      </mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Search icon button">search</mat-icon>
-    </button>
-  </div>
-</div>
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Cohorts'"
+  createLink="/project-management/cohorts/create"
+></aw-table-header>
 
 @if (cohortsListStore.isErrored()) {
   <aw-error-container [errors]="cohortsListStore.errors()" />

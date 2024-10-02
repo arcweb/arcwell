@@ -21,6 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { TableHeaderComponent } from '../../../shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-person-types',
@@ -43,6 +44,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [PersonTypesStore],
   templateUrl: './person-types.component.html',
