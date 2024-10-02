@@ -44,5 +44,26 @@ Typescale names:
     line-height: 24px; /* 125% */
   }
 
+  .body-small {
+    font-size: 12.8px;
+    font-style: normal;
+    line-height: 16px;
+    font-weight: 600;
+  }
+
+  .headline-large {
+    font-size: 33.2px;
+    font-style: normal;
+    line-height: 40px;
+    font-weight: 500;
+  }
+
+  .headline-small {
+    font-size: 16px;
+    font-style: normal;
+    line-height: 20px;
+    font-weight: 400;
+  }
+
   // add additional typography styles here from the figma designs
 }
