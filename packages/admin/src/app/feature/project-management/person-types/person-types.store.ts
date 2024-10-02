@@ -63,7 +63,12 @@ export const PersonTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personTypesService.getPersonTypes(limit, offset, sort, order),
+        personTypesService.getPersonTypes({
+          limit: limit,
+          offset: offset,
+          sort: sort,
+          order: order,
+        }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -87,7 +92,10 @@ export const PersonTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        personTypesService.getPersonTypes(store.limit(), store.offset()),
+        personTypesService.getPersonTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {

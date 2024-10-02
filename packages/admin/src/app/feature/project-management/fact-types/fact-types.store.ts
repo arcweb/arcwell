@@ -63,7 +63,12 @@ export const FactTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factTypesService.getFactTypes(limit, offset, sort, order),
+        factTypesService.getFactTypes({
+          limit: limit,
+          offset: offset,
+          sort: sort,
+          order: order,
+        }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -87,7 +92,10 @@ export const FactTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factTypesService.getFactTypes(store.limit(), store.offset()),
+        factTypesService.getFactTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {

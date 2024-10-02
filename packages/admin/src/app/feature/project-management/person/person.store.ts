@@ -77,7 +77,7 @@ export const PersonStore = signalStore(
               store.cohortsListOptions().limit,
               store.cohortsListOptions().offset,
             ),
-            personTypesResp: personTypeService.getPersonTypes(),
+            personTypesResp: personTypeService.getPersonTypes({}),
           }),
         );
         if (personResp.errors) {
@@ -104,7 +104,7 @@ export const PersonStore = signalStore(
       async initializeForCreate() {
         patchState(store, setPending());
         const personTypesResp = await firstValueFrom(
-          personTypeService.getPersonTypes(),
+          personTypeService.getPersonTypes({}),
         );
         if (personTypesResp.errors) {
           patchState(

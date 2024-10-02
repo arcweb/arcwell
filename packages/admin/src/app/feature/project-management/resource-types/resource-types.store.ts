@@ -63,7 +63,12 @@ export const ResourceTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes(limit, offset, sort, order),
+        resourceTypesService.getResourceTypes({
+          limit: limit,
+          offset: offset,
+          sort: sort,
+          order: order,
+        }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -87,7 +92,10 @@ export const ResourceTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes(store.limit(), store.offset()),
+        resourceTypesService.getResourceTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {

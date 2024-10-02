@@ -71,13 +71,13 @@ export const CohortStore = signalStore(
       async initialize(cohortId: string) {
         patchState(store, setPending());
         const cohortResp = await firstValueFrom(
-          cohortService.getCohortWithPeople(
-            cohortId,
-            store.peopleListOptions().limit,
-            store.peopleListOptions().offset,
-            store.peopleListOptions().sort,
-            store.peopleListOptions().order,
-          ),
+          cohortService.getCohortWithPeople({
+            id: cohortId,
+            limit: store.peopleListOptions().limit,
+            offset: store.peopleListOptions().offset,
+            sort: store.peopleListOptions().sort,
+            order: store.peopleListOptions().order,
+          }),
         );
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
@@ -207,13 +207,13 @@ export const CohortStore = signalStore(
           setPending(),
         );
         const resp = await firstValueFrom(
-          cohortService.getCohortWithPeople(
-            store.cohort().id,
-            store.peopleListOptions().limit,
-            store.peopleListOptions().offset,
-            store.peopleListOptions().sort,
-            store.peopleListOptions().order,
-          ),
+          cohortService.getCohortWithPeople({
+            id: store.cohort().id,
+            limit: store.peopleListOptions().limit,
+            offset: store.peopleListOptions().offset,
+            sort: store.peopleListOptions().sort,
+            order: store.peopleListOptions().order,
+          }),
         );
 
         if (resp.errors) {

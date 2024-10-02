@@ -58,7 +58,7 @@ export const FactStore = signalStore(
         const { factResp, factTypesResp } = await firstValueFrom(
           forkJoin({
             factResp: factService.getFact(factId),
-            factTypesResp: factTypeService.getFactTypes(),
+            factTypesResp: factTypeService.getFactTypes({}),
           }),
         );
         if (factResp.errors) {
@@ -80,7 +80,7 @@ export const FactStore = signalStore(
       async initializeForCreate() {
         patchState(store, setPending());
         const factTypesResp = await firstValueFrom(
-          factTypeService.getFactTypes(),
+          factTypeService.getFactTypes({}),
         );
         if (factTypesResp.errors) {
           patchState(store, { isReady: true }, setErrors(factTypesResp.errors));

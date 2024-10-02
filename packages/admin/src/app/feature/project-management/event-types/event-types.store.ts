@@ -63,7 +63,12 @@ export const EventTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(limit, offset, sort, order),
+        eventTypesService.getEventTypes({
+          limit: limit,
+          offset: offset,
+          sort: sort,
+          order: order,
+        }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -87,7 +92,10 @@ export const EventTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(store.limit(), store.offset()),
+        eventTypesService.getEventTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {
