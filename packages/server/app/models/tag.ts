@@ -67,6 +67,7 @@ export default class Tag extends BaseModel {
       factsCount: Number.parseInt(this.$extras.facts_count),
       peopleCount: Number.parseInt(this.$extras.people_count),
       resourcesCount: Number.parseInt(this.$extras.resources_count),
+      usersCount: Number.parseInt(this.$extras.users_count),
     }
   }
 }

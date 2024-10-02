@@ -117,6 +117,41 @@ export class TagService {
     );
   }
 
+  getTagWithRelated(
+    id: string,
+    objectType: string,
+    limit?: number,
+    offset?: number,
+    sort?: string,
+    order?: string,
+  ): Observable<TagType | ErrorResponseType> {
+    let params = new HttpParams();
+
+    if (limit !== undefined) {
+      params = params.set('limit', limit.toString());
+    }
+    if (offset !== undefined) {
+      params = params.set('offset', offset.toString());
+    }
+    if (sort && order) {
+      params = params.set('sort', sort);
+      params = params.set('order', order);
+    }
+
+    return this.http
+      .get<TagType>(`${environment.apiUrl}/tags/${id}/${objectType}`, {
+        params,
+      })
+      .pipe(
+        map((response: TagType) => {
+          return deserializeTag(response.data);
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
   create(tag: TagType): Observable<TagType | ErrorResponseType> {
     return this.http.post<TagType>(`${environment.apiUrl}/tags`, tag).pipe(
       map((response: TagType) => {
@@ -133,7 +168,7 @@ export class TagService {
       .patch<TagType>(`${environment.apiUrl}/tags/${tag.id}`, tag)
       .pipe(
         map((response: TagType) => {
-          return deserializeTag(response);
+          return deserializeTag(response.data);
         }),
         catchError(error => {
           return defaultErrorResponseHandler(error);

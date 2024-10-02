@@ -1,4 +1,10 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import {
+  DeepSignal,
+  patchState,
+  signalStore,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import {
   withRequestStatus,
@@ -13,19 +19,47 @@ import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { Router } from '@angular/router';
+import { SortDirection } from '@angular/material/sort';
+import { PersonType } from '@app/shared/schemas/person.schema';
+
+interface RelatedListState {
+  limit: number;
+  offset: number;
+  pageIndex: number;
+  sort: string;
+  order: SortDirection;
+}
 
 interface TagState {
   tag: TagType | null;
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
+  peopleListOptions: RelatedListState;
+  people: PersonType[];
 }
 
+const initialListState = {
+  limit: 10,
+  offset: 0,
+  pageIndex: 0,
+};
+
+const initialPeopleListState: RelatedListState = {
+  ...initialListState,
+  order: 'asc',
+  sort: 'familyName',
+};
+
+// Keep the related content lists separate so pagination updates on one type won't
+// effect the other types
 const initialState: TagState = {
   tag: null,
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
+  peopleListOptions: initialPeopleListState,
+  people: [],
 };
 
 export const TagStore = signalStore(
@@ -41,11 +75,23 @@ export const TagStore = signalStore(
     ) => ({
       async initialize(tagId: string) {
         patchState(store, setPending());
-        const resp = await firstValueFrom(tagService.getTag(tagId));
+        const resp = await firstValueFrom(
+          tagService.getTagWithRelated(
+            tagId,
+            'all',
+            initialListState.limit,
+            initialListState.offset,
+          ),
+        );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(store, { tag: resp, isReady: true }, setFulfilled());
+          patchState(store, {
+            tag: resp,
+            isReady: true,
+            peopleListOptions: initialPeopleListState,
+          });
+          patchState(store, { people: store.tag().people }, setFulfilled());
         }
       },
 
@@ -58,6 +104,8 @@ export const TagStore = signalStore(
             inCreateMode: true,
             inEditMode: true,
             isReady: true,
+            peopleListOptions: initialPeopleListState,
+            people: [],
           },
           setFulfilled(),
         );
@@ -77,11 +125,12 @@ export const TagStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(
-            store,
-            { tag: resp.data, inEditMode: false },
-            setFulfilled(),
-          );
+          patchState(store, {
+            tag: resp,
+            inEditMode: false,
+            peopleListOptions: initialPeopleListState,
+          });
+          patchState(store, { people: store.tag().people }, setFulfilled());
           toastService.sendMessage('Updated tag.', ToastLevel.SUCCESS);
         }
       },
@@ -96,7 +145,13 @@ export const TagStore = signalStore(
           // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
-            { tag: resp.data, inEditMode: false, inCreateMode: false },
+            {
+              tag: resp.data,
+              inEditMode: false,
+              inCreateMode: false,
+              peopleListOptions: initialPeopleListState,
+              people: [],
+            },
             setFulfilled(),
           );
 
@@ -115,7 +170,15 @@ export const TagStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          patchState(store, { inEditMode: false }, setFulfilled());
+          patchState(
+            store,
+            {
+              inEditMode: false,
+              peopleListOptions: initialPeopleListState,
+              people: [],
+            },
+            setFulfilled(),
+          );
         }
       },
 
@@ -128,6 +191,66 @@ export const TagStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, setFulfilled());
+        }
+      },
+
+      async loadRelatedPage(
+        objectType: string,
+        limit: number,
+        offset: number,
+        pageIndex: number,
+        sort: string,
+        order: SortDirection,
+      ) {
+        let stateListProperty = '';
+        let listOptions: DeepSignal<RelatedListState> = store.peopleListOptions;
+        let initialState;
+
+        switch (objectType) {
+          case 'people':
+            stateListProperty = 'peopleListOptions';
+            listOptions = store.peopleListOptions;
+            initialState = initialPeopleListState;
+            break;
+        }
+
+        patchState(
+          store,
+          {
+            [stateListProperty]: {
+              ...initialState,
+              offset,
+              pageIndex,
+              limit,
+              sort,
+              order,
+            },
+          },
+          setPending(),
+        );
+        const resp = await firstValueFrom(
+          tagService.getTagWithRelated(
+            store.tag().id,
+            objectType,
+            listOptions().limit,
+            listOptions().offset,
+            listOptions().sort,
+            listOptions().order,
+          ),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, {
+            tag: resp,
+            isReady: true,
+          });
+          patchState(
+            store,
+            { [objectType]: store.tag()[objectType] },
+            setFulfilled(),
+          );
         }
       },
     }),

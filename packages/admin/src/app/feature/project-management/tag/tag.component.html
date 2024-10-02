@@ -61,4 +61,33 @@
       </button>
     </div>
   </form>
+
+  @if (!tagStore.inCreateMode()) {
+    <div class="accordion-area">
+      <h2>Related</h2>
+      <mat-accordion>
+        <mat-expansion-panel [disabled]="tagStore.tag().peopleCount < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">People</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.tag().peopleCount }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-people-table
+            [dataSource]="peopleDataSource"
+            [displayedColumns]="peopleColumns"
+            [matSortActive]="this.tagStore.peopleListOptions().sort"
+            [matSortDirection]="this.tagStore.peopleListOptions().order"
+            [length]="this.tagStore.tag().peopleCount"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.peopleListOptions().limit"
+            [pageIndex]="this.tagStore.peopleListOptions().pageIndex"
+            (onPageChanged)="pageChange('people', $event)"
+            (onRowClicked)="rowClick('people', $event)"
+            (onSortChanged)="sortChange('people', $event)"
+          ></aw-people-table>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  }
 }
