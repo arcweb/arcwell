@@ -1,1 +1,17 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <h2 class="display-large">Settings</h2>
+
+  <mat-card class="settings-card">
+    <mat-card-header>Instance</mat-card-header>
+    <mat-card-content>
+      <h3>Arcwell</h3>
+      @for (item of configStore.config()?.arcwell | keyvalue; track $index) {
+        <p>{{ item.key }}: {{ item.value }}</p>
+      }
+      <h3>Mail</h3>
+      @for (item of configStore.config()?.mail | keyvalue; track $index) {
+        <p>{{ item.key }}: {{ item.value }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
