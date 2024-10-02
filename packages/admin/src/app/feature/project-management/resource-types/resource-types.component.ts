@@ -21,6 +21,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-resource-types',
@@ -43,6 +44,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [ResourceTypesStore],
   templateUrl: './resource-types.component.html',

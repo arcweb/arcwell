@@ -1,0 +1,24 @@
+<div class="main-container-header">
+  <h2>
+    {{ tableName() }}
+  </h2>
+  <div class="icons-container">
+    <button
+      mat-icon-button
+      [routerLink]="[createLink()]"
+      [queryParams]="createLinkQueryParams()"
+      matTooltip="Create"
+    >
+      <fa-icon aria-label="Create icon button" [icon]="faCirclePlus"></fa-icon>
+    </button>
+    <button mat-icon-button matTooltip="Filter">
+      <fa-icon aria-label="Filter icon button" [icon]="faBars"></fa-icon>
+    </button>
+    <button mat-icon-button matTooltip="Search">
+      <fa-icon
+        aria-label="Search icon button"
+        [icon]="faMagnifyingGlass"
+      ></fa-icon>
+    </button>
+  </div>
+</div>

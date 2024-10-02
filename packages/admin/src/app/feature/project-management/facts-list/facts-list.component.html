@@ -1,23 +1,8 @@
-<div class="main-container-header">
-  <h2>{{ featureStore.activeSubfeature()?.name || 'Facts' }}</h2>
-  <div class="icons-container">
-    <button
-      mat-icon-button
-      [routerLink]="['/project-management/facts/create']"
-      [queryParams]="{ typeKey: typeKey$ | async }"
-    >
-      <mat-icon aria-label="Create fact icon button">
-        add_circle_outline
-      </mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Search icon button">search</mat-icon>
-    </button>
-  </div>
-</div>
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
+  createLink="/project-management/facts/create"
+  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+></aw-table-header>
 
 @if (factsListStore.isErrored()) {
   <aw-error-container [errors]="factsListStore.errors()" />

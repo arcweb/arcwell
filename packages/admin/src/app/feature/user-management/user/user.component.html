@@ -2,9 +2,9 @@
   <aw-back-button></aw-back-button>
   <div class="main-container-header">
     @if (userStore.inEditMode()) {
-      <h2>Edit User</h2>
+      <h2>Edit {{ isProfile() ? 'Profile ' : 'User' }}</h2>
     } @else {
-      <h2>View User</h2>
+      <h2>View {{ isProfile() ? 'Profile ' : 'User' }}</h2>
     }
 
     <div class="icons-container">

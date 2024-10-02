@@ -20,9 +20,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { JsonPipe } from '@angular/common';
 import { PersonModel } from '@app/shared/models/person.model';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
-  selector: 'aw-all-users',
+  selector: 'aw-users-list',
   standalone: true,
   imports: [
     JsonPipe,
@@ -39,10 +40,11 @@ import { PersonModel } from '@app/shared/models/person.model';
     MatHeaderCell,
     MatHeaderRow,
     MatPaginator,
+    TableHeaderComponent,
   ],
   providers: [UsersStore],
-  templateUrl: './all-users.component.html',
-  styleUrl: './all-users.component.scss',
+  templateUrl: './users-list.component.html',
+  styleUrl: './users-list.component.scss',
 })
 export class AllUsersComponent {
   readonly userStore = inject(UsersStore);
@@ -65,7 +67,7 @@ export class AllUsersComponent {
       'project-management',
       'settings',
       'user-management',
-      'all-users',
+      'list',
       row.id,
     ]);
   }
@@ -75,11 +77,6 @@ export class AllUsersComponent {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      personId,
-    ]);
+    this.router.navigate(['project-management', 'people', 'list', personId]);
   }
 }

@@ -5,13 +5,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { PersonModel } from '@shared/models/person.model';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
-import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { Sort } from '@angular/material/sort';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-people-list',
@@ -20,10 +22,11 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
     AsyncPipe,
     JsonPipe,
     ErrorContainerComponent,
-    MatIcon,
+    FontAwesomeModule,
     RouterLink,
     MatIconButton,
     PeopleTableComponent,
+    TableHeaderComponent,
   ],
   providers: [PeopleListStore],
   templateUrl: './people-list.component.html',
@@ -39,6 +42,7 @@ export class PeopleListComponent {
     takeUntilDestroyed(),
     map(({ typeKey }) => typeKey),
   );
+  faCirclePlus = faCirclePlus;
 
   dataSource = new MatTableDataSource<PersonModel>();
 
@@ -73,7 +77,7 @@ export class PeopleListComponent {
   }
 
   viewAccount(personId: string) {
-    this.router.navigate(['user-management', 'all-users', personId]);
+    this.router.navigate(['user-management', 'list', personId]);
   }
 
   sortChange(event: Sort) {

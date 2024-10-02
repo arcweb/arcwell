@@ -21,7 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { MatSortModule, Sort } from '@angular/material/sort';
-
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -43,6 +43,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [EventTypesStore],
   templateUrl: './event-types.component.html',

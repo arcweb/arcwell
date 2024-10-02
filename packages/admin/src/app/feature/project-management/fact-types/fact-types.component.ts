@@ -21,7 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
-
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 @Component({
   selector: 'aw-fact-types',
   standalone: true,
@@ -43,6 +43,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [FactTypesStore],
   templateUrl: './fact-types.component.html',

@@ -29,7 +29,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'People',
     path: 'people',
-    icon: 'faUser',
+    icon: 'faUserGroup',
     subfeatures: [
       {
         name: 'Person Types',
@@ -44,7 +44,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'Cohorts',
     path: 'cohorts',
-    icon: 'faUsers',
+    icon: 'faUsersBetweenLines',
     subfeatures: [],
   },
   {
@@ -110,7 +110,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
       },
       {
         name: 'Users',
-        path: 'user-management/all-users',
+        path: 'user-management/list',
       },
       // TODO: fix path/active styling on this link on next pass
       {
