@@ -19,7 +19,7 @@ import { ErrorContainerComponent } from '../../project-management/error-containe
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { JsonPipe } from '@angular/common';
-import { PersonModel } from '@app/shared/models/person.model';
+import { UsersTableComponent } from '@app/shared/components/users-table/users-table.component';
 
 @Component({
   selector: 'aw-all-users',
@@ -39,6 +39,7 @@ import { PersonModel } from '@app/shared/models/person.model';
     MatHeaderCell,
     MatHeaderRow,
     MatPaginator,
+    UsersTableComponent,
   ],
   providers: [UsersStore],
   templateUrl: './all-users.component.html',
@@ -60,7 +61,7 @@ export class AllUsersComponent {
     });
   }
 
-  handleClick(row: UserModel) {
+  rowClick(row: UserModel) {
     this.router.navigate([
       'project-management',
       'settings',
@@ -70,16 +71,7 @@ export class AllUsersComponent {
     ]);
   }
 
-  formatName(person: PersonModel) {
-    return `${person.familyName}, ${person.givenName}`;
-  }
-
   viewPerson(personId: string) {
-    this.router.navigate([
-      'project-management',
-      'people',
-      'all-people',
-      personId,
-    ]);
+    this.router.navigate(['project-management', 'people', personId]);
   }
 }

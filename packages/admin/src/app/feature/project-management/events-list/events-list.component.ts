@@ -19,13 +19,12 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
-import { DateTime } from 'luxon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
 
 @Component({
   selector: 'aw-events-list',
@@ -50,6 +49,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatIconButton,
     MatSortModule,
     MatButton,
+    EventsTableComponent,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',
@@ -93,12 +93,8 @@ export class EventsListComponent {
     });
   }
 
-  handleClick(row: EventModel) {
+  rowClick(row: EventModel) {
     this.router.navigate(['project-management', 'events', row.id]);
-  }
-
-  convertDateTimeToLocal(dateTime: DateTime | undefined): string {
-    return convertDateTimeToLocal(dateTime);
   }
 
   sortChange(event: Sort) {

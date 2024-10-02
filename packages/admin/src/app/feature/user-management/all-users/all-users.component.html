@@ -24,52 +24,15 @@
     <aw-error-container [errors]="userStore.errors()" />
   }
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="role">
-      <th mat-header-cell *matHeaderCellDef>Role</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.role.name ? element.role.name : element.rodeId }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="person">
-      <th mat-header-cell *matHeaderCellDef>Person</th>
-      <td
-        class="link-cell"
-        mat-cell
-        *matCellDef="let element"
-        (click)="viewPerson(element.personId); $event.stopPropagation()"
-      >
-        {{ element.person ? formatName(element.person) : element.personId }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="tags">
-      <th mat-header-cell *matHeaderCellDef>Tags</th>
-      <td mat-cell *matCellDef="let element">
-        <pre>{{ element.tags ? (element.tags | json) : '' }}</pre>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      (click)="handleClick(row)"
-    ></tr>
-  </table>
-
-  <mat-paginator
-    [length]="userStore.totalData()"
-    [pageSizeOptions]="pageSizes"
-    [pageSize]="userStore.limit()"
-    [pageIndex]="userStore.pageIndex()"
-    (page)="this.userStore.loadPage($event)"
-    showFirstLastButtons="true"
-  ></mat-paginator>
+  <aw-users-table
+    [dataSource]="dataSource"
+    [displayedColumns]="displayedColumns"
+    [length]="this.userStore.totalData()"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.userStore.limit()"
+    [pageIndex]="this.userStore.pageIndex()"
+    (onPageChanged)="this.userStore.loadPage($event)"
+    (onRowClicked)="rowClick($event)"
+    (onViewPersonClicked)="viewPerson($event)"
+  ></aw-users-table>
 </div>
