@@ -87,14 +87,11 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(
-        this.factsListStore.limit(),
-        0,
-        '',
-        '',
-        0,
-        typeKey,
-      );
+      this.factsListStore.load({
+        limit: this.factsListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
     });
   }
 
@@ -119,13 +116,13 @@ export class FactsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.factsListStore.load(
-      this.factsListStore.limit(),
-      this.factsListStore.offset(),
-      event.active,
-      event.direction,
-      this.factsListStore.pageIndex(),
-      this.factsListStore.typeKey(),
-    );
+    this.factsListStore.load({
+      limit: this.factsListStore.limit(),
+      offset: this.factsListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.factsListStore.pageIndex(),
+      typeKey: this.factsListStore.typeKey(),
+    });
   }
 }

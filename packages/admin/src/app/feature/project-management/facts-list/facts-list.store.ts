@@ -46,28 +46,23 @@ export const FactsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, factService = inject(FactService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-      typeKey = '',
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+      typeKey?: string;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
-          typeKey: typeKey,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        factService.getFacts(limit, offset, sort, order, typeKey),
-      );
+      const resp = await firstValueFrom(factService.getFacts(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -90,7 +85,11 @@ export const FactsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factService.getFacts(store.limit(), store.offset(), store.typeKey()),
+        factService.getFacts({
+          limit: store.limit(),
+          offset: store.offset(),
+          typeKey: store.typeKey(),
+        }),
       );
 
       if (resp.errors) {

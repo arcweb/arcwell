@@ -61,14 +61,11 @@ export class PeopleListComponent {
     });
     // load the people list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.peopleListStore.load(
-        this.peopleListStore.limit(),
-        0,
-        '',
-        '',
-        0,
-        typeKey,
-      );
+      this.peopleListStore.load({
+        limit: this.peopleListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
     });
   }
 
@@ -81,13 +78,13 @@ export class PeopleListComponent {
   }
 
   sortChange(event: Sort) {
-    this.peopleListStore.load(
-      this.peopleListStore.limit(),
-      this.peopleListStore.offset(),
-      event.active,
-      event.direction,
-      this.peopleListStore.pageIndex(),
-      this.peopleListStore.typeKey(),
-    );
+    this.peopleListStore.load({
+      limit: this.peopleListStore.limit(),
+      offset: this.peopleListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.peopleListStore.pageIndex(),
+      typeKey: this.peopleListStore.typeKey(),
+    });
   }
 }

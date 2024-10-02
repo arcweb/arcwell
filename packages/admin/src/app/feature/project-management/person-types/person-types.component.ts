@@ -71,12 +71,12 @@ export class PersonTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.personTypesStore.load(
-      this.personTypesStore.limit(),
-      this.personTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.personTypesStore.pageIndex(),
-    );
+    this.personTypesStore.load({
+      limit: this.personTypesStore.limit(),
+      offset: this.personTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.personTypesStore.pageIndex(),
+    });
   }
 }

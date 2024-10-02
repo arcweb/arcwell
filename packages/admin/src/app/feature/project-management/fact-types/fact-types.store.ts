@@ -45,26 +45,22 @@ export const FactTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, factTypesService = inject(FactTypeService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        factTypesService.getFactTypes(limit, offset, sort, order),
-      );
+      const resp = await firstValueFrom(factTypesService.getFactTypes(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -87,7 +83,10 @@ export const FactTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        factTypesService.getFactTypes(store.limit(), store.offset()),
+        factTypesService.getFactTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {
@@ -103,7 +102,7 @@ export const FactTypesStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load({ limit: store.limit(), offset: store.offset() });
     },
   }),
 );

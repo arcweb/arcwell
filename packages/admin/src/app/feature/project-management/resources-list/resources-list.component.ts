@@ -77,14 +77,11 @@ export class ResourcesListComponent {
     });
     // load the resources list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.resourcesListStore.load(
-        this.resourcesListStore.limit(),
-        0,
-        '',
-        '',
-        0,
-        typeKey,
-      );
+      this.resourcesListStore.load({
+        limit: this.resourcesListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
     });
   }
 
@@ -93,13 +90,13 @@ export class ResourcesListComponent {
   }
 
   sortChange(event: Sort) {
-    this.resourcesListStore.load(
-      this.resourcesListStore.limit(),
-      this.resourcesListStore.offset(),
-      event.active,
-      event.direction,
-      this.resourcesListStore.pageIndex(),
-      this.resourcesListStore.typeKey(),
-    );
+    this.resourcesListStore.load({
+      limit: this.resourcesListStore.limit(),
+      offset: this.resourcesListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.resourcesListStore.pageIndex(),
+      typeKey: this.resourcesListStore.typeKey(),
+    });
   }
 }

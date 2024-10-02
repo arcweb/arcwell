@@ -58,7 +58,7 @@ export const EventStore = signalStore(
         const { eventResponse, eventTypesResponse } = await firstValueFrom(
           forkJoin({
             eventResponse: eventService.getEvent(eventId),
-            eventTypesResponse: eventTypeService.getEventTypes(),
+            eventTypesResponse: eventTypeService.getEventTypes({}),
           }),
         );
         if (eventResponse.errors) {
@@ -84,7 +84,7 @@ export const EventStore = signalStore(
       async initializeForCreate() {
         patchState(store, setPending());
         const eventTypesResp = await firstValueFrom(
-          eventTypeService.getEventTypes(),
+          eventTypeService.getEventTypes({}),
         );
         if (eventTypesResp.errors) {
           patchState(

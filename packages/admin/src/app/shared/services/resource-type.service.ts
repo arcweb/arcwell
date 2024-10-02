@@ -20,23 +20,23 @@ import { environment } from '../../../environments/environment';
 export class ResourceTypeService {
   private http: HttpClient = inject(HttpClient);
 
-  getResourceTypes(
-    limit?: number,
-    offset?: number,
-    sort?: string,
-    order?: string,
-  ): Observable<ResourceTypesResponseType[] | ErrorResponseType> {
+  getResourceTypes(props: {
+    limit?: number;
+    offset?: number;
+    sort?: string;
+    order?: string;
+  }): Observable<ResourceTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
-    if (sort && order) {
-      params = params.set('sort', sort);
-      params = params.set('order', order);
+    if (props.sort && props.order) {
+      params = params.set('sort', props.sort);
+      params = params.set('order', props.order);
     }
 
     return this.http

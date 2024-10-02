@@ -20,17 +20,17 @@ import { environment } from '../../../environments/environment';
 export class RoleService {
   private http: HttpClient = inject(HttpClient);
 
-  getAllRoles(
-    limit?: number,
-    offset?: number,
-  ): Observable<RolesResponseType[] | ErrorResponseType> {
+  getAllRoles(props: {
+    limit?: number;
+    offset?: number;
+  }): Observable<RolesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
 
     return this.http
