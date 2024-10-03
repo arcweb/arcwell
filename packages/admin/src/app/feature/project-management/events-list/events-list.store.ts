@@ -2,6 +2,7 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
+import { EventModel } from '@app/shared/models/event.model';
 import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
 import {
@@ -14,7 +15,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { firstValueFrom } from 'rxjs';
 
 interface EventsListState {
-  events: EventType[];
+  events: EventModel[];
   limit: number;
   offset: number;
   totalData: number;

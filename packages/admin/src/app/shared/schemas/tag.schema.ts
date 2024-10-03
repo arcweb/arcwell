@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { TagModel } from '@shared/models/tag.model';
+import { PersonSchema } from './person.schema';
+import { EventSchema } from './event.schema';
+import { FactSchema } from './fact.schema';
+import { ResourceSchema } from './resource.schema';
+import { UserSchema } from './user.schema';
 
 export const TagSchema: any = z
   .object({
@@ -11,6 +16,12 @@ export const TagSchema: any = z
     resourcesCount: z.number().optional().nullable(),
     eventsCount: z.number().optional().nullable(),
     factsCount: z.number().optional().nullable(),
+    usersCount: z.number().optional().nullable(),
+    events: z.lazy(() => z.array(EventSchema).optional()),
+    facts: z.lazy(() => z.array(FactSchema).optional()),
+    people: z.lazy(() => z.array(PersonSchema).optional()),
+    resources: z.lazy(() => z.array(ResourceSchema).optional()),
+    users: z.lazy(() => z.array(UserSchema).optional()),
   })
   .strict();
 

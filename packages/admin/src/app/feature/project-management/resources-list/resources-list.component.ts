@@ -24,6 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
@@ -48,6 +49,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
     RouterLink,
     MatIconButton,
     MatSortModule,
+    ResourcesTableComponent,
     TableHeaderComponent,
   ],
   providers: [ResourcesListStore],
@@ -85,7 +87,7 @@ export class ResourcesListComponent {
     });
   }
 
-  handleClick(row: ResourceModel) {
+  rowClick(row: ResourceModel) {
     this.router.navigate(['project-management', 'resources', row.id]);
   }
 
