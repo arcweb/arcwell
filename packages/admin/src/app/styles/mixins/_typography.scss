@@ -30,11 +30,19 @@ Typescale names:
   $on-secondary: mat.get-theme-color($theme, on-secondary);
   $error: mat.get-theme-color($theme, error);
 
-  .regular {
+  .font-weight-light {
+    font-weight: layout.$font-weight-light;
+  }
+
+  .font-weight-regular {
     font-weight: layout.$font-weight-regular;
   }
 
-  .bold {
+  .font-weight-semi-bold {
+    font-weight: layout.$font-weight-semi-bold;
+  }
+
+  .font-weight-bold {
     font-weight: layout.$font-weight-bold;
   }
 
@@ -48,14 +56,18 @@ Typescale names:
     font-size: 12.8px;
     font-style: normal;
     line-height: 16px;
-    font-weight: 600;
   }
 
   .headline-large {
     font-size: 33.2px;
     font-style: normal;
     line-height: 40px;
-    font-weight: 500;
+  }
+
+  .headline-medium {
+    font-size: 24px;
+    font-style: normal;
+    line-height: 40px;
   }
 
   .headline-medium {
@@ -69,7 +81,12 @@ Typescale names:
     font-size: 16px;
     font-style: normal;
     line-height: 20px;
-    font-weight: 400;
+  }
+
+  .display-large {
+    font-size: 32px;
+    font-style: normal;
+    line-height: 40px;
   }
 
   // add additional typography styles here from the figma designs

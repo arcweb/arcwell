@@ -1,1 +1,53 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <h2 class="display-large font-weight-light">Settings</h2>
+
+  <mat-card class="settings-instance-card">
+    <mat-card-header class="display-large font-weight-regular">
+      Instance
+    </mat-card-header>
+    <mat-divider class="settings-bar-divider"></mat-divider>
+    <mat-card-content>
+      <form [formGroup]="instanceForm" class="settings-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Instance Name</mat-label>
+          <input matInput formControlName="instanceName" readonly="true" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Instance ID</mat-label>
+          <input matInput formControlName="instanceId" readonly="true" />
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="settings-mail-card">
+    <mat-card-header class="display-large font-weight-regular">
+      Mail
+    </mat-card-header>
+    <mat-divider class="settings-bar-divider"></mat-divider>
+    <mat-card-content>
+      <form [formGroup]="mailForm" class="settings-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Host</mat-label>
+          <input matInput formControlName="host" readonly="true" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Port</mat-label>
+          <input matInput formControlName="port" readonly="true" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>From Address</mat-label>
+          <input matInput formControlName="fromAddress" readonly="true" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>From Name</mat-label>
+          <input matInput formControlName="fromName" readonly="true" />
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

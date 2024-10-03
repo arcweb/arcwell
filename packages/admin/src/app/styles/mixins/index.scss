@@ -1,8 +1,9 @@
+@forward './auth';
 @forward './button';
+@forward './config';
+@forward './settings';
 @forward './sidenav';
 @forward './table';
 @forward './toast';
 @forward './toolbar';
 @forward './typography';
-@forward './auth';
-@forward './config';

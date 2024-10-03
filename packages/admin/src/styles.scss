@@ -15,13 +15,15 @@ html {
   @include mat.system-level-colors(theme.$light-theme);
 
   // custom, component level mixins
+  @include mixins.auth-theme(theme.$light-theme);
   @include mixins.button-theme(theme.$light-theme);
+  @include mixins.config-theme(theme.$light-theme);
+  @include mixins.settings-theme(theme.$light-theme);
   @include mixins.sidenav-theme(theme.$light-theme);
   @include mixins.table-theme(theme.$light-theme);
   @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
   @include mixins.typography-theme(theme.$light-theme);
-  @include mixins.config-theme(theme.$light-theme);
 }
 
 * {
