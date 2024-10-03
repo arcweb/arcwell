@@ -37,4 +37,23 @@ export class SettingsComponent {
       disabled: false,
     }),
   });
+
+  mailForm = new FormGroup({
+    host: new FormControl({
+      value: this.configStore.config()?.mail?.host,
+      disabled: false,
+    }),
+    port: new FormControl({
+      value: this.configStore.config()?.mail?.port,
+      disabled: false,
+    }),
+    fromAddress: new FormControl({
+      value: this.configStore.config()?.mail?.fromAddress,
+      disabled: false,
+    }),
+    fromName: new FormControl({
+      value: this.configStore.config()?.mail?.fromName,
+      disabled: false,
+    }),
+  });
 }

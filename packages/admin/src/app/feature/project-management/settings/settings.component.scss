@@ -1,13 +1,20 @@
-.settings-card {
-  mat-card-header {
-    padding: 0;
-  }
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
-  .instance-form {
-    display: flex;
-    flex-direction: column;
-    mat-form-field {
-      align-self: stretch;
+  .settings-mail-card,
+  .settings-instance-card {
+    mat-card-header {
+      padding: 0;
+    }
+
+    .settings-form {
+      display: flex;
+      flex-direction: column;
+      mat-form-field {
+        align-self: stretch;
+      }
     }
   }
 }

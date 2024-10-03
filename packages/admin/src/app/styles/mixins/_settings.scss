@@ -1,7 +1,8 @@
 @use 'colors' as colors;
 
 @mixin settings-theme($theme) {
-  .settings-card {
+  .settings-mail-card, 
+  .settings-instance-card {
     color: colors.$dark-blue;
     padding: 20px;
     border-radius: 16px 0 16px 16px;
