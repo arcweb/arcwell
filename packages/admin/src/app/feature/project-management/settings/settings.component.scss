@@ -1,0 +1,13 @@
+.settings-card {
+  mat-card-header {
+    padding: 0;
+  }
+
+  .instance-form {
+    display: flex;
+    flex-direction: column;
+    mat-form-field {
+      align-self: stretch;
+    }
+  }
+}

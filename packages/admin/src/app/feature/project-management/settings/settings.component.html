@@ -2,16 +2,20 @@
   <h2 class="display-large">Settings</h2>
 
   <mat-card class="settings-card">
-    <mat-card-header>Instance</mat-card-header>
+    <mat-card-header class="display-large">Instance</mat-card-header>
+    <mat-divider class="settings-bar-divider"></mat-divider>
     <mat-card-content>
-      <h3>Arcwell</h3>
-      @for (item of configStore.config()?.arcwell | keyvalue; track $index) {
-        <p>{{ item.key }}: {{ item.value }}</p>
-      }
-      <h3>Mail</h3>
-      @for (item of configStore.config()?.mail | keyvalue; track $index) {
-        <p>{{ item.key }}: {{ item.value }}</p>
-      }
+      <form [formGroup]="instanceForm" class="instance-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Instance Name</mat-label>
+          <input matInput formControlName="instanceName" readonly="true" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Instance ID</mat-label>
+          <input matInput formControlName="instanceId" readonly="true" />
+        </mat-form-field>
+      </form>
     </mat-card-content>
   </mat-card>
 </div>
