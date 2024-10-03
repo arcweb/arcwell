@@ -6,6 +6,7 @@ import { EventsListStore } from '../events-list/events-list.store';
 import { ResourcesListStore } from '../resources-list/resources-list.store';
 import { FactsListStore } from '../facts-list/facts-list.store';
 import { TagsListStore } from '../tags-list/tags-list.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'aw-dashboard',
@@ -27,6 +28,7 @@ export class DashboardComponent {
   readonly peopleListStore = inject(PeopleListStore);
   readonly resourcesListStore = inject(ResourcesListStore);
   readonly tagsListStore = inject(TagsListStore);
+  private router = inject(Router);
 
   constructor() {
     if (!this.eventListStore.totalData()) {
@@ -44,5 +46,10 @@ export class DashboardComponent {
     if (!this.tagsListStore.totalData()) {
       this.tagsListStore.count();
     }
+  }
+
+  cardClick(route: string) {
+    const link = '/project-management' + route;
+    this.router.navigate([link]);
   }
 }

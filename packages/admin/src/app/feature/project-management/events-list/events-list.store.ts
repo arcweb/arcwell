@@ -104,7 +104,6 @@ export const EventsListStore = signalStore(
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
-        console.log('patching', resp);
         patchState(store, { totalData: resp.data.count }, setFulfilled());
       }
     },
