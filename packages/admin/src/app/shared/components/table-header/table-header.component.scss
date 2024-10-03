@@ -1,0 +1,15 @@
+h2 {
+  margin: 0;
+}
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icons-container {
+  display: flex;
+  gap: 8px;
+}

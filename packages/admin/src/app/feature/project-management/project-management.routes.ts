@@ -22,6 +22,7 @@ import { TagsListComponent } from './tags-list/tags-list.component';
 import { TagComponent } from './tag/tag.component';
 import { SettingsComponent } from './settings/settings.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserComponent } from '../user-management/user/user.component';
 
 export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
   {
@@ -163,6 +164,13 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'settings',
         component: SettingsComponent,
+      },
+      {
+        path: 'settings/profile',
+        component: UserComponent,
+        data: {
+          isProfile: true,
+        },
       },
       {
         path: 'settings/user-management',

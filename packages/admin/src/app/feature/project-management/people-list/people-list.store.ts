@@ -40,28 +40,23 @@ export const PeopleListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, personService = inject(PersonService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-      typeKey = '',
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+      typeKey?: string;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
-          typeKey: typeKey,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        personService.getPeople({ limit, offset, sort, order, typeKey }),
-      );
+      const resp = await firstValueFrom(personService.getPeople(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {

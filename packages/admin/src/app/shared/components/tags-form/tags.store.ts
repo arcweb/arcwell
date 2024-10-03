@@ -99,30 +99,32 @@ export const TagStore = signalStore(
             patchState(store, { searchText: '', searchTags: [] });
             return of([]);
           }
-          return tagService.getTagsSimple(searchString, 50, 0).pipe(
-            tapResponse({
-              next: tagsResp => {
-                if (tagsResp.errors) {
-                  patchState(
-                    store,
-                    { isReady: true },
-                    setErrors(tagsResp.errors),
-                  );
-                } else {
-                  patchState(
-                    store,
-                    {
-                      searchTags: tagsResp.data,
-                    },
-                    setFulfilled(),
-                  );
-                }
-              },
-              error: err => {
-                throw err;
-              },
-            }),
-          );
+          return tagService
+            .getTagsSimple({ search: searchString, limit: 50, offset: 0 })
+            .pipe(
+              tapResponse({
+                next: tagsResp => {
+                  if (tagsResp.errors) {
+                    patchState(
+                      store,
+                      { isReady: true },
+                      setErrors(tagsResp.errors),
+                    );
+                  } else {
+                    patchState(
+                      store,
+                      {
+                        searchTags: tagsResp.data,
+                      },
+                      setFulfilled(),
+                    );
+                  }
+                },
+                error: err => {
+                  throw err;
+                },
+              }),
+            );
         }),
       ),
     ),

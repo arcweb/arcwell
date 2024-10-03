@@ -36,7 +36,7 @@ export const CohortsListStore = signalStore(
     async load(limit: number, offset: number) {
       patchState(store, { ...initialState }, setPending());
       const resp = await firstValueFrom(
-        cohortService.getCohorts(limit, offset),
+        cohortService.getCohorts({ limit: limit, offset: offset }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -60,7 +60,10 @@ export const CohortsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        cohortService.getCohorts(store.limit(), store.offset()),
+        cohortService.getCohorts({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {

@@ -21,7 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
-
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 @Component({
   selector: 'aw-fact-types',
   standalone: true,
@@ -43,6 +43,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [FactTypesStore],
   templateUrl: './fact-types.component.html',
@@ -69,12 +70,12 @@ export class FactTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.factTypesStore.load(
-      this.factTypesStore.limit(),
-      this.factTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.factTypesStore.pageIndex(),
-    );
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: this.factTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.factTypesStore.pageIndex(),
+    });
   }
 }

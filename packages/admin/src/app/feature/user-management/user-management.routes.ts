@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { AllUsersComponent } from './all-users/all-users.component';
+import { AllUsersComponent } from './users-list/users-list.component';
 import { UserManagementComponent } from './user-management.component';
 import { UserComponent } from './user/user.component';
 
@@ -9,17 +9,17 @@ export const USER_MANAGEMENT_ROUTES: Route[] = [
     component: UserManagementComponent,
     children: [
       {
-        path: 'all-users',
+        path: 'list',
         component: AllUsersComponent,
       },
       {
-        path: 'all-users/:userId',
+        path: 'list/:userId',
         component: UserComponent,
       },
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'all-users',
+        redirectTo: 'list',
       },
     ],
   },

@@ -21,7 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { MatSortModule, Sort } from '@angular/material/sort';
-
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -43,6 +43,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [EventTypesStore],
   templateUrl: './event-types.component.html',
@@ -69,12 +70,12 @@ export class EventTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.eventTypesStore.load(
-      this.eventTypesStore.limit(),
-      this.eventTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.eventTypesStore.pageIndex(),
-    );
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: this.eventTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.eventTypesStore.pageIndex(),
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
@@ -11,6 +11,21 @@ import { AuthStore } from '@app/shared/store/auth.store';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SubfeatureModel } from '@app/shared/models/subfeature.model';
+import {
+  FontAwesomeModule,
+  IconDefinition,
+} from '@fortawesome/angular-fontawesome';
+import {
+  faHouse,
+  faUserGroup,
+  faUsersBetweenLines,
+  faCalendarDay,
+  faCubes,
+  faRectangleList,
+  faTags,
+  faGear,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'aw-features-menu',
@@ -21,6 +36,7 @@ import { SubfeatureModel } from '@app/shared/models/subfeature.model';
     RouterModule,
     NgClass,
     MatDividerModule,
+    FontAwesomeModule,
   ],
   templateUrl: './features-menu.component.html',
   styleUrl: './features-menu.component.scss',
@@ -35,6 +51,29 @@ export class FeaturesMenuComponent {
     filter(event => event instanceof NavigationEnd),
   );
   currentUserId = this.authStore.currentUser()?.id;
+  // required for styling the template
+  readonly featuresSansSettings = computed(() =>
+    this.featureStore
+      .features()
+      .filter(feature => feature.name.toLowerCase() !== 'settings'),
+  );
+  readonly settingsFeature = computed(() => {
+    return this.featureStore
+      .features()
+      .find(feature => feature.name.toLowerCase() === 'settings');
+  });
+
+  // Create a mapping of icon names to FontAwesome icon objects
+  icons: Record<string, IconDefinition> = {
+    faHouse: faHouse,
+    faUserGroup: faUserGroup,
+    faUsersBetweenLines: faUsersBetweenLines,
+    faCalendarDay: faCalendarDay,
+    faCubes: faCubes,
+    faRectangleList: faRectangleList,
+    faTags: faTags,
+    faGear: faGear,
+  };
 
   constructor() {
     this.navigation.subscribe(event => {
@@ -52,9 +91,7 @@ export class FeaturesMenuComponent {
 
   // edge cases for settings menu
   onSettingsClick(subFeature: SubfeatureModel) {
-    if (subFeature.name.toLowerCase() === 'profile') {
-      this.viewAccount();
-    } else if (subFeature.name.toLowerCase() === 'log out') {
+    if (subFeature.name.toLowerCase() === 'log out') {
       this.logout();
     }
   }

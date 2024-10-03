@@ -5,7 +5,8 @@
 
 @mixin sidenav-theme($theme) {
   $spacing: 8px;
-  $image-size: 160px;
+  $image-size: layout.$arcwell-logo-width;
+  $icon-margin: 24px;
 
   %feature-active-state {
     color: colors.$on-primary;
@@ -13,7 +14,7 @@
   }
 
   .sidenav-container {
-    width: 320px;
+    width: layout.$sidenav-width;
     border-radius: 0 0 16px;
     background-color: colors.$dark-blue;
     padding: 32px;
@@ -29,16 +30,18 @@
     }
 
     .feature-accordion {
-      overflow-y: auto;
+      height: 89%;
       display: flex;
       flex-direction: column;
       gap: $spacing;
-      align-items: flex-start;
       padding: $spacing;
+      justify-content: space-between;
+      overflow-y: visible;
 
       .mat-expansion-panel {
-        background-color: transparent;
+        background-color: colors.$dark-blue;
         width: 100%;
+        border-radius: 0 0 16px 16px;
 
         @include mat.elevation(0);
 
@@ -52,9 +55,19 @@
             color: colors.$on-primary;
             gap: $spacing;
             font-weight: layout.$font-weight-regular;
+
+            .feature-icon {
+              display: flex;
+              justify-content: center;
+              width: $icon-margin;
+            }
           }
 
           &:hover {
+            background-color: colors.$dark-blue;
+          }
+
+          &.feature-active:hover {
             background-color: colors.$secondary;
           }
 
@@ -73,24 +86,23 @@
           border-radius: layout.$card-border-radius;
           padding-top: 8px;
 
-          .mat-expansion-panel-body {
+          .panel-content {
             display: flex;
             flex-direction: column;
             max-height: 200px;
             overflow-y: auto;
+            gap: $spacing;
           }
 
+          .subfeature-link {
+            margin-left: calc($icon-margin + $spacing);
+          }
+
+          .subfeature-link:hover,
           .subfeature-active {
             font-weight: layout.$font-weight-bold;
           }
         }
-      }
-
-      // TODO: figure out how to do this more eligantly
-      .settings {
-        position: absolute;
-        bottom: 32px;
-        width: 229px;
       }
 
       .hide-content {

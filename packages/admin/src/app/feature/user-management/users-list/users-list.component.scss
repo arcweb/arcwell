@@ -5,17 +5,6 @@
   cursor: pointer;
 }
 
-.main-container-header {
-  display: flex;
-  flex-direction: row;
-  place-content: center space-between;
-}
-
-.icons-container {
-  display: flex;
-  gap: 8px;
-}
-
 .link-cell {
   text-decoration: underline;
   text-decoration-color: colors.$link-color;

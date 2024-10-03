@@ -22,13 +22,14 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { RoleType } from '@app/shared/schemas/role.schema';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { AuthStore } from '@app/shared/store/auth.store';
 import { EmailService } from '@app/shared/services/email.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'aw-user',
@@ -57,6 +58,13 @@ export class UserComponent implements OnInit {
   readonly userStore = inject(UserStore);
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  readonly isProfile = toSignal(
+    this.activatedRoute.data.pipe(
+      takeUntilDestroyed(),
+      map(({ isProfile }) => isProfile),
+    ),
+  );
   private emailService: EmailService = inject(EmailService);
   userAvatar = '';
 
@@ -92,8 +100,12 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.userId) {
-      this.userStore.initialize(this.userId).then(() => {
+    // if the route data contains isProfile use the current user id else use the userId from the params
+    const userId = this.isProfile()
+      ? this.authStore.currentUser()?.id
+      : this.userId;
+    if (userId) {
+      this.userStore.initialize(userId).then(() => {
         this.userForm.patchValue({
           email: this.userStore.user()?.email,
           role: this.userStore.user()?.role,

@@ -62,7 +62,7 @@ export const ResourceStore = signalStore(
           await firstValueFrom(
             forkJoin({
               resourceResponse: resourceService.getResource(resourceId),
-              resourceTypesResponse: resourceTypeService.getResourceTypes(),
+              resourceTypesResponse: resourceTypeService.getResourceTypes({}),
             }),
           );
         if (resourceResponse.errors) {
@@ -92,7 +92,7 @@ export const ResourceStore = signalStore(
       async initializeForCreate() {
         patchState(store, setPending());
         const resourceTypesResp = await firstValueFrom(
-          resourceTypeService.getResourceTypes(),
+          resourceTypeService.getResourceTypes({}),
         );
         if (resourceTypesResp.errors) {
           patchState(

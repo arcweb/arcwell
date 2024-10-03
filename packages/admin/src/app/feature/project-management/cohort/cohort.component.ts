@@ -216,13 +216,13 @@ export class CohortComponent implements OnInit {
 
   peoplePageChange(event: PageEvent) {
     const newOffset = event.pageIndex * event.pageSize;
-    this.cohortStore.loadPeoplePage(
-      event.pageSize,
-      newOffset,
-      event.pageIndex,
-      this.cohortStore.peopleListOptions().sort,
-      this.cohortStore.peopleListOptions().order,
-    );
+    this.cohortStore.loadPeoplePage({
+      limit: event.pageSize,
+      offset: newOffset,
+      pageIndex: event.pageIndex,
+      sort: this.cohortStore.peopleListOptions().sort,
+      order: this.cohortStore.peopleListOptions().order,
+    });
   }
 
   peopleRowClick(row: PersonModel) {
@@ -230,12 +230,12 @@ export class CohortComponent implements OnInit {
   }
 
   peopleSortChange(event: Sort) {
-    this.cohortStore.loadPeoplePage(
-      this.cohortStore.peopleListOptions().limit,
-      this.cohortStore.peopleListOptions().offset,
-      this.cohortStore.peopleListOptions().pageIndex,
-      event.active,
-      event.direction,
-    );
+    this.cohortStore.loadPeoplePage({
+      limit: this.cohortStore.peopleListOptions().limit,
+      offset: this.cohortStore.peopleListOptions().offset,
+      pageIndex: this.cohortStore.peopleListOptions().pageIndex,
+      sort: event.active,
+      order: event.direction,
+    });
   }
 }
