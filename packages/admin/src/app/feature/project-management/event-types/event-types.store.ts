@@ -45,26 +45,22 @@ export const EventTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventTypesService = inject(EventTypeService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(limit, offset, sort, order),
-      );
+      const resp = await firstValueFrom(eventTypesService.getEventTypes(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -87,7 +83,10 @@ export const EventTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        eventTypesService.getEventTypes(store.limit(), store.offset()),
+        eventTypesService.getEventTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {
@@ -103,7 +102,7 @@ export const EventTypesStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load({ limit: store.limit(), offset: store.offset() });
     },
   }),
 );

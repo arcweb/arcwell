@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AllUsersComponent } from './all-users.component';
+import { AllUsersComponent } from './users-list.component';
 
 describe('AllUsersComponent', () => {
   let component: AllUsersComponent;

@@ -22,25 +22,25 @@ const apiUrl = 'http://localhost:3333';
 export class CohortService {
   private http: HttpClient = inject(HttpClient);
 
-  getCohorts(
-    limit?: number,
-    offset?: number,
-    notRelatedToPerson?: string,
-    search?: [{ field: string; searchString: string }],
-  ): Observable<CohortsResponseType[] | ErrorResponseType> {
+  getCohorts(props: {
+    limit?: number;
+    offset?: number;
+    notRelatedToPerson?: string;
+    search?: [{ field: string; searchString: string }];
+  }): Observable<CohortsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
-    if (notRelatedToPerson !== undefined) {
-      params = params.set('notRelatedToPerson', notRelatedToPerson);
+    if (props.notRelatedToPerson !== undefined) {
+      params = params.set('notRelatedToPerson', props.notRelatedToPerson);
     }
-    if (search && search.length > 0) {
-      search.forEach(searchItem => {
+    if (props.search && props.search.length > 0) {
+      props.search.forEach(searchItem => {
         if (searchItem.field && searchItem.searchString) {
           // Format: search[field]=searchString
           params = params.set(
@@ -82,28 +82,30 @@ export class CohortService {
     );
   }
 
-  getCohortWithPeople(
-    id: string,
-    limit?: number,
-    offset?: number,
-    sort?: string,
-    order?: string,
-  ): Observable<CohortResponseType | ErrorResponseType> {
+  getCohortWithPeople(props: {
+    id: string;
+    limit?: number;
+    offset?: number;
+    sort?: string;
+    order?: string;
+  }): Observable<CohortResponseType | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
-    if (sort && order) {
-      params = params.set('sort', sort);
-      params = params.set('order', order);
+    if (props.sort && props.order) {
+      params = params.set('sort', props.sort);
+      params = params.set('order', props.order);
     }
 
     return this.http
-      .get<CohortResponseType>(`${apiUrl}/cohorts/${id}/people`, { params })
+      .get<CohortResponseType>(`${apiUrl}/cohorts/${props.id}/people`, {
+        params,
+      })
       .pipe(
         map((response: CohortResponseType) => {
           const parsedResponse = CohortResponseSchema.parse(response);

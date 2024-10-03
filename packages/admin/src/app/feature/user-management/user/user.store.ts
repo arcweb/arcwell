@@ -42,7 +42,7 @@ export const UserStore = signalStore(
         const { userResp, rolesResp } = await firstValueFrom(
           forkJoin({
             userResp: userService.getUser(userId),
-            rolesResp: roleService.getAllRoles(),
+            rolesResp: roleService.getAllRoles({}),
           }),
         );
         if (userResp.errors) {

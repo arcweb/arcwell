@@ -17,13 +17,14 @@ import {
 } from '@fortawesome/angular-fontawesome';
 import {
   faHouse,
-  faUser,
-  faUsers,
+  faUserGroup,
+  faUsersBetweenLines,
   faCalendarDay,
   faCubes,
   faRectangleList,
   faTags,
   faGear,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -65,8 +66,8 @@ export class FeaturesMenuComponent {
   // Create a mapping of icon names to FontAwesome icon objects
   icons: Record<string, IconDefinition> = {
     faHouse: faHouse,
-    faUser: faUser,
-    faUsers: faUsers,
+    faUserGroup: faUserGroup,
+    faUsersBetweenLines: faUsersBetweenLines,
     faCalendarDay: faCalendarDay,
     faCubes: faCubes,
     faRectangleList: faRectangleList,
