@@ -1,0 +1,10 @@
+.dashboad-card-contianer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+mat-card {
+  width: 136px;
+}
