@@ -1,24 +1,9 @@
 <div class="resources-management-container">
-  <div class="main-container-header">
-    <h2>{{ featureStore.activeSubfeature()?.name || 'Resources' }}</h2>
-    <div class="icons-container">
-      <button
-        mat-icon-button
-        [routerLink]="['/project-management/resources/create']"
-        [queryParams]="{ typeKey: typeKey$ | async }"
-      >
-        <mat-icon aria-label="Create resource icon button">
-          add_circle_outline
-        </mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
-      </button>
-      <button mat-icon-button>
-        <mat-icon aria-label="Search icon button">search</mat-icon>
-      </button>
-    </div>
-  </div>
+  <aw-table-header
+    [tableName]="featureStore.activeSubfeature()?.name || 'Resources'"
+    createLink="/project-management/resources/create"
+    [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+  ></aw-table-header>
 
   @if (resourcesListStore.isErrored()) {
     <aw-error-container [errors]="resourcesListStore.errors()" />

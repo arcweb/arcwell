@@ -20,21 +20,21 @@ import { environment } from '../../../environments/environment';
 export class TagService {
   private http: HttpClient = inject(HttpClient);
 
-  getTags(
-    limit?: number,
-    offset?: number,
-    search?: string,
-  ): Observable<TagsResponseType[] | ErrorResponseType> {
+  getTags(props: {
+    limit?: number;
+    offset?: number;
+    search?: string;
+  }): Observable<TagsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (search) {
-      params = params.set('search', search);
+    if (props.search) {
+      params = params.set('search', props.search);
     }
-    if (limit) {
-      params = params.set('limit', limit.toString());
+    if (props.limit) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset) {
-      params = params.set('offset', offset.toString());
+    if (props.offset) {
+      params = params.set('offset', props.offset.toString());
     }
 
     return this.http
@@ -54,21 +54,21 @@ export class TagService {
       );
   }
 
-  getTagsSimple(
-    search?: string,
-    limit?: number,
-    offset?: number,
-  ): Observable<TagsResponseType[] | ErrorResponseType> {
+  getTagsSimple(props: {
+    search?: string;
+    limit?: number;
+    offset?: number;
+  }): Observable<TagsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (search) {
-      params = params.set('search', search);
+    if (props.search) {
+      params = params.set('search', props.search);
     }
-    if (limit) {
-      params = params.set('limit', limit.toString());
+    if (props.limit) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset) {
-      params = params.set('offset', offset.toString());
+    if (props.offset) {
+      params = params.set('offset', props.offset.toString());
     }
 
     return this.http

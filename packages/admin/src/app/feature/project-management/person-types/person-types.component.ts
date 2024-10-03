@@ -21,6 +21,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { TableHeaderComponent } from '../../../shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-person-types',
@@ -43,6 +44,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [PersonTypesStore],
   templateUrl: './person-types.component.html',
@@ -69,12 +71,12 @@ export class PersonTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.personTypesStore.load(
-      this.personTypesStore.limit(),
-      this.personTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.personTypesStore.pageIndex(),
-    );
+    this.personTypesStore.load({
+      limit: this.personTypesStore.limit(),
+      offset: this.personTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.personTypesStore.pageIndex(),
+    });
   }
 }

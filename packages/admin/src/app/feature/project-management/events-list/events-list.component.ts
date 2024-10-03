@@ -25,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-events-list',
@@ -50,6 +51,7 @@ import { EventsTableComponent } from '@app/shared/components/events-table/events
     MatSortModule,
     MatButton,
     EventsTableComponent,
+    TableHeaderComponent,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',
@@ -82,14 +84,11 @@ export class EventsListComponent {
     });
     // load the events list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.eventsListStore.load(
-        this.eventsListStore.limit(),
-        0,
-        '',
-        '',
-        0,
-        typeKey,
-      );
+      this.eventsListStore.load({
+        limit: this.eventsListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
     });
   }
 
@@ -98,14 +97,14 @@ export class EventsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.eventsListStore.load(
-      this.eventsListStore.limit(),
-      this.eventsListStore.offset(),
-      event.active,
-      event.direction,
-      this.eventsListStore.pageIndex(),
-      this.eventsListStore.typeKey(),
-    );
+    this.eventsListStore.load({
+      limit: this.eventsListStore.limit(),
+      offset: this.eventsListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.eventsListStore.pageIndex(),
+      typeKey: this.eventsListStore.typeKey(),
+    });
   }
 
   viewResource(resourceId: string) {

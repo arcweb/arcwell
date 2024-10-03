@@ -40,7 +40,9 @@ export const TagsListStore = signalStore(
   withRequestStatus(),
   withMethods((store, tagService = inject(TagService)) => ({
     async load(limit: number, offset: number) {
-      const resp = await firstValueFrom(tagService.getTags(limit, offset));
+      const resp = await firstValueFrom(
+        tagService.getTags({ limit: limit, offset: offset }),
+      );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -63,7 +65,7 @@ export const TagsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        tagService.getTags(store.limit(), store.offset()),
+        tagService.getTags({ limit: store.limit(), offset: store.offset() }),
       );
 
       if (resp.errors) {

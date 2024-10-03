@@ -21,6 +21,7 @@ import { MatIconButton } from '@angular/material/button';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { TagModel } from '@app/shared/models/tag.model';
 import { TagsListStore } from './tags-list.store';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-tags-list',
@@ -42,6 +43,7 @@ import { TagsListStore } from './tags-list.store';
     MatIcon,
     RouterLink,
     MatIconButton,
+    TableHeaderComponent,
   ],
   providers: [TagsListStore],
   templateUrl: './tags-list.component.html',

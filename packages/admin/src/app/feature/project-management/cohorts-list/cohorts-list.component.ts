@@ -1,9 +1,7 @@
 import { Component, effect, inject } from '@angular/core';
 import { JsonPipe } from '@angular/common';
 import { CohortsListStore } from '@feature/project-management/cohorts-list/cohorts-list.store';
-import {
-  MatTableDataSource,
-} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { CohortModel } from '@shared/models/cohort.model';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
@@ -13,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
-
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 @Component({
   selector: 'aw-cohorts-list',
   standalone: true,
@@ -24,6 +22,7 @@ import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort
     RouterLink,
     MatIconButton,
     CohortTableComponent,
+    TableHeaderComponent,
   ],
   providers: [CohortsListStore],
   templateUrl: './cohorts-list.component.html',

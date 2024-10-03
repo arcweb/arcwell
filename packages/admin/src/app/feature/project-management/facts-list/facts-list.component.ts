@@ -25,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-all-facts',
@@ -50,6 +51,7 @@ import { FactsTableComponent } from '@app/shared/components/facts-table/facts-ta
     MatButton,
     MatSortModule,
     FactsTableComponent,
+    TableHeaderComponent,
   ],
   providers: [FactsListStore],
   templateUrl: './facts-list.component.html',
@@ -85,14 +87,11 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
-      this.factsListStore.load(
-        this.factsListStore.limit(),
-        0,
-        '',
-        '',
-        0,
-        typeKey,
-      );
+      this.factsListStore.load({
+        limit: this.factsListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
     });
   }
 
@@ -113,13 +112,13 @@ export class FactsListComponent {
   }
 
   sortChange(event: Sort) {
-    this.factsListStore.load(
-      this.factsListStore.limit(),
-      this.factsListStore.offset(),
-      event.active,
-      event.direction,
-      this.factsListStore.pageIndex(),
-      this.factsListStore.typeKey(),
-    );
+    this.factsListStore.load({
+      limit: this.factsListStore.limit(),
+      offset: this.factsListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.factsListStore.pageIndex(),
+      typeKey: this.factsListStore.typeKey(),
+    });
   }
 }

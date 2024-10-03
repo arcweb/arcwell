@@ -21,6 +21,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
   selector: 'aw-resource-types',
@@ -43,6 +44,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
     MatPaginator,
     RouterLink,
     MatSortModule,
+    TableHeaderComponent,
   ],
   providers: [ResourceTypesStore],
   templateUrl: './resource-types.component.html',
@@ -69,12 +71,12 @@ export class ResourceTypesComponent {
   }
 
   sortChange(event: Sort) {
-    this.resourceTypesStore.load(
-      this.resourceTypesStore.limit(),
-      this.resourceTypesStore.offset(),
-      event.active,
-      event.direction,
-      this.resourceTypesStore.pageIndex(),
-    );
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: this.resourceTypesStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.resourceTypesStore.pageIndex(),
+    });
   }
 }

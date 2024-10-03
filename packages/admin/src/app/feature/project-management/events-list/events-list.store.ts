@@ -41,28 +41,23 @@ export const EventsListStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, eventService = inject(EventService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-      typeKey = '',
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+      typeKey: string;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
-          typeKey: typeKey,
+          ...props,
         },
         setPending(),
       );
-      const resp = await firstValueFrom(
-        eventService.getEvents({ limit, offset, sort, order, typeKey }),
-      );
+      const resp = await firstValueFrom(eventService.getEvents(props));
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {

@@ -1,19 +1,4 @@
-<div class="main-container-header">
-  <h2>Event Types</h2>
-  <div class="icons-container">
-    <button mat-icon-button [routerLink]="['create']">
-      <mat-icon aria-label="Create event icon button">
-        add_circle_outline
-      </mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Filter icon button">account_tree</mat-icon>
-    </button>
-    <button mat-icon-button>
-      <mat-icon aria-label="Search icon button">search</mat-icon>
-    </button>
-  </div>
-</div>
+<aw-table-header tableName="Event Types" createLink="create"></aw-table-header>
 
 @if (eventTypesStore.isErrored()) {
   <aw-error-container [errors]="eventTypesStore.errors()" />

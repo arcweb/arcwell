@@ -1,24 +1,5 @@
 <div class="users-management-container">
-  <div class="main-container-header">
-    <h2>All Users</h2>
-    <div class="icons-container">
-      <mat-icon
-        fontIcon="add_circle_outline"
-        aria-hidden="false"
-        aria-label="Create user icon"
-      ></mat-icon>
-      <mat-icon
-        fontIcon="account_tree"
-        aria-hidden="false"
-        aria-label="Filter icon"
-      ></mat-icon>
-      <mat-icon
-        fontIcon="search"
-        aria-hidden="false"
-        aria-label="Search icon"
-      ></mat-icon>
-    </div>
-  </div>
+  <aw-table-header [tableName]="'All Users'" createLink=""></aw-table-header>
 
   @if (userStore.isErrored()) {
     <aw-error-container [errors]="userStore.errors()" />

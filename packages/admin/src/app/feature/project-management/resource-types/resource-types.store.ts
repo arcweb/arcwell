@@ -45,25 +45,23 @@ export const ResourceTypesStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, resourceTypesService = inject(ResourceTypeService)) => ({
-    async load(
-      limit: number,
-      offset: number,
-      sort = '',
-      order: SortDirection = 'asc',
-      pageIndex = 0,
-    ) {
+    async load(props: {
+      limit: number;
+      offset: number;
+      sort?: string;
+      order?: SortDirection;
+      pageIndex?: number;
+    }) {
       patchState(
         store,
         {
           ...initialState,
-          sort: sort,
-          order: order,
-          pageIndex: pageIndex,
+          ...props,
         },
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes(limit, offset, sort, order),
+        resourceTypesService.getResourceTypes(props),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -87,7 +85,10 @@ export const ResourceTypesStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        resourceTypesService.getResourceTypes(store.limit(), store.offset()),
+        resourceTypesService.getResourceTypes({
+          limit: store.limit(),
+          offset: store.offset(),
+        }),
       );
 
       if (resp.errors) {
@@ -103,7 +104,7 @@ export const ResourceTypesStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load({ limit: store.limit(), offset: store.offset() });
     },
   }),
 );

@@ -155,9 +155,12 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
           return;
         }
         this.cohortService
-          .getCohorts(20, 0, this.objectIdForFiltering(), [
-            { field: 'name', searchString: query },
-          ])
+          .getCohorts({
+            limit: 20,
+            offset: 0,
+            notRelatedToPerson: this.objectIdForFiltering(),
+            search: [{ field: 'name', searchString: query }],
+          })
           .subscribe(resp => {
             if (resp.errors) {
               console.error(resp.errors);
