@@ -1,16 +1,24 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Surveys</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-home-header />
 
 <ion-content>
-  <!-- Fact Types List -->
-  <ion-list>
-    <ion-item *ngFor="let factType of factTypes" button (click)="navigateSurvey(factType.id)">
-      <ion-label>
-        <h2>{{ factType.name }}</h2>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+
+  <ng-container *ngIf="loading">
+    <div class="spinner-wrapper">
+      <ion-spinner color="primary" name="bubbles" />
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!loading">
+    <div class="ion-padding">
+      <h1 class="surveys-header">Please select a survey</h1>
+    </div>
+    <ion-list>
+      <ion-item *ngFor="let factType of factTypes" button (click)="navigateSurvey(factType.id)">
+        <ion-label>
+          <h2>{{ factType.name }}</h2>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
 </ion-content>

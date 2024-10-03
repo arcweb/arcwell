@@ -1,0 +1,15 @@
+<ion-menu [disabled]="menuDisabled" content-id="main-content" #menu menuId="menu">
+  <ion-content [scrollY]="false">
+    <ion-img src="../../../assets/arcwell-logo.svg" class="logo" />
+    <div class="actions-container">
+      <div class="logout-container">
+        <ion-item (click)="logout()" lines="none">
+          <ion-icon slot="start" src="../../../assets/icon/logout.svg" />
+          <ion-label>
+            Log Out
+          </ion-label>
+        </ion-item>
+      </div>
+    </div>
+  </ion-content>
+</ion-menu>

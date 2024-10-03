@@ -8,6 +8,7 @@ import { register } from 'swiper/element';
 import { FactService } from '@services/fact/fact.service';
 import { AuthService } from '@services/auth/auth.service';
 import { Phq9Component } from '@components/phq9/phq9.component';
+import { HomeHeaderComponent } from '@components/home-header/home-header.component';
 
 @Component({
   selector: 'app-survey',
@@ -21,10 +22,10 @@ import { Phq9Component } from '@components/phq9/phq9.component';
     IonTitle,
     IonToolbar,
     Phq9Component,
+    HomeHeaderComponent,
   ]
 })
 export class SurveyPage implements OnInit {
-
   factTypeId!: string;
   factType?: FactType;
 

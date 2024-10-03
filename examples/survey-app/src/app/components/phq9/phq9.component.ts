@@ -2,11 +2,14 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, ViewChild } from 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
+  AlertController,
+  IonAlert,
   IonButton,
   IonCard,
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
+  IonChip,
   IonContent,
   IonHeader,
   IonRadio,
@@ -15,7 +18,7 @@ import {
   IonToolbar
 } from '@ionic/angular/standalone';
 import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SwiperContainer, register } from 'swiper/element';
 import { Fact, FactService } from '@services/fact/fact.service';
 import { AuthService } from '@services/auth/auth.service';
@@ -27,11 +30,13 @@ import { switchMap } from 'rxjs';
   imports: [
     CommonModule,
     FormsModule,
+    IonAlert,
     IonButton,
     IonCard,
     IonCardContent,
     IonCardHeader,
     IonCardTitle,
+    IonChip,
     IonContent,
     IonHeader,
     IonRadio,
@@ -47,6 +52,26 @@ export class Phq9Component {
   @ViewChild('swiperEl', { static: false }) swiperEl?: ElementRef<SwiperContainer>;
   @Input('factType') factType?: FactType;
 
+  alertButtons = [
+    {
+      text: 'Cancel',
+      role: 'cancel',
+      handler: () => {
+        this.isAlertOpen = false;
+      },
+    },
+    {
+      text: 'OK',
+      role: 'confirm',
+      handler: () => {
+        this.isAlertOpen = false;
+        this.router.navigate(['/surveys']);
+      },
+    },
+  ];
+
+  isAlertOpen = false;
+
   answers: { [key: string]: number } = {};
 
   totalScore: number = 0;
@@ -55,7 +80,9 @@ export class Phq9Component {
   showScore: boolean = false;
 
   constructor(
+    private alertController: AlertController,
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
     private factService: FactService,
     private factTypeService: FactTypeService
@@ -98,6 +125,10 @@ export class Phq9Component {
 
   questionDimensionSchemas() {
     return this.factType?.dimensionSchemas.filter(dimension => dimension.key.includes('response')) || [];
+  }
+
+  openAlert() {
+    this.isAlertOpen = true;
   }
 
   saveAllowed(): boolean {

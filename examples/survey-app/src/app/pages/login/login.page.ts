@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth/auth.service';
 import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonImg, Platform } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -11,12 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     FormsModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonInput,
-    IonButton
+    IonicModule
   ],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
@@ -28,12 +24,16 @@ export class LoginPage {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public platform: Platform,
   ) { }
 
   async login() {
     try {
       await this.authService.login(this.email, this.password);
+      this.email = '';
+      this.password = '';
+      this.errorMessage = '';
       this.router.navigate(['/surveys']);
     } catch (error) {
       this.errorMessage = 'Invalid login credentials';

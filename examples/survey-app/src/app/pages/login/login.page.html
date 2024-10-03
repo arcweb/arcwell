@@ -1,12 +1,24 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Example App</ion-title>
+  <ion-toolbar class="header-toolbar" [class.android]="platform.is('android')">
+
+    <ion-title>
+      <div class="logo-wrapper">
+        <ion-img src="../../../assets/arcwell-logo-large.svg" class="logo" />
+      </div>
+    </ion-title>
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-input placeholder="Email" [(ngModel)]="email" type="email"></ion-input>
-  <ion-input placeholder="Password" [(ngModel)]="password" type="password"></ion-input>
-  <ion-button expand="block" (click)="login()">Login</ion-button>
+<ion-content class="login-background" [scrollY]="false">
+  <div class="login-form">
+    <ion-item>
+      <ion-input placeholder="Email" [(ngModel)]="email" type="email"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Password" [(ngModel)]="password" type="password"></ion-input>
+    </ion-item>
+    <ion-button expand="block" (click)="login()">Login</ion-button>
+  </div>
   <p *ngIf="errorMessage">{{ errorMessage }}</p>
 </ion-content>

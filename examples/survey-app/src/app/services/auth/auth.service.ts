@@ -72,7 +72,7 @@ export class AuthService {
   async getToken(): Promise<string | null> {
     try {
       const token = await SecureStoragePlugin.get({ key: this.tokenKey });
-      return token?.value || null;  // Return the token value, or null if not present
+      return token?.value || null;
     } catch (error) {
       return null;
     }

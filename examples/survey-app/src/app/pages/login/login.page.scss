@@ -1,0 +1,69 @@
+ion-title {
+  padding-inline-start: 15px;
+  padding-inline-end: 15px;
+  padding-bottom: 35px;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+ion-toolbar {
+  --background: var(--ion-color-light);
+}
+
+ion-content {
+  --background: var(--ion-color-light);
+}
+
+.login-background {
+  background-image: url(../../../assets/login-hero.svg);
+  background-position: top;
+  background-color: var(--ion-color-light);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-attachment: fixed;
+  --background: none;
+}
+
+.login-form {
+  width: 90%;
+  // padding-top: calc(35vh - 112px);
+  margin: calc(30vh - 112px) auto 0 auto;
+}
+
+ion-toolbar.header-toolbar {
+  --padding-top: 60px;
+  --padding-bottom: 90px;
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --min-height: 112px;
+
+  &.android {
+    --padding-top: 20px;
+    --min-height: 75px;
+  }
+}
+
+ion-header,
+ion-toolbar,
+ion-content {
+  --border-width: 0;
+  --ion-border-width: 0;
+  --ion-border-color: transparent;
+  box-shadow: none;
+}
+
+ion-item {
+  margin-bottom: 10px;
+  --border-radius: 6px;
+  --border-color: #808184;
+  --border-width: 1px;
+}
+
+
+ion-button {
+  margin-top: 50px;
+  --border-radius: 6px;
+}

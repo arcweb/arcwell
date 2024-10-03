@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonItem, IonLabel, IonList, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonItem, IonLabel, IonList, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
 import { Router } from '@angular/router';
+import { HomeHeaderComponent } from '@components/home-header/home-header.component';
 
 @Component({
   selector: 'app-surveys',
@@ -11,11 +12,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./surveys.page.scss'],
   standalone: true,
   imports: [
+    HomeHeaderComponent,
     IonContent,
     IonHeader,
     IonLabel,
     IonItem,
     IonList,
+    IonSpinner,
     IonTitle,
     IonToolbar,
     CommonModule,
@@ -25,6 +28,8 @@ import { Router } from '@angular/router';
 export class SurveysPage {
   factTypes: FactType[] = [];
 
+  loading = false;
+
   constructor(
     private factTypeService: FactTypeService,
     private router: Router,
@@ -33,6 +38,7 @@ export class SurveysPage {
   }
 
   loadFactTypes(queryData: any): void {
+    this.loading = true;
     this.factTypeService.getFactTypes(queryData).subscribe({
       next: (response) => {
         this.factTypes = response.data;
@@ -40,6 +46,9 @@ export class SurveysPage {
       },
       error: (error) => {
         console.error('Error fetching fact types:', error);
+      },
+      complete: () => {
+        this.loading = false;
       },
     });
   }

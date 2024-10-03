@@ -4,12 +4,27 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["src/app/components/*"],
-      "@guards/*": ["src/app/guards/*"],
-      "@interceptors/*": ["src/app/interceptors/*"],
-      "@models/*": ["src/app/models/*"],
-      "@pages/*": ["src/app/pages/*"],
-      "@services/*": ["src/app/services/*"],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@components/*": [
+        "src/app/components/*"
+      ],
+      "@guards/*": [
+        "src/app/guards/*"
+      ],
+      "@interceptors/*": [
+        "src/app/interceptors/*"
+      ],
+      "@models/*": [
+        "src/app/models/*"
+      ],
+      "@pages/*": [
+        "src/app/pages/*"
+      ],
+      "@services/*": [
+        "src/app/services/*"
+      ],
     },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
@@ -26,7 +41,10 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {

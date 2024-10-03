@@ -1,0 +1,11 @@
+ion-menu {
+
+  ion-content::part(background) {
+    background: var(--ion-color-primary);
+  }
+}
+
+ion-item {
+  --background: none;
+  --color: #fff;
+}

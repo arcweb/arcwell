@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuComponent } from '@components/menu/menu.component';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { HealthService } from '@services/health/health.service';
 
@@ -7,7 +8,7 @@ import { HealthService } from '@services/health/health.service';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [IonApp, IonRouterOutlet],
+  imports: [IonApp, IonRouterOutlet, MenuComponent],
   providers: [HealthService],
 })
 export class AppComponent implements OnInit {
