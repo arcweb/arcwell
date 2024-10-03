@@ -46,7 +46,7 @@ export const EventsListStore = signalStore(
       sort?: string;
       order?: SortDirection;
       pageIndex?: number;
-      typeKey: string;
+      typeKey?: string;
     }) {
       patchState(
         store,
