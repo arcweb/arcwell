@@ -69,7 +69,7 @@ export class TagModel {
       ? data.events.map((event: EventType) => new EventModel(event))
       : undefined;
     this.facts = data.facts
-      ? data.facts.map((fact: FactType) => new EventModel(fact))
+      ? data.facts.map((fact: FactType) => new FactModel(fact))
       : undefined;
     this.people = data.people
       ? data.people.map((person: PersonType) => new PersonModel(person))

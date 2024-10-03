@@ -21,6 +21,10 @@ import { ToastLevel } from '@shared/models';
 import { Router } from '@angular/router';
 import { SortDirection } from '@angular/material/sort';
 import { PersonType } from '@app/shared/schemas/person.schema';
+import { EventType } from '@app/shared/schemas/event.schema';
+import { FactType } from '@app/shared/schemas/fact.schema';
+import { ResourceType } from '@app/shared/schemas/resource.schema';
+import { UserType } from '@app/shared/schemas/user.schema';
 
 interface RelatedListState {
   limit: number;
@@ -35,8 +39,21 @@ interface TagState {
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
+  eventsCount: number;
+  factsCount: number;
+  peopleCount: number;
+  resourcesCount: number;
+  usersCount: number;
+  eventsListOptions: RelatedListState;
+  factsListOptions: RelatedListState;
   peopleListOptions: RelatedListState;
+  resourcesListOptions: RelatedListState;
+  usersListOptions: RelatedListState;
+  events: EventType[];
+  facts: FactType[];
   people: PersonType[];
+  resources: ResourceType[];
+  users: UserType[];
 }
 
 const initialListState = {
@@ -45,21 +62,60 @@ const initialListState = {
   pageIndex: 0,
 };
 
+const initialEventsListState: RelatedListState = {
+  ...initialListState,
+  order: 'desc',
+  sort: 'startedAt',
+};
+
+const initialFactsListState: RelatedListState = {
+  ...initialListState,
+  order: 'desc',
+  sort: 'observedAt',
+};
+
 const initialPeopleListState: RelatedListState = {
   ...initialListState,
   order: 'asc',
   sort: 'familyName',
 };
 
-// Keep the related content lists separate so pagination updates on one type won't
+const initialResourcesListState: RelatedListState = {
+  ...initialListState,
+  order: 'asc',
+  sort: 'name',
+};
+
+// Users doesn't have sort on the backend so the sort properties will be ignored.
+// Doing this so it matches the other types.
+const initialUsersListState: RelatedListState = {
+  ...initialListState,
+  order: 'asc',
+  sort: 'name',
+};
+
+// Keep the related content counts and lists separate so pagination updates on one type won't
 // effect the other types
 const initialState: TagState = {
   tag: null,
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
+  eventsListOptions: initialEventsListState,
+  factsListOptions: initialFactsListState,
   peopleListOptions: initialPeopleListState,
+  resourcesListOptions: initialResourcesListState,
+  usersListOptions: initialUsersListState,
+  eventsCount: 0,
+  factsCount: 0,
+  peopleCount: 0,
+  resourcesCount: 0,
+  usersCount: 0,
+  events: [],
+  facts: [],
   people: [],
+  resources: [],
+  users: [],
 };
 
 export const TagStore = signalStore(
@@ -89,9 +145,28 @@ export const TagStore = signalStore(
           patchState(store, {
             tag: resp,
             isReady: true,
+            eventsListOptions: initialEventsListState,
+            factsListOptions: initialFactsListState,
             peopleListOptions: initialPeopleListState,
+            resourcesListOptions: initialResourcesListState,
+            usersListOptions: initialUsersListState,
           });
-          patchState(store, { people: store.tag().people }, setFulfilled());
+          patchState(
+            store,
+            {
+              eventsCount: store.tag().eventsCount,
+              factsCount: store.tag().factsCount,
+              peopleCount: store.tag().peopleCount,
+              resourcesCount: store.tag().resourcesCount,
+              usersCount: store.tag().usersCount,
+              events: store.tag().events,
+              facts: store.tag().facts,
+              people: store.tag().people,
+              resources: store.tag().resources,
+              users: store.tag().users,
+            },
+            setFulfilled(),
+          );
         }
       },
 
@@ -104,8 +179,21 @@ export const TagStore = signalStore(
             inCreateMode: true,
             inEditMode: true,
             isReady: true,
+            eventsCount: 0,
+            factsCount: 0,
+            peopleCount: 0,
+            resourcesCount: 0,
+            usersCount: 0,
+            eventsListOptions: initialEventsListState,
+            factsListOptions: initialFactsListState,
             peopleListOptions: initialPeopleListState,
+            resourcesListOptions: initialResourcesListState,
+            usersListOptions: initialUsersListState,
+            events: [],
+            facts: [],
             people: [],
+            resources: [],
+            users: [],
           },
           setFulfilled(),
         );
@@ -128,9 +216,28 @@ export const TagStore = signalStore(
           patchState(store, {
             tag: resp,
             inEditMode: false,
+            eventsListOptions: initialEventsListState,
+            factsListOptions: initialFactsListState,
             peopleListOptions: initialPeopleListState,
+            resourcesListOptions: initialResourcesListState,
+            usersListOptions: initialUsersListState,
           });
-          patchState(store, { people: store.tag().people }, setFulfilled());
+          patchState(
+            store,
+            {
+              eventsCount: store.tag().eventsCount,
+              factsCount: store.tag().factsCount,
+              peopleCount: store.tag().peopleCount,
+              resourcesCount: store.tag().resourcesCount,
+              usersCount: store.tag().usersCount,
+              events: store.tag().events,
+              facts: store.tag().facts,
+              people: store.tag().people,
+              resources: store.tag().resources,
+              users: store.tag().users,
+            },
+            setFulfilled(),
+          );
           toastService.sendMessage('Updated tag.', ToastLevel.SUCCESS);
         }
       },
@@ -146,11 +253,24 @@ export const TagStore = signalStore(
           patchState(
             store,
             {
-              tag: resp.data,
+              tag: resp,
               inEditMode: false,
               inCreateMode: false,
+              eventsListOptions: initialEventsListState,
+              factsListOptions: initialFactsListState,
               peopleListOptions: initialPeopleListState,
+              resourcesListOptions: initialResourcesListState,
+              usersListOptions: initialUsersListState,
+              eventsCount: 0,
+              factsCount: 0,
+              peopleCount: 0,
+              resourcesCount: 0,
+              usersCount: 0,
+              events: [],
+              facts: [],
               people: [],
+              resources: [],
+              users: [],
             },
             setFulfilled(),
           );
@@ -158,7 +278,7 @@ export const TagStore = signalStore(
           toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
 
           // navigate to the newly created item and don't save the current route in the history
-          router.navigateByUrl(`/project-management/tags/${resp.data.id}`, {
+          router.navigateByUrl(`/project-management/tags/${store.tag().id}`, {
             replaceUrl: true,
           });
         }
@@ -174,8 +294,21 @@ export const TagStore = signalStore(
             store,
             {
               inEditMode: false,
+              eventsListOptions: initialEventsListState,
+              factsListOptions: initialFactsListState,
               peopleListOptions: initialPeopleListState,
+              resourcesListOptions: initialResourcesListState,
+              usersListOptions: initialUsersListState,
+              eventsCount: 0,
+              factsCount: 0,
+              peopleCount: 0,
+              resourcesCount: 0,
+              usersCount: 0,
+              events: [],
+              facts: [],
               people: [],
+              resources: [],
+              users: [],
             },
             setFulfilled(),
           );
@@ -203,14 +336,40 @@ export const TagStore = signalStore(
         order: SortDirection,
       ) {
         let stateListProperty = '';
+        let stateCountProperty = '';
         let listOptions: DeepSignal<RelatedListState> = store.peopleListOptions;
         let initialState;
 
         switch (objectType) {
+          case 'events':
+            stateListProperty = 'eventsListOptions';
+            stateCountProperty = 'eventsCount';
+            listOptions = store.eventsListOptions;
+            initialState = initialEventsListState;
+            break;
+          case 'facts':
+            stateListProperty = 'factsListOptions';
+            stateCountProperty = 'factsCount';
+            listOptions = store.factsListOptions;
+            initialState = initialFactsListState;
+            break;
           case 'people':
             stateListProperty = 'peopleListOptions';
+            stateCountProperty = 'peopleCount';
             listOptions = store.peopleListOptions;
             initialState = initialPeopleListState;
+            break;
+          case 'resources':
+            stateListProperty = 'resourcesListOptions';
+            stateCountProperty = 'resourcesCount';
+            listOptions = store.resourcesListOptions;
+            initialState = initialResourcesListState;
+            break;
+          case 'users':
+            stateListProperty = 'usersListOptions';
+            stateCountProperty = 'usersCount';
+            listOptions = store.usersListOptions;
+            initialState = initialUsersListState;
             break;
         }
 
@@ -248,7 +407,10 @@ export const TagStore = signalStore(
           });
           patchState(
             store,
-            { [objectType]: store.tag()[objectType] },
+            {
+              [stateCountProperty]: store.tag()[stateCountProperty],
+              [objectType]: store.tag()[objectType],
+            },
             setFulfilled(),
           );
         }

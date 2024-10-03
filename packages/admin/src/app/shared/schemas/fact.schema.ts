@@ -21,7 +21,7 @@ export const FactSchema: any = z
     observedAt: z.string().datetime({ offset: true }).optional().nullable(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
     tags: z.lazy(() => z.array(TagSchema).optional()),
-    factType: FactTypeSchema.optional(),
+    factType: z.lazy(() => FactTypeSchema.optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -40,7 +40,7 @@ export const FactUpdateSchema = FactSchema.extend({
   observedAt: z.string().datetime({ offset: true }).optional().nullable(),
   dimensions: z.array(DimensionSchema).optional().nullable(),
   tags: z.lazy(() => z.array(TagSchema).optional()),
-  factType: FactTypeSchema.optional(),
+  factType: z.lazy(() => FactTypeSchema.optional()),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();

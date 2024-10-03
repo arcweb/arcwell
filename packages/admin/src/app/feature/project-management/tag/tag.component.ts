@@ -38,7 +38,15 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { MatTableDataSource } from '@angular/material/table';
 import { PersonModel } from '@app/shared/models/person.model';
 import { PageEvent } from '@angular/material/paginator';
-import { Sort } from '@angular/material/sort';
+import { Sort, SortDirection } from '@angular/material/sort';
+import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
+import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
+import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
+import { UsersTableComponent } from '@app/shared/components/users-table/users-table.component';
+import { EventModel } from '@app/shared/models/event.model';
+import { FactModel } from '@app/shared/models/fact.model';
+import { ResourceModel } from '@app/shared/models/resource.model';
+import { UserModel } from '@app/shared/models';
 
 @Component({
   selector: 'aw-tag',
@@ -58,7 +66,11 @@ import { Sort } from '@angular/material/sort';
     FormsModule,
     BackButtonComponent,
     MatExpansionModule,
+    EventsTableComponent,
+    FactsTableComponent,
     PeopleTableComponent,
+    ResourcesTableComponent,
+    UsersTableComponent,
   ],
   providers: [TagStore],
   templateUrl: './tag.component.html',
@@ -71,8 +83,32 @@ export class TagComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
+  eventsDataSource = new MatTableDataSource<EventModel>();
+  eventsColumns: string[] = [
+    'startedAt',
+    'endedAt',
+    'eventType',
+    'person',
+    'resource',
+  ];
+
+  factsDataSource = new MatTableDataSource<FactModel>();
+  factsColumns: string[] = [
+    'factType',
+    'person',
+    'resource',
+    'event',
+    'observedAt',
+  ];
+
   peopleColumns: string[] = ['id', 'familyName', 'givenName', 'personType'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
+
+  resourcesDataSource = new MatTableDataSource<ResourceModel>();
+  resourcesColumns: string[] = ['name', 'resourceType', 'tags'];
+
+  usersDataSource = new MatTableDataSource<UserModel>();
+  usersColumns: string[] = ['email', 'role', 'person', 'tags'];
 
   pageSizes = [10, 20, 50];
 
@@ -95,8 +131,11 @@ export class TagComponent implements OnInit {
       } else {
         this.tagForm.disable();
       }
-
+      this.eventsDataSource.data = this.tagStore.events();
+      this.factsDataSource.data = this.tagStore.facts();
       this.peopleDataSource.data = this.tagStore.people();
+      this.resourcesDataSource.data = this.tagStore.resources();
+      this.usersDataSource.data = this.tagStore.users();
     });
   }
 
@@ -160,34 +199,78 @@ export class TagComponent implements OnInit {
     });
   }
 
-  pageChange(objectType: string, event: PageEvent) {
+  pageChange(
+    objectType: string,
+    sort: string,
+    order: SortDirection,
+    event: PageEvent,
+  ) {
     const newOffset = event.pageIndex * event.pageSize;
     this.tagStore.loadRelatedPage(
       objectType,
       event.pageSize,
       newOffset,
       event.pageIndex,
-      this.tagStore.peopleListOptions().sort,
-      this.tagStore.peopleListOptions().order,
+      sort,
+      order,
     );
   }
 
-  rowClick(objectType: string, row: PersonModel) {
+  rowClick(
+    objectType: string,
+    row: PersonModel | EventModel | FactModel | ResourceModel | UserModel,
+  ) {
     switch (objectType) {
+      case 'events':
+        this.router.navigate(['project-management', 'events', row.id]);
+        break;
+      case 'facts':
+        this.router.navigate(['project-management', 'facts', row.id]);
+        break;
       case 'people':
         this.router.navigate(['project-management', 'people', row.id]);
+        break;
+      case 'resources':
+        this.router.navigate(['project-management', 'resources', row.id]);
+        break;
+      case 'users':
+        this.router.navigate([
+          'project-management',
+          'settings',
+          'user-management',
+          'all-users',
+          row.id,
+        ]);
         break;
     }
   }
 
-  sortChange(objectType: string, event: Sort) {
+  sortChange(
+    objectType: string,
+    limit: number,
+    offset: number,
+    pageIndex: number,
+    event: Sort,
+  ) {
     this.tagStore.loadRelatedPage(
       objectType,
-      this.tagStore.peopleListOptions().limit,
-      this.tagStore.peopleListOptions().offset,
-      this.tagStore.peopleListOptions().pageIndex,
+      limit,
+      offset,
+      pageIndex,
       event.active,
       event.direction,
     );
+  }
+
+  viewEvent(eventId: string) {
+    this.router.navigate(['project-management', 'events', eventId]);
+  }
+
+  viewResource(resourceId: string) {
+    this.router.navigate(['project-management', 'resources', resourceId]);
+  }
+
+  viewPerson(personId: string) {
+    this.router.navigate(['project-management', 'people', personId]);
   }
 }
