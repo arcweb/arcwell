@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import {
   deserializeTag,
+  TagsCountType,
   TagsResponseSchema,
   TagsResponseType,
   TagsSimpleResponseSchema,
@@ -147,5 +148,15 @@ export class TagService {
         return defaultErrorResponseHandler(error);
       }),
     );
+  }
+
+  count(): Observable<TagsCountType | ErrorResponseType> {
+    return this.http
+      .get<TagsCountType>(`${environment.apiUrl}/tags/count`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

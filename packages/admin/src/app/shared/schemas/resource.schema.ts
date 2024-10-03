@@ -39,10 +39,17 @@ export const ResourceResponseSchema = z.object({
   data: ResourceSchema,
 });
 
+export const ResourcesCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type ResourceType = z.infer<typeof ResourceSchema>;
 export type ResourceUpdateType = z.infer<typeof ResourceUpdateSchema>;
 export type ResourcesResponseType = z.infer<typeof ResourcesResponseSchema>;
 export type ResourceResponseType = z.infer<typeof ResourceResponseSchema>;
+export type ResourcesCountType = z.infer<typeof ResourcesCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeResource = (data: ResourceType): ResourceModel => {

@@ -98,5 +98,15 @@ export const ResourcesListStore = signalStore(
         );
       }
     },
+    async count() {
+      patchState(store, setPending());
+      const resp = await firstValueFrom(resourceService.count());
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        console.log('patching', resp);
+        patchState(store, { totalData: resp.data.count }, setFulfilled());
+      }
+    },
   })),
 );

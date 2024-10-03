@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { ErrorResponseType } from '@schemas/error.schema';
 import {
   deserializePerson,
+  PeopleCountType,
   PeopleResponseSchema,
   PeopleResponseType,
   PersonResponseSchema,
@@ -109,7 +110,9 @@ export class PersonService {
     }
 
     return this.http
-      .get<PersonResponseType>(`${environment.apiUrl}/people/${id}/cohorts`, { params })
+      .get<PersonResponseType>(`${environment.apiUrl}/people/${id}/cohorts`, {
+        params,
+      })
       .pipe(
         map((response: PersonResponseType) => {
           const parsedResponse = PersonResponseSchema.parse(response);
@@ -190,9 +193,23 @@ export class PersonService {
       cohortIds: [cohortId],
     };
     return this.http
-      .request<void>('delete', `${environment.apiUrl}/people/${personId}/detach`, {
-        body: payload,
-      })
+      .request<void>(
+        'delete',
+        `${environment.apiUrl}/people/${personId}/detach`,
+        {
+          body: payload,
+        },
+      )
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  count(): Observable<PeopleCountType | ErrorResponseType> {
+    return this.http
+      .get<PeopleCountType>(`${environment.apiUrl}/people/count`)
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

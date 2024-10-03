@@ -6,6 +6,7 @@ import {
   deserializeResource,
   ResourceResponseSchema,
   ResourceResponseType,
+  ResourcesCountType,
   ResourcesResponseSchema,
   ResourcesResponseType,
   ResourceUpdateType,
@@ -133,6 +134,16 @@ export class ResourceService {
       .delete<ResourceResponseType>(
         `${environment.apiUrl}/resources/${resourceId}`,
       )
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  count(): Observable<ResourcesCountType | ErrorResponseType> {
+    return this.http
+      .get<ResourcesCountType>(`${environment.apiUrl}/resources/count`)
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);

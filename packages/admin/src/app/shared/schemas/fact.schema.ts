@@ -60,10 +60,17 @@ export const FactResponseSchema = z.object({
   data: FactSchema,
 });
 
+export const FactsCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type FactType = z.infer<typeof FactSchema>;
 export type FactUpdateType = z.infer<typeof FactUpdateSchema>;
 export type FactsResponseType = z.infer<typeof FactsResponseSchema>;
 export type FactResponseType = z.infer<typeof FactResponseSchema>;
+export type FactsCountType = z.infer<typeof FactsCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeFact = (data: FactType): FactModel => {

@@ -30,19 +30,19 @@ export class DashboardComponent {
 
   constructor() {
     if (!this.eventListStore.totalData()) {
-      this.eventListStore.load({ limit: 1, offset: 0 });
+      this.eventListStore.count();
     }
     if (!this.factsListStore.totalData()) {
-      this.factsListStore.load({ limit: 1, offset: 0 });
+      this.factsListStore.count();
     }
     if (!this.peopleListStore.totalData()) {
-      this.peopleListStore.load({ limit: 1, offset: 0 });
+      this.peopleListStore.count();
     }
     if (!this.resourcesListStore.totalData()) {
-      this.resourcesListStore.load({ limit: 1, offset: 0 });
+      this.resourcesListStore.count();
     }
     if (!this.tagsListStore.totalData()) {
-      this.tagsListStore.load(1, 0);
+      this.tagsListStore.count();
     }
   }
 }

@@ -3,8 +3,8 @@ import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
-import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery, buildFactsSort } from '#helpers/query_builder'
+import db from '@adonisjs/lucid/services/db'
 
 export async function getFullFact(id: string) {
   return Fact.query()
@@ -27,6 +27,24 @@ export async function getFullFact(id: string) {
 }
 
 export default class FactsController {
+  /**
+   * @count
+   * @summary Count facts
+   * @description Returns the count of total facts
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('facts').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
   /**
    * @index
    * @summary List Facts

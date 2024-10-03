@@ -49,10 +49,17 @@ export const EventResponseSchema = z.object({
   data: EventSchema,
 });
 
+export const EventsCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type EventType = z.infer<typeof EventSchema>;
 export type EventUpdateType = z.infer<typeof EventUpdateSchema>;
 export type EventsResponseType = z.infer<typeof EventsResponseSchema>;
 export type EventResponseType = z.infer<typeof EventResponseSchema>;
+export type EventsCountType = z.infer<typeof EventsCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeEvent = (data: EventType): EventModel => {
