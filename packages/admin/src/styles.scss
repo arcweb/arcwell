@@ -24,7 +24,6 @@ html {
   @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
   @include mixins.typography-theme(theme.$light-theme);
-  @include mixins.config-theme(theme.$light-theme);
 }
 
 * {
