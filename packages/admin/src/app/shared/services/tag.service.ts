@@ -117,31 +117,34 @@ export class TagService {
     );
   }
 
-  getTagWithRelated(
-    id: string,
-    objectType: string,
-    limit?: number,
-    offset?: number,
-    sort?: string,
-    order?: string,
-  ): Observable<TagType | ErrorResponseType> {
+  getTagWithRelated(props: {
+    id: string;
+    objectType: string;
+    limit?: number;
+    offset?: number;
+    sort?: string;
+    order?: string;
+  }): Observable<TagType | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (limit !== undefined) {
-      params = params.set('limit', limit.toString());
+    if (props.limit !== undefined) {
+      params = params.set('limit', props.limit.toString());
     }
-    if (offset !== undefined) {
-      params = params.set('offset', offset.toString());
+    if (props.offset !== undefined) {
+      params = params.set('offset', props.offset.toString());
     }
-    if (sort && order) {
-      params = params.set('sort', sort);
-      params = params.set('order', order);
+    if (props.sort && props.order) {
+      params = params.set('sort', props.sort);
+      params = params.set('order', props.order);
     }
 
     return this.http
-      .get<TagType>(`${environment.apiUrl}/tags/${id}/${objectType}`, {
-        params,
-      })
+      .get<TagType>(
+        `${environment.apiUrl}/tags/${props.id}/${props.objectType}`,
+        {
+          params,
+        },
+      )
       .pipe(
         map((response: TagType) => {
           return deserializeTag(response.data);

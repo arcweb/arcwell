@@ -206,14 +206,14 @@ export class TagComponent implements OnInit {
     event: PageEvent,
   ) {
     const newOffset = event.pageIndex * event.pageSize;
-    this.tagStore.loadRelatedPage(
+    this.tagStore.loadRelatedPage({
       objectType,
-      event.pageSize,
-      newOffset,
-      event.pageIndex,
+      limit: event.pageSize,
+      offset: newOffset,
+      pageIndex: event.pageIndex,
       sort,
       order,
-    );
+    });
   }
 
   rowClick(
@@ -252,14 +252,14 @@ export class TagComponent implements OnInit {
     pageIndex: number,
     event: Sort,
   ) {
-    this.tagStore.loadRelatedPage(
+    this.tagStore.loadRelatedPage({
       objectType,
       limit,
       offset,
       pageIndex,
-      event.active,
-      event.direction,
-    );
+      sort: event.active,
+      order: event.direction,
+    });
   }
 
   viewEvent(eventId: string) {

@@ -132,12 +132,12 @@ export const TagStore = signalStore(
       async initialize(tagId: string) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          tagService.getTagWithRelated(
-            tagId,
-            'all',
-            initialListState.limit,
-            initialListState.offset,
-          ),
+          tagService.getTagWithRelated({
+            id: tagId,
+            objectType: 'all',
+            limit: initialListState.limit,
+            offset: initialListState.offset,
+          }),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
@@ -327,20 +327,20 @@ export const TagStore = signalStore(
         }
       },
 
-      async loadRelatedPage(
-        objectType: string,
-        limit: number,
-        offset: number,
-        pageIndex: number,
-        sort: string,
-        order: SortDirection,
-      ) {
+      async loadRelatedPage(props: {
+        objectType: string;
+        limit: number;
+        offset: number;
+        pageIndex: number;
+        sort: string;
+        order: SortDirection;
+      }) {
         let stateListProperty = '';
         let stateCountProperty = '';
         let listOptions: DeepSignal<RelatedListState> = store.peopleListOptions;
         let initialState;
 
-        switch (objectType) {
+        switch (props.objectType) {
           case 'events':
             stateListProperty = 'eventsListOptions';
             stateCountProperty = 'eventsCount';
@@ -378,24 +378,24 @@ export const TagStore = signalStore(
           {
             [stateListProperty]: {
               ...initialState,
-              offset,
-              pageIndex,
-              limit,
-              sort,
-              order,
+              offset: props.offset,
+              pageIndex: props.pageIndex,
+              limit: props.limit,
+              sort: props.sort,
+              order: props.order,
             },
           },
           setPending(),
         );
         const resp = await firstValueFrom(
-          tagService.getTagWithRelated(
-            store.tag().id,
-            objectType,
-            listOptions().limit,
-            listOptions().offset,
-            listOptions().sort,
-            listOptions().order,
-          ),
+          tagService.getTagWithRelated({
+            id: store.tag().id,
+            objectType: props.objectType,
+            limit: listOptions().limit,
+            offset: listOptions().offset,
+            sort: listOptions().sort,
+            order: listOptions().order,
+          }),
         );
 
         if (resp.errors) {
@@ -409,7 +409,7 @@ export const TagStore = signalStore(
             store,
             {
               [stateCountProperty]: store.tag()[stateCountProperty],
-              [objectType]: store.tag()[objectType],
+              [props.objectType]: store.tag()[props.objectType],
             },
             setFulfilled(),
           );
