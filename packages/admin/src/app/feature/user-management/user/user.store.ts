@@ -87,7 +87,10 @@ export const UserStore = signalStore(
         }
       },
       async toggleEditMode() {
-        patchState(store, { inEditMode: !store.inEditMode() });
+        patchState(store, {
+          inEditMode: !store.inEditMode(),
+          inCreateMode: false,
+        });
       },
       async update(updateUserFormData: UserUpdateType) {
         patchState(store, setPending());

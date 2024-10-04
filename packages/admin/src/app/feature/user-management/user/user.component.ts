@@ -86,6 +86,10 @@ export class UserComponent implements OnInit {
       },
       [Validators.email, Validators.required],
     ),
+    password: new FormControl({
+      value: '',
+      disabled: true,
+    }),
     role: new FormControl<RoleType>(
       {
         value: null,
@@ -180,7 +184,15 @@ export class UserComponent implements OnInit {
   }
 
   onCancel() {
+    const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
+    if (fromCreateMode) {
+      this.router.navigate([
+        'project-management',
+        'settings',
+        'user-management',
+      ]);
+    }
   }
 
   compareRoles(r1: RoleType, r2: RoleType): boolean {
