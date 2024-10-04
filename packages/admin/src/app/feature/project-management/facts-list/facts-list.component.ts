@@ -20,12 +20,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { DateTime } from 'luxon';
-import { convertDateTimeToLocal } from '@shared/helpers/date-format.helper';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
+import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 
 @Component({
@@ -51,6 +50,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
     MatIconButton,
     MatButton,
     MatSortModule,
+    FactsTableComponent,
     TableHeaderComponent,
   ],
   providers: [FactsListStore],
@@ -95,7 +95,7 @@ export class FactsListComponent {
     });
   }
 
-  handleClick(row: FactModel) {
+  rowClick(row: FactModel) {
     this.router.navigate(['project-management', 'facts', row.id]);
   }
 
@@ -109,10 +109,6 @@ export class FactsListComponent {
 
   viewPerson(personId: string) {
     this.router.navigate(['project-management', 'people', personId]);
-  }
-
-  convertDateTimeToLocal(dateTime: DateTime | undefined): string {
-    return convertDateTimeToLocal(dateTime);
   }
 
   sortChange(event: Sort) {

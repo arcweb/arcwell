@@ -16,7 +16,7 @@ export const UserSchema: any = z
     updatedAt: z.string().datetime({ offset: true }),
     role: z.lazy(() => RoleSchema).optional(),
     person: z.lazy(() => PersonSchema).optional(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
     passwordResetCode: z.string().optional().nullable(),
   })
   .strict();

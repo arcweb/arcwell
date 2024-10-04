@@ -8,102 +8,19 @@
   <aw-error-container [errors]="factsListStore.errors()" />
 }
 
-<table
-  mat-table
-  matSort
+<aw-facts-table
   [dataSource]="dataSource"
-  class="mat-elevation-z0"
-  (matSortChange)="sortChange($event)"
+  [displayedColumns]="displayedColumns"
   [matSortActive]="this.factsListStore.sort()"
   [matSortDirection]="this.factsListStore.order()"
->
-  <ng-container matColumnDef="factType">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef>Fact Type</th>
-    <td mat-cell *matCellDef="let element">{{ element.factType.name }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="person">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef>Person</th>
-    <td mat-cell *matCellDef="let element">
-      @if (element.person) {
-        <button
-          mat-button
-          type="button"
-          (click)="viewPerson(element.person.id); $event.stopPropagation()"
-        >
-          <div>
-            {{ element.person.familyName }}, {{ element.person.givenName }}
-          </div>
-        </button>
-      }
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="resource">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef>Resource</th>
-    <td mat-cell *matCellDef="let element">
-      @if (element.resource) {
-        <button
-          mat-button
-          type="button"
-          (click)="viewResource(element.resource.id); $event.stopPropagation()"
-        >
-          <div>{{ element.resource.name }}</div>
-        </button>
-      }
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="event">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef>Event</th>
-    <td mat-cell *matCellDef="let element">
-      @if (element.event) {
-        <button
-          mat-button
-          type="button"
-          (click)="viewEvent(element.event.id); $event.stopPropagation()"
-        >
-          <div>{{ element.event.name }}</div>
-        </button>
-      }
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="observedAt">
-    <th mat-header-cell mat-sort-header *matHeaderCellDef>Observed At</th>
-    <td mat-cell *matCellDef="let element">
-      {{ convertDateTimeToLocal(element.observedAt) }}
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="tags">
-    <th mat-header-cell *matHeaderCellDef>Tags</th>
-    <td mat-cell *matCellDef="let element">
-      @if (element.tags && element.tags.length > 0) {
-        @for (tag of element.tags; track $index) {
-          <div>
-            {{ tag.pathname }}
-          </div>
-        }
-      } @else {
-        <div>--</div>
-      }
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    (click)="handleClick(row)"
-  ></tr>
-</table>
-
-<mat-paginator
-  [length]="factsListStore.totalData()"
-  [pageSizeOptions]="pageSizes"
-  [pageSize]="factsListStore.limit()"
-  [pageIndex]="factsListStore.pageIndex()"
-  (page)="this.factsListStore.loadPage($event)"
-  showFirstLastButtons="true"
-></mat-paginator>
+  [length]="this.factsListStore.totalData()"
+  [pageSizes]="pageSizes"
+  [pageSize]="this.factsListStore.limit()"
+  [pageIndex]="this.factsListStore.pageIndex()"
+  (onPageChanged)="this.factsListStore.loadPage($event)"
+  (onRowClicked)="rowClick($event)"
+  (onSortChanged)="sortChange($event)"
+  (onViewEventClicked)="viewEvent($event)"
+  (onViewResourceClicked)="viewResource($event)"
+  (onViewPersonClicked)="viewPerson($event)"
+></aw-facts-table>
