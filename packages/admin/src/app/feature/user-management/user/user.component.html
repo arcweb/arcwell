@@ -129,7 +129,12 @@
 
       @if (userStore.inCreateMode()) {
         <mat-form-field>
-          <input matInput placeholder="Password" formControlName="password" />
+          <input
+            matInput
+            placeholder="Password"
+            formControlName="password"
+            type="password"
+          />
           @if (userForm.controls.password.hasError('required')) {
             <mat-error>
               Password is

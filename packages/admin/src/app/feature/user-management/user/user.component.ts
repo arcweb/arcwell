@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { UserStore } from './user.store';
 import {
+  AbstractControl,
   ControlEvent,
   FormControl,
   FormGroup,
@@ -86,10 +87,13 @@ export class UserComponent implements OnInit {
       },
       [Validators.email, Validators.required],
     ),
-    password: new FormControl({
-      value: '',
-      disabled: true,
-    }),
+    password: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      [this.hiddenRequiredValidator()],
+    ),
     role: new FormControl<RoleType>(
       {
         value: null,
@@ -202,5 +206,14 @@ export class UserComponent implements OnInit {
   toggleChangePassword() {
     this.viewChangePassword = !this.viewChangePassword;
     this.changeForm.reset();
+  }
+
+  hiddenRequiredValidator() {
+    return (control: AbstractControl) => {
+      if (this.userStore.inCreateMode() && !control.value) {
+        return { required: true };
+      }
+      return null;
+    };
   }
 }
