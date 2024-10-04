@@ -40,6 +40,7 @@ import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-event',
@@ -62,6 +63,7 @@ import { BackService } from '@app/shared/services/back.service';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ObjectSelectorFormFieldComponent,
+    DetailHeaderComponent,
   ],
   providers: [EventStore],
   templateUrl: './event.component.html',

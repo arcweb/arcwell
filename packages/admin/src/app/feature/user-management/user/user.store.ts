@@ -17,6 +17,7 @@ interface UserState {
   user: UserType | null;
   roles: RoleType[] | null;
   inEditMode: boolean;
+  inCreateMode: boolean;
   isReady: boolean;
 }
 
@@ -25,6 +26,7 @@ const initialState: UserState = {
   roles: [],
   inEditMode: false,
   isReady: false,
+  inCreateMode: false,
 };
 
 export const UserStore = signalStore(

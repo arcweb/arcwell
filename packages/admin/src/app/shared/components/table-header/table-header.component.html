@@ -1,24 +1,48 @@
 <div class="main-container-header">
-  <h2>
+  <h4 class="h4-light">
     {{ tableName() }}
-  </h2>
+  </h4>
   <div class="icons-container">
     <button
-      mat-icon-button
+      mat-button
       [routerLink]="[createLink()]"
       [queryParams]="createLinkQueryParams()"
-      matTooltip="Create"
+      matTooltip="Add new"
+      class="table-header-button body-small"
     >
-      <fa-icon aria-label="Create icon button" [icon]="faCirclePlus"></fa-icon>
+      <fa-icon
+        aria-label="Add new icon button"
+        class="table-header-button-icon"
+        [icon]="faCirclePlus"
+        size="xl"
+      ></fa-icon>
+      Add New
     </button>
-    <button mat-icon-button matTooltip="Filter">
-      <fa-icon aria-label="Filter icon button" [icon]="faBars"></fa-icon>
+    <button
+      mat-button
+      matTooltip="Filter"
+      class="table-header-button body-small"
+    >
+      <fa-icon
+        aria-label="Filter icon button"
+        class="table-header-button-icon"
+        [icon]="faBars"
+        size="xl"
+      ></fa-icon>
+      Filter
     </button>
-    <button mat-icon-button matTooltip="Search">
+    <button
+      mat-button
+      matTooltip="Search"
+      class="table-header-button body-small"
+    >
       <fa-icon
         aria-label="Search icon button"
+        class="table-header-button-icon"
         [icon]="faMagnifyingGlass"
+        size="xl"
       ></fa-icon>
+      Search
     </button>
   </div>
 </div>

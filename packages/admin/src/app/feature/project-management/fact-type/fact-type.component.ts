@@ -51,6 +51,7 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { JsonPipe } from '@angular/common';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-fact-type',
@@ -81,6 +82,7 @@ import { JsonPipe } from '@angular/common';
     MatTable,
     JsonPipe,
     MatHeaderCellDef,
+    DetailHeaderComponent,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',

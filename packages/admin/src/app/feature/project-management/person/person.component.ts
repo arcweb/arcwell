@@ -39,6 +39,7 @@ import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-person',
@@ -61,6 +62,7 @@ import { CohortModel } from '@app/shared/models/cohort.model';
     TagsFormComponent,
     ObjectSelectorFormFieldComponent,
     CohortTableComponent,
+    DetailHeaderComponent,
   ],
   providers: [PersonStore],
   templateUrl: './person.component.html',
