@@ -9,26 +9,89 @@
 
     @if (userId() === authStore.currentUser()?.id || isProfile()) {
       <mat-card class="account-management-card">
-        <div class="account-info-container">
-          @if (userAvatar) {
-            <img [src]="userAvatar" alt="avatar" class="account-avatar" />
-          } @else {
-            <mat-icon class="account-icon">account_circle</mat-icon>
-          }
-          <div>{{ authStore.currentUser()?.email }}</div>
+        <div class="account-card-header">
+          <div class="account-info-container">
+            @if (userAvatar) {
+              <img [src]="userAvatar" alt="avatar" class="account-avatar" />
+            } @else {
+              <mat-icon class="account-icon">account_circle</mat-icon>
+            }
+            <div>{{ authStore.currentUser()?.email }}</div>
+          </div>
+          <div class="profile-actions-container">
+            <button
+              mat-button
+              class="change-password-link"
+              (click)="toggleChangePassword()"
+            >
+              @if (viewChangePassword) {
+                Cancel
+              } @else {
+                Change Password
+              }
+            </button>
+          </div>
         </div>
-        <div class="profile-actions-container">
-          <button
-            mat-button
-            class="change-password-link"
-            (click)="changePassword()"
-          >
-            Change Password
-          </button>
-          <button mat-button class="test-email-link" (click)="sendEmail()">
-            Test Email
-          </button>
-        </div>
+        @if (viewChangePassword) {
+          <mat-card-content>
+            <div class="change-password-container">
+              <form [formGroup]="changeForm">
+                @if (authStore.loginStatus() === 'error') {
+                  <mat-error>
+                    There has been an Error changing your password
+                  </mat-error>
+                }
+                <div class="title">
+                  <p>Please enter your current password and new password.</p>
+                </div>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Current Password</mat-label>
+                  <input
+                    matNativeControl
+                    formControlName="password"
+                    type="password"
+                    placeholder="Current Password"
+                  />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>New Password</mat-label>
+                  <input
+                    matNativeControl
+                    formControlName="newPassword"
+                    type="password"
+                    placeholder="New Password"
+                  />
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                  <mat-label>Confirm Password</mat-label>
+                  <input
+                    matNativeControl
+                    formControlName="confirmPassword"
+                    type="password"
+                    placeholder="Confirm Password"
+                  />
+                </mat-form-field>
+                @if (
+                  changeForm.controls.confirmPassword.hasError('mustMatch')
+                ) {
+                  <mat-error>The two passwords must match.</mat-error>
+                }
+
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="!changeForm.valid"
+                >
+                  Change
+                </button>
+              </form>
+            </div>
+          </mat-card-content>
+        }
       </mat-card>
     }
 

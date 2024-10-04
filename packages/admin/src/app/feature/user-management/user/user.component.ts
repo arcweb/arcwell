@@ -30,6 +30,8 @@ import { AuthStore } from '@app/shared/store/auth.store';
 import { EmailService } from '@app/shared/services/email.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { map } from 'rxjs';
+import { ChangePasswordComponent } from '@app/feature/auth/change-password/change-password-form.component';
+import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
@@ -50,6 +52,7 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
     MatIconButton,
     MatCardModule,
     BackButtonComponent,
+    ChangePasswordComponent,
     DetailHeaderComponent,
   ],
   providers: [UserStore],
@@ -69,6 +72,7 @@ export class UserComponent implements OnInit {
   );
   private emailService: EmailService = inject(EmailService);
   userAvatar = '';
+  viewChangePassword = false;
 
   destroyRef = inject(DestroyRef);
 
@@ -90,6 +94,15 @@ export class UserComponent implements OnInit {
       Validators.required,
     ),
   });
+
+  changeForm = new FormGroup(
+    {
+      password: new FormControl('', [Validators.required]),
+      newPassword: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    },
+    { validators: InputMatch('newPassword', 'confirmPassword') },
+  );
 
   constructor() {
     effect(() => {
@@ -122,6 +135,23 @@ export class UserComponent implements OnInit {
           this.userStore.update(this.userForm.value);
         }
       });
+
+    this.changeForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          this.authStore
+            .changePassword({
+              ...this.changeForm.value,
+              email: this.authStore.currentUser()?.email,
+            })
+            .then(() => {
+              if (this.authStore.loginStatus() !== 'error') {
+                this.toggleChangePassword();
+              }
+            });
+        }
+      });
   }
 
   onCancel() {
@@ -132,13 +162,8 @@ export class UserComponent implements OnInit {
     return r1 && r2 ? r1.id === r2.id : false;
   }
 
-  sendEmail() {
-    this.emailService
-      .sendEmail(this.authStore.currentUser()!.email)
-      .subscribe();
-  }
-
-  changePassword() {
-    this.router.navigate(['auth', 'change']);
+  toggleChangePassword() {
+    this.viewChangePassword = !this.viewChangePassword;
+    this.changeForm.reset();
   }
 }
