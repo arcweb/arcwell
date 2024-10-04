@@ -80,6 +80,42 @@ export default class TagsController {
   }
 
   /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('tags').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
+  /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('tags').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
+  /**
    * @index
    * @summary List Tags
    * @description Returns a list of Tags.

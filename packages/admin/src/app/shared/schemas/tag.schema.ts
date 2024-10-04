@@ -52,11 +52,18 @@ export const TagResponseSchema = z.object({
   data: TagSchema,
 });
 
+export const TagsCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type TagType = z.infer<typeof TagSchema>;
 export type TagUpdateType = z.infer<typeof TagUpdateSchema>;
 export type TagsResponseType = z.infer<typeof TagsResponseSchema>;
 export type TagResponseType = z.infer<typeof TagResponseSchema>;
 export type TagsSimpleResponseType = z.infer<typeof TagsSimpleResponseSchema>;
+export type TagsCountType = z.infer<typeof TagsCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeTag = (data: TagType): TagModel => {
