@@ -1,0 +1,17 @@
+.dashboad-card-contianer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+mat-card {
+  width: 238px;
+  height: 136px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+mat-card-footer {
+  padding: 0 16px;
+}

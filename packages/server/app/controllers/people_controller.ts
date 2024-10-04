@@ -32,6 +32,24 @@ export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset
 
 export default class PeopleController {
   /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('people').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
+  /**
    * @index
    * @summary List People
    * @description Returns a list of People objects and their details. Sortable and filterable.
@@ -39,7 +57,6 @@ export default class PeopleController {
    */
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
-    console.log('PEOPLE INDEXING')
 
     const queryData = request.qs()
 

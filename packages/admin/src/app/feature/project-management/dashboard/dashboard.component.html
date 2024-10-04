@@ -1,1 +1,47 @@
-<p>dashboard works!</p>
+<h2 class="headline-medium">DashBoard</h2>
+<div class="dashboad-card-contianer">
+  <mat-card (click)="cardClick('/people')" class="dashboard-card">
+    <mat-card-content class="display-large font-weight-bold">
+      {{ peopleListStore.totalData() }}
+    </mat-card-content>
+    <mat-card-footer>
+      <p class="headline-small font-weight-light">People</p>
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card (click)="cardClick('/events')" class="dashboard-card">
+    <mat-card-content class="display-large font-weight-bold">
+      {{ eventListStore.totalData() }}
+    </mat-card-content>
+    <mat-card-footer>
+      <p class="headline-small font-weight-light">Events</p>
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card (click)="cardClick('/resources')" class="dashboard-card">
+    <mat-card-content class="display-large font-weight-bold">
+      {{ resourcesListStore.totalData() }}
+    </mat-card-content>
+    <mat-card-footer>
+      <p class="headline-small font-weight-light">Resources</p>
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card (click)="cardClick('/facts')" class="dashboard-card">
+    <mat-card-content class="display-large font-weight-bold">
+      {{ factsListStore.totalData() }}
+    </mat-card-content>
+    <mat-card-footer>
+      <p class="headline-small font-weight-light">Facts</p>
+    </mat-card-footer>
+  </mat-card>
+
+  <mat-card (click)="cardClick('/tags')" class="dashboard-card">
+    <mat-card-content class="display-large font-weight-bold">
+      {{ tagsListStore.totalData() }}
+    </mat-card-content>
+    <mat-card-footer>
+      <p class="headline-small font-weight-light">Tags</p>
+    </mat-card-footer>
+  </mat-card>
+</div>

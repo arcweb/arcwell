@@ -18,6 +18,7 @@ html {
   @include mixins.auth-theme(theme.$light-theme);
   @include mixins.button-theme(theme.$light-theme);
   @include mixins.config-theme(theme.$light-theme);
+  @include mixins.dashboard-theme(theme.$light-theme);
   @include mixins.settings-theme(theme.$light-theme);
   @include mixins.sidenav-theme(theme.$light-theme);
   @include mixins.table-theme(theme.$light-theme);

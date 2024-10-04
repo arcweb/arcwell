@@ -6,6 +6,7 @@ import {
   deserializeEvent,
   EventResponseSchema,
   EventResponseType,
+  EventsCountType,
   EventsResponseSchema,
   EventsResponseType,
   EventUpdateType,
@@ -125,6 +126,16 @@ export class EventService {
   delete(eventId: string): Observable<EventResponseType | ErrorResponseType> {
     return this.http
       .delete<EventResponseType>(`${environment.apiUrl}/events/${eventId}`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  count(): Observable<EventsCountType | ErrorResponseType> {
+    return this.http
+      .get<EventsCountType>(`${environment.apiUrl}/events/count`)
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
