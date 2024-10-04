@@ -70,13 +70,6 @@ Typescale names:
     line-height: 40px;
   }
 
-  .headline-medium {
-    font-size: 24px;
-    font-style: normal;
-    line-height: 40px;
-    font-weight: 300;
-  }
-
   .headline-small {
     font-size: 16px;
     font-style: normal;
@@ -87,6 +80,14 @@ Typescale names:
     font-size: 32px;
     font-style: normal;
     line-height: 40px;
+  }
+
+  // TODO: this class will have to change to conform with our other styles once design is done
+  .h4-light {
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 40px; /* 125% */
   }
 
   // add additional typography styles here from the figma designs

@@ -33,6 +33,7 @@ import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-resource',
@@ -52,6 +53,7 @@ import { BackService } from '@app/shared/services/back.service';
     RouterLink,
     MatIconButton,
     TagsFormComponent,
+    DetailHeaderComponent,
   ],
   providers: [ResourceStore],
   templateUrl: './resource.component.html',

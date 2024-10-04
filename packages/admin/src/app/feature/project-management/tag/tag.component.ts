@@ -47,6 +47,7 @@ import { EventModel } from '@app/shared/models/event.model';
 import { FactModel } from '@app/shared/models/fact.model';
 import { ResourceModel } from '@app/shared/models/resource.model';
 import { UserModel } from '@app/shared/models';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-tag',
@@ -71,6 +72,7 @@ import { UserModel } from '@app/shared/models';
     PeopleTableComponent,
     ResourcesTableComponent,
     UsersTableComponent,
+    DetailHeaderComponent,
   ],
   providers: [TagStore],
   templateUrl: './tag.component.html',

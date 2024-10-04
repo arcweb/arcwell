@@ -39,6 +39,7 @@ import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/
 import { PersonType } from '@schemas/person.schema';
 import { BackService } from '@app/shared/services/back.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-cohort',
@@ -61,6 +62,7 @@ import { BackButtonComponent } from '../../../shared/components/back-button/back
     PeopleTableComponent,
     ObjectSelectorFormFieldComponent,
     BackButtonComponent,
+    DetailHeaderComponent,
   ],
   providers: [CohortStore],
   templateUrl: './cohort.component.html',

@@ -38,6 +38,7 @@ import { TagType } from '@schemas/tag.schema';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-event-type',
@@ -57,6 +58,7 @@ import { BackService } from '@app/shared/services/back.service';
     RouterLink,
     MatIconButton,
     TagsFormComponent,
+    DetailHeaderComponent,
   ],
   providers: [EventTypeStore],
   templateUrl: './event-type.component.html',

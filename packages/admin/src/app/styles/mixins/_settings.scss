@@ -2,11 +2,13 @@
 @use 'layout' as layout;
 
 @mixin settings-theme($theme) {
-  .settings-mail-card, 
+  .settings-mail-card,
   .settings-instance-card {
     color: colors.$dark-blue;
     padding: 20px;
     border-radius: layout.$full-card-border-radius;
+    border-radius: 16px 0 16px 16px;
+
     .settings-bar-divider {
       margin: 20px 0;
       border-top: 2px solid colors.$primary-70;
