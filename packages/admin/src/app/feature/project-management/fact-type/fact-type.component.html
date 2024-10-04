@@ -1,143 +1,127 @@
 @if (factTypeStore.isReady()) {
-  <aw-back-button></aw-back-button>
-  <div class="main-container-header">
-    @if (factTypeStore.inCreateMode()) {
-      <h2>Create Fact Type</h2>
-    } @else if (factTypeStore.inEditMode()) {
-      <h2>Edit Fact Type</h2>
-    } @else {
-      <h2>View Fact Type</h2>
-    }
+  <div class="table-form-container">
+    <aw-detail-header
+      detailName="Fact Type"
+      [inEditMode]="factTypeStore.inEditMode()"
+      [inCreateMode]="factTypeStore.inCreateMode()"
+      (toggleEditMode)="factTypeStore.toggleEditMode()"
+      (delete)="onDelete()"
+    ></aw-detail-header>
 
-    <div class="icons-container">
-      @if (!factTypeStore.inCreateMode()) {
-        <button
-          mat-icon-button
-          [disabled]="factTypeStore.inEditMode()"
-          (click)="factTypeStore.toggleEditMode()"
-        >
-          <mat-icon aria-label="Edit fact icon">edit</mat-icon>
-        </button>
-        <button mat-icon-button (click)="onDelete()">
-          <mat-icon aria-label="Delete fact icon">delete_forever</mat-icon>
-        </button>
+    <form [formGroup]="factTypeForm">
+      @if (factTypeStore.isErrored()) {
+        <aw-error-container [errors]="factTypeStore.errors()" />
       }
-    </div>
-  </div>
 
-  <form [formGroup]="factTypeForm">
-    @if (factTypeStore.isErrored()) {
-      <aw-error-container [errors]="factTypeStore.errors()" />
-    }
-
-    <mat-form-field>
-      <mat-label>Name</mat-label>
-      <input matInput placeholder="Name" formControlName="name" />
-      @if (factTypeForm.controls.name.hasError('required')) {
-        <mat-error>
-          Name is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Key</mat-label>
-      <input matInput placeholder="Key" formControlName="key" />
-      @if (factTypeForm.controls.key.hasError('pattern')) {
-        <mat-error>
-          Lowercase alpha-numeric characters, underscores and hyphens
-          <strong>only</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <input matInput placeholder="Name" formControlName="description" />
-    </mat-form-field>
-
-    @if (factTypeStore.factType()?.dimensionSchemas?.length > 0) {
-      <h2>Dimensions Types</h2>
-      <table
-        mat-table
-        [dataSource]="factTypeStore.factType().dimensionSchemas"
-        class="mat-elevation-z8"
-      >
-        <ng-container matColumnDef="key">
-          <th mat-header-cell *matHeaderCellDef>Key</th>
-          <td mat-cell *matCellDef="let element">{{ element.key }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="dataType">
-          <th mat-header-cell *matHeaderCellDef>Data Type</th>
-          <td mat-cell *matCellDef="let element">{{ element.dataType }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="dataUnit">
-          <th mat-header-cell *matHeaderCellDef>Data Unit</th>
-          <td mat-cell *matCellDef="let element">{{ element.dataUnit }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="isRequired">
-          <th mat-header-cell *matHeaderCellDef>Is Required?</th>
-          <td mat-cell *matCellDef="let element">{{ element.isRequired }}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    } @else {
       <mat-form-field>
-        <mat-label>Dimension Schemas</mat-label>
-        <textarea
-          matInput
-          placeholder="Dimension Schemas"
-          formControlName="dimensionSchemas"
-          rows="10"
-        ></textarea>
-        @if (factTypeForm.controls.dimensionSchemas.hasError('required')) {
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Name" formControlName="name" />
+        @if (factTypeForm.controls.name.hasError('required')) {
           <mat-error>
-            Dimension Schemas are
+            Name is
             <strong>required</strong>
           </mat-error>
         }
       </mat-form-field>
-    }
 
-    <div class="form-button-container">
-      <button
-        mat-button
-        type="button"
-        (click)="onCancel()"
-        class="default-button"
-        [disabled]="!factTypeStore.inEditMode()"
-      >
-        Cancel
-      </button>
-      <button
-        mat-flat-button
-        type="submit"
-        class="default-button"
-        [disabled]="
-          !factTypeStore.inEditMode() ||
-          !factTypeForm.valid ||
-          !factTypeForm.dirty
-        "
-      >
-        Save
-      </button>
-    </div>
-  </form>
+      <mat-form-field>
+        <mat-label>Key</mat-label>
+        <input matInput placeholder="Key" formControlName="key" />
+        @if (factTypeForm.controls.key.hasError('pattern')) {
+          <mat-error>
+            Lowercase alpha-numeric characters, underscores and hyphens
+            <strong>only</strong>
+          </mat-error>
+        }
+      </mat-form-field>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="factTypeStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <input matInput placeholder="Name" formControlName="description" />
+      </mat-form-field>
+
+      @if (factTypeStore.factType()?.dimensionSchemas?.length > 0) {
+        <h2>Dimensions Types</h2>
+        <table
+          mat-table
+          [dataSource]="factTypeStore.factType().dimensionSchemas"
+          class="mat-elevation-z8"
+        >
+          <ng-container matColumnDef="key">
+            <th mat-header-cell *matHeaderCellDef>Key</th>
+            <td mat-cell *matCellDef="let element">{{ element.key }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dataType">
+            <th mat-header-cell *matHeaderCellDef>Data Type</th>
+            <td mat-cell *matCellDef="let element">{{ element.dataType }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dataUnit">
+            <th mat-header-cell *matHeaderCellDef>Data Unit</th>
+            <td mat-cell *matCellDef="let element">{{ element.dataUnit }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="isRequired">
+            <th mat-header-cell *matHeaderCellDef>Is Required?</th>
+            <td mat-cell *matCellDef="let element">{{ element.isRequired }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      } @else {
+        <mat-form-field>
+          <mat-label>Dimension Schemas</mat-label>
+          <textarea
+            matInput
+            placeholder="Dimension Schemas"
+            formControlName="dimensionSchemas"
+            rows="10"
+          ></textarea>
+          @if (factTypeForm.controls.dimensionSchemas.hasError('required')) {
+            <mat-error>
+              Dimension Schemas are
+              <strong>required</strong>
+            </mat-error>
+          }
+        </mat-form-field>
+      }
+
+      <div class="form-button-container">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()"
+          class="default-button"
+          [disabled]="!factTypeStore.inEditMode()"
+        >
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="
+            !factTypeStore.inEditMode() ||
+            !factTypeForm.valid ||
+            !factTypeForm.dirty
+          "
+        >
+          Save
+        </button>
+      </div>
+    </form>
+
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="factTypeStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  </div>
 }

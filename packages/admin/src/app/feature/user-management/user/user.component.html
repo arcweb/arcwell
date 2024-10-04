@@ -1,100 +1,90 @@
 @if (userStore.isReady()) {
-  <aw-back-button></aw-back-button>
-  <div class="main-container-header">
-    @if (userStore.inEditMode()) {
-      <h2>Edit {{ isProfile() ? 'Profile ' : 'User' }}</h2>
-    } @else {
-      <h2>View {{ isProfile() ? 'Profile ' : 'User' }}</h2>
+  <div class="table-form-container">
+    <aw-detail-header
+      detailName="{{ isProfile() ? 'Profile' : 'User' }}"
+      [inEditMode]="userStore.inEditMode()"
+      (toggleEditMode)="userStore.toggleEditMode()"
+      [inCreateMode]="userStore.inCreateMode()"
+    ></aw-detail-header>
+
+    @if (userId() === authStore.currentUser()?.id || isProfile()) {
+      <mat-card class="account-management-card">
+        <div class="account-info-container">
+          @if (userAvatar) {
+            <img [src]="userAvatar" alt="avatar" class="account-avatar" />
+          } @else {
+            <mat-icon class="account-icon">account_circle</mat-icon>
+          }
+          <div>{{ authStore.currentUser()?.email }}</div>
+        </div>
+        <div class="profile-actions-container">
+          <button
+            mat-button
+            class="change-password-link"
+            (click)="changePassword()"
+          >
+            Change Password
+          </button>
+          <button mat-button class="test-email-link" (click)="sendEmail()">
+            Test Email
+          </button>
+        </div>
+      </mat-card>
     }
 
-    <div class="icons-container">
-      <button
-        mat-icon-button
-        [disabled]="userStore.inEditMode()"
-        (click)="userStore.toggleEditMode()"
-      >
-        <mat-icon aria-label="Edit user icon">edit</mat-icon>
-      </button>
-    </div>
-  </div>
+    <form [formGroup]="userForm">
+      @if (userStore.isErrored()) {
+        <aw-error-container [errors]="userStore.errors()" />
+      }
 
-  @if (userId === authStore.currentUser()?.id) {
-    <mat-card class="account-management-card">
-      <div class="account-info-container">
-        @if (userAvatar) {
-          <img [src]="userAvatar" alt="avatar" class="account-avatar" />
-        } @else {
-          <mat-icon class="account-icon">account_circle</mat-icon>
+      <mat-form-field>
+        <input matInput placeholder="Email" formControlName="email" />
+        @if (userForm.controls.email.hasError('required')) {
+          <mat-error>
+            Email is
+            <strong>required</strong>
+          </mat-error>
         }
-        <div>{{ authStore.currentUser()?.email }}</div>
-      </div>
-      <div class="profile-actions-container">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role" [compareWith]="compareRoles">
+          @for (role of userStore.roles(); track role.id) {
+            <mat-option [value]="role">
+              {{ role.name }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (userForm.controls.role.hasError('required')) {
+          <mat-error>
+            Role is
+            <strong>required</strong>
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <div class="form-button-container">
         <button
           mat-button
-          class="change-password-link"
-          (click)="changePassword()"
+          type="button"
+          (click)="onCancel()"
+          class="default-button"
+          [disabled]="!userStore.inEditMode()"
         >
-          Change Password
+          Cancel
         </button>
-        <button mat-button class="test-email-link" (click)="sendEmail()">
-          Test Email
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="
+            !userStore.inEditMode() || !userForm.valid || !userForm.dirty
+          "
+        >
+          Save
         </button>
       </div>
-    </mat-card>
-  }
-
-  <form [formGroup]="userForm">
-    @if (userStore.isErrored()) {
-      <aw-error-container [errors]="userStore.errors()" />
-    }
-
-    <mat-form-field>
-      <input matInput placeholder="Email" formControlName="email" />
-      @if (userForm.controls.email.hasError('required')) {
-        <mat-error>
-          Email is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Role</mat-label>
-      <mat-select formControlName="role" [compareWith]="compareRoles">
-        @for (role of userStore.roles(); track role.id) {
-          <mat-option [value]="role">
-            {{ role.name }}
-          </mat-option>
-        }
-      </mat-select>
-      @if (userForm.controls.role.hasError('required')) {
-        <mat-error>
-          Role is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <div class="form-button-container">
-      <button
-        mat-button
-        type="button"
-        (click)="onCancel()"
-        class="default-button"
-        [disabled]="!userStore.inEditMode()"
-      >
-        Cancel
-      </button>
-      <button
-        mat-flat-button
-        type="submit"
-        class="default-button"
-        [disabled]="
-          !userStore.inEditMode() || !userForm.valid || !userForm.dirty
-        "
-      >
-        Save
-      </button>
-    </div>
-  </form>
+    </form>
+  </div>
 }

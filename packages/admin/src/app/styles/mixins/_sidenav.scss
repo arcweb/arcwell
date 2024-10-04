@@ -83,7 +83,7 @@
         .mat-expansion-panel-content {
           background-color: colors.$white;
           color: colors.$primary;
-          border-radius: layout.$card-border-radius;
+          border-radius: layout.$sidenav-border-radius;
           padding-top: 8px;
 
           .panel-content {
@@ -118,5 +118,6 @@
     width: 100%;
     padding: 1em;
     overflow-y: auto;
+    background-color: colors.$content-background;
   }
 }

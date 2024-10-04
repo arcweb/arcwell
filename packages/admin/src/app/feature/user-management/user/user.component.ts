@@ -3,7 +3,7 @@ import {
   DestroyRef,
   effect,
   inject,
-  Input,
+  input,
   OnInit,
 } from '@angular/core';
 import { UserStore } from './user.store';
@@ -30,6 +30,7 @@ import { AuthStore } from '@app/shared/store/auth.store';
 import { EmailService } from '@app/shared/services/email.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { map } from 'rxjs';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-user',
@@ -49,6 +50,7 @@ import { map } from 'rxjs';
     MatIconButton,
     MatCardModule,
     BackButtonComponent,
+    DetailHeaderComponent,
   ],
   providers: [UserStore],
   templateUrl: './user.component.html',
@@ -70,7 +72,7 @@ export class UserComponent implements OnInit {
 
   destroyRef = inject(DestroyRef);
 
-  @Input() userId!: string;
+  userId = input<string>();
 
   userForm = new FormGroup({
     email: new FormControl(
@@ -103,7 +105,7 @@ export class UserComponent implements OnInit {
     // if the route data contains isProfile use the current user id else use the userId from the params
     const userId = this.isProfile()
       ? this.authStore.currentUser()?.id
-      : this.userId;
+      : this.userId();
     if (userId) {
       this.userStore.initialize(userId).then(() => {
         this.userForm.patchValue({

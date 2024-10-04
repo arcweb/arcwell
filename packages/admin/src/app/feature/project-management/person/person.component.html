@@ -1,149 +1,133 @@
 @if (personStore.isReady()) {
-  <aw-back-button></aw-back-button>
-  <div class="main-container-header">
-    @if (personStore.inCreateMode()) {
-      <h2>Create Person</h2>
-    } @else if (personStore.inEditMode()) {
-      <h2>Edit Person</h2>
-    } @else {
-      <h2>View Person</h2>
-    }
+  <div class="table-form-container">
+    <aw-detail-header
+      detailName="Person"
+      [inEditMode]="personStore.inEditMode()"
+      [inCreateMode]="personStore.inCreateMode()"
+      (toggleEditMode)="personStore.toggleEditMode()"
+      (delete)="onDelete()"
+    ></aw-detail-header>
 
-    <div class="icons-container">
-      @if (!personStore.inCreateMode()) {
-        <button
-          mat-icon-button
-          [disabled]="personStore.inEditMode()"
-          (click)="personStore.toggleEditMode()"
-        >
-          <mat-icon aria-label="Edit person icon">edit</mat-icon>
-        </button>
-        <button mat-icon-button (click)="onDelete()">
-          <mat-icon aria-label="Delete person icon">delete_forever</mat-icon>
-        </button>
+    <form [formGroup]="personForm">
+      @if (personStore.isErrored()) {
+        <aw-error-container [errors]="personStore.errors()" />
       }
-    </div>
-  </div>
 
-  <form [formGroup]="personForm">
-    @if (personStore.isErrored()) {
-      <aw-error-container [errors]="personStore.errors()" />
-    }
-
-    <mat-form-field>
-      <mat-label>Given Name</mat-label>
-      <input matInput placeholder="Name" formControlName="givenName" />
-      @if (personForm.controls.givenName.hasError('required')) {
-        <mat-error>
-          Given Name is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Family Name</mat-label>
-      <input matInput placeholder="Name" formControlName="familyName" />
-      @if (personForm.controls.familyName.hasError('required')) {
-        <mat-error>
-          Family Name is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Person Type</mat-label>
-      <mat-select
-        formControlName="personType"
-        [compareWith]="comparePersonTypes"
-      >
-        @for (personType of personStore.personTypes(); track personType.id) {
-          <mat-option [value]="personType">
-            {{ personType.name }}
-          </mat-option>
+      <mat-form-field>
+        <mat-label>Given Name</mat-label>
+        <input matInput placeholder="Name" formControlName="givenName" />
+        @if (personForm.controls.givenName.hasError('required')) {
+          <mat-error>
+            Given Name is
+            <strong>required</strong>
+          </mat-error>
         }
-      </mat-select>
-      @if (personForm.controls.personType.hasError('required')) {
-        <mat-error>
-          Person Type is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
+      </mat-form-field>
 
-    <div class="form-button-container">
-      <button
-        mat-button
-        type="button"
-        (click)="onCancel()"
-        class="default-button"
-        [disabled]="!personStore.inEditMode()"
-      >
-        Cancel
-      </button>
-      <button
-        mat-flat-button
-        type="submit"
-        class="default-button"
-        [disabled]="
-          !personStore.inEditMode() || !personForm.valid || !personForm.dirty
-        "
-      >
-        Save
-      </button>
-    </div>
-  </form>
+      <mat-form-field>
+        <mat-label>Family Name</mat-label>
+        <input matInput placeholder="Name" formControlName="familyName" />
+        @if (personForm.controls.familyName.hasError('required')) {
+          <mat-error>
+            Family Name is
+            <strong>required</strong>
+          </mat-error>
+        }
+      </mat-form-field>
 
-  @if (!personStore.inCreateMode()) {
-    <!-- Cohorts Section -->
-    <h2>Cohorts</h2>
-    <form [formGroup]="cohortForm">
-      <aw-object-selector-form-field
-        formControlName="cohort"
-        placeholder="Search for Cohort"
-        label="Cohort"
-        serviceType="personCohorts"
-        displayProperty="name"
-        [objectIdForFiltering]="this.personStore.person().id"
-      ></aw-object-selector-form-field>
+      <mat-form-field>
+        <mat-label>Person Type</mat-label>
+        <mat-select
+          formControlName="personType"
+          [compareWith]="comparePersonTypes"
+        >
+          @for (personType of personStore.personTypes(); track personType.id) {
+            <mat-option [value]="personType">
+              {{ personType.name }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (personForm.controls.personType.hasError('required')) {
+          <mat-error>
+            Person Type is
+            <strong>required</strong>
+          </mat-error>
+        }
+      </mat-form-field>
 
-      <div class="icons-container">
+      <div class="form-button-container">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()"
+          class="default-button"
+          [disabled]="!personStore.inEditMode()"
+        >
+          Cancel
+        </button>
         <button
           mat-flat-button
           type="submit"
           class="default-button"
           [disabled]="
-            personStore.inEditMode() || !cohortForm.valid || !cohortForm.dirty
+            !personStore.inEditMode() || !personForm.valid || !personForm.dirty
           "
         >
-          Add Cohort to Person
+          Save
         </button>
       </div>
     </form>
 
-    @if (personStore.person().cohortsCount > 0) {
-      <aw-cohort-table
-        [dataSource]="cohortsDataSource"
-        [displayedColumns]="cohortColumns"
-        [length]="this.personStore.person().cohortsCount"
-        [pageSizes]="pageSizes"
-        [pageSize]="this.personStore.cohortsListOptions().limit"
-        [pageIndex]="this.personStore.cohortsListOptions().pageIndex"
-        (onDeleteClicked)="cohortsDeleteClick($event)"
-        (onPageChanged)="cohortsPageChange($event)"
-        (onRowClicked)="cohortsRowClick($event)"
-      ></aw-cohort-table>
-    } @else {
-      <h3 class="no-cohorts">
-        No cohorts currently associated with this person
-      </h3>
-    }
+    @if (!personStore.inCreateMode()) {
+      <!-- Cohorts Section -->
+      <h2>Cohorts</h2>
+      <form [formGroup]="cohortForm">
+        <aw-object-selector-form-field
+          formControlName="cohort"
+          placeholder="Search for Cohort"
+          label="Cohort"
+          serviceType="personCohorts"
+          displayProperty="name"
+          [objectIdForFiltering]="this.personStore.person().id"
+        ></aw-object-selector-form-field>
 
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="personStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
-  }
+        <div class="icons-container">
+          <button
+            mat-flat-button
+            type="submit"
+            class="default-button"
+            [disabled]="
+              personStore.inEditMode() || !cohortForm.valid || !cohortForm.dirty
+            "
+          >
+            Add Cohort to Person
+          </button>
+        </div>
+      </form>
+
+      @if (personStore.person().cohortsCount > 0) {
+        <aw-cohort-table
+          [dataSource]="cohortsDataSource"
+          [displayedColumns]="cohortColumns"
+          [length]="this.personStore.person().cohortsCount"
+          [pageSizes]="pageSizes"
+          [pageSize]="this.personStore.cohortsListOptions().limit"
+          [pageIndex]="this.personStore.cohortsListOptions().pageIndex"
+          (onDeleteClicked)="cohortsDeleteClick($event)"
+          (onPageChanged)="cohortsPageChange($event)"
+          (onRowClicked)="cohortsRowClick($event)"
+        ></aw-cohort-table>
+      } @else {
+        <h3 class="no-cohorts">
+          No cohorts currently associated with this person
+        </h3>
+      }
+
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="personStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
+  </div>
 }
