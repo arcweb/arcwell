@@ -160,13 +160,8 @@ export class UserComponent implements OnInit {
     return r1 && r2 ? r1.id === r2.id : false;
   }
 
-  sendEmail() {
-    this.emailService
-      .sendEmail(this.authStore.currentUser()!.email)
-      .subscribe();
-  }
-
   toggleChangePassword() {
     this.viewChangePassword = !this.viewChangePassword;
+    this.changeForm.reset();
   }
 }
