@@ -43,9 +43,9 @@
           </button>
         </div>
       </div>
-      <mat-card-content>
-        <div class="change-password-container">
-          @if (viewChangePassword) {
+      @if (viewChangePassword) {
+        <mat-card-content>
+          <div class="change-password-container">
             <form [formGroup]="changeForm">
               @if (authStore.loginStatus() === 'error') {
                 <mat-error>
@@ -98,9 +98,9 @@
                 Change
               </button>
             </form>
-          }
-        </div>
-      </mat-card-content>
+          </div>
+        </mat-card-content>
+      }
     </mat-card>
   }
 
