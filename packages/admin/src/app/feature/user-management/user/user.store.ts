@@ -1,8 +1,11 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastLevel } from '@app/shared/models';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { UserType, UserUpdateType } from '@app/shared/schemas/user.schema';
 import { RoleService } from '@app/shared/services/role.service';
+import { ToastService } from '@app/shared/services/toast.service';
 import { UserService } from '@app/shared/services/user.service';
 import {
   setErrors,
@@ -38,6 +41,8 @@ export const UserStore = signalStore(
       store,
       userService = inject(UserService),
       roleService = inject(RoleService),
+      toastService = inject(ToastService),
+      router = inject(Router),
     ) => ({
       async initialize(userId: string) {
         patchState(store, setPending());
@@ -63,8 +68,29 @@ export const UserStore = signalStore(
           );
         }
       },
+      async initializeForCreate() {
+        patchState(store, setPending());
+        const rolesResp = await firstValueFrom(roleService.getAllRoles({}));
+        if (rolesResp.errors) {
+          patchState(store, { isReady: true }, setErrors(rolesResp.errors));
+        } else {
+          patchState(
+            store,
+            {
+              roles: rolesResp.data,
+              inCreateMode: true,
+              inEditMode: true,
+              isReady: true,
+            },
+            setFulfilled(),
+          );
+        }
+      },
       async toggleEditMode() {
-        patchState(store, { inEditMode: !store.inEditMode() });
+        patchState(store, {
+          inEditMode: !store.inEditMode(),
+          inCreateMode: false,
+        });
       },
       async update(updateUserFormData: UserUpdateType) {
         patchState(store, setPending());
@@ -82,6 +108,32 @@ export const UserStore = signalStore(
             store,
             { user: resp.data, inEditMode: false },
             setFulfilled(),
+          );
+        }
+      },
+      async create(createUserFormData: UserType) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(
+          userService.create(createUserFormData),
+        );
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(
+            store,
+            {
+              inCreateMode: false,
+              inEditMode: false,
+            },
+            setFulfilled(),
+          );
+          toastService.sendMessage('Created user.', ToastLevel.SUCCESS);
+          // navigate the user to the newly created item
+          router.navigateByUrl(
+            `/project-management/settings/user-management/${resp.data.id}`,
+            {
+              replaceUrl: true,
+            },
           );
         }
       },
