@@ -68,7 +68,6 @@ export class AllUsersComponent {
       'project-management',
       'settings',
       'user-management',
-      'list',
       row.id,
     ]);
   }

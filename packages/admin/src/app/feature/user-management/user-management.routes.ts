@@ -13,7 +13,7 @@ export const USER_MANAGEMENT_ROUTES: Route[] = [
         component: AllUsersComponent,
       },
       {
-        path: 'list/:userId',
+        path: ':userId',
         component: UserComponent,
       },
       {
