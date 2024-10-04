@@ -1,4 +1,23 @@
 <h2 class="headline-medium">DashBoard</h2>
+@if (peopleListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+@if (eventListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+@if (resourcesListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+@if (factsListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+@if (peopleListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+@if (tagsListStore.isErrored()) {
+  <aw-error-container [errors]="peopleListStore.errors()" />
+}
+
 <div class="dashboad-card-contianer">
   <mat-card (click)="cardClick('/people')" class="dashboard-card">
     <mat-card-content class="display-large font-weight-bold">

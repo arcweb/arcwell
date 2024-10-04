@@ -7,11 +7,18 @@ import { ResourcesListStore } from '../resources-list/resources-list.store';
 import { FactsListStore } from '../facts-list/facts-list.store';
 import { TagsListStore } from '../tags-list/tags-list.store';
 import { Router } from '@angular/router';
+import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 
 @Component({
   selector: 'aw-dashboard',
   standalone: true,
-  imports: [MatCard, MatLabel, MatCardContent, MatCardFooter],
+  imports: [
+    MatCard,
+    MatLabel,
+    MatCardContent,
+    MatCardFooter,
+    ErrorContainerComponent,
+  ],
   providers: [
     EventsListStore,
     FactsListStore,
