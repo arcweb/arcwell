@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonMenuToggle, IonTitle, IonToolbar, Platform } from '@ionic/angular/standalone';
 
 @Component({
@@ -19,13 +18,15 @@ import { IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonMenuToggle, IonTi
   styleUrls: ['./home-header.component.scss'],
 })
 export class HomeHeaderComponent {
+  @Output() mainAction: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     public platform: Platform,
-    private router: Router,
   ) { }
 
   navigateSurveys(): void {
-    this.router.navigate(['/surveys']);
+    if (this.mainAction) {
+      this.mainAction.emit();
+    }
   }
 }

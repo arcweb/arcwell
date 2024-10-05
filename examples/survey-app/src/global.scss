@@ -46,3 +46,17 @@ swiper {
 .swiper-slide {
   overflow-y: scroll;
 }
+
+ion-toast {
+  --border-radius: 16px;
+  --color: var(--white);
+  text-align: center;
+
+  &.success {
+    --background: var(--ion-color-success);
+  }
+
+  &.error {
+    --background: var(--ion-color-danger);
+  }
+}

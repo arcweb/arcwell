@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonItem, IonLabel, IonList, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
-import { Router } from '@angular/router';
 import { HomeHeaderComponent } from '@components/home-header/home-header.component';
+import { ToastService } from '@services/toast/toast.service';
+import { GenericSurveyComponent } from '@components/generic-survey/generic-survey.component';
+import { OksSurveyComponent } from '@components/oks-survey/oks-survey.component';
+import { surveyConfigs } from './configs';
 
 @Component({
   selector: 'app-surveys',
@@ -12,6 +15,8 @@ import { HomeHeaderComponent } from '@components/home-header/home-header.compone
   styleUrls: ['./surveys.page.scss'],
   standalone: true,
   imports: [
+    GenericSurveyComponent,
+    OksSurveyComponent,
     HomeHeaderComponent,
     IonContent,
     IonHeader,
@@ -27,12 +32,13 @@ import { HomeHeaderComponent } from '@components/home-header/home-header.compone
 })
 export class SurveysPage {
   factTypes: FactType[] = [];
+  selectedFactType?: FactType;
 
   loading = false;
 
   constructor(
     private factTypeService: FactTypeService,
-    private router: Router,
+    private toastService: ToastService,
   ) {
     this.loadFactTypes({});
   }
@@ -42,9 +48,14 @@ export class SurveysPage {
     this.factTypeService.getFactTypes(queryData).subscribe({
       next: (response) => {
         this.factTypes = response.data;
-        console.log('Fact types:', this.factTypes);
       },
       error: (error) => {
+        this.toastService.presentToast(
+          'bottom',
+          'Error fetching fact types',
+          3000,
+          'error'
+        );
         console.error('Error fetching fact types:', error);
       },
       complete: () => {
@@ -53,7 +64,12 @@ export class SurveysPage {
     });
   }
 
-  navigateSurvey(id: string): void {
-    this.router.navigate(['/survey', id]);
+  getSurveyConfig(): any {
+    if (!this.selectedFactType) return null
+    return surveyConfigs[this.selectedFactType.key];
+  }
+
+  headerMainAction(): void {
+    this.selectedFactType = undefined;
   }
 }

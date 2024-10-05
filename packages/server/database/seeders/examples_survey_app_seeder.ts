@@ -67,7 +67,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'gad7_q6_response', name: 'Becoming easily annoyed or irritable', dataType: 'number', dataUnit: '', isRequired: true },
       { key: 'gad7_q7_response', name: 'Feeling afraid as if something awful might happen', dataType: 'number', dataUnit: '', isRequired: true },
       { key: 'gad7_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: true },
-      { key: 'gad7_follow_up', name: 'How difficult have these problems made it to do work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: true }
+      { key: 'gad7_follow_up', name: 'How difficult have these problems made it to do work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
     ]
 
     await FactType.firstOrCreate(
@@ -79,6 +79,52 @@ export default class SurveyAppSeeder extends BaseSeeder {
         dimensionSchemas: gad7Schemas
       }
     )
+
+    // OKS Survey FactType
+    const oksQuestions = [
+      { key: 'q1_response', name: 'How would you describe the pain you usually have from your knee?' },
+      { key: 'q2_response', name: 'Have you had any trouble with washing and drying yourself?' },
+      { key: 'q3_response', name: 'Have you had any trouble getting in and out of a car?' },
+      { key: 'q4_response', name: 'For how long have you been able to walk before the pain becomes severe?' },
+      { key: 'q5_response', name: 'After a meal, how painful has it been to stand up from a chair?' },
+      { key: 'q6_response', name: 'Have you been limping when walking?' },
+      { key: 'q7_response', name: 'Could you kneel down and get up again afterwards?' },
+      { key: 'q8_response', name: 'Have you been troubled by pain from your knee in bed at night?' },
+      { key: 'q9_response', name: 'How much has pain from your knee interfered with your usual work?' },
+      { key: 'q10_response', name: 'Have you felt that your knee might suddenly give way?' },
+      { key: 'q11_response', name: 'Could you do the household shopping on your own?' },
+      { key: 'q12_response', name: 'Could you walk down a flight of stairs?' },
+      { key: 'assessment_score', name: 'Sum of responses' }
+    ];
+
+    // Create dimension schemas for left and right knees
+    const createDimensionsForSide = (side: 'left' | 'right') => {
+      return oksQuestions.map((question) => {
+        return {
+          key: `oks_${side}_${question.key}`,
+          name: `${question.name}`,
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: false
+        }
+      })
+    };
+
+    const oksSchemas = [
+      ...createDimensionsForSide('left'),
+      ...createDimensionsForSide('right'),
+    ];
+
+    await FactType.firstOrCreate(
+      { key: 'survey_oks' },
+      {
+        key: 'survey_oks',
+        name: 'Oxford Knee Score (OKS)',
+        description: 'A survey for assessing knee function and pain severity.',
+        dimensionSchemas: oksSchemas,
+      }
+    );
+
 
     console.log('SurveyAppSeeder has been run successfully with one patient user and PHQ-9 survey data.')
   }

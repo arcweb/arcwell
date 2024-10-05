@@ -1,4 +1,4 @@
-<app-home-header />
+<app-home-header (mainAction)="headerMainAction()" />
 
 <ion-content>
 
@@ -9,16 +9,26 @@
   </ng-container>
 
   <ng-container *ngIf="!loading">
-    <div class="ion-padding">
-      <h1 class="surveys-header">Please select a survey</h1>
-    </div>
-    <ion-list>
-      <ion-item *ngFor="let factType of factTypes" button (click)="navigateSurvey(factType.id)">
-        <ion-label>
-          <h2>{{ factType.name }}</h2>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    <ng-container *ngIf="!selectedFactType">
+      <div class="ion-padding">
+        <h1 class="surveys-header">Please select a survey</h1>
+      </div>
+      <ion-list>
+        <ion-item *ngFor="let factType of factTypes" button (click)="selectedFactType = factType">
+          <ion-label>
+            <h2>{{ factType.name }}</h2>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+
+    <ng-container *ngIf="selectedFactType">
+      <app-generic-survey *ngIf="selectedFactType.key === 'survey_gad7' || selectedFactType.key === 'survey_phq9'"
+        [factType]="selectedFactType" [surveyConfig]="getSurveyConfig()" (alertConfirm)="headerMainAction()" />
+
+      <app-oks-survey *ngIf="selectedFactType.key === 'survey_oks'" [factType]="selectedFactType"
+        [surveyConfig]="getSurveyConfig()" (alertConfirm)="headerMainAction()" />
+    </ng-container>
   </ng-container>
 
 </ion-content>

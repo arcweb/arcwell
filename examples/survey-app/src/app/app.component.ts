@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuComponent } from '@components/menu/menu.component';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
-import { HealthService } from '@services/health/health.service';
+import { register } from 'swiper/element';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +9,12 @@ import { HealthService } from '@services/health/health.service';
   styleUrls: ['app.component.scss'],
   standalone: true,
   imports: [IonApp, IonRouterOutlet, MenuComponent],
-  providers: [HealthService],
+  providers: [],
 })
 export class AppComponent implements OnInit {
-  constructor(private healthService: HealthService) { }
+  constructor() { }
 
   ngOnInit(): void {
+    register();
   }
 }
