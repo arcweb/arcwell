@@ -69,7 +69,7 @@ export class SurveysPage {
     return surveyConfigs[this.selectedFactType.key];
   }
 
-  headerMainAction(): void {
+  resetSurveys(): void {
     this.selectedFactType = undefined;
   }
 }

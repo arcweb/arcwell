@@ -1,4 +1,4 @@
-<app-home-header (mainAction)="headerMainAction()" />
+<app-home-header (mainAction)="resetSurveys()" />
 
 <ion-content>
 
@@ -24,10 +24,10 @@
 
     <ng-container *ngIf="selectedFactType">
       <app-generic-survey *ngIf="selectedFactType.key === 'survey_gad7' || selectedFactType.key === 'survey_phq9'"
-        [factType]="selectedFactType" [surveyConfig]="getSurveyConfig()" (alertConfirm)="headerMainAction()" />
+        [factType]="selectedFactType" [surveyConfig]="getSurveyConfig()" (resetAction)="resetSurveys()" />
 
       <app-oks-survey *ngIf="selectedFactType.key === 'survey_oks'" [factType]="selectedFactType"
-        [surveyConfig]="getSurveyConfig()" (alertConfirm)="headerMainAction()" />
+        [surveyConfig]="getSurveyConfig()" (resetAction)="resetSurveys()" />
     </ng-container>
   </ng-container>
 

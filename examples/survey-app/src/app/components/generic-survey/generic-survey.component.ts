@@ -41,7 +41,7 @@ export class GenericSurveyComponent {
   @Input('factType') factType?: FactType;
   @Input('surveyConfig') surveyConfig!: SurveyConfig;
 
-  @Output('alertConfirm') alertConfirm: EventEmitter<void> = new EventEmitter<void>();
+  @Output('resetAction') resetAction: EventEmitter<void> = new EventEmitter<void>();
 
   alertButtons = [
     {
@@ -56,7 +56,7 @@ export class GenericSurveyComponent {
       role: 'confirm',
       handler: () => {
         this.isAlertOpen = false;
-        this.alertConfirm.emit();
+        this.resetAction.emit();
       },
     },
   ];
@@ -184,7 +184,7 @@ export class GenericSurveyComponent {
             3000,
             'success'
           );
-          this.router.navigate(['/surveys']);
+          this.resetAction.emit();
         }
       });
     }

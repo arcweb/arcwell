@@ -9,6 +9,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { switchMap } from 'rxjs';
 import { SwiperContainer } from 'swiper/element';
 import { SurveyConfig } from '@pages/surveys/configs';
+import { ToastService } from '@services/toast/toast.service';
 
 @Component({
   selector: 'app-oks-survey',
@@ -34,7 +35,7 @@ export class OksSurveyComponent {
   @Input('factType') factType?: FactType;
   @Input('surveyConfig') surveyConfig!: SurveyConfig;
 
-  @Output('alertConfirm') alertConfirm: EventEmitter<void> = new EventEmitter<void>();
+  @Output('resetAction') resetAction: EventEmitter<void> = new EventEmitter<void>();
 
   alertButtons = [
     {
@@ -49,7 +50,7 @@ export class OksSurveyComponent {
       role: 'confirm',
       handler: () => {
         this.isAlertOpen = false;
-        this.alertConfirm.emit();
+        this.resetAction.emit();
       },
     },
   ];
@@ -63,9 +64,9 @@ export class OksSurveyComponent {
   showScore: boolean = false;
 
   constructor(
-    private router: Router,
     private authService: AuthService,
     private factService: FactService,
+    private toastService: ToastService,
   ) { }
 
   areAllQuestionsAnsweredForSide(side: 'left' | 'right'): boolean {
@@ -173,10 +174,19 @@ export class OksSurveyComponent {
         })
       ).subscribe({
         next: (response) => {
-          console.log('OKS Survey saved:', response);
+          console.log('Questionnaire saved:', response);
         },
         error: (error) => {
           console.error('Error saving OKS survey:', error);
+        },
+        complete: () => {
+          this.toastService.presentToast(
+            'bottom',
+            'Questionnaire saved',
+            3000,
+            'success'
+          );
+          this.resetAction.emit();
         }
       });
     }
