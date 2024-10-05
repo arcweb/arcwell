@@ -23,10 +23,4 @@ export class HomeHeaderComponent {
   constructor(
     public platform: Platform,
   ) { }
-
-  navigateSurveys(): void {
-    if (this.mainAction) {
-      this.mainAction.emit();
-    }
-  }
 }
