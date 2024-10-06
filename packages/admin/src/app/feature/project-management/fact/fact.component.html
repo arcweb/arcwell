@@ -56,16 +56,18 @@
         formControlName="person"
         placeholder="Search for Person"
         label="Person"
-        serviceType="people"
+        objectType="people"
         displayProperty="familyName"
+        [objectSubTypes]="this.factStore.personTypes()"
       ></aw-object-selector-form-field>
 
       <aw-object-selector-form-field
         formControlName="resource"
         placeholder="Search for Resource"
         label="Resource"
-        serviceType="resources"
+        objectType="resources"
         displayProperty="name"
+        [objectSubTypes]="this.factStore.resourceTypes()"
       ></aw-object-selector-form-field>
 
       <h4>Note: Currently, events can only be added via the api</h4>
