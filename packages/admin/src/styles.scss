@@ -19,8 +19,10 @@ html {
   // custom, component level mixins
   @include mixins.auth-theme(theme.$light-theme);
   @include mixins.button-theme(theme.$light-theme);
+  @include mixins.card-theme(theme.$light-theme);
   @include mixins.config-theme(theme.$light-theme);
   @include mixins.dashboard-theme(theme.$light-theme);
+  @include mixins.form-theme(theme.$light-theme);
   @include mixins.settings-theme(theme.$light-theme);
   @include mixins.sidenav-theme(theme.$light-theme);
   @include mixins.table-theme(theme.$light-theme);
@@ -51,6 +53,6 @@ a {
 
 .table-form-container {
   border-radius: layout.$card-border-radius;
-  padding: 16px;
+  padding: 40px 32px;
   background-color: colors.$white;
 }

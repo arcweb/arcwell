@@ -1,12 +1,12 @@
 <div class="detail-header-container">
   <aw-back-button></aw-back-button>
-  <div class="detail-title-button-container title-large">
+  <div
+    class="detail-title-button-container font-weight-regular-bolder card-title"
+  >
     @if (inCreateMode()) {
-      <h2>Create {{ detailName() }}</h2>
-    } @else if (inEditMode()) {
-      <h2>Edit {{ detailName() }}</h2>
+      <h5>Create {{ detailName() }}</h5>
     } @else {
-      <h2>View {{ detailName() }}</h2>
+      <h5>{{ detailName() }} Detail</h5>
     }
 
     <div class="icons-container">

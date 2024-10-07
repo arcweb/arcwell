@@ -68,7 +68,7 @@
         displayProperty="name"
       ></aw-object-selector-form-field>
 
-      <h4>Note: Currently, events can only be added via the api</h4>
+      <h6>Note: Currently, events can only be added via the api</h6>
       <!--    <aw-object-selector-form-field-->
       <!--      formControlName="event"-->
       <!--      placeholder="Search for Event"-->
@@ -78,7 +78,7 @@
       <!--    ></aw-object-selector-form-field>-->
 
       @if (factStore.fact()?.dimensions?.length > 0) {
-        <h2>Dimensions</h2>
+        <h5>Dimensions</h5>
         <table
           mat-table
           [dataSource]="factStore.fact().dimensions"
@@ -113,11 +113,11 @@
             </mat-error>
           }
         </mat-form-field>
-        <h4>
+        <h6>
           Note: Dimensions will not be validated by the fact type's dimension
           schema. Use with extreme caution. Suggested fact creation is done via
           the data insert api.
-        </h4>
+        </h6>
       }
 
       <div class="form-button-container">

@@ -1,0 +1,7 @@
+@use 'colors';
+
+@mixin card-theme($theme) {
+  .card-title {
+    color: colors.$primary;
+  }
+}

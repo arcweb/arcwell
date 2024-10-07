@@ -58,7 +58,7 @@
 
     @if (!cohortStore.inCreateMode()) {
       <!-- People Section -->
-      <h2>People</h2>
+      <h5 class="card-title">People</h5>
       <form [formGroup]="peopleForm">
         <aw-object-selector-form-field
           formControlName="person"
@@ -99,9 +99,9 @@
           (onSortChanged)="peopleSortChange($event)"
         ></aw-people-table>
       } @else {
-        <h3 class="no-people">
+        <h5 class="no-people card-title">
           No persons currently associated with this cohort
-        </h3>
+        </h5>
       }
 
       <!--  Tags Section-->
