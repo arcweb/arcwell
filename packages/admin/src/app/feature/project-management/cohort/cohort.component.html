@@ -64,9 +64,10 @@
           formControlName="person"
           placeholder="Search for Person"
           label="Person"
-          serviceType="cohortPeople"
+          objectType="cohortPeople"
           displayProperty="familyName"
           [objectIdForFiltering]="this.cohortStore.cohort().id"
+          [objectSubTypes]="this.cohortStore.personTypes()"
         ></aw-object-selector-form-field>
 
         <div class="icons-container">

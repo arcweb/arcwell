@@ -23,6 +23,10 @@ import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { Router } from '@angular/router';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
+import { PersonTypeService } from '@app/shared/services/person-type.service';
+import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 
 interface FactState {
   fact: FactType | null;
@@ -30,6 +34,8 @@ interface FactState {
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
+  personTypes: PersonTypeType[];
+  resourceTypes: ResourceTypeType[];
 }
 
 const initialState: FactState = {
@@ -38,6 +44,8 @@ const initialState: FactState = {
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
+  personTypes: [],
+  resourceTypes: [],
 };
 
 export const FactStore = signalStore(
@@ -49,28 +57,47 @@ export const FactStore = signalStore(
       store,
       factService = inject(FactService),
       factTypeService = inject(FactTypeService),
+      personTypeService = inject(PersonTypeService),
+      resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
       router = inject(Router),
     ) => ({
       async initialize(factId: string) {
         patchState(store, setPending());
-        const { factResp, factTypesResp } = await firstValueFrom(
-          forkJoin({
-            factResp: factService.getFact(factId),
-            factTypesResp: factTypeService.getFactTypes({}),
-          }),
-        );
+        const { factResp, factTypesResp, personTypesResp, resourceTypesResp } =
+          await firstValueFrom(
+            forkJoin({
+              factResp: factService.getFact(factId),
+              factTypesResp: factTypeService.getFactTypes({}),
+              personTypesResp: personTypeService.getPersonTypes({}),
+              resourceTypesResp: resourceTypeService.getResourceTypes({}),
+            }),
+          );
         if (factResp.errors) {
           patchState(store, { isReady: true }, setErrors(factResp.errors));
         } else if (factTypesResp.errors) {
           patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
+        } else if (personTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResp.errors),
+          );
+        } else if (resourceTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(resourceTypesResp.errors),
+          );
         } else {
           patchState(
             store,
             {
               fact: factResp.data,
               factTypes: factTypesResp.data,
+              personTypes: personTypesResp.data,
+              resourceTypes: resourceTypesResp.data,
               isReady: true,
             },
             setFulfilled(),
@@ -79,16 +106,35 @@ export const FactStore = signalStore(
       },
       async initializeForCreate() {
         patchState(store, setPending());
-        const factTypesResp = await firstValueFrom(
-          factTypeService.getFactTypes({}),
-        );
+        const { factTypesResp, personTypesResp, resourceTypesResp } =
+          await firstValueFrom(
+            forkJoin({
+              factTypesResp: factTypeService.getFactTypes({}),
+              personTypesResp: personTypeService.getPersonTypes({}),
+              resourceTypesResp: resourceTypeService.getResourceTypes({}),
+            }),
+          );
         if (factTypesResp.errors) {
           patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
+        } else if (personTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResp.errors),
+          );
+        } else if (resourceTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(resourceTypesResp.errors),
+          );
         } else {
           patchState(
             store,
             {
               factTypes: factTypesResp.data,
+              personTypes: personTypesResp.data,
+              resourceTypes: resourceTypesResp.data,
               inCreateMode: true,
               inEditMode: true,
               isReady: true,

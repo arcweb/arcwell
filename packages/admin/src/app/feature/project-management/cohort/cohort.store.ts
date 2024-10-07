@@ -14,7 +14,7 @@ import {
 } from '@shared/store/request-status.feature';
 import { CohortService } from '@shared/services/cohort.service';
 import { computed, inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { CohortType, CohortUpdateType } from '@shared/schemas/cohort.schema';
 import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
@@ -23,6 +23,8 @@ import { ToastLevel } from '@shared/models';
 import { SortDirection } from '@angular/material/sort';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { Router } from '@angular/router';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { PersonTypeService } from '@app/shared/services/person-type.service';
 
 interface CohortPeopleListState {
   limit: number;
@@ -38,6 +40,7 @@ interface CohortState {
   inCreateMode: boolean;
   isReady: boolean;
   peopleListOptions: CohortPeopleListState;
+  personTypes: PersonTypeType[];
 }
 
 const initialPeopleListState: CohortPeopleListState = {
@@ -54,6 +57,7 @@ const initialState: CohortState = {
   inCreateMode: false,
   isReady: false,
   peopleListOptions: initialPeopleListState,
+  personTypes: [],
 };
 
 export const CohortStore = signalStore(
@@ -64,28 +68,39 @@ export const CohortStore = signalStore(
     (
       store,
       cohortService = inject(CohortService),
+      personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
       router = inject(Router),
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
-        const cohortResp = await firstValueFrom(
-          cohortService.getCohortWithPeople({
-            id: cohortId,
-            limit: store.peopleListOptions().limit,
-            offset: store.peopleListOptions().offset,
-            sort: store.peopleListOptions().sort,
-            order: store.peopleListOptions().order,
+        const { cohortResp, personTypesResp } = await firstValueFrom(
+          forkJoin({
+            cohortResp: cohortService.getCohortWithPeople({
+              id: cohortId,
+              limit: store.peopleListOptions().limit,
+              offset: store.peopleListOptions().offset,
+              sort: store.peopleListOptions().sort,
+              order: store.peopleListOptions().order,
+            }),
+            personTypesResp: personTypeService.getPersonTypes({}),
           }),
         );
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
+        } else if (personTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResp.errors),
+          );
         } else {
           patchState(
             store,
             {
               cohort: cohortResp.data,
+              personTypes: personTypesResp.data,
               isReady: true,
               peopleListOptions: initialPeopleListState,
             },
@@ -134,16 +149,26 @@ export const CohortStore = signalStore(
         console.log('createCohortFormData', createCohortFormData);
         patchState(store, setPending());
 
-        const resp = await firstValueFrom(
-          cohortService.create(createCohortFormData),
+        const { cohortResp, personTypesResp } = await firstValueFrom(
+          forkJoin({
+            cohortResp: cohortService.create(createCohortFormData),
+            personTypesResp: personTypeService.getPersonTypes({}),
+          }),
         );
-        if (resp.errors) {
-          patchState(store, setErrors(resp.errors));
+        if (cohortResp.errors) {
+          patchState(store, { isReady: true }, setErrors(cohortResp.errors));
+        } else if (personTypesResp.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResp.errors),
+          );
         } else {
           patchState(
             store,
             {
-              cohort: resp.data,
+              cohort: cohortResp.data,
+              personTypes: personTypesResp.data,
               inCreateMode: false,
               inEditMode: false,
               peopleListOptions: initialPeopleListState,
@@ -154,9 +179,12 @@ export const CohortStore = signalStore(
           toastService.sendMessage('Created cohort.', ToastLevel.SUCCESS);
 
           // navigate to the newly created cohort and don't save the current route in history
-          router.navigateByUrl(`/project-management/cohorts/${resp.data.id}`, {
-            replaceUrl: true,
-          });
+          router.navigateByUrl(
+            `/project-management/cohorts/${cohortResp.data.id}`,
+            {
+              replaceUrl: true,
+            },
+          );
         }
       },
       async deleteCohort() {
