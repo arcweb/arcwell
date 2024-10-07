@@ -38,6 +38,7 @@ import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-resource-type',
@@ -57,6 +58,7 @@ import { BackService } from '@app/shared/services/back.service';
     RouterLink,
     MatIconButton,
     TagsFormComponent,
+    DetailHeaderComponent,
   ],
   providers: [ResourceTypeStore],
   templateUrl: './resource-type.component.html',

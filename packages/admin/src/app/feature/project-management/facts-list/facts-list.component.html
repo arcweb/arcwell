@@ -7,20 +7,21 @@
 @if (factsListStore.isErrored()) {
   <aw-error-container [errors]="factsListStore.errors()" />
 }
-
-<aw-facts-table
-  [dataSource]="dataSource"
-  [displayedColumns]="displayedColumns"
-  [matSortActive]="this.factsListStore.sort()"
-  [matSortDirection]="this.factsListStore.order()"
-  [length]="this.factsListStore.totalData()"
-  [pageSizes]="pageSizes"
-  [pageSize]="this.factsListStore.limit()"
-  [pageIndex]="this.factsListStore.pageIndex()"
-  (onPageChanged)="this.factsListStore.loadPage($event)"
-  (onRowClicked)="rowClick($event)"
-  (onSortChanged)="sortChange($event)"
-  (onViewEventClicked)="viewEvent($event)"
-  (onViewResourceClicked)="viewResource($event)"
-  (onViewPersonClicked)="viewPerson($event)"
-></aw-facts-table>
+<div class="table-form-container">
+  <aw-facts-table
+    [dataSource]="dataSource"
+    [displayedColumns]="displayedColumns"
+    [matSortActive]="this.factsListStore.sort()"
+    [matSortDirection]="this.factsListStore.order()"
+    [length]="this.factsListStore.totalData()"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.factsListStore.limit()"
+    [pageIndex]="this.factsListStore.pageIndex()"
+    (onPageChanged)="this.factsListStore.loadPage($event)"
+    (onRowClicked)="rowClick($event)"
+    (onSortChanged)="sortChange($event)"
+    (onViewEventClicked)="viewEvent($event)"
+    (onViewResourceClicked)="viewResource($event)"
+    (onViewPersonClicked)="viewPerson($event)"
+  ></aw-facts-table>
+</div>

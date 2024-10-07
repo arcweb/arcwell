@@ -53,6 +53,7 @@ import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-fact',
@@ -86,6 +87,7 @@ import { BackService } from '@app/shared/services/back.service';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ObjectSelectorFormFieldComponent,
+    DetailHeaderComponent,
   ],
   providers: [FactStore],
   templateUrl: './fact.component.html',
@@ -117,7 +119,7 @@ export class FactComponent implements OnInit {
     }),
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
     dimensions: new FormControl({
-      value: [],
+      value: '[]',
       disabled: true,
     }),
   });

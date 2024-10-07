@@ -47,7 +47,7 @@ export const EventsListStore = signalStore(
       sort?: string;
       order?: SortDirection;
       pageIndex?: number;
-      typeKey: string;
+      typeKey?: string;
     }) {
       patchState(
         store,
@@ -97,6 +97,15 @@ export const EventsListStore = signalStore(
           { events: resp.data, totalData: resp.meta.count },
           setFulfilled(),
         );
+      }
+    },
+    async count() {
+      patchState(store, setPending());
+      const resp = await firstValueFrom(eventService.count());
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(store, { totalData: resp.data.count }, setFulfilled());
       }
     },
   })),

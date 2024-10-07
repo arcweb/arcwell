@@ -3,11 +3,12 @@ import {
   DestroyRef,
   effect,
   inject,
-  Input,
+  input,
   OnInit,
 } from '@angular/core';
 import { UserStore } from './user.store';
 import {
+  AbstractControl,
   ControlEvent,
   FormControl,
   FormGroup,
@@ -27,9 +28,12 @@ import { RoleType } from '@app/shared/schemas/role.schema';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { AuthStore } from '@app/shared/store/auth.store';
-import { EmailService } from '@app/shared/services/email.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { map } from 'rxjs';
+import { ChangePasswordComponent } from '@app/feature/auth/change-password/change-password-form.component';
+import { InputMatch } from '@app/shared/helpers/input-match.helper';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 
 @Component({
   selector: 'aw-user',
@@ -49,6 +53,8 @@ import { map } from 'rxjs';
     MatIconButton,
     MatCardModule,
     BackButtonComponent,
+    ChangePasswordComponent,
+    DetailHeaderComponent,
   ],
   providers: [UserStore],
   templateUrl: './user.component.html',
@@ -65,12 +71,13 @@ export class UserComponent implements OnInit {
       map(({ isProfile }) => isProfile),
     ),
   );
-  private emailService: EmailService = inject(EmailService);
+
   userAvatar = '';
+  viewChangePassword = false;
 
   destroyRef = inject(DestroyRef);
 
-  @Input() userId!: string;
+  userId = input<string>();
 
   userForm = new FormGroup({
     email: new FormControl(
@@ -80,7 +87,14 @@ export class UserComponent implements OnInit {
       },
       [Validators.email, Validators.required],
     ),
-    role: new FormControl(
+    password: new FormControl(
+      {
+        value: '',
+        disabled: true,
+      },
+      [this.hiddenRequiredValidator()],
+    ),
+    role: new FormControl<RoleType>(
       {
         value: null,
         disabled: true,
@@ -88,6 +102,15 @@ export class UserComponent implements OnInit {
       Validators.required,
     ),
   });
+
+  changeForm = new FormGroup(
+    {
+      password: new FormControl('', [Validators.required]),
+      newPassword: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    },
+    { validators: InputMatch('newPassword', 'confirmPassword') },
+  );
 
   constructor() {
     effect(() => {
@@ -103,40 +126,94 @@ export class UserComponent implements OnInit {
     // if the route data contains isProfile use the current user id else use the userId from the params
     const userId = this.isProfile()
       ? this.authStore.currentUser()?.id
-      : this.userId;
+      : this.userId();
     if (userId) {
-      this.userStore.initialize(userId).then(() => {
-        this.userForm.patchValue({
-          email: this.userStore.user()?.email,
-          role: this.userStore.user()?.role,
+      if (userId === CREATE_PARTIAL_URL) {
+        this.userStore.initializeForCreate();
+      } else {
+        this.userStore.initialize(userId).then(() => {
+          this.userForm.patchValue({
+            email: this.userStore.user()?.email,
+            role: this.userStore.user()?.role,
+          });
         });
-      });
+      }
     }
 
     this.userForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          this.userStore.update(this.userForm.value);
+          if (this.userStore.inCreateMode()) {
+            const formValue = this.userForm.value;
+
+            const userFormPayload = {
+              ...formValue,
+              roleId: this.isObjectModel(formValue.role)
+                ? formValue.role.id
+                : null,
+            };
+            this.userStore.create(userFormPayload);
+          } else {
+            this.userStore.update(this.userForm.value);
+          }
+        }
+      });
+
+    this.changeForm.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(event => {
+        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          this.authStore
+            .changePassword({
+              ...this.changeForm.value,
+              email: this.authStore.currentUser()?.email,
+            })
+            .then(() => {
+              if (this.authStore.loginStatus() !== 'error') {
+                this.toggleChangePassword();
+              }
+            });
         }
       });
   }
 
+  isObjectModel(obj: unknown) {
+    return (
+      obj &&
+      typeof obj === 'object' &&
+      'id' in obj &&
+      typeof obj.id === 'string'
+    );
+  }
+
   onCancel() {
+    const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
+    if (fromCreateMode) {
+      this.router.navigate([
+        'project-management',
+        'settings',
+        'user-management',
+      ]);
+    }
   }
 
   compareRoles(r1: RoleType, r2: RoleType): boolean {
     return r1 && r2 ? r1.id === r2.id : false;
   }
 
-  sendEmail() {
-    this.emailService
-      .sendEmail(this.authStore.currentUser()!.email)
-      .subscribe();
+  toggleChangePassword() {
+    this.viewChangePassword = !this.viewChangePassword;
+    this.changeForm.reset();
   }
 
-  changePassword() {
-    this.router.navigate(['auth', 'change']);
+  hiddenRequiredValidator() {
+    return (control: AbstractControl) => {
+      if (this.userStore.inCreateMode() && !control.value) {
+        return { required: true };
+      }
+      return null;
+    };
   }
 }

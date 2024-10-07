@@ -123,4 +123,8 @@ export class FeaturesMenuComponent {
       this.authStore.currentUser()?.id,
     ]);
   }
+
+  goHome() {
+    this.router.navigate(['/']);
+  }
 }

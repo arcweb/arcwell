@@ -11,13 +11,14 @@
       background-image: url('@assets/arcwell-mark.svg');
       background-repeat: no-repeat;
       background-size: cover;
-      opacity: .4;
+      opacity: 0.4;
 
-      @media screen and (min-width: layout.$breakpoint-width) {
+      @media screen and (min-width: layout.$breakpoint-width-login) {
         display: block;
         flex-grow: 4;
       }
-      @media screen and (max-width: layout.$breakpoint-width) {
+
+      @media screen and (max-width: layout.$breakpoint-width-login) {
         display: none;
       }
     }

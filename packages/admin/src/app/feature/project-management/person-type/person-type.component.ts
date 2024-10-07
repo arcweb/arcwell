@@ -38,6 +38,7 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-person-type',
@@ -57,6 +58,7 @@ import { BackService } from '@app/shared/services/back.service';
     MatIconButton,
     TagsFormComponent,
     BackButtonComponent,
+    DetailHeaderComponent,
   ],
   providers: [PersonTypeStore],
   templateUrl: './person-type.component.html',

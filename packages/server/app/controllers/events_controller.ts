@@ -3,10 +3,28 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
-import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery, buildEventsSort } from '#helpers/query_builder'
+import db from '@adonisjs/lucid/services/db'
 
 export default class EventsController {
+  /**
+   * @count
+   * @summary Count Events
+   * @description Returns the count of total events
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('events').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
   /**
    * @index
    * @summary List Events
@@ -86,9 +104,6 @@ export default class EventsController {
       .preload('eventType', (tags) => {
         tags.preload('tags')
       })
-      .preload('facts', (facts) => {
-        facts.preload('tags')
-      })
       .firstOrFail()
 
     return { data: createdEvent }
@@ -149,9 +164,6 @@ export default class EventsController {
       })
       .preload('eventType', (tags) => {
         tags.preload('tags')
-      })
-      .preload('facts', (facts) => {
-        facts.preload('tags')
       })
       .firstOrFail()
 

@@ -1,12 +1,1 @@
 @use 'layout.scss' as layout;
-
-.user-management-content-container {
-  display: flex;
-  height: 100%;
-
-  .route-content-container {
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
-  }
-}

@@ -1,4 +1,6 @@
-h2 {
+@use 'colors' as colors;
+
+h4 {
   margin: 0;
 }
 
@@ -7,9 +9,18 @@ h2 {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-}
+  padding: 24px 0;
 
-.icons-container {
-  display: flex;
-  gap: 8px;
+  .icons-container {
+    display: flex;
+    gap: 30px;
+  }
+
+  .table-header-button {
+    color: colors.$black;
+
+    .table-header-button-icon {
+      margin-right: 8px;
+    }
+  }
 }
