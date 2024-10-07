@@ -3,7 +3,7 @@ import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
-import { buildApiQuery, buildResourcesSort } from '#helpers/query_builder'
+import { buildApiQuery, buildResourcesSort, setTagsForObject } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 
 export function getFullResource(id: string) {
@@ -76,7 +76,15 @@ export default class ResourcesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceValidator)
-    const newResource = await Resource.create(request.body())
+    let newResource = null;
+    await db.transaction(async (trx) => {
+      newResource = await Resource.create(request.body(), trx)
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newResource.id, 'resources', tags.tags, false)
+      }
+    })
 
     return { data: await getFullResource(newResource.id) }
   }
@@ -109,9 +117,15 @@ export default class ResourcesController {
     await auth.authenticate()
     await request.validateUsing(updateResourceValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'typeKey'])
-    const resource = await Resource.findOrFail(params.id)
-    const updatedResource = await resource.merge(cleanRequest).save()
+    const cleanRequest = request.only(['name', 'typeKey', 'tags'])
+    let updatedResource = null
+    await db.transaction(async (trx) => {
+      const resource = await Resource.findOrFail(params.id)
+      resource.useTransaction(trx)
+      updatedResource = await resource.merge(cleanRequest).save()
+
+      await setTagsForObject(trx, resource.id, 'resources', cleanRequest.tags)
+    })
     return { data: await getFullResource(updatedResource.id) }
   }
 

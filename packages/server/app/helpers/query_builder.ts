@@ -4,6 +4,8 @@ import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 import Event from '#models/event'
 import Resource from '#models/resource'
 import Person from '#models/person'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import Tag from '#models/tag'
 
 function getSortSettings(queryData: Record<string, any> = {}) {
   const sort = queryData['sort']
@@ -161,5 +163,45 @@ export function buildResourcesSort(
     }
   } else {
     resourcesQuery.orderBy('name', 'asc')
+  }
+}
+
+export async function setTagsForObject(
+  trx: TransactionClientContract,
+  objectId: string,
+  objectType: string,
+  tags: string[],
+  isUpdate: boolean = true,
+) {
+  if (isUpdate) {
+    // Only delete all existing tags on update. For create request, this is unnecessary.
+    await trx.rawQuery(
+      'delete from tag_object where object_id = :id and object_type = :objectType',
+      {
+        id: objectId,
+        objectType: objectType,
+      }
+    )
+  }
+
+  for (let tagString of tags) {
+    let dbTag = await Tag.findBy('pathname', tagString)
+    if (!dbTag) {
+      const newTag = new Tag()
+      newTag.pathname = tagString
+      newTag.useTransaction(trx)
+      dbTag = await newTag.save()
+    }
+
+    await trx.rawQuery(
+      `INSERT INTO public.tag_object
+        (id, tag_id, object_id, object_type, created_at, updated_at)
+        VALUES(gen_random_uuid(), :tagId, :objectId, :objectType, now(), now());`,
+      {
+        tagId: dbTag.id,
+        objectId: objectId,
+        objectType: objectType,
+      }
+    )
   }
 }
