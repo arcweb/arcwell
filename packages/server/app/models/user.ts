@@ -33,6 +33,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare passwordResetCode: string | null
 
+  @column({ serializeAs: null })
+  declare tempPassword: string | null
+
+  @column()
+  declare requiresPasswordChange: boolean | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -74,5 +80,18 @@ export default class User extends compose(BaseModel, AuthFinder) {
     await user.save()
 
     return user.passwordResetCode
+  }
+
+  static async generateTempPassword(user: User) {
+    let letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let tempPassword = ''
+    for (let i = 0; i < 12; i++) {
+      tempPassword += letters[Math.floor(Math.random() * 62)]
+    }
+
+    user.merge({ tempPassword: tempPassword, requiresPasswordChange: true })
+    await user.save()
+
+    return user.tempPassword
   }
 }

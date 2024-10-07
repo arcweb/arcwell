@@ -44,7 +44,12 @@ export class SetPasswordComponent implements OnInit {
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
-    { validators: InputMatch('newPassword', 'confirmPassword') },
+    {
+      validators: [
+        InputMatch('password', 'confirmPassword'),
+        InputMatch('tempPassword', 'password', true),
+      ],
+    },
   );
 
   ngOnInit(): void {

@@ -30,3 +30,10 @@ export const resetPasswordValidator = vine.compile(
     password: passwordValidation,
   })
 )
+
+export const setPasswordValidator = vine.compile(
+  vine.object({
+    tempPassword: passwordValidation,
+    password: passwordValidation,
+  })
+)

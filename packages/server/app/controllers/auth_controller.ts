@@ -1,5 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator, resetPasswordValidator } from '#validators/auth'
+import { loginValidator, resetPasswordValidator, setPasswordValidator } from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
@@ -208,5 +208,33 @@ export default class AuthController {
     })
 
     return { data: user }
+  }
+
+  /**
+   * @setPassword
+   * @summary Set Password
+   * @description Sets a users password only when the user entry has a temp password set.  This is exclusively used by the invite system.
+   */
+  async setPassword({ request, auth }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(setPasswordValidator)
+    const cleanRequest = request.only(['tempPassword', 'password'])
+
+    let user = auth.user
+    if (user?.requiresPasswordChange && user.tempPassword === cleanRequest.tempPassword) {
+      // set the password
+      user.password = cleanRequest.password
+      await user.save()
+
+      mail.send((message) => {
+        message.to(user.email).subject('Your Passwor Has Been Set').htmlView('emails/password_set')
+      })
+
+      return { data: user }
+    } else {
+      // TODO: what of anything should be done if the user is not in teh system or the require
+      // password change is false or the temp passwords dont match
+      return
+    }
   }
 }
