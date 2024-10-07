@@ -35,6 +35,11 @@ export class MenuComponent implements OnInit {
     });
   }
 
+  async navigateResults() {
+    await this.menu?.close();
+    this.router.navigate(['/results']);
+  }
+
   get menuDisabled(): boolean {
     return this.activeRoute === '/login';
   }
@@ -44,5 +49,4 @@ export class MenuComponent implements OnInit {
     await this.menu?.close();
     this.router.navigate(['/login']);
   }
-
 }

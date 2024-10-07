@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonButton, IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonSelect, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { HomeHeaderComponent } from '@components/home-header/home-header.component';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
@@ -11,18 +11,34 @@ import { Fact, FactService } from '@services/fact/fact.service';
 import { AuthService } from '@services/auth/auth.service';
 import { switchMap } from 'rxjs';
 import { SurveyConfig, surveyConfigs } from './configs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.page.html',
   styleUrls: ['./results.page.scss'],
   standalone: true,
-  imports: [IonContent, IonButton, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, HomeHeaderComponent, NgxEchartsDirective],
+  imports: [
+    IonContent,
+    IonButton,
+    IonHeader,
+    IonLabel,
+    IonItem,
+    IonSelect,
+    IonSelectOption,
+    IonTitle,
+    IonToolbar,
+    CommonModule,
+    FormsModule,
+    HomeHeaderComponent,
+    NgxEchartsDirective
+  ],
   providers: [provideEcharts()],
 })
 export class ResultsPage implements OnInit {
   loading = false;
   factTypes: FactType[] = [];
+  selectedSurveyType?: FactType;
 
   chartOption: EChartsOption = {};
 
@@ -30,6 +46,7 @@ export class ResultsPage implements OnInit {
     private authService: AuthService,
     private factService: FactService,
     private factTypeService: FactTypeService,
+    private router: Router,
     private toastService: ToastService,
   ) { }
 
@@ -126,8 +143,15 @@ export class ResultsPage implements OnInit {
         name: 'Date',
         boundaryGap: false,
         axisLabel: {
-          rotate: 45, // Rotate dates
+          rotate: 45
         },
+      },
+      grid: {
+        left: '10%',  // Padding from the left side
+        right: '15%', // Padding from the right side
+        top: '15%',   // Padding from the top
+        bottom: '15%', // Padding from the bottom, to accommodate rotated labels
+        containLabel: true, // Ensure the labels stay within the chart
       },
       yAxis: {
         type: 'value',
@@ -140,6 +164,10 @@ export class ResultsPage implements OnInit {
 
   getSurveyConfig(surveyType: string): SurveyConfig | null {
     return surveyConfigs[surveyType] || null;
+  }
+
+  headerMainAction() {
+    this.router.navigate(['/surveys']);
   }
 
   loadFactTypes(): void {
@@ -161,6 +189,11 @@ export class ResultsPage implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onSurveyChange(event: any) {
+    this.selectFactTypeResults(event.detail.value);
+    this.selectedSurveyType = event.detail.value;
   }
 
   selectFactTypeResults(factType: FactType) {
