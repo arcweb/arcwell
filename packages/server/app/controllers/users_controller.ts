@@ -116,4 +116,14 @@ export default class UsersController {
     await user.delete()
     response.status(204).send('')
   }
+
+  /**
+   * @invite
+   * @summary Invite a User
+   * @description Set the user temp password and set the requires password flag, then send an email
+   */
+  async invite({ request, auth }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(paramsUUIDValidator)
+  }
 }
