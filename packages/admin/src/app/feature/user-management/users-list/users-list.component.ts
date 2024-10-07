@@ -21,6 +21,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { JsonPipe } from '@angular/common';
 import { UsersTableComponent } from '@app/shared/components/users-table/users-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
   selector: 'aw-users-list',
@@ -48,6 +50,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
   styleUrl: './users-list.component.scss',
 })
 export class AllUsersComponent {
+  readonly dialog = inject(MatDialog);
   readonly userStore = inject(UsersStore);
   private router = inject(Router);
 
@@ -55,7 +58,7 @@ export class AllUsersComponent {
 
   dataSource = new MatTableDataSource<UserModel>();
 
-  displayedColumns: string[] = ['email', 'role', 'person', 'tags'];
+  displayedColumns: string[] = ['email', 'role', 'person', 'tags', 're-invite'];
 
   constructor() {
     effect(() => {
@@ -70,6 +73,24 @@ export class AllUsersComponent {
       'user-management',
       row.id,
     ]);
+  }
+
+  reinvite(row: UserModel) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Re-Invite this person?',
+        question:
+          'Would you like to send this Person an email with instructions on how to log in? This will require the person to reset thier password when they log in next.',
+        okButton: 'Invite',
+        cancelButtonText: "Don't Invite",
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true && row.id) {
+        this.userStore.invite(row.id);
+      }
+    });
   }
 
   viewPerson(personId: string) {

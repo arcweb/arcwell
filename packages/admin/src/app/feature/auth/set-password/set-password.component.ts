@@ -40,6 +40,7 @@ export class SetPasswordComponent implements OnInit {
 
   setForm = new FormGroup(
     {
+      email: new FormControl('', [Validators.required]),
       tempPassword: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
