@@ -12,6 +12,7 @@ import {
 } from '@angular-architects/ngrx-toolkit';
 import { ResetType } from '@shared/schemas/password-reset.schema';
 import { ChangeType } from '@schemas/password-change.schema';
+import { SetType } from '../schemas/pasword-set.schema';
 
 export type LoginStatus =
   | 'none'
@@ -103,6 +104,15 @@ export const AuthStore = signalStore(
     async changePassword(change: ChangeType) {
       patchState(store, { loginStatus: 'pending' });
       const resp = await firstValueFrom(authService.changePassword(change));
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'none' });
+      }
+    },
+    async setPassword(set: SetType) {
+      patchState(store, { loginStatus: 'pending' });
+      const resp = await firstValueFrom(authService.setPassword(set));
       if (resp && resp.errors) {
         patchState(store, { loginStatus: 'error' });
       } else {

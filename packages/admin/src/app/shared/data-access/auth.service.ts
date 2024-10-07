@@ -17,6 +17,7 @@ import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
 import { ResetType } from '@schemas/password-reset.schema';
 import { ChangeType } from '@schemas/password-change.schema';
+import { SetType } from '../schemas/pasword-set.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -95,6 +96,18 @@ export class AuthService {
   ): Observable<UserResponseType | ErrorResponseType> {
     return this.http
       .post<UserResponseType>(`${this.apiUrl}/auth/change`, { ...change })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  setPassword(set: SetType): Observable<UserResponseType | ErrorResponseType> {
+    return this.http
+      .post<UserResponseType>(`${this.apiUrl}/auth/set`, {
+        ...set,
+      })
       .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
