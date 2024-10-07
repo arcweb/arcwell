@@ -216,18 +216,17 @@ export default class AuthController {
    * @description Sets a users password only when the user entry has a temp password set.  This is exclusively used by the invite system.
    */
   async setPassword({ request, auth }: HttpContext) {
-    await auth.authenticate()
     await request.validateUsing(setPasswordValidator)
-    const cleanRequest = request.only(['tempPassword', 'password'])
+    const cleanRequest = request.only(['tempPassword', 'password', 'email'])
 
-    let user = auth.user
+    let user = await User.findByOrFail('email', cleanRequest.email)
     if (user?.requiresPasswordChange && user.tempPassword === cleanRequest.tempPassword) {
       // set the password
       user.password = cleanRequest.password
       await user.save()
 
       mail.send((message) => {
-        message.to(user.email).subject('Your Passwor Has Been Set').htmlView('emails/password_set')
+        message.to(user.email).subject('Your Password Has Been Set').htmlView('emails/password_set')
       })
 
       return { data: user }

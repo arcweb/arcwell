@@ -3,6 +3,7 @@ import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
 import { buildApiQuery } from '#helpers/query_builder'
+import mail from '@adonisjs/mail/services/main'
 
 export function getFullUser(id: string) {
   return User.query()
@@ -125,5 +126,16 @@ export default class UsersController {
   async invite({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(paramsUUIDValidator)
+
+    let user = await User.findOrFail(request.id)
+
+    User.generateTempPassword(user)
+    user.merge({ requiresPasswordChange: true })
+    await user.save()
+
+    mail.send((message) => {
+      message.to(user.email).subject('Your Passwor Has Been Set').htmlView('emails/password_set')
+    })
+    return { data: user }
   }
 }
