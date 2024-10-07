@@ -20,8 +20,8 @@ export const FactSchema: any = z
     eventId: z.string().uuid().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional().nullable(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
-    tags: z.array(TagSchema).optional(),
-    factType: FactTypeSchema.optional(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
+    factType: z.lazy(() => FactTypeSchema.optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -39,8 +39,8 @@ export const FactUpdateSchema = FactSchema.extend({
   eventId: z.string().uuid().optional().nullable(),
   observedAt: z.string().datetime({ offset: true }).optional().nullable(),
   dimensions: z.array(DimensionSchema).optional().nullable(),
-  tags: z.array(TagSchema).optional(),
-  factType: FactTypeSchema.optional(),
+  tags: z.lazy(() => z.array(TagSchema).optional()),
+  factType: z.lazy(() => FactTypeSchema.optional()),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
@@ -60,10 +60,17 @@ export const FactResponseSchema = z.object({
   data: FactSchema,
 });
 
+export const FactsCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type FactType = z.infer<typeof FactSchema>;
 export type FactUpdateType = z.infer<typeof FactUpdateSchema>;
 export type FactsResponseType = z.infer<typeof FactsResponseSchema>;
 export type FactResponseType = z.infer<typeof FactResponseSchema>;
+export type FactsCountType = z.infer<typeof FactsCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeFact = (data: FactType): FactModel => {

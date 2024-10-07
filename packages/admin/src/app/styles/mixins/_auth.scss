@@ -1,69 +1,71 @@
 @use 'layout.scss' as layout;
 
-
-.forgot-container,
-.login-container {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-
-  .logo-container {
-    background-image: url('@assets/arcwell-mark.svg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    opacity: .4;
-
-    @media screen and (min-width: layout.$breakpoint-width) {
-      display: block;
-      flex-grow: 4;
-    }
-    @media screen and (max-width: layout.$breakpoint-width) {
-      display: none;
-    }
-  }
-
-  .form-container {
-    padding: 15vh 10vh;
+@mixin auth-theme($theme) {
+  .forgot-container,
+  .login-container {
+    display: flex;
+    flex-direction: row;
     height: 100%;
-    flex-grow: 1;
+
+    .logo-container {
+      background-image: url('@assets/arcwell-mark.svg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      opacity: 0.4;
+
+      @media screen and (min-width: layout.$breakpoint-width-login) {
+        display: block;
+        flex-grow: 4;
+      }
+
+      @media screen and (max-width: layout.$breakpoint-width-login) {
+        display: none;
+      }
+    }
+
+    .form-container {
+      padding: 15vh 10vh;
+      height: 100%;
+      flex-grow: 1;
+    }
+
+    .create-account {
+      width: 100%;
+      margin-top: 25px;
+    }
   }
 
-  .create-account {
-    width: 100%;
-    margin-top: 25px;
+  .forgotForm,
+  .loginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    .logo {
+      width: 270px;
+      height: 50px;
+    }
+
+    .header-text {
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    mat-form-field {
+      align-self: stretch;
+    }
+
+    .forgot-button {
+      align-self: flex-end;
+    }
   }
-}
 
-.forgotForm,
-.loginForm {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-
-  .logo {
-    width: 270px;
-    height: 50px;
+  mat-error {
+    margin: 5px 0;
   }
 
-  .header-text {
-    padding: 50px 0;
-    text-align: center;
+  mat-spinner {
+    margin: 1rem 0;
   }
-
-  mat-form-field {
-    align-self: stretch;
-  }
-
-  .forgot-button {
-    align-self: flex-end;
-  }
-}
-
-mat-error {
-  margin: 5px 0;
-}
-
-mat-spinner {
-  margin: 1rem 0;
 }

@@ -1,0 +1,25 @@
+@use '@angular/material' as mat;
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .settings-mail-card,
+  .settings-instance-card {
+    @include mat.elevation(0);
+
+    mat-card-header {
+      padding: 0;
+    }
+
+    .settings-form {
+      display: flex;
+      flex-direction: column;
+
+      mat-form-field {
+        align-self: stretch;
+      }
+    }
+  }
+}

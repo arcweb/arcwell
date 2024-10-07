@@ -3,8 +3,8 @@ import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
-import string from '@adonisjs/core/helpers/string'
 import { buildApiQuery, buildResourcesSort } from '#helpers/query_builder'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullResource(id: string) {
   return Resource.query()
@@ -15,6 +15,24 @@ export function getFullResource(id: string) {
 }
 
 export default class ResourcesController {
+  /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('resources').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
   /**
    * @index
    * @summary List Resources

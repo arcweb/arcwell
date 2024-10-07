@@ -10,7 +10,7 @@ export const ResourceSchema: any = z
     info: z.object({}).passthrough(),
     typeKey: z.string(),
     resourceType: ResourceTypeSchema.optional(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -20,7 +20,7 @@ export const ResourceUpdateSchema = ResourceSchema.extend({
   id: z.string().uuid(),
   name: z.string().optional(),
   typeKey: z.string().optional(),
-  tags: z.array(TagSchema).optional(),
+  tags: z.lazy(() => z.array(TagSchema).optional()),
   info: z.object({}).passthrough().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -39,10 +39,17 @@ export const ResourceResponseSchema = z.object({
   data: ResourceSchema,
 });
 
+export const ResourcesCountSchema = z.object({
+  data: z.object({
+    count: z.number(),
+  }),
+});
+
 export type ResourceType = z.infer<typeof ResourceSchema>;
 export type ResourceUpdateType = z.infer<typeof ResourceUpdateSchema>;
 export type ResourcesResponseType = z.infer<typeof ResourcesResponseSchema>;
 export type ResourceResponseType = z.infer<typeof ResourceResponseSchema>;
+export type ResourcesCountType = z.infer<typeof ResourcesCountSchema>;
 
 // Deserializer / Serializer
 export const deserializeResource = (data: ResourceType): ResourceModel => {

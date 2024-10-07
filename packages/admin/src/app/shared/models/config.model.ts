@@ -6,7 +6,7 @@ interface ArcwellModel {
 interface MailModel {
   host: string;
   port: number;
-  fromAddres: string;
+  fromAddress: string;
   fromName: string;
 }
 

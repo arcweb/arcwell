@@ -40,11 +40,15 @@ $padding: 2em;
 
 .account-management-card {
   margin-bottom: $padding;
-  display: flex;
-  flex-direction: row;
   padding: $padding;
   gap: $padding;
-  justify-content: space-between;
+
+  .account-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   .account-info-container {
     display: flex;
@@ -56,13 +60,7 @@ $padding: 2em;
     }
   }
 
-  .profile-actions-container {
-    display: flex;
-    flex-direction: column;
-
-    .change-password-link,
-    .test-email-link {
-      cursor: pointer;
-    }
+  .change-password-link {
+    cursor: pointer;
   }
 }

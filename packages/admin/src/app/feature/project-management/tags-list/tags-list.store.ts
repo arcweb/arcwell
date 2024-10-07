@@ -78,6 +78,15 @@ export const TagsListStore = signalStore(
         );
       }
     },
+    async count() {
+      patchState(store, setPending());
+      const resp = await firstValueFrom(tagService.count());
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(store, { totalData: resp.data.count }, setFulfilled());
+      }
+    },
   })),
   withHooks({
     onInit(store) {

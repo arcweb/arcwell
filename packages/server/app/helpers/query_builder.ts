@@ -47,6 +47,8 @@ export function buildApiQuery(
   return [modelQuery, countQuery]
 }
 
+// TODO: While these technically work the way they are fine, maybe they
+// SHOULD be returning the query object as above?
 export function buildEventsSort(
   eventsQuery: ModelQueryBuilderContract<typeof Event, any>,
   queryData: Record<string, any> = {}

@@ -78,6 +78,7 @@ router.group(() => {
   router
     .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
     .as('facts/types.showWithFacts')
+  router.get('facts/count', [FactsController, 'count']).as('facts.count')
   router.resource('facts', FactsController).apiOnly()
 })
 
@@ -87,6 +88,7 @@ router.group(() => {
   router
     .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
     .as('events/types.showWithEvents')
+  router.get('events/count', [EventController, 'count']).as('events.count')
   router.resource('events', EventController).apiOnly()
 })
 
@@ -101,6 +103,7 @@ router.group(() => {
   router
     .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
     .as('people/types.showWithPeople')
+  router.get('people/count', [PeopleController, 'count']).as('people.count')
   router.resource('people', PeopleController).apiOnly()
 })
 
@@ -110,6 +113,7 @@ router.group(() => {
   router
     .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
     .as('resources/types.showWithResources')
+  router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
   router.resource('resources', ResourcesController).apiOnly()
 })
 
@@ -125,6 +129,7 @@ router.group(() => {
   router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
   router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
   router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
+  router.get('tags/count', [TagsController, 'count']).as('tags.count')
   router.resource('tags', TagsController).apiOnly()
 })
 

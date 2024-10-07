@@ -10,9 +10,111 @@ import {
   buildPeopleSort,
   buildResourcesSort,
 } from '#helpers/query_builder'
-import string from '@adonisjs/core/helpers/string'
 
 export default class TagsController {
+  // TODO: Same as in query_builder. Should these return the query object?
+  private eventsSubQuery(query: any, queryData: Record<string, any>) {
+    let [eventsQuery] = buildApiQuery(query, queryData, 'events')
+    eventsQuery.preload('eventType')
+    eventsQuery.preload('resource')
+    eventsQuery.preload('person')
+    buildEventsSort(eventsQuery, queryData)
+  }
+
+  private factsSubQuery(query: any, queryData: Record<string, any>) {
+    let [factsQuery] = buildApiQuery(query, queryData, 'facts')
+    factsQuery.preload('factType')
+    factsQuery.preload('resource')
+    factsQuery.preload('person')
+    factsQuery.preload('event')
+    buildFactsSort(query, queryData)
+  }
+
+  private peopleSubQuery(query: any, queryData: Record<string, any>) {
+    let [peopleQuery] = buildApiQuery(query, queryData, 'people')
+    peopleQuery.preload('personType')
+    buildPeopleSort(peopleQuery, queryData)
+  }
+
+  private resourcesSubQuery(query: any, queryData: Record<string, any>) {
+    let [resourcesQuery] = buildApiQuery(query, queryData, 'resources')
+    resourcesQuery.preload('resourceType')
+    buildResourcesSort(resourcesQuery, queryData)
+  }
+
+  private usersSubQuery(query: any, queryData: Record<string, any>) {
+    let [usersQuery] = buildApiQuery(query, queryData, 'users')
+    usersQuery.preload('role')
+    usersQuery.preload('person')
+    usersQuery.orderBy('email', 'asc')
+  }
+
+  private tagQueryWithAllRelated(id: string, queryData: Record<string, any>) {
+    // Get all the related types at once. This will usually be just for the first time
+    // the View Tag screen is loaded or an update. Any subsequent pagination requests will just utilize
+    // the single type options above. This will be the default if the value does not match
+    // any of the types above, but using the conventional 'all' is recommended (ie, /tags/{tagId}/all)
+    return Tag.query()
+      .where('id', id)
+      .withCount('events')
+      .withCount('facts')
+      .withCount('people')
+      .withCount('resources')
+      .withCount('users')
+      .preload('events', (relatedQuery) => {
+        this.eventsSubQuery(relatedQuery, queryData)
+      })
+      .preload('facts', (relatedQuery) => {
+        this.factsSubQuery(relatedQuery, queryData)
+      })
+      .preload('people', (relatedQuery) => {
+        this.peopleSubQuery(relatedQuery, queryData)
+      })
+      .preload('resources', (relatedQuery) => {
+        this.resourcesSubQuery(relatedQuery, queryData)
+      })
+      .preload('users', (relatedQuery) => {
+        this.usersSubQuery(relatedQuery, queryData)
+      })
+      .firstOrFail()
+  }
+
+  /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('tags').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
+  /**
+   * @count
+   * @summary Count People
+   * @description Returns the count of total people
+   */
+  async count({ auth }: HttpContext) {
+    await auth.authenticate()
+
+    const countQuery = db.from('tags').count('*')
+    const queryCount = await countQuery.count('*')
+
+    return {
+      data: {
+        count: +queryCount[0].count,
+      },
+    }
+  }
+
   /**
    * @index
    * @summary List Tags
@@ -74,45 +176,36 @@ export default class TagsController {
   async showRelated({ params, request }: HttpContext) {
     const queryData = request.qs()
 
-    const query = Tag.query()
-      .where('id', params.id)
-      .withCount(params.object_name)
-      .preload(params.object_name, (query) => {
-        switch (params.object_name) {
-          case 'people':
-            let [peopleQuery] = buildApiQuery(query, queryData, 'people')
-            peopleQuery.preload('personType')
-            buildPeopleSort(peopleQuery, queryData)
-            break
-          case 'resources':
-            let [resourcesQuery] = buildApiQuery(query, queryData, 'resources')
-            resourcesQuery.preload('resourceType')
-            buildResourcesSort(resourcesQuery, queryData)
-            break
-          case 'events':
-            let [eventsQuery] = buildApiQuery(query, queryData, 'events')
-            eventsQuery.preload('eventType')
-            eventsQuery.preload('resource')
-            eventsQuery.preload('person')
-            buildEventsSort(eventsQuery, queryData)
-            break
-          case 'facts':
-            let [factsQuery] = buildApiQuery(query, queryData, 'facts')
-            factsQuery.preload('factType')
-            factsQuery.preload('resource')
-            factsQuery.preload('person')
-            factsQuery.preload('event')
-            buildFactsSort(query, queryData)
-            break
-          case 'users':
-            let [usersQuery] = buildApiQuery(query, queryData, 'users')
-            usersQuery.preload('role')
-            usersQuery.preload('person')
-            usersQuery.orderBy('email', 'asc')
-            break
-        }
-      })
-      .firstOrFail()
+    let query
+    const acceptableTypes = ['events', 'facts', 'people', 'resources', 'users']
+
+    if (acceptableTypes.includes(params.object_name)) {
+      query = Tag.query()
+        .where('id', params.id)
+        .withCount(params.object_name)
+        .preload(params.object_name, (relatedQuery) => {
+          switch (params.object_name) {
+            case 'people':
+              this.peopleSubQuery(relatedQuery, queryData)
+              break
+            case 'resources':
+              this.resourcesSubQuery(relatedQuery, queryData)
+              break
+            case 'events':
+              this.eventsSubQuery(relatedQuery, queryData)
+              break
+            case 'facts':
+              this.factsSubQuery(relatedQuery, queryData)
+              break
+            case 'users':
+              this.usersSubQuery(relatedQuery, queryData)
+              break
+          }
+        })
+        .firstOrFail()
+    } else {
+      query = this.tagQueryWithAllRelated(params.id, queryData)
+    }
 
     return {
       data: await query,
@@ -131,7 +224,7 @@ export default class TagsController {
     const cleanRequest = request.only(['pathname'])
     const tag = await Tag.findOrFail(params.id)
     const updatedTag = await tag.merge(cleanRequest).save()
-    return { data: updatedTag }
+    return { data: await this.tagQueryWithAllRelated(params.id, { limit: 10, offset: 0 }) }
   }
 
   /**

@@ -10,6 +10,7 @@ import {
   FactResponseType,
   FactType,
   FactUpdateType,
+  FactsCountType,
 } from '@shared/schemas/fact.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
@@ -111,5 +112,15 @@ export class FactService {
         return defaultErrorResponseHandler(error);
       }),
     );
+  }
+
+  count(): Observable<FactsCountType | ErrorResponseType> {
+    return this.http
+      .get<FactsCountType>(`${environment.apiUrl}/facts/count`)
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
   }
 }

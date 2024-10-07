@@ -11,12 +11,15 @@ export const UserSchema: any = z
     id: z.string().uuid().optional(),
     email: z.string(),
     roleId: z.string().uuid(),
-    personId: z.string().uuid(),
+    personId: z.string().uuid().optional().nullable(),
     createdAt: z.string().datetime({ offset: true }),
     updatedAt: z.string().datetime({ offset: true }),
     role: z.lazy(() => RoleSchema).optional(),
-    person: z.lazy(() => PersonSchema).optional(),
-    tags: z.array(TagSchema).optional(),
+    person: z
+      .lazy(() => PersonSchema)
+      .optional()
+      .nullable(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
     passwordResetCode: z.string().optional().nullable(),
   })
   .strict();

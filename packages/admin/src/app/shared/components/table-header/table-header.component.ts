@@ -1,4 +1,4 @@
-import { Component, EventEmitter, output, input } from '@angular/core';
+import { Component, output, input } from '@angular/core';
 import { MatButtonModule, MatIconButton } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';

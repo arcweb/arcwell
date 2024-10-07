@@ -102,5 +102,14 @@ export const FactsListStore = signalStore(
         );
       }
     },
+    async count() {
+      patchState(store, setPending());
+      const resp = await firstValueFrom(factService.count());
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(store, { totalData: resp.data.count }, setFulfilled());
+      }
+    },
   })),
 );

@@ -33,6 +33,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { PersonModel } from '@app/shared/models/person.model';
+import { PageEvent } from '@angular/material/paginator';
+import { Sort, SortDirection } from '@angular/material/sort';
+import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
+import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
+import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
+import { UsersTableComponent } from '@app/shared/components/users-table/users-table.component';
+import { EventModel } from '@app/shared/models/event.model';
+import { FactModel } from '@app/shared/models/fact.model';
+import { ResourceModel } from '@app/shared/models/resource.model';
+import { UserModel } from '@app/shared/models';
+import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 
 @Component({
   selector: 'aw-tag',
@@ -51,6 +66,13 @@ import { BackService } from '@app/shared/services/back.service';
     MatIconButton,
     FormsModule,
     BackButtonComponent,
+    MatExpansionModule,
+    EventsTableComponent,
+    FactsTableComponent,
+    PeopleTableComponent,
+    ResourcesTableComponent,
+    UsersTableComponent,
+    DetailHeaderComponent,
   ],
   providers: [TagStore],
   templateUrl: './tag.component.html',
@@ -62,6 +84,35 @@ export class TagComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
+
+  eventsDataSource = new MatTableDataSource<EventModel>();
+  eventsColumns: string[] = [
+    'startedAt',
+    'endedAt',
+    'eventType',
+    'person',
+    'resource',
+  ];
+
+  factsDataSource = new MatTableDataSource<FactModel>();
+  factsColumns: string[] = [
+    'factType',
+    'person',
+    'resource',
+    'event',
+    'observedAt',
+  ];
+
+  peopleColumns: string[] = ['id', 'familyName', 'givenName', 'personType'];
+  peopleDataSource = new MatTableDataSource<PersonModel>();
+
+  resourcesDataSource = new MatTableDataSource<ResourceModel>();
+  resourcesColumns: string[] = ['name', 'resourceType', 'tags'];
+
+  usersDataSource = new MatTableDataSource<UserModel>();
+  usersColumns: string[] = ['email', 'role', 'person', 'tags'];
+
+  pageSizes = [10, 20, 50];
 
   @Input() tagId!: string;
 
@@ -82,6 +133,11 @@ export class TagComponent implements OnInit {
       } else {
         this.tagForm.disable();
       }
+      this.eventsDataSource.data = this.tagStore.events();
+      this.factsDataSource.data = this.tagStore.facts();
+      this.peopleDataSource.data = this.tagStore.people();
+      this.resourcesDataSource.data = this.tagStore.resources();
+      this.usersDataSource.data = this.tagStore.users();
     });
   }
 
@@ -143,5 +199,80 @@ export class TagComponent implements OnInit {
         });
       }
     });
+  }
+
+  pageChange(
+    objectType: string,
+    sort: string,
+    order: SortDirection,
+    event: PageEvent,
+  ) {
+    const newOffset = event.pageIndex * event.pageSize;
+    this.tagStore.loadRelatedPage({
+      objectType,
+      limit: event.pageSize,
+      offset: newOffset,
+      pageIndex: event.pageIndex,
+      sort,
+      order,
+    });
+  }
+
+  rowClick(
+    objectType: string,
+    row: PersonModel | EventModel | FactModel | ResourceModel | UserModel,
+  ) {
+    switch (objectType) {
+      case 'events':
+        this.router.navigate(['project-management', 'events', row.id]);
+        break;
+      case 'facts':
+        this.router.navigate(['project-management', 'facts', row.id]);
+        break;
+      case 'people':
+        this.router.navigate(['project-management', 'people', row.id]);
+        break;
+      case 'resources':
+        this.router.navigate(['project-management', 'resources', row.id]);
+        break;
+      case 'users':
+        this.router.navigate([
+          'project-management',
+          'settings',
+          'user-management',
+          'all-users',
+          row.id,
+        ]);
+        break;
+    }
+  }
+
+  sortChange(
+    objectType: string,
+    limit: number,
+    offset: number,
+    pageIndex: number,
+    event: Sort,
+  ) {
+    this.tagStore.loadRelatedPage({
+      objectType,
+      limit,
+      offset,
+      pageIndex,
+      sort: event.active,
+      order: event.direction,
+    });
+  }
+
+  viewEvent(eventId: string) {
+    this.router.navigate(['project-management', 'events', eventId]);
+  }
+
+  viewResource(resourceId: string) {
+    this.router.navigate(['project-management', 'resources', resourceId]);
+  }
+
+  viewPerson(personId: string) {
+    this.router.navigate(['project-management', 'people', personId]);
   }
 }

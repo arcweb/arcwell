@@ -3,18 +3,20 @@
   createLink="/project-management/cohorts/create"
 ></aw-table-header>
 
-@if (cohortsListStore.isErrored()) {
-  <aw-error-container [errors]="cohortsListStore.errors()" />
-}
-@if (cohortsListStore.cohorts().length > 0) {
-  <aw-cohort-table
-    [dataSource]="dataSource"
-    [displayedColumns]="displayedColumns"
-    [length]="this.cohortsListStore.totalData()"
-    [pageSizes]="pageSizes"
-    [pageSize]="this.cohortsListStore.limit()"
-    [pageIndex]="this.cohortsListStore.pageIndex()"
-    (onPageChanged)="this.cohortsListStore.loadPage($event)"
-    (onRowClicked)="rowClick($event)"
-  ></aw-cohort-table>
-}
+<div class="table-form-container">
+  @if (cohortsListStore.isErrored()) {
+    <aw-error-container [errors]="cohortsListStore.errors()" />
+  }
+  @if (cohortsListStore.cohorts().length > 0) {
+    <aw-cohort-table
+      [dataSource]="dataSource"
+      [displayedColumns]="displayedColumns"
+      [length]="this.cohortsListStore.totalData()"
+      [pageSizes]="pageSizes"
+      [pageSize]="this.cohortsListStore.limit()"
+      [pageIndex]="this.cohortsListStore.pageIndex()"
+      (onPageChanged)="this.cohortsListStore.loadPage($event)"
+      (onRowClicked)="rowClick($event)"
+    ></aw-cohort-table>
+  }
+</div>
