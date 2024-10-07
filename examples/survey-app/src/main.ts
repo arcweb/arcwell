@@ -11,6 +11,7 @@ import { HealthService } from '@services/health/health.service';
 import { FactTypeService } from '@services/fact-type/fact-type.service';
 import { AuthService } from '@services/auth/auth.service';
 import { FactService } from '@services/fact/fact.service';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 bootstrapApplication(AppComponent, {
   providers: [

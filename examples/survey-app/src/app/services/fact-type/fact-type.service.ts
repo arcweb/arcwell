@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 
 export interface DimensionSchema {
   id: string;
+  createdAt: string;
+  updatedAt: string;
   key: string;
   name: string;
   dataUnit: string;
@@ -14,6 +16,8 @@ export interface DimensionSchema {
 
 export interface FactType {
   id: string;
+  createdAt: string;
+  updatedAt: string;
   key: string;
   name: string;
   description?: string;

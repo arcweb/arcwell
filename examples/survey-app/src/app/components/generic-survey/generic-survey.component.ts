@@ -159,6 +159,7 @@ export class GenericSurveyComponent {
     if (this.factType) {
       const fact: Fact = {
         typeKey: this.factType.key,
+        observed_at: new Date().toISOString(),
         dimensions: Object.keys(this.answers).map(key => ({
           key,
           value: this.answers[key]

@@ -1,0 +1,9 @@
+<app-home-header />
+
+<ion-content [scrollY]="false">
+  <div echarts [options]="chartOption" class="demo-chart"></div>
+
+  <ion-button *ngFor="let factType of factTypes" (click)="selectFactTypeResults(factType)">
+    {{ factType.key }}
+  </ion-button>
+</ion-content>
