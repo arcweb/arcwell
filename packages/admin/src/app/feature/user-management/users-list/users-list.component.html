@@ -1,4 +1,7 @@
-<aw-table-header [tableName]="'All Users'" createLink=""></aw-table-header>
+<aw-table-header
+  [tableName]="'All Users'"
+  createLink="/project-management/settings/user-management/create"
+></aw-table-header>
 
 @if (userStore.isErrored()) {
   <aw-error-container [errors]="userStore.errors()" />

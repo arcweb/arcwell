@@ -1,5 +1,4 @@
 import vine from '@vinejs/vine'
-import { passwordValidation } from '#validators/auth'
 
 /**
  * Validates the role's create action
@@ -7,7 +6,6 @@ import { passwordValidation } from '#validators/auth'
 export const createUserValidator = vine.compile(
   vine.object({
     email: vine.string().email().normalizeEmail(),
-    password: passwordValidation,
     roleId: vine.string().trim().uuid(),
   })
 )

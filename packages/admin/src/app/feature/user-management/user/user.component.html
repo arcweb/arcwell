@@ -127,6 +127,23 @@
         }
       </mat-form-field>
 
+      @if (userStore.inCreateMode()) {
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Password"
+            formControlName="password"
+            type="password"
+          />
+          @if (userForm.controls.password.hasError('required')) {
+            <mat-error>
+              Password is
+              <strong>required</strong>
+            </mat-error>
+          }
+        </mat-form-field>
+      }
+
       <div class="form-button-container">
         <button
           mat-button
