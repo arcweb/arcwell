@@ -58,7 +58,7 @@ export class AllUsersComponent {
 
   dataSource = new MatTableDataSource<UserModel>();
 
-  displayedColumns: string[] = ['email', 'role', 'person', 'tags', 're-invite'];
+  displayedColumns: string[] = ['email', 'role', 'person', 'tags']; //, 're-invite'];
 
   constructor() {
     effect(() => {
