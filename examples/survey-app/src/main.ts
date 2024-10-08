@@ -7,10 +7,10 @@ import { AuthInterceptor } from '@interceptors/auth.interceptor';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
-import { HealthService } from '@services/health/health.service';
-import { FactTypeService } from '@services/fact-type/fact-type.service';
-import { AuthService } from '@services/auth/auth.service';
-import { FactService } from '@services/fact/fact.service';
+import { HealthService } from '@services/health.service';
+import { FactTypeService } from '@services/fact-type.service';
+import { AuthService } from '@services/auth.service';
+import { FactService } from '@services/fact.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 bootstrapApplication(AppComponent, {

@@ -1,25 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-export interface Fact {
-  id?: string;
-  typeKey: string;
-  personId?: string;
-  resourceId?: string;
-  eventId?: string;
-  // createdAt?: string;
-  // updatedAt?: string;
-  observed_at: string;
-  info?: object;
-  dimensions: Dimension[];
-}
-
-export interface Dimension {
-  id?: string;
-  key: string;
-  value: any;
-  factId?: string;
-}
+import { Fact } from '@models/fact';
 
 interface Filter {
   key: string;

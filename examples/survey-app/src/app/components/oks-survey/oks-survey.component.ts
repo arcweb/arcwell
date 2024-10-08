@@ -1,15 +1,16 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { IonAlert, IonButton, IonCard, IonCardContent, IonChip, IonRadio, IonRadioGroup } from '@ionic/angular/standalone';
-import { DimensionSchema, FactType } from '@services/fact-type/fact-type.service';
-import { FactService, Fact } from '@services/fact/fact.service';
-import { AuthService } from '@services/auth/auth.service';
+import { FactService } from '@services/fact.service';
+import { AuthService } from '@services/auth.service';
 import { switchMap } from 'rxjs';
 import { SwiperContainer } from 'swiper/element';
 import { SurveyConfig } from '@pages/surveys/configs';
-import { ToastService } from '@services/toast/toast.service';
+import { ToastService } from '@services/toast.service';
+import { DimensionSchema } from '@models/dimension-schema';
+import { FactType } from '@models/fact-type';
+import { Fact } from '@models/fact';
 
 @Component({
   selector: 'app-oks-survey',

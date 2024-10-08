@@ -5,13 +5,15 @@ import { IonButton, IonContent, IonHeader, IonItem, IonLabel, IonSelect, IonSele
 import { HomeHeaderComponent } from '@components/home-header/home-header.component';
 import { EChartsOption } from 'echarts';
 import { NgxEchartsDirective, provideEcharts } from 'ngx-echarts';
-import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
-import { ToastService } from '@services/toast/toast.service';
-import { Fact, FactService } from '@services/fact/fact.service';
-import { AuthService } from '@services/auth/auth.service';
+import { FactTypeService } from '@services/fact-type.service';
+import { ToastService } from '@services/toast.service';
+import { FactService } from '@services/fact.service';
+import { AuthService } from '@services/auth.service';
 import { switchMap } from 'rxjs';
-import { SurveyConfig, surveyConfigs } from './configs';
 import { Router } from '@angular/router';
+import { FactType } from '@models/fact-type';
+import { SurveyConfig, surveyConfigs } from './configs';
+import { Fact } from '@models/fact';
 
 @Component({
   selector: 'app-results',

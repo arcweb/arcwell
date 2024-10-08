@@ -17,11 +17,11 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/angular/standalone';
-import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
+import { FactType, FactTypeService } from '@services/fact-type.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SwiperContainer, register } from 'swiper/element';
-import { Fact, FactService } from '@services/fact/fact.service';
-import { AuthService } from '@services/auth/auth.service';
+import { Fact, FactService } from '@services/fact.service';
+import { AuthService } from '@services/auth.service';
 import { switchMap } from 'rxjs';
 
 @Component({

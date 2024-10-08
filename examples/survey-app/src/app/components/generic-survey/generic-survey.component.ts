@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { IonAlert, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip, IonContent, IonHeader, IonRadio, IonRadioGroup, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { DimensionSchema } from '@models/dimension-schema';
+import { Fact } from '@models/fact';
+import { FactType } from '@models/fact-type';
 import { SurveyConfig } from '@pages/surveys/configs';
-import { AuthService } from '@services/auth/auth.service';
-import { DimensionSchema, FactType } from '@services/fact-type/fact-type.service';
-import { FactService, Fact } from '@services/fact/fact.service';
-import { ToastService } from '@services/toast/toast.service';
+import { AuthService } from '@services/auth.service';
+import { FactService } from '@services/fact.service';
+import { ToastService } from '@services/toast.service';
 import { switchMap } from 'rxjs';
 import { SwiperContainer } from 'swiper/element';
 
@@ -69,7 +70,6 @@ export class GenericSurveyComponent {
   showScore: boolean = false;
 
   constructor(
-    private router: Router,
     private authService: AuthService,
     private factService: FactService,
     private toastService: ToastService,

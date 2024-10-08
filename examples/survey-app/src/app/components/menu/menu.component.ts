@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IonContent, IonIcon, IonImg, IonItem, IonLabel, IonMenu } from '@ionic/angular/standalone';
-import { AuthService } from '@services/auth/auth.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-menu',

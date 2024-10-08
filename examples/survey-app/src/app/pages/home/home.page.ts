@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonButton } from '@ionic/angular/standalone';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
-import { AuthService } from '@services/auth/auth.service';
+import { AuthService } from '@services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ export class HomePage {
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   async logout() {
     await this.authService.logout();

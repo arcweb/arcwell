@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonItem, IonLabel, IonList, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
-import { FactType, FactTypeService } from '@services/fact-type/fact-type.service';
+import { FactTypeService } from '@services/fact-type.service';
 import { HomeHeaderComponent } from '@components/home-header/home-header.component';
-import { ToastService } from '@services/toast/toast.service';
+import { ToastService } from '@services/toast.service';
 import { GenericSurveyComponent } from '@components/generic-survey/generic-survey.component';
 import { OksSurveyComponent } from '@components/oks-survey/oks-survey.component';
+import { FactType } from '@models/fact-type';
 import { surveyConfigs } from './configs';
 
 @Component({

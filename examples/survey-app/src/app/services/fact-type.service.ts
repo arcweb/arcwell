@@ -1,37 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-
-export interface DimensionSchema {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  key: string;
-  name: string;
-  dataUnit: string;
-  dataType: string;
-  isRequired: boolean;
-}
-
-export interface FactType {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  key: string;
-  name: string;
-  description?: string;
-  tags: Tag[];
-  dimensionSchemas: DimensionSchema[];
-}
-
-export interface Tag {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  pathname: string;
-}
-
+import { FactType } from '@models/fact-type';
 
 @Injectable({
   providedIn: 'root',
