@@ -34,6 +34,9 @@ import { ChangePasswordComponent } from '@app/feature/auth/change-password/chang
 import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
+import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { UserModel } from '@app/shared/models';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'aw-user',
@@ -61,6 +64,7 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
   styleUrl: './user.component.scss',
 })
 export class UserComponent implements OnInit {
+  readonly dialog = inject(MatDialog);
   readonly userStore = inject(UserStore);
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
@@ -152,8 +156,28 @@ export class UserComponent implements OnInit {
               roleId: this.isObjectModel(formValue.role)
                 ? formValue.role.id
                 : null,
+              requiresPasswordChange: true,
             };
             this.userStore.create(userFormPayload);
+            // ask to invite user
+            const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+              data: {
+                title: 'Invite this person?',
+                question:
+                  'Would you like to send this Person an email with instructions on how to log in? This will require the person to set their password.',
+                okButton: 'Invite',
+                cancelButtonText: "Don't Invite",
+              },
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+              const userId = this.isProfile()
+                ? this.authStore.currentUser()?.id
+                : this.userId();
+              if (result === true && userId) {
+                this.userStore.invite(userId);
+              }
+            });
           } else {
             this.userStore.update(this.userForm.value);
           }
@@ -215,5 +239,27 @@ export class UserComponent implements OnInit {
       }
       return null;
     };
+  }
+
+  reinvite() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Re-Invite this person?',
+        question:
+          'Would you like to send this Person an email with instructions on how to log in? This will require the person to reset thier password when they log in next.',
+        okButton: 'Invite',
+        cancelButtonText: "Don't Invite",
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.userStore.invite(this.userId()!);
+      }
+    });
+  }
+
+  viewPerson(personId: string) {
+    this.router.navigate(['project-management', 'people', 'list', personId]);
   }
 }

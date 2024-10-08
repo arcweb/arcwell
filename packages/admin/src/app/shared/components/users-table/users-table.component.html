@@ -38,6 +38,18 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="reinvite">
+    <th mat-header-cell *matHeaderCellDef>Re-invite</th>
+    <td mat-cell *matCellDef="let element">
+      <button
+        mat-raised-button
+        (click)="invite(element); $event.stopPropagation()"
+      >
+        Re-Invite
+      </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
   <tr
     mat-row

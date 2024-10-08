@@ -12,12 +12,14 @@ import {
 } from '@angular-architects/ngrx-toolkit';
 import { ResetType } from '@shared/schemas/password-reset.schema';
 import { ChangeType } from '@schemas/password-change.schema';
+import { SetType } from '../schemas/pasword-set.schema';
 
 export type LoginStatus =
   | 'none'
   | 'pending'
   | 'authenticating'
   | 'success'
+  | 'set-password'
   | 'error';
 
 interface AuthState {
@@ -54,11 +56,18 @@ export const AuthStore = signalStore(
             })
             .pipe(
               map(response => {
-                return patchState(store, {
-                  token: response?.token.value,
-                  currentUser: response?.user,
-                  loginStatus: 'success',
-                });
+                if (response?.user.requiresPasswordChange) {
+                  return patchState(store, {
+                    currentUser: response?.user,
+                    loginStatus: 'set-password',
+                  });
+                } else {
+                  return patchState(store, {
+                    token: response?.token.value,
+                    currentUser: response?.user,
+                    loginStatus: 'success',
+                  });
+                }
               }),
               catchError(err => {
                 console.error('err=', err);
@@ -103,6 +112,15 @@ export const AuthStore = signalStore(
     async changePassword(change: ChangeType) {
       patchState(store, { loginStatus: 'pending' });
       const resp = await firstValueFrom(authService.changePassword(change));
+      if (resp && resp.errors) {
+        patchState(store, { loginStatus: 'error' });
+      } else {
+        patchState(store, { loginStatus: 'none' });
+      }
+    },
+    async setPassword(set: SetType) {
+      patchState(store, { loginStatus: 'pending' });
+      const resp = await firstValueFrom(authService.setPassword(set));
       if (resp && resp.errors) {
         patchState(store, { loginStatus: 'error' });
       } else {
