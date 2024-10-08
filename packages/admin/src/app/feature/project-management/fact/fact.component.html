@@ -13,7 +13,7 @@
         <aw-error-container [errors]="factStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Fact Type</mat-label>
         <mat-select formControlName="factType" [compareWith]="compareFactTypes">
           @for (factType of factStore.factTypes(); track factType.id) {
@@ -30,7 +30,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Observed At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
         <input
           matInput
@@ -100,7 +100,7 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
       } @else {
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Dimensions</mat-label>
           <textarea
             matInput

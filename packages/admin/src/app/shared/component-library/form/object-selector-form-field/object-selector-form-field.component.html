@@ -1,5 +1,5 @@
 <div class="component-row">
-  <mat-form-field>
+  <mat-form-field appearance="outline">
     <mat-label>{{ label() }}</mat-label>
     <input
       type="text"
@@ -33,7 +33,7 @@
   </mat-form-field>
 
   @if (objectSubTypes().length > 0) {
-    <mat-form-field>
+    <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
 
       <mat-select

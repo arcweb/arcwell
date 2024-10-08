@@ -13,7 +13,7 @@
         <aw-error-container [errors]="eventStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Event Type</mat-label>
         <mat-select
           formControlName="eventType"
@@ -33,7 +33,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Started At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
         <input
           matInput
@@ -54,7 +54,7 @@
         </mat-error>
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Ended At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
         <input
           matInput

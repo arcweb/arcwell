@@ -5,7 +5,7 @@
       <aw-error-container [errors]="tagStore.errors()" />
     }
 
-    <mat-form-field class="tags-chip-list">
+    <mat-form-field appearance="outline" class="tags-chip-list">
       <mat-label>Tags</mat-label>
       <mat-chip-grid #chipGrid aria-label="Tag selection">
         @for (tag of tagStore.sortedTags(); track $index) {
