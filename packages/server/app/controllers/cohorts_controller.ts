@@ -137,7 +137,9 @@ export default class CohortsController {
       cohort.useTransaction(trx)
       updatedCohort = await cohort.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags)
+      }
     })
 
     return { data: await getFullCohort(updatedCohort.id) }

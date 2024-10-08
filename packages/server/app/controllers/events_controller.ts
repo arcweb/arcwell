@@ -164,7 +164,9 @@ export default class EventsController {
       event.useTransaction(trx)
       updatedEvent = await event.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
+      }
     })
 
     let returnQuery = Event.query()

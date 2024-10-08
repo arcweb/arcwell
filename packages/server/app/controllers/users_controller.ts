@@ -114,7 +114,9 @@ export default class UsersController {
       user.useTransaction(trx)
       updatedUser = await user.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
+      }
     })
     return { data: await getFullUser(updatedUser.id) }
   }

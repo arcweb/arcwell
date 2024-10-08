@@ -143,7 +143,9 @@ export default class FactsController {
       fact.useTransaction(trx)
       updatedFact = await fact.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
+      }
     })
     return { data: await getFullFact(updatedFact.id) }
   }

@@ -124,7 +124,9 @@ export default class ResourcesController {
       resource.useTransaction(trx)
       updatedResource = await resource.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, resource.id, 'resources', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, resource.id, 'resources', cleanRequest.tags)
+      }
     })
     return { data: await getFullResource(updatedResource.id) }
   }

@@ -181,7 +181,9 @@ export default class PeopleController {
       person.useTransaction(trx)
       updatedPerson = await person.merge(cleanRequest).save()
 
-      await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
+      }
     })
 
     return { data: await getFullPerson(updatedPerson.id) }

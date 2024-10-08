@@ -1,9 +1,10 @@
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
 import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventTypeValidator, updateEventTypeValidator } from '#validators/event_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullEventType(id: string) {
   return EventType.query().preload('tags').where('id', id).firstOrFail()
@@ -50,7 +51,16 @@ export default class EventTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
-    const newEventType = await EventType.create(request.body())
+
+    let newEventType = null;
+    await db.transaction(async (trx) => {
+      newEventType = await EventType.create(request.body(), trx)
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newEventType.id, 'event_types', tags.tags, false)
+      }
+    })
     return { data: await getFullEventType(newEventType.id) }
   }
 
@@ -96,8 +106,18 @@ export default class EventTypesController {
     await auth.authenticate()
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
-    const eventType = await EventType.findOrFail(params.id)
-    const updatedEventType = await eventType.merge(request.body()).save()
+
+    let updatedEventType = null
+    await db.transaction(async (trx) => {
+      const eventType = await EventType.findOrFail(params.id)
+      eventType.useTransaction(trx)
+      updatedEventType = await eventType.merge(request.body()).save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags) {
+        await setTagsForObject(trx, eventType.id, 'event_types', tags.tags)
+      }
+    })
 
     return { data: await getFullEventType(updatedEventType.id) }
   }
