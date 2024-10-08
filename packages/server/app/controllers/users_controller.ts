@@ -124,17 +124,25 @@ export default class UsersController {
    * @description Set the user temp password and set the requires password flag, then send an email
    */
   async invite({ request, auth }: HttpContext) {
+    console.log('\n\nREQUEST\n\n')
     await auth.authenticate()
-    await request.validateUsing(paramsUUIDValidator)
 
-    let user = await User.findOrFail(request.id)
+    console.log('\n\nAFTER AUTH\n\n')
+    await request.validateUsing(paramsUUIDValidator)
+    const cleanRequest = request.only(['id'])
+
+    console.log('\n\nAFTER VALIDATE\n\n')
+
+    let user = await User.findOrFail(cleanRequest.id)
+
+    console.log('\n\nAFTER USER', user)
 
     User.generateTempPassword(user)
     user.merge({ requiresPasswordChange: true })
     await user.save()
 
     mail.send((message) => {
-      message.to(user.email).subject('Your Passwor Has Been Set').htmlView('emails/password_set')
+      message.to(user.email).subject('You are invited').htmlView('emails/invite', { user })
     })
     return { data: user }
   }
