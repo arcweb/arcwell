@@ -13,7 +13,7 @@
         <aw-error-container [errors]="factTypeStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
         <input matInput placeholder="Name" formControlName="name" />
         @if (factTypeForm.controls.name.hasError('required')) {
@@ -24,7 +24,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Key</mat-label>
         <input matInput placeholder="Key" formControlName="key" />
         @if (factTypeForm.controls.key.hasError('pattern')) {
@@ -35,7 +35,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
         <input matInput placeholder="Name" formControlName="description" />
       </mat-form-field>
@@ -76,7 +76,7 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
       } @else {
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Dimension Schemas</mat-label>
           <textarea
             matInput

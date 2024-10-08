@@ -3,7 +3,10 @@
 .settings-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+
+  .settings-instance-card {
+    margin-bottom: 24px;
+  }
 
   .settings-mail-card,
   .settings-instance-card {
