@@ -17,7 +17,6 @@ import {
 } from '@fortawesome/angular-fontawesome';
 import {
   faHouse,
-  faUserGroup,
   faUsersBetweenLines,
   faCalendarDay,
   faCubes,
@@ -66,7 +65,7 @@ export class FeaturesMenuComponent {
   // Create a mapping of icon names to FontAwesome icon objects
   icons: Record<string, IconDefinition> = {
     faHouse: faHouse,
-    faUserGroup: faUserGroup,
+    faUsers: faUsers,
     faUsersBetweenLines: faUsersBetweenLines,
     faCalendarDay: faCalendarDay,
     faCubes: faCubes,

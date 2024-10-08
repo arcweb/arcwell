@@ -1,12 +1,12 @@
 @use 'colors' as colors;
 
 @mixin config-theme($theme) {
-  .config-bar-container{
+  .config-bar-container {
     color: colors.$dark-blue;
+
     .config-bar-divider {
       margin: 20px 0;
       border-top: 2px solid colors.$primary-70;
     }
-
   }
 }

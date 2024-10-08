@@ -3,7 +3,6 @@ form {
   flex-direction: column;
   max-width: 1000px;
   width: 100%;
-  margin: 30px auto;
 
   .mat-form-field {
     width: 100%;
@@ -25,11 +24,4 @@ form {
     margin-bottom: 24px;
     gap: 20px;
   }
-}
-
-.main-container-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
 }

@@ -18,6 +18,11 @@
 
   .mat-mdc-header-cell {
     border-bottom-color: $primary;
+    color: $primary;
+
+    .mat-sort-header-arrow {
+      color: $primary;
+    }
   }
 
   .mat-mdc-row:nth-child(odd) {

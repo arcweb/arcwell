@@ -1,4 +1,11 @@
-import { Component, forwardRef, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  forwardRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormsModule,
@@ -20,6 +27,11 @@ import { EventType } from '@schemas/event.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { EventService } from '@shared/services/event.service';
 import { CohortService } from '@app/shared/services/cohort.service';
+import { MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { EventTypeType } from '@app/shared/schemas/event-type.schema';
+import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 
 @Component({
   standalone: true,
@@ -31,6 +43,8 @@ import { CohortService } from '@app/shared/services/cohort.service';
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatOption,
+    MatSelect,
   ],
   templateUrl: './object-selector-form-field.component.html',
   styleUrl: './object-selector-form-field.component.scss',
@@ -42,7 +56,9 @@ import { CohortService } from '@app/shared/services/cohort.service';
     },
   ],
 })
-export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
+export class ObjectSelectorFormFieldComponent
+  implements ControlValueAccessor, OnInit
+{
   // Services
   personService = inject(PersonService);
   resourceService = inject(ResourceService);
@@ -52,17 +68,29 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
   // Inputs
   placeholder = input<string>('Type to search...');
   label = input<string>('Object');
-  serviceType = input.required<
+  objectType = input.required<
     'people' | 'cohortPeople' | 'personCohorts' | 'resources' | 'events'
   >();
+  // To use for filtering search on subtype
+  objectSubTypes = input<
+    EventTypeType[] | PersonTypeType[] | ResourceTypeType[]
+  >([]);
   displayProperty = input.required<string>();
-  // This is to pass in an id of a related object so to screen out objects of the serviceType
+  // This is to pass in an id of a related object so to screen out objects of the objectType
   // related to it. Want to keep it generic to allow use across the app, but could use a better
   // name if possible.
   objectIdForFiltering = input<string>();
 
   valueSignal = signal<string>('');
   optionsSignal = signal<PersonType[] | EventType[] | ResourceType[]>([]);
+
+  objectSubTypeListSignal = signal<{ name: string; key: string | undefined }[]>(
+    [{ name: 'All', key: undefined }],
+  );
+  typeKeySignal = signal<{ name: string; key: string | undefined }>({
+    name: 'All',
+    key: undefined,
+  });
 
   // Internal FormControl for handling validation and disabled state
   internalControl = new FormControl('');
@@ -76,16 +104,33 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
 
   private _value: PersonType | EventType | ResourceType | null;
 
+  private clearSelection(): void {
+    this.valueSignal.set('');
+    this.internalControl.setValue('');
+    this._value = null;
+    this.onChange(null); // Pass null to the parent form when input is cleared
+  }
+
+  ngOnInit(): void {
+    if (this.objectSubTypes().length > 0) {
+      this.objectSubTypeListSignal.set(
+        this.objectSubTypeListSignal().concat(
+          this.objectSubTypes().map(type => ({
+            name: type.name,
+            key: type.key,
+          })),
+        ),
+      );
+    }
+  }
+
   onInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const value = inputElement.value;
 
     // If the input is cleared, reset to null
     if (!value) {
-      this.valueSignal.set('');
-      this.internalControl.setValue('');
-      this._value = null;
-      this.onChange(null); // Pass null to the parent form when input is cleared
+      this.clearSelection();
     } else {
       this.valueSignal.set(value);
       this.internalControl.setValue(value);
@@ -109,13 +154,14 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
       return;
     }
 
-    switch (this.serviceType()) {
+    switch (this.objectType()) {
       case 'people':
         this.personService
           .getPeople({
             limit: 20,
             offset: 0,
             search: [{ field: 'familyName', searchString: query }],
+            typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
             if (resp.errors) {
@@ -128,7 +174,7 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
       case 'cohortPeople':
         if (!this.objectIdForFiltering()) {
           console.error(
-            'objectIdForFiltering must be defined for serviceType=cohortPeople',
+            'objectIdForFiltering must be defined for objectType=cohortPeople',
           );
           return;
         }
@@ -138,6 +184,7 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
             offset: 0,
             notInCohort: this.objectIdForFiltering(),
             search: [{ field: 'familyName', searchString: query }],
+            typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
             if (resp.errors) {
@@ -150,7 +197,7 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
       case 'personCohorts':
         if (!this.objectIdForFiltering()) {
           console.error(
-            'objectIdForFiltering must be defined for serviceType=personCohorts',
+            'objectIdForFiltering must be defined for objectType=personCohorts',
           );
           return;
         }
@@ -175,6 +222,7 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
             limit: 20,
             offset: 0,
             search: [{ field: 'name', searchString: query }],
+            typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
             if (resp.errors) {
@@ -190,6 +238,7 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
             limit: 20,
             offset: 0,
             search: [{ field: 'id', searchString: query }],
+            typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
             if (resp.errors) {
@@ -234,5 +283,18 @@ export class ObjectSelectorFormFieldComponent implements ControlValueAccessor {
     } else {
       this.internalControl.enable({ emitEvent: false });
     }
+  }
+
+  compareObjectSubTypes(
+    pt1: { name: string; key: string | undefined },
+    pt2: { name: string; key: string | undefined },
+  ): boolean {
+    return pt1 && pt2 ? pt1.key === pt2.key : false;
+  }
+
+  objectSubTypeChanged() {
+    // Reset selections to null
+    this.optionsSignal.set([]);
+    this.clearSelection();
   }
 }

@@ -80,13 +80,13 @@
 
     @if (!personStore.inCreateMode()) {
       <!-- Cohorts Section -->
-      <h2>Cohorts</h2>
+      <h5 class="card-title">Cohorts</h5>
       <form [formGroup]="cohortForm">
         <aw-object-selector-form-field
           formControlName="cohort"
           placeholder="Search for Cohort"
           label="Cohort"
-          serviceType="personCohorts"
+          objectType="personCohorts"
           displayProperty="name"
           [objectIdForFiltering]="this.personStore.person().id"
         ></aw-object-selector-form-field>
@@ -118,9 +118,9 @@
           (onRowClicked)="cohortsRowClick($event)"
         ></aw-cohort-table>
       } @else {
-        <h3 class="no-cohorts">
+        <h6 class="no-cohorts">
           No cohorts currently associated with this person
-        </h3>
+        </h6>
       }
 
       <!--  Tags Section-->

@@ -29,7 +29,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'People',
     path: 'people',
-    icon: 'faUserGroup',
+    icon: 'faUsers',
     subfeatures: [
       {
         name: 'Person Types',
