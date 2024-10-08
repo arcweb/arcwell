@@ -1,5 +1,5 @@
 @if (tagStore.isReady()) {
-  <div class="main-container-header"><h2>Tags</h2></div>
+  <h5 class="card-title">Tags</h5>
   <form [formGroup]="tagForm">
     @if (tagStore.isErrored()) {
       <aw-error-container [errors]="tagStore.errors()" />

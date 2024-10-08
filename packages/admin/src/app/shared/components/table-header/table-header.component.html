@@ -1,14 +1,14 @@
 <div class="main-container-header">
-  <h4 class="h4-light">
+  <h3>
     {{ tableName() }}
-  </h4>
+  </h3>
   <div class="icons-container">
     <button
       mat-button
       [routerLink]="[createLink()]"
       [queryParams]="createLinkQueryParams()"
       matTooltip="Add new"
-      class="table-header-button body-small"
+      class="table-header-button label-large font-weight-regular"
     >
       <fa-icon
         aria-label="Add new icon button"
@@ -21,7 +21,7 @@
     <button
       mat-button
       matTooltip="Filter"
-      class="table-header-button body-small"
+      class="table-header-button label-large font-weight-regular"
     >
       <fa-icon
         aria-label="Filter icon button"
@@ -34,7 +34,7 @@
     <button
       mat-button
       matTooltip="Search"
-      class="table-header-button body-small"
+      class="table-header-button label-large font-weight-regular"
     >
       <fa-icon
         aria-label="Search icon button"

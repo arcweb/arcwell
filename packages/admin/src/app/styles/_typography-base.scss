@@ -1,0 +1,119 @@
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-regular-bolder: 500;
+$font-weight-semi-bold: 600;
+$font-weight-bold: 700;
+
+// list of extendable typography classes
+
+@mixin font-weight($weight) {
+  font-weight: $weight;
+}
+
+%font-weight-light {
+  @include font-weight($font-weight-light);
+}
+
+%font-weight-regular {
+  @include font-weight($font-weight-regular);
+}
+
+%font-weight-regular-bolder {
+  @include font-weight($font-weight-regular-bolder);
+}
+
+%font-weight-semi-bold {
+  @include font-weight($font-weight-semi-bold);
+}
+
+%font-weight-bold {
+  @include font-weight($font-weight-bold);
+}
+
+// h1
+%display-large {
+  font-size: 57px;
+  line-height: 64px; /* 112.281% */
+  letter-spacing: -0.25px;
+}
+
+// h2
+%display-medium {
+  font-size: 57px;
+  line-height: 64px; /* 112.281% */
+  letter-spacing: -0.25px;
+}
+
+// h3
+%display-small {
+  font-size: 36px;
+  line-height: 44px; /* 122.222% */
+}
+
+// h4
+%headline-large {
+  font-size: 32px;
+  line-height: 40px; /* 125% */
+}
+
+// h5
+%headline-medium {
+  font-size: 28px;
+  line-height: 36px; /* 128.571% */
+  letter-spacing: 0.15px;
+}
+
+// h6
+%headline-small {
+  font-size: 24px;
+  line-height: 32px; /* 133.333% */
+  letter-spacing: 0.1px;
+}
+
+%title-large {
+  font-size: 22px;
+  line-height: 28px; /* 127.273% */
+}
+
+%title-medium {
+  font-size: 16px;
+  line-height: 24px; /* 150% */
+}
+
+%title-small {
+  font-size: 14px;
+  line-height: 20px; /* 142.857% */
+}
+
+%body-large {
+  font-size: 16px;
+  line-height: 24px; /* 150% */
+}
+
+%body-medium {
+  font-size: 14px;
+  line-height: 20px; /* 142.857% */
+}
+
+%body-small {
+  font-size: 12px;
+  line-height: 16px; /* 133.333% */
+}
+
+%label-large {
+  font-size: 14px;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 0.1px;
+}
+
+%label-medium {
+  font-size: 12px;
+  line-height: 16px; /* 133.333% */
+  letter-spacing: 0.5px;
+}
+
+%label-small {
+  font-size: 11px;
+  line-height: 16px; /* 145.455% */
+  letter-spacing: 0.5px;
+}
