@@ -80,7 +80,7 @@ export class AllUsersComponent {
       data: {
         title: 'Re-Invite this person?',
         question:
-          'Would you like to send this Person an email with instructions on how to log in? This will require the person to reset thier password when they log in next.',
+          'Would you like to send this Person an email with instructions on how to log in? This will require the person to reset their password when they log in next.',
         okButton: 'Invite',
         cancelButtonText: "Don't Invite",
       },

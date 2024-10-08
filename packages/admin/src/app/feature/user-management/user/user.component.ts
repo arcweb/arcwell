@@ -156,8 +156,28 @@ export class UserComponent implements OnInit {
               roleId: this.isObjectModel(formValue.role)
                 ? formValue.role.id
                 : null,
+              requiresPasswordChange: true,
             };
             this.userStore.create(userFormPayload);
+            // ask to invite user
+            const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+              data: {
+                title: 'Invite this person?',
+                question:
+                  'Would you like to send this Person an email with instructions on how to log in? This will require the person to set their password.',
+                okButton: 'Invite',
+                cancelButtonText: "Don't Invite",
+              },
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+              const userId = this.isProfile()
+                ? this.authStore.currentUser()?.id
+                : this.userId();
+              if (result === true && userId) {
+                this.userStore.invite(userId);
+              }
+            });
           } else {
             this.userStore.update(this.userForm.value);
           }

@@ -135,6 +135,7 @@ export const UserStore = signalStore(
               replaceUrl: true,
             },
           );
+          return resp.data;
         }
       },
       async invite(userId: string) {

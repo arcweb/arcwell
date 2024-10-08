@@ -100,14 +100,16 @@
         <aw-error-container [errors]="userStore.errors()" />
       }
 
-      <button
-        mat-button
-        type="button"
-        (click)="reinvite()"
-        class="reinvite-button"
-      >
-        Re-Invite Person
-      </button>
+      @if (!userStore.inCreateMode()) {
+        <button
+          mat-button
+          type="button"
+          (click)="reinvite()"
+          class="reinvite-button"
+        >
+          Re-Invite Person
+        </button>
+      }
 
       <mat-form-field>
         <input matInput placeholder="Email" formControlName="email" />
