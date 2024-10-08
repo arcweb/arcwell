@@ -21,9 +21,17 @@ export interface FactType {
   key: string;
   name: string;
   description?: string;
-  tags: string[];
+  tags: Tag[];
   dimensionSchemas: DimensionSchema[];
 }
+
+export interface Tag {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  pathname: string;
+}
+
 
 @Injectable({
   providedIn: 'root',

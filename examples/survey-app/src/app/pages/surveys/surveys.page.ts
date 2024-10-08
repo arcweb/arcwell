@@ -47,7 +47,8 @@ export class SurveysPage {
     this.loading = true;
     this.factTypeService.getFactTypes(queryData).subscribe({
       next: (response) => {
-        this.factTypes = response.data;
+        const surveyFactTypes = response.data.filter((factType) => factType.tags.some((tag) => tag.pathname === 'survey'));
+        this.factTypes = surveyFactTypes;
       },
       error: (error) => {
         this.toastService.presentToast(
