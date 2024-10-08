@@ -83,7 +83,7 @@ export const UsersStore = signalStore(
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
-        patchState(store, { users: resp.data }, setFulfilled());
+        patchState(store, setFulfilled());
       }
     },
   })),
