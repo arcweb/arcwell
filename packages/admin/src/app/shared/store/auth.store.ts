@@ -19,6 +19,7 @@ export type LoginStatus =
   | 'pending'
   | 'authenticating'
   | 'success'
+  | 'set-password'
   | 'error';
 
 interface AuthState {
@@ -55,11 +56,18 @@ export const AuthStore = signalStore(
             })
             .pipe(
               map(response => {
-                return patchState(store, {
-                  token: response?.token.value,
-                  currentUser: response?.user,
-                  loginStatus: 'success',
-                });
+                if (response?.user.requiresPasswordChange) {
+                  return patchState(store, {
+                    currentUser: response?.user,
+                    loginStatus: 'set-password',
+                  });
+                } else {
+                  return patchState(store, {
+                    token: response?.token.value,
+                    currentUser: response?.user,
+                    loginStatus: 'success',
+                  });
+                }
               }),
               catchError(err => {
                 console.error('err=', err);

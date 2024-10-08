@@ -224,6 +224,7 @@ export default class AuthController {
       // set the password
       user.password = cleanRequest.password
       user.tempPassword = null
+      user.requiresPasswordChange = null
       await user.save()
 
       mail.send((message) => {
