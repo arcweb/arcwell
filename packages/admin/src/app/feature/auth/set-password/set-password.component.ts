@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, input, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlEvent,
@@ -12,7 +12,7 @@ import { MatButton } from '@angular/material/button';
 import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorContainerComponent } from '@app/feature/project-management/error-container/error-container.component';
 import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { AuthStore } from '@app/shared/store/auth.store';
@@ -36,7 +36,9 @@ import { AuthStore } from '@app/shared/store/auth.store';
 export class SetPasswordComponent implements OnInit {
   readonly authStore = inject(AuthStore);
   private router: Router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   destroyRef = inject(DestroyRef);
+  email$ = this.activatedRoute.params.pipe(takeUntilDestroyed());
 
   setForm = new FormGroup(
     {
@@ -54,6 +56,12 @@ export class SetPasswordComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.email$.subscribe(params => {
+      this.setForm.patchValue({
+        email: params['email'],
+      });
+    });
+
     this.setForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {

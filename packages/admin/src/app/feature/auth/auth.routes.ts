@@ -24,7 +24,7 @@ export const AUTH_ROUTES: Route[] = [
       ),
   },
   {
-    path: 'set',
+    path: 'set/:email',
     loadComponent: () =>
       import('./set-password/set-password.component').then(
         m => m.SetPasswordComponent,

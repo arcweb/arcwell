@@ -223,10 +223,14 @@ export default class AuthController {
     if (user?.requiresPasswordChange && user.tempPassword === cleanRequest.tempPassword) {
       // set the password
       user.password = cleanRequest.password
+      user.tempPassword = null
       await user.save()
 
       mail.send((message) => {
-        message.to(user.email).subject('Your Password Has Been Set').htmlView('emails/password_set')
+        message
+          .to(user.email)
+          .subject('Your Password Has Been Set')
+          .htmlView('emails/password_set', { user })
       })
 
       return { data: user }

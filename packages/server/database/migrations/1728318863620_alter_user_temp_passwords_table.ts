@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.string('temp_pasword').nullable()
+      table.string('temp_password').nullable()
       table.boolean('requires_password_change').nullable()
     })
   }
