@@ -1,6 +1,7 @@
 @use 'layout.scss' as layout;
 
 @mixin auth-theme($theme) {
+  .set-container,
   .forgot-container,
   .login-container {
     display: flex;
@@ -35,6 +36,7 @@
     }
   }
 
+  .setForm,
   .forgotForm,
   .loginForm {
     display: flex;

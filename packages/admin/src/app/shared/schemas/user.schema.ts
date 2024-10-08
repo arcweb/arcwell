@@ -21,6 +21,7 @@ export const UserSchema: any = z
       .nullable(),
     tags: z.lazy(() => z.array(TagSchema).optional()),
     passwordResetCode: z.string().optional().nullable(),
+    requiresPasswordChange: z.boolean().optional().nullable(),
   })
   .strict();
 

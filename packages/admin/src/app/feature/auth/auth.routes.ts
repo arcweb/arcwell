@@ -24,12 +24,19 @@ export const AUTH_ROUTES: Route[] = [
       ),
   },
   {
-    path: 'change',
+    path: 'set/:email',
     loadComponent: () =>
-      import('./change-password/change-password-form.component').then(
-        m => m.ChangePasswordComponent,
+      import('./set-password/set-password.component').then(
+        m => m.SetPasswordComponent,
       ),
   },
+  // {
+  //   path: 'change',
+  //   loadComponent: () =>
+  //     import('./change-password/change-password-form.component').then(
+  //       m => m.ChangePasswordComponent,
+  //     ),
+  // },
   {
     path: '',
     redirectTo: '/login',

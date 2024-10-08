@@ -16,6 +16,7 @@ export class UserModel {
   public role?: RoleModel;
   public person?: PersonModel;
   public tags?: TagModel[];
+  public requiresPasswordChange?: boolean;
 
   constructor(data: UserType) {
     this.id = data.id;
@@ -30,6 +31,7 @@ export class UserModel {
     this.tags = data.tags
       ? data.tags.map((tag: TagType) => new TagModel(tag))
       : undefined;
+    this.requiresPasswordChange = data.requiresPasswordChange;
   }
 
   // add helper methods here

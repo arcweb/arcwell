@@ -54,6 +54,7 @@ export class UsersTableComponent {
   onPageChanged = output<PageEvent>();
   onRowClicked = output<UserModel>();
   onViewPersonClicked = output<string>();
+  onReInvite = output<UserModel>();
 
   formatName(person: PersonModel) {
     return `${person.familyName}, ${person.givenName}`;
@@ -69,5 +70,9 @@ export class UsersTableComponent {
 
   viewPersonClick(personId: string) {
     this.onViewPersonClicked.emit(personId);
+  }
+
+  invite(row: UserModel) {
+    this.onReInvite.emit(row);
   }
 }
