@@ -121,4 +121,18 @@ export class UserService {
         }),
       );
   }
+
+  invite(id: string): Observable<UserModel | ErrorResponseType> {
+    return this.http
+      .post<UserResponseType>(`${environment.apiUrl}/users/invite`, { id: id })
+      .pipe(
+        map((response: UserResponseType) => {
+          const parsedResponse = UserResponseSchema.parse(response);
+          return { data: deserializeUser(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

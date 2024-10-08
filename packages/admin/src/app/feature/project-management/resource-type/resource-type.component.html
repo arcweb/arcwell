@@ -13,7 +13,7 @@
         <aw-error-container [errors]="resourceTypeStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
         <input matInput placeholder="Name" formControlName="name" />
         @if (resourceTypeForm.controls.name.hasError('required')) {
@@ -24,7 +24,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Key</mat-label>
         <input matInput placeholder="Key" formControlName="key" />
         @if (resourceTypeForm.controls.key.hasError('pattern')) {
@@ -35,7 +35,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
         <input
           matInput

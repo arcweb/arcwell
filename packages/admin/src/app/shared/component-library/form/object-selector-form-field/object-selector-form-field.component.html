@@ -1,32 +1,56 @@
-<mat-form-field>
-  <mat-label>{{ label() }}</mat-label>
-  <input
-    type="text"
-    matInput
-    [matAutocomplete]="auto"
-    [value]="valueSignal()"
-    (input)="onInput($event)"
-    [placeholder]="placeholder()"
-    [formControl]="internalControl"
-  />
-  <mat-error
-    *ngIf="
-      internalControl.invalid &&
-      (internalControl.dirty || internalControl.touched)
-    "
-  >
-    This field is required
-  </mat-error>
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    (optionSelected)="onOptionSelected($event)"
-  >
-    @for (option of optionsSignal(); track $index) {
-      <mat-option [value]="option">
-        {{ option[displayProperty()] }}
-      </mat-option>
-    } @empty {
-      <mat-option [disabled]="true">Nothing found.</mat-option>
-    }
-  </mat-autocomplete>
-</mat-form-field>
+<div class="component-row">
+  <mat-form-field appearance="outline">
+    <mat-label>{{ label() }}</mat-label>
+    <input
+      type="text"
+      matInput
+      [matAutocomplete]="auto"
+      [value]="valueSignal()"
+      (input)="onInput($event)"
+      [placeholder]="placeholder()"
+      [formControl]="internalControl"
+    />
+    <mat-error
+      *ngIf="
+        internalControl.invalid &&
+        (internalControl.dirty || internalControl.touched)
+      "
+    >
+      This field is required
+    </mat-error>
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onOptionSelected($event)"
+    >
+      @for (option of optionsSignal(); track $index) {
+        <mat-option [value]="option">
+          {{ option[displayProperty()] }}
+        </mat-option>
+      } @empty {
+        <mat-option [disabled]="true">Nothing found.</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  @if (objectSubTypes().length > 0) {
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+
+      <mat-select
+        [(value)]="typeKeySignal"
+        [compareWith]="compareObjectSubTypes"
+        (selectionChange)="objectSubTypeChanged()"
+        [disabled]="this.internalControl.disabled"
+      >
+        @for (
+          objectSubType of objectSubTypeListSignal();
+          track objectSubType.key
+        ) {
+          <mat-option [value]="objectSubType">
+            {{ objectSubType.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+</div>

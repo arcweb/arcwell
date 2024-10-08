@@ -13,7 +13,7 @@
         <aw-error-container [errors]="tagStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Pathname</mat-label>
         <input matInput placeholder="Pathname" formControlName="pathname" />
         @if (tagForm.controls.pathname.hasError('required')) {
@@ -49,7 +49,7 @@
 
     @if (!tagStore.inCreateMode()) {
       <div class="accordion-area">
-        <h2>Related</h2>
+        <h5>Related</h5>
         <mat-accordion multi>
           <!-- TODO: Think about refactoring these if the lists are made into one component.
              The main barrier to refactoring now is the table is different for each type. -->

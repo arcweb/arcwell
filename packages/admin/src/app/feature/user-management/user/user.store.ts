@@ -135,6 +135,16 @@ export const UserStore = signalStore(
               replaceUrl: true,
             },
           );
+          return resp.data;
+        }
+      },
+      async invite(userId: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(userService.invite(userId));
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, { user: resp.data }, setFulfilled());
         }
       },
     }),

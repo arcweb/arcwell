@@ -23,6 +23,10 @@ import { TagType } from '@schemas/tag.schema';
 import { ToastService } from '@app/shared/services/toast.service';
 import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
+import { PersonTypeService } from '@app/shared/services/person-type.service';
+import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 
 interface EventState {
   event: EventType | null;
@@ -30,6 +34,8 @@ interface EventState {
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
+  personTypes: PersonTypeType[];
+  resourceTypes: ResourceTypeType[];
 }
 
 const initialState: EventState = {
@@ -38,6 +44,8 @@ const initialState: EventState = {
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
+  personTypes: [],
+  resourceTypes: [],
 };
 
 export const EventStore = signalStore(
@@ -49,16 +57,25 @@ export const EventStore = signalStore(
       store,
       eventService = inject(EventService),
       eventTypeService = inject(EventTypeService),
+      personTypeService = inject(PersonTypeService),
+      resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
       router = inject(Router),
     ) => ({
       async initialize(eventId: string) {
         patchState(store, setPending());
-        const { eventResponse, eventTypesResponse } = await firstValueFrom(
+        const {
+          eventResponse,
+          eventTypesResponse,
+          personTypesResponse,
+          resourceTypesResponse,
+        } = await firstValueFrom(
           forkJoin({
             eventResponse: eventService.getEvent(eventId),
             eventTypesResponse: eventTypeService.getEventTypes({}),
+            personTypesResponse: personTypeService.getPersonTypes({}),
+            resourceTypesResponse: resourceTypeService.getResourceTypes({}),
           }),
         );
         if (eventResponse.errors) {
@@ -69,12 +86,26 @@ export const EventStore = signalStore(
             { isReady: true },
             setErrors(eventTypesResponse.errors),
           );
+        } else if (personTypesResponse.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResponse.errors),
+          );
+        } else if (resourceTypesResponse.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(resourceTypesResponse.errors),
+          );
         } else {
           patchState(
             store,
             {
               event: eventResponse.data,
               eventTypes: eventTypesResponse.data,
+              personTypes: personTypesResponse.data,
+              resourceTypes: resourceTypesResponse.data,
               isReady: true,
             },
             setFulfilled(),
@@ -83,20 +114,42 @@ export const EventStore = signalStore(
       },
       async initializeForCreate() {
         patchState(store, setPending());
-        const eventTypesResp = await firstValueFrom(
-          eventTypeService.getEventTypes({}),
+        const {
+          eventTypesResponse,
+          personTypesResponse,
+          resourceTypesResponse,
+        } = await firstValueFrom(
+          forkJoin({
+            eventTypesResponse: eventTypeService.getEventTypes({}),
+            personTypesResponse: personTypeService.getPersonTypes({}),
+            resourceTypesResponse: resourceTypeService.getResourceTypes({}),
+          }),
         );
-        if (eventTypesResp.errors) {
+        if (eventTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
-            setErrors(eventTypesResp.errors),
+            setErrors(eventTypesResponse.errors),
+          );
+        } else if (personTypesResponse.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(personTypesResponse.errors),
+          );
+        } else if (resourceTypesResponse.errors) {
+          patchState(
+            store,
+            { isReady: true },
+            setErrors(resourceTypesResponse.errors),
           );
         } else {
           patchState(
             store,
             {
-              eventTypes: eventTypesResp.data,
+              eventTypes: eventTypesResponse.data,
+              personTypes: personTypesResponse.data,
+              resourceTypes: resourceTypesResponse.data,
               inCreateMode: true,
               inEditMode: true,
               isReady: true,
@@ -140,7 +193,11 @@ export const EventStore = signalStore(
         } else {
           patchState(
             store,
-            { event: resp.data, inEditMode: false, inCreateMode: false },
+            {
+              event: resp.data,
+              inEditMode: false,
+              inCreateMode: false,
+            },
             setFulfilled(),
           );
 

@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 @use 'colors' as colors;
 @use 'layout' as layout;
-@use 'typography' as typography;
+@use 'typography-base' as typography;
 
 @mixin sidenav-theme($theme) {
   $spacing: 8px;
@@ -54,7 +54,8 @@
             display: flex;
             color: colors.$on-primary;
             gap: $spacing;
-            font-weight: layout.$font-weight-regular;
+
+            @extend %font-weight-regular;
 
             .feature-icon {
               display: flex;
@@ -75,7 +76,7 @@
             @extend %feature-active-state;
 
             .feature-title {
-              font-weight: layout.$font-weight-bold;
+              @extend %font-weight-bold;
             }
           }
         }
@@ -100,7 +101,7 @@
 
           .subfeature-link:hover,
           .subfeature-active {
-            font-weight: layout.$font-weight-bold;
+            @extend %font-weight-bold;
           }
         }
       }

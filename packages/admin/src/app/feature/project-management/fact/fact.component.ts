@@ -119,7 +119,7 @@ export class FactComponent implements OnInit {
     }),
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
     dimensions: new FormControl({
-      value: [],
+      value: '[]',
       disabled: true,
     }),
   });
