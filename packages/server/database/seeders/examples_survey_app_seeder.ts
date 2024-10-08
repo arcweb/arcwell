@@ -6,9 +6,23 @@ import User from '#models/user'
 import { PersonFactory } from '#database/factories/person_factory'
 import DimensionSchema from '#models/dimension_schema'
 import Tag from '#models/tag'
+import db from '@adonisjs/lucid/services/db'
 
 export default class SurveyAppSeeder extends BaseSeeder {
   static environment = ['development']
+
+  public async addTagToFactType(factTypeId: string, tagId: string) {
+    await db.rawQuery(
+      `INSERT INTO public.tag_object
+        (id, tag_id, object_id, object_type, created_at, updated_at)
+        VALUES(gen_random_uuid(), :tagId, :objectId, :objectType, now(), now());`,
+      {
+        tagId,
+        objectId: factTypeId,
+        objectType: 'fact_types',
+      }
+    )
+  }
 
   public async run() {
     const patientPersonType = await PersonType.firstOrCreate(
@@ -33,6 +47,11 @@ export default class SurveyAppSeeder extends BaseSeeder {
       }
     )
 
+    const surveyTag = await Tag.firstOrCreate(
+      { pathname: 'survey' },
+      { pathname: 'survey' }
+    )
+
     const dimensionSchemas: DimensionSchema[] = [
       { key: 'phq9_q1_response', name: 'Little interest or pleasure in doing things', dataType: 'number', dataUnit: '', isRequired: true },
       { key: 'phq9_q2_response', name: 'Feeling down, depressed, or hopeless', dataType: 'number', dataUnit: '', isRequired: true },
@@ -47,7 +66,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'phq9_follow_up', name: 'If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
     ]
 
-    await FactType.firstOrCreate(
+    const phq9FactType = await FactType.firstOrCreate(
       { key: 'survey_phq9' },
       {
         key: 'survey_phq9',
@@ -57,7 +76,8 @@ export default class SurveyAppSeeder extends BaseSeeder {
       }
     )
 
-    // GAD-7 Survey FactType
+    await this.addTagToFactType(phq9FactType.id, surveyTag.id)
+
     const gad7Schemas: DimensionSchema[] = [
       { key: 'gad7_q1_response', name: 'Feeling nervous, anxious, or on edge', dataType: 'number', dataUnit: '', isRequired: true },
       { key: 'gad7_q2_response', name: 'Not being able to stop or control worrying', dataType: 'number', dataUnit: '', isRequired: true },
@@ -70,7 +90,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'gad7_follow_up', name: 'How difficult have these problems made it to do work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
     ]
 
-    await FactType.firstOrCreate(
+    const gad7FactType = await FactType.firstOrCreate(
       { key: 'survey_gad7' },
       {
         key: 'survey_gad7',
@@ -80,7 +100,8 @@ export default class SurveyAppSeeder extends BaseSeeder {
       }
     )
 
-    // OKS Survey FactType
+    await this.addTagToFactType(gad7FactType.id, surveyTag.id)
+
     const oksQuestions = [
       { key: 'q1_response', name: 'How would you describe the pain you usually have from your knee?' },
       { key: 'q2_response', name: 'Have you had any trouble with washing and drying yourself?' },
@@ -115,7 +136,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       ...createDimensionsForSide('right'),
     ];
 
-    await FactType.firstOrCreate(
+    const oksFactType = await FactType.firstOrCreate(
       { key: 'survey_oks' },
       {
         key: 'survey_oks',
@@ -125,7 +146,8 @@ export default class SurveyAppSeeder extends BaseSeeder {
       }
     );
 
+    await this.addTagToFactType(oksFactType.id, surveyTag.id)
 
-    console.log('SurveyAppSeeder has been run successfully with one patient user and PHQ-9 survey data.')
+    console.log('SurveyAppSeeder has been run successfully.');
   }
 }
