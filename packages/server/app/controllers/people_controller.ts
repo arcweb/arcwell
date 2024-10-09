@@ -8,7 +8,7 @@ import {
 } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
+import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder'
 
 export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset: number = 0) {
   return Person.query()
@@ -110,7 +110,17 @@ export default class PeopleController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
-    const newPerson = await Person.create(request.body())
+
+    let newPerson = null
+    await db.transaction(async (trx) => {
+      newPerson = new Person().fill(request.body()).useTransaction(trx)
+      await newPerson.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newPerson.id, 'people', tags.tags, false)
+      }
+    })
 
     return { data: await getFullPerson(newPerson.id) }
   }
@@ -165,8 +175,17 @@ export default class PeopleController {
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
-    const person = await Person.findOrFail(params.id)
-    const updatedPerson = await person.merge(cleanRequest).save()
+
+    let updatedPerson = null
+    await db.transaction(async (trx) => {
+      const person = await Person.findOrFail(params.id)
+      person.useTransaction(trx)
+      updatedPerson = await person.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
+      }
+    })
 
     return { data: await getFullPerson(updatedPerson.id) }
   }

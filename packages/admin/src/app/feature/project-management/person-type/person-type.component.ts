@@ -73,6 +73,8 @@ export class PersonTypeComponent implements OnInit {
 
   @Input() personTypeId!: string;
 
+  tagsForCreate: TagType[] = [];
+
   personTypeForm = new FormGroup({
     name: new FormControl(
       {
@@ -124,7 +126,14 @@ export class PersonTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personTypeStore.inCreateMode()) {
-            this.personTypeStore.create(this.personTypeForm.value);
+            const personTypeFormPayload: any = {
+              ...this.personTypeForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              personTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.personTypeStore.create(personTypeFormPayload);
           } else {
             this.personTypeStore.update(this.personTypeForm.value);
           }
@@ -194,5 +203,10 @@ export class PersonTypeComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.personTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

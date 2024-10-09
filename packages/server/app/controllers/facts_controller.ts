@@ -3,7 +3,7 @@ import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
-import { buildApiQuery, buildFactsSort } from '#helpers/query_builder'
+import { buildApiQuery, buildFactsSort, setTagsForObject } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 
 export async function getFullFact(id: string) {
@@ -100,7 +100,16 @@ export default class FactsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactValidator)
-    const newFact = await Fact.create(request.body())
+    let newFact = null
+    await db.transaction(async (trx) => {
+      newFact = new Fact().fill(request.body()).useTransaction(trx)
+      await newFact.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newFact.id, 'facts', tags.tags, false)
+      }
+    })
     return { data: await getFullFact(newFact.id) }
   }
 
@@ -129,12 +138,17 @@ export default class FactsController {
 
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
-    if (cleanRequest.tags) {
-      cleanRequest.tags = JSON.stringify(cleanRequest.tags)
-    }
-    const fact = await Fact.findOrFail(params.id)
-    await fact.merge(cleanRequest).save()
-    return { data: await getFullFact(params.id) }
+    let updatedFact = null
+    await db.transaction(async (trx) => {
+      const fact = await Fact.findOrFail(params.id)
+      fact.useTransaction(trx)
+      updatedFact = await fact.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
+      }
+    })
+    return { data: await getFullFact(updatedFact.id) }
   }
 
   /**

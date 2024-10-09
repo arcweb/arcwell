@@ -34,6 +34,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { ResourceType } from '@app/shared/schemas/resource.schema';
 
 @Component({
   selector: 'aw-resource',
@@ -68,6 +69,8 @@ export class ResourceComponent implements OnInit {
 
   @Input() resourceId!: string;
   @Input() typeKey?: string;
+
+  tagsForCreate: TagType[] = [];
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -115,7 +118,14 @@ export class ResourceComponent implements OnInit {
       .subscribe(resource => {
         if ((resource as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceStore.inCreateMode()) {
-            this.resourceStore.create(this.resourceForm.value);
+            const resourceFormPayload: ResourceType = {
+              ...this.resourceForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              resourceFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.resourceStore.create(resourceFormPayload);
           } else {
             this.resourceStore.update(this.resourceForm.value);
           }
@@ -167,5 +177,10 @@ export class ResourceComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.resourceStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

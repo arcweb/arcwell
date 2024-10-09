@@ -41,6 +41,7 @@ import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
+import { EventType } from '@app/shared/schemas/event.schema';
 
 @Component({
   selector: 'aw-event',
@@ -78,6 +79,8 @@ export class EventComponent implements OnInit {
 
   @Input() eventId!: string;
   @Input() typeKey?: string;
+
+  tagsForCreate: TagType[] = [];
 
   eventForm = new FormGroup({
     eventType: new FormControl<EventTypeType | null>(
@@ -145,7 +148,7 @@ export class EventComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.eventForm.value;
 
-          const eventFormPayload = {
+          const eventFormPayload: EventType = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -156,6 +159,9 @@ export class EventComponent implements OnInit {
           };
 
           if (this.eventStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              eventFormPayload['tags'] = this.tagsForCreate;
+            }
             this.eventStore.create(eventFormPayload);
           } else {
             this.eventStore.update(eventFormPayload);
@@ -225,5 +231,10 @@ export class EventComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.eventStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

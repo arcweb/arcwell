@@ -47,7 +47,7 @@ export const PersonResponseSchema = z.object({
   data: PersonSchema,
 });
 
-export const PeoplCountSchema = z.object({
+export const PeopleCountSchema = z.object({
   data: z.object({
     count: z.number(),
   }),
@@ -57,7 +57,7 @@ export type PersonType = z.infer<typeof PersonSchema>;
 export type PersonUpdateType = z.infer<typeof PersonUpdateSchema>;
 export type PeopleResponseType = z.infer<typeof PeopleResponseSchema>;
 export type PersonResponseType = z.infer<typeof PersonResponseSchema>;
-export type PeopleCountType = z.infer<typeof PeoplCountSchema>;
+export type PeopleCountType = z.infer<typeof PeopleCountSchema>;
 
 // Deserializer / Serializer
 export const deserializePerson = (data: PersonType): PersonModel => {
