@@ -4,18 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { HealthCheck } from '@models/health-check';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HealthService {
-  private healthUrl = 'http://localhost:3333/health';
+  private healthUrl = environment.apiUrl + '/health';
 
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   checkHealth(): Observable<HealthCheck> {
     const { headers } = this;

@@ -1,5 +1,4 @@
 ion-menu {
-
   ion-content::part(background) {
     background: var(--ion-color-primary);
   }
@@ -8,4 +7,15 @@ ion-menu {
 ion-item {
   --background: none;
   --color: #fff;
+  margin: 12px 0;
+}
+
+ion-content {
+  --padding-start: 20px;
+  --padding-end: 20px;
+}
+
+.actions-container {
+  border-top: solid 1px var(--ion-color-light);
+  border-bottom: solid 1px var(--ion-color-light);
 }

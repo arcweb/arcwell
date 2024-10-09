@@ -35,9 +35,9 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  async navigateResults() {
+  async navigate(route: string) {
     await this.menu?.close();
-    this.router.navigate(['/results']);
+    this.router.navigate([route]);
   }
 
   get menuDisabled(): boolean {
@@ -46,7 +46,6 @@ export class MenuComponent implements OnInit {
 
   async logout(): Promise<void> {
     await this.authService.logout();
-    await this.menu?.close();
-    this.router.navigate(['/login']);
+    this.navigate('/login');
   }
 }

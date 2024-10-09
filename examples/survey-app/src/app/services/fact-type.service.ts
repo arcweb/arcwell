@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FactType } from '@models/fact-type';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FactTypeService {
-  private apiUrl = 'http://localhost:3333';
+  private apiUrl = environment.apiUrl + '/facts/types';
 
   constructor(private http: HttpClient) { }
 
@@ -23,12 +24,12 @@ export class FactTypeService {
     }
 
     return this.http.get<{ data: FactType[], meta: { count: number } }>(
-      `${this.apiUrl}/facts/types`,
+      `${this.apiUrl}`,
       { params }
     );
   }
 
   getFactTypeById(id: string): Observable<FactType> {
-    return this.http.get<FactType>(`${this.apiUrl}/facts/types/${id}`);
+    return this.http.get<FactType>(`${this.apiUrl}/${id}`);
   }
 }

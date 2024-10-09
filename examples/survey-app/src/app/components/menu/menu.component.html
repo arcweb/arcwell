@@ -2,20 +2,26 @@
   <ion-content [scrollY]="false">
     <ion-img src="../../../assets/arcwell-logo.svg" class="logo" />
     <div class="actions-container">
-      <div class="logout-container">
-        <ion-item (click)="logout()" lines="none">
-          <ion-icon slot="start" src="../../../assets/icon/logout.svg" />
-          <ion-label>
-            Log Out
-          </ion-label>
-        </ion-item>
-        <ion-item (click)="navigateResults()" lines="none">
-          <ion-icon slot="start" src="../../../assets/icon/results.svg" />
-          <ion-label>
-            Results
-          </ion-label>
-        </ion-item>
-      </div>
+      <ion-item (click)="navigate('/surveys')" lines="none">
+        <ion-icon slot="start" src="../../../assets/icon/list.svg" />
+        <ion-label>
+          Surveys
+        </ion-label>
+      </ion-item>
+      <ion-item (click)="navigate('/results')" lines="none">
+        <ion-icon slot="start" src="../../../assets/icon/results.svg" />
+        <ion-label>
+          Results
+        </ion-label>
+      </ion-item>
+    </div>
+    <div class="logout-container">
+      <ion-item (click)="logout()" lines="none">
+        <ion-icon slot="start" src="../../../assets/icon/logout.svg" />
+        <ion-label>
+          Log Out
+        </ion-label>
+      </ion-item>
     </div>
   </ion-content>
 </ion-menu>

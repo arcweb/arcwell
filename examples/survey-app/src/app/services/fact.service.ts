@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Fact } from '@models/fact';
+import { environment } from 'src/environments/environment';
 
 interface Filter {
   key: string;
@@ -16,7 +17,7 @@ interface QueryData {
   providedIn: 'root'
 })
 export class FactService {
-  private apiUrl = 'http://localhost:3333/data';
+  private apiUrl = environment.apiUrl + '/data';
 
   constructor(private http: HttpClient) { }
 

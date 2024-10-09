@@ -64,17 +64,18 @@ export class ResultsPage implements OnInit {
 
     let series: any[] = [];
 
-    // Handle OKS left and right knees
-    if (factType.key === 'survey_oks' && config.scoreKeys) {
-      const leftScores = facts.map((fact: any) => fact[config.scoreKeys!.left] ?? 0);
-      const rightScores = facts.map((fact: any) => fact[config.scoreKeys!.right] ?? 0);
 
-      series = [
-        {
+    if (factType.key === 'survey_oks') {
+      const leftIncluded = facts.some((fact: any) => fact[config.scoreKeys!.left]);
+      const rightIncluded = facts.some((fact: any) => fact[config.scoreKeys!.right]);
+
+      if (leftIncluded) {
+        const leftScores = leftIncluded ? facts.map((fact: any) => fact[config.scoreKeys!.left]) : null;
+        series.push({
           name: 'Left Knee',
           data: leftScores,
           type: config.chartType,
-          smooth: true,
+          smooth: false,
           lineStyle: {
             width: 2,
             color: '#007bff',
@@ -83,13 +84,16 @@ export class ResultsPage implements OnInit {
             color: '#007bff',
           },
           symbolSize: 8,
-          areaStyle: {},
-        },
-        {
+        });
+      }
+
+      if (rightIncluded) {
+        const rightScores = rightIncluded ? facts.map((fact: any) => fact[config.scoreKeys!.right]) : null;
+        series.push({
           name: 'Right Knee',
           data: rightScores,
           type: config.chartType,
-          smooth: true,
+          smooth: false,
           lineStyle: {
             width: 2,
             color: '#ff6347',
@@ -98,9 +102,8 @@ export class ResultsPage implements OnInit {
             color: '#ff6347',
           },
           symbolSize: 8,
-          areaStyle: {},
-        }
-      ];
+        });
+      }
     } else if (config.scoreKey) {
       // Handle single-score surveys like PHQ-9 or GAD-7
       const scores = facts.map((fact: any) => fact[config.scoreKey!] ?? 0);
@@ -109,20 +112,7 @@ export class ResultsPage implements OnInit {
         {
           data: scores,
           type: config.chartType,
-          smooth: true,
-          markLine: {
-            data: config.assessmentRanges.map((range) => ({
-              yAxis: range.value,
-              label: {
-                formatter: range.label,
-                position: 'insideEnd',
-              },
-              lineStyle: {
-                color: '#ff6347',
-                type: 'dashed',
-              },
-            })),
-          },
+          smooth: false,
         },
       ];
     }
@@ -132,21 +122,23 @@ export class ResultsPage implements OnInit {
         text: `${factType.name} Results`,
         left: 'center',
       },
-      tooltip: {
-        trigger: 'axis',
-        formatter: (params: any) => {
-          const tooltipText = params.map((param: any) => `${param.seriesName}: ${param.data}`).join('<br/>');
-          return `${params[0].axisValue}<br/>${tooltipText}`;
-        }, // Shows date and both scores (left and right) on hover
-      },
+      legend: factType.key === 'survey_oks' ? {
+        data: series.map((s) => s.name),
+        bottom: '0%',
+        left: 'center',
+      } : undefined,
       xAxis: {
         type: 'category',
         data: dates,
         name: 'Date',
         boundaryGap: false,
         axisLabel: {
-          rotate: 45
+          rotate: 45,
+          interval: 0,
         },
+        axisTick: {
+          alignWithLabel: true,
+        }
       },
       grid: {
         left: '10%',  // Padding from the left side
@@ -161,6 +153,15 @@ export class ResultsPage implements OnInit {
         max: config.maxScore,
       },
       series,
+      dataZoom: [
+        {
+          type: 'inside',  // Enable horizontal scrolling inside the chart
+          xAxisIndex: 0,   // Apply to the x-axis
+          startValue: 0,   // Start with the first data point
+          endValue: 3,     // End showing the fourth data point
+          zoomLock: true,  // Lock zoom to prevent zooming, only allow scrolling
+        }
+      ],
     };
   }
 
@@ -222,7 +223,6 @@ export class ResultsPage implements OnInit {
       })
     ).subscribe({
       next: (response) => {
-        console.log('response', response.data);
         const chartOption = this.getChartOption(factType, response.data, config);
         this.chartOption = chartOption;
       },

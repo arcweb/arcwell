@@ -13,6 +13,39 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  currentUser() {
+    return this.http.get(`${this.apiUrl}/me`);
+  }
+
+  async clearToken(): Promise<void> {
+    await SecureStoragePlugin.remove({ key: this.tokenKey });
+  }
+
+  async getToken(): Promise<string | null> {
+    try {
+      const token = await SecureStoragePlugin.get({ key: this.tokenKey });
+      return token?.value || null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async isAuthenticated(): Promise<boolean> {
+    const token = await this.getToken();
+    if (!token) return false;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    try {
+      await firstValueFrom(this.http.get(`${this.apiUrl}/me`, { headers }));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async login(email: string, password: string) {
     const body = { email, password };
 
@@ -47,38 +80,5 @@ export class AuthService {
     } catch (error) {
       throw new Error('Logout failed');
     }
-  }
-
-  async isAuthenticated(): Promise<boolean> {
-    const token = await this.getToken();
-    if (!token) return false;
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    try {
-      await firstValueFrom(this.http.get(`${this.apiUrl}/me`, { headers }));
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  async clearToken(): Promise<void> {
-    await SecureStoragePlugin.remove({ key: this.tokenKey });
-  }
-
-  async getToken(): Promise<string | null> {
-    try {
-      const token = await SecureStoragePlugin.get({ key: this.tokenKey });
-      return token?.value || null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  currentUser() {
-    return this.http.get(`${this.apiUrl}/me`);
   }
 }
