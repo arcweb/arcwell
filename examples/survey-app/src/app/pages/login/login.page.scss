@@ -55,13 +55,10 @@ ion-content {
   box-shadow: none;
 }
 
-ion-item {
+ion-input {
   margin-bottom: 10px;
-  --border-radius: 6px;
-  --border-color: #808184;
-  --border-width: 1px;
+  --background: white;
 }
-
 
 ion-button {
   margin-top: 50px;

@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { Platform } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonHeader, IonImg, IonInput, IonItem, IonTitle, IonToolbar, Platform } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+// import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,15 @@ import { IonicModule } from '@ionic/angular';
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule
+    // IonicModule
+    IonContent,
+    IonInput,
+    IonItem,
+    IonImg,
+    IonTitle,
+    IonToolbar,
+    IonHeader,
+    IonButton,
   ],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],

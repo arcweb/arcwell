@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonMenuToggle, IonTitle, IonToolbar, Platform } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonMenuToggle, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-home-header',
@@ -20,7 +21,9 @@ import { IonButton, IonButtons, IonHeader, IonIcon, IonImg, IonMenuToggle, IonTi
 export class HomeHeaderComponent {
   @Output() mainAction: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(
-    public platform: Platform,
-  ) { }
+  constructor() { }
+
+  getPlatformClass(): string {
+    return Capacitor.getPlatform();
+  }
 }

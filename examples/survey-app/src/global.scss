@@ -60,3 +60,7 @@ ion-toast {
     --background: var(--ion-color-danger);
   }
 }
+
+.ion-valid.sc-ion-input-md-h {
+  --highlight-color: var(--ion-color-primary);
+}

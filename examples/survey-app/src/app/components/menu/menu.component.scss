@@ -13,6 +13,14 @@ ion-item {
 ion-content {
   --padding-start: 20px;
   --padding-end: 20px;
+
+  &.ios {
+    --padding-top: 75px;
+  }
+
+  &.android {
+    --padding-top: 65px;
+  }
 }
 
 .actions-container {

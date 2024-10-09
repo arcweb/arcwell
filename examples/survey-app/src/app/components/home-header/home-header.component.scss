@@ -21,14 +21,18 @@ ion-title {
 }
 
 ion-toolbar.header-toolbar {
-  --padding-top: 60px;
+  // --padding-top: 60px;
   --padding-bottom: 5px;
   --padding-start: 10px;
   --padding-end: 10px;
-  --min-height: 112px;
+  // --min-height: 112px;
 
-  &.android {
-    --padding-top: 20px;
-    --min-height: 75px;
+  &.web {
+    --padding-top: 50px;
   }
+
+  // &.android {
+  // --padding-top: 20px;
+  // --min-height: 75px;
+  // }
 }

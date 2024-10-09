@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary" class="header-toolbar" [class.android]="platform.is('android')">
+  <ion-toolbar color="primary" class="header-toolbar" [class]="getPlatformClass()">
 
     <ion-buttons slot="start">
       <ion-menu-toggle menu-id="user-menu" auto-hide="false">

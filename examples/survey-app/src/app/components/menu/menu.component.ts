@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IonContent, IonIcon, IonImg, IonItem, IonLabel, IonMenu } from '@ionic/angular/standalone';
 import { AuthService } from '@services/auth.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-menu',
@@ -33,6 +34,11 @@ export class MenuComponent implements OnInit {
         this.activeRoute = event.url;
       }
     });
+  }
+
+  getPlatformClass(): string {
+    const platform = Capacitor.getPlatform();
+    return platform;
   }
 
   async navigate(route: string) {
