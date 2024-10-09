@@ -70,7 +70,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'survey_phq9' },
       {
         key: 'survey_phq9',
-        name: 'PHQ-9 Survey',
+        name: 'PHQ-9',
         description: 'Patient Health Questionnaire 9 (PHQ-9) for assessing depression severity.',
         dimensionSchemas: dimensionSchemas
       }
@@ -94,7 +94,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'survey_gad7' },
       {
         key: 'survey_gad7',
-        name: 'GAD-7 Survey',
+        name: 'GAD-7',
         description: 'General Anxiety Disorder 7 (GAD-7) for assessing anxiety severity.',
         dimensionSchemas: gad7Schemas
       }
