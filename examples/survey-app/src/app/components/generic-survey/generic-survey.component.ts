@@ -11,12 +11,16 @@ import { FactService } from '@services/fact.service';
 import { ToastService } from '@services/toast.service';
 import { switchMap } from 'rxjs';
 import { SwiperContainer } from 'swiper/element';
+import { ChartComponent } from '@components/chart/chart.component';
+import { ChartService } from '@services/chart.service';
+import { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'app-generic-survey',
   standalone: true,
   imports: [
     CommonModule,
+    ChartComponent,
     FormsModule,
     IonAlert,
     IonButton,
@@ -62,15 +66,18 @@ export class GenericSurveyComponent {
     },
   ];
 
+  allQuestionsAnswered: boolean = false;
   isAlertOpen = false;
+  showFollowUp: boolean = false;
+  showResults: boolean = false;
+
   answers: { [key: string]: number } = {};
   totalScore: number = 0;
-  followUpResponse: number | null = null;
-  allQuestionsAnswered: boolean = false;
-  showScore: boolean = false;
+  chartOptions?: EChartsOption;
 
   constructor(
     private authService: AuthService,
+    public chartService: ChartService,
     private factService: FactService,
     private toastService: ToastService,
   ) { }
@@ -90,7 +97,7 @@ export class GenericSurveyComponent {
   checkAllQuestionsAnswered() {
     const totalQuestions = this.factType?.dimensionSchemas.filter(dimension => dimension.key.includes('response')).length || 0;
     const answeredQuestions = Object.keys(this.answers).filter(key => key.includes('response')).length;
-    this.showScore = totalQuestions === answeredQuestions;
+    this.showFollowUp = totalQuestions === answeredQuestions;
   }
 
   followUpQuestion(): DimensionSchema | undefined {
@@ -159,7 +166,7 @@ export class GenericSurveyComponent {
     if (this.factType) {
       const fact: Fact = {
         typeKey: this.factType.key,
-        observed_at: new Date().toISOString(),
+        observedAt: new Date().toISOString(),
         dimensions: Object.keys(this.answers).map(key => ({
           key,
           value: this.answers[key]
@@ -170,10 +177,11 @@ export class GenericSurveyComponent {
         switchMap((response: any) => {
           fact.personId = response.data.personId;
           return this.factService.saveFact(fact);
-        })
+        }),
+        switchMap(() => this.chartService.getChartOption(this.factType!))
       ).subscribe({
-        next: (response) => {
-          console.log('Questionnaire saved:', response);
+        next: (chartOptions) => {
+          this.chartOptions = chartOptions;
         },
         error: (error) => {
           console.error('Error saving questionnaire:', error);
@@ -185,7 +193,7 @@ export class GenericSurveyComponent {
             3000,
             'success'
           );
-          this.resetAction.emit();
+          this.showResults = true;
         }
       });
     }

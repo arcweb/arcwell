@@ -3,19 +3,24 @@ import { ChartConfig, chartConfigs } from '@configs/chart-configs';
 import { Fact } from '@models/fact';
 import { FactType } from '@models/fact-type';
 import { EChartsOption } from 'echarts';
+import { ToastService } from './toast.service';
+import { AuthService } from './auth.service';
+import { map, Observable, switchMap } from 'rxjs';
+import { FactService } from './fact.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartService {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private factService: FactService,
+    private toastService: ToastService,
+  ) { }
 
-  getChartConfig(surveyType: string): ChartConfig | null {
-    return chartConfigs[surveyType] || null;
-  }
-
-  getChartOption(factType: FactType, facts: Fact[], config: ChartConfig): EChartsOption {
+  // Method that creates the chart options from facts and config
+  createChartOptions(factType: FactType, facts: Fact[], config: ChartConfig): EChartsOption {
     const dates = facts
       .sort((a: any, b: any) => new Date(a[config.dateKey]).getTime() - new Date(b[config.dateKey]).getTime())
       .map((fact: any) => new Date(fact[config.dateKey]).toLocaleDateString());
@@ -62,7 +67,6 @@ export class ChartService {
         });
       }
     } else if (config.scoreKey) {
-      // Handle single-score surveys like PHQ-9 or GAD-7
       const scores = facts.map((fact: any) => fact[config.scoreKey!] ?? 0);
 
       series = [
@@ -76,7 +80,7 @@ export class ChartService {
 
     return {
       title: {
-        text: `${factType.name} Results`,
+        text: `Your previous ${factType.name} results`,
         left: 'center',
       },
       legend: factType.key === 'survey_oks' ? {
@@ -98,11 +102,11 @@ export class ChartService {
         }
       },
       grid: {
-        left: '10%',  // Padding from the left side
-        right: '15%', // Padding from the right side
-        top: '15%',   // Padding from the top
-        bottom: '15%', // Padding from the bottom, to accommodate rotated labels
-        containLabel: true, // Ensure the labels stay within the chart
+        left: '10%',
+        right: '15%',
+        top: '15%',
+        bottom: '15%',
+        containLabel: true,
       },
       yAxis: {
         type: 'value',
@@ -112,13 +116,46 @@ export class ChartService {
       series,
       dataZoom: [
         {
-          type: 'inside',  // Enable horizontal scrolling inside the chart
-          xAxisIndex: 0,   // Apply to the x-axis
-          startValue: 0,   // Start with the first data point
-          endValue: 3,     // End showing the fourth data point
-          zoomLock: true,  // Lock zoom to prevent zooming, only allow scrolling
+          type: 'inside',
+          xAxisIndex: 0,
+          startValue: 0,
+          endValue: 3,
+          zoomLock: true,
         }
       ],
     };
+  }
+
+  getChartConfig(surveyType: string): ChartConfig | null {
+    return chartConfigs[surveyType] || null;
+  }
+
+  // Refactored method to return an Observable of EChartsOption
+  getChartOption(factType: FactType): Observable<EChartsOption> {
+    const config = this.getChartConfig(factType.key);
+
+    if (!config) {
+      this.toastService.presentToast('bottom', 'Survey type not supported', 3000, 'error');
+      return new Observable(observer => observer.next({} as EChartsOption));
+    }
+
+    // Return an observable of chart options
+    return this.selectFactTypeResults(factType).pipe(
+      map((facts: Fact[]) => this.createChartOptions(factType, facts, config))
+    );
+  }
+
+  selectFactTypeResults(factType: FactType): Observable<Fact[]> {
+    return this.authService.currentUser().pipe(
+      switchMap((response: any) => {
+        return this.factService.queryFacts({
+          filters: [
+            { key: 'type_key', value: factType.key },
+            { key: 'person_id', value: response.data.personId },
+          ],
+        });
+      }),
+      map((response) => response.data),
+    );
   }
 }

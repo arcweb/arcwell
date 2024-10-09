@@ -11,12 +11,16 @@ import { ToastService } from '@services/toast.service';
 import { DimensionSchema } from '@models/dimension-schema';
 import { FactType } from '@models/fact-type';
 import { Fact } from '@models/fact';
+import { ChartService } from '@services/chart.service';
+import { EChartsOption } from 'echarts';
+import { ChartComponent } from '@components/chart/chart.component';
 
 @Component({
   selector: 'app-oks-survey',
   standalone: true,
   imports: [
     CommonModule,
+    ChartComponent,
     FormsModule,
     IonAlert,
     IonButton,
@@ -57,15 +61,21 @@ export class OksSurveyComponent {
   ];
 
   isAlertOpen = false;
+  showResults: boolean = false;
+  showScore: boolean = false;
+  showSurvey: boolean = false;
+
   answers: { [key: string]: number } = {};
   sideSelected: 'left' | 'right' | 'both' | null = null;
-  showSurvey: boolean = false;
+
   totalScoreLeft: number = 0;
   totalScoreRight: number = 0;
-  showScore: boolean = false;
+
+  chartOptions?: EChartsOption;
 
   constructor(
     private authService: AuthService,
+    private chartService: ChartService,
     private factService: FactService,
     private toastService: ToastService,
   ) { }
@@ -162,7 +172,7 @@ export class OksSurveyComponent {
     if (this.factType) {
       const fact: Fact = {
         typeKey: this.factType.key,
-        observed_at: new Date().toISOString(),
+        observedAt: new Date().toISOString(),
         dimensions: Object.keys(this.answers).map(key => ({
           key,
           value: this.answers[key]
@@ -173,10 +183,11 @@ export class OksSurveyComponent {
         switchMap((response: any) => {
           fact.personId = response.data.personId;
           return this.factService.saveFact(fact);
-        })
+        }),
+        switchMap(() => this.chartService.getChartOption(this.factType!))
       ).subscribe({
-        next: (response) => {
-          console.log('Questionnaire saved:', response);
+        next: (chartOptions) => {
+          this.chartOptions = chartOptions;
         },
         error: (error) => {
           console.error('Error saving OKS survey:', error);
@@ -188,7 +199,7 @@ export class OksSurveyComponent {
             3000,
             'success'
           );
-          this.resetAction.emit();
+          this.showResults = true;
         }
       });
     }

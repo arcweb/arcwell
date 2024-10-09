@@ -6,9 +6,7 @@ export interface Fact {
   personId?: string;
   resourceId?: string;
   eventId?: string;
-  // createdAt?: string;
-  // updatedAt?: string;
-  observed_at: string;
+  observedAt: string;
   info?: object;
   dimensions: Dimension[];
 }

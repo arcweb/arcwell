@@ -8,7 +8,6 @@ import { FactTypeService } from '@services/fact-type.service';
 import { ToastService } from '@services/toast.service';
 import { FactService } from '@services/fact.service';
 import { AuthService } from '@services/auth.service';
-import { switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { FactType } from '@models/fact-type';
 import { ChartService } from '@services/chart.service';
@@ -81,37 +80,10 @@ export class ResultsPage implements OnInit {
   }
 
   onSurveyChange(event: any) {
-    this.selectFactTypeResults(event.detail.value);
-    this.selectedSurveyType = event.detail.value;
-  }
-
-  selectFactTypeResults(factType: FactType) {
-    const config = this.chartService.getChartConfig(factType.key);
-
-    if (!config) {
-      this.toastService.presentToast('bottom', 'Survey type not supported', 3000, 'error');
-      return;
-    }
-
-    this.authService.currentUser().pipe(
-      switchMap((response: any) => {
-        return this.factService.queryFacts({
-          filters: [
-            {
-              key: 'type_key',
-              value: factType.key,
-            },
-            {
-              key: 'person_id',
-              value: response.data.personId,
-            },
-          ],
-        });
-      })
-    ).subscribe({
-      next: (response) => {
-        const chartOptions = this.chartService.getChartOption(factType, response.data, config);
+    this.chartService.getChartOption(event.detail.value).subscribe({
+      next: (chartOptions) => {
         this.chartOptions = chartOptions;
+        this.selectedSurveyType = event.detail.value;
       },
       error: (error) => {
         this.toastService.presentToast(
