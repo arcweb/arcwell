@@ -12,5 +12,5 @@
     </ion-item>
   </div>
 
-  <div *ngIf="selectedSurveyType" echarts [options]="chartOption" class="demo-chart"></div>
+  <app-chart *ngIf="selectedSurveyType" [chartOptions]="chartOptions" class="demo-chart"></app-chart>
 </ion-content>

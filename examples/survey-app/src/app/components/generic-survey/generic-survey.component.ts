@@ -5,7 +5,7 @@ import { IonAlert, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTit
 import { DimensionSchema } from '@models/dimension-schema';
 import { Fact } from '@models/fact';
 import { FactType } from '@models/fact-type';
-import { SurveyConfig } from '@pages/surveys/configs';
+import { SurveyConfig } from '@configs/survey-configs';
 import { AuthService } from '@services/auth.service';
 import { FactService } from '@services/fact.service';
 import { ToastService } from '@services/toast.service';

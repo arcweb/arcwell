@@ -1,4 +1,4 @@
-export interface SurveyConfig {
+export interface ChartConfig {
   maxScore: number;
   assessmentRanges: Array<{ value: number, label: string }>;
   dateKey: string;
@@ -8,7 +8,7 @@ export interface SurveyConfig {
   yAxisLabel: string;
 }
 
-export const phq9Config: SurveyConfig = {
+export const phq9Config: ChartConfig = {
   maxScore: 27,
   assessmentRanges: [
     { value: 4, label: 'No Depression' },
@@ -23,7 +23,7 @@ export const phq9Config: SurveyConfig = {
   yAxisLabel: 'Score',
 };
 
-export const oksConfig: SurveyConfig = {
+export const oksConfig: ChartConfig = {
   maxScore: 48,
   assessmentRanges: [
     { value: 16, label: 'Much Better' },
@@ -37,7 +37,7 @@ export const oksConfig: SurveyConfig = {
   yAxisLabel: 'Score',
 };
 
-export const gad7Config: SurveyConfig = {
+export const gad7Config: ChartConfig = {
   maxScore: 21,
   assessmentRanges: [
     { value: 5, label: 'Mild Anxiety' },
@@ -50,7 +50,7 @@ export const gad7Config: SurveyConfig = {
   yAxisLabel: 'Score',
 };
 
-export const surveyConfigs: { [key: string]: SurveyConfig } = {
+export const chartConfigs: { [key: string]: ChartConfig } = {
   survey_phq9: phq9Config,
   survey_oks: oksConfig,
   survey_gad7: gad7Config,

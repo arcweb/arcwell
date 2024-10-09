@@ -8,7 +8,7 @@ import { ToastService } from '@services/toast.service';
 import { GenericSurveyComponent } from '@components/generic-survey/generic-survey.component';
 import { OksSurveyComponent } from '@components/oks-survey/oks-survey.component';
 import { FactType } from '@models/fact-type';
-import { surveyConfigs } from './configs';
+import { surveyConfigs } from '@configs/survey-configs';
 
 @Component({
   selector: 'app-surveys',

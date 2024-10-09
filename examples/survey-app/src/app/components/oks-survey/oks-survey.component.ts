@@ -6,7 +6,7 @@ import { FactService } from '@services/fact.service';
 import { AuthService } from '@services/auth.service';
 import { switchMap } from 'rxjs';
 import { SwiperContainer } from 'swiper/element';
-import { SurveyConfig } from '@pages/surveys/configs';
+import { SurveyConfig } from '@configs/survey-configs';
 import { ToastService } from '@services/toast.service';
 import { DimensionSchema } from '@models/dimension-schema';
 import { FactType } from '@models/fact-type';

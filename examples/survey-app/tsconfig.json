@@ -10,6 +10,9 @@
       "@components/*": [
         "src/app/components/*"
       ],
+      "@configs/*": [
+        "src/app/configs/*"
+      ],
       "@guards/*": [
         "src/app/guards/*"
       ],
