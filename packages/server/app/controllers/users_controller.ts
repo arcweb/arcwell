@@ -86,9 +86,10 @@ export default class UsersController {
     // TODO: Add create user functionality back in...
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
-    let newUser = null;
+    let newUser = null
     await db.transaction(async (trx) => {
-      newUser = await User.create(request.body(), trx)
+      newUser = new User().fill(request.body()).useTransaction(trx)
+      await newUser.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

@@ -76,9 +76,10 @@ export default class ResourcesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceValidator)
-    let newResource = null;
+    let newResource = null
     await db.transaction(async (trx) => {
-      newResource = await Resource.create(request.body(), trx)
+      newResource = new Resource().fill(request.body()).useTransaction(trx)
+      await newResource.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

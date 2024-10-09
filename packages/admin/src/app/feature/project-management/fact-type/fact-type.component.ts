@@ -97,6 +97,8 @@ export class FactTypeComponent implements OnInit {
 
   @Input() factTypeId!: string;
 
+  tagsForCreate: TagType[] = [];
+
   factTypeForm = new FormGroup({
     name: new FormControl(
       {
@@ -165,12 +167,15 @@ export class FactTypeComponent implements OnInit {
             ? JSON.parse(formValue.dimensionSchemas)
             : [];
 
-          const factTypeFormPayload = {
+          const factTypeFormPayload: any = {
             ...formValue,
             dimensionSchemas: dimensionsSquemaJson,
           };
 
           if (this.factTypeStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              factTypeFormPayload['tags'] = this.tagsForCreate;
+            }
             this.factTypeStore.create(factTypeFormPayload);
           } else {
             this.factTypeStore.update(factTypeFormPayload);
@@ -241,5 +246,10 @@ export class FactTypeComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.factTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

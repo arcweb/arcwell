@@ -57,10 +57,10 @@ export default class FactTypesController {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
 
-    let newFactType = null;
+    let newFactType = null
     await db.transaction(async (trx) => {
-      // @ts-ignore - stringify is required for knex and jsonb arrays
-      newFactType = await FactType.create(request.body(), trx)
+      newFactType = new FactType().fill(request.body()).useTransaction(trx)
+      await newFactType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

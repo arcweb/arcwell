@@ -51,9 +51,10 @@ export default class PersonTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonTypeValidator)
-    let newPersonType = null;
+    let newPersonType = null
     await db.transaction(async (trx) => {
-      newPersonType = await PersonType.create(request.body(), trx)
+      newPersonType = new PersonType().fill(request.body()).useTransaction(trx)
+      await newPersonType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

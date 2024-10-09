@@ -51,13 +51,14 @@ export default class ResourceTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
-    let newResourceType = null;
+    let newResourceType = null
     await db.transaction(async (trx) => {
-      newResourceType = await ResourceType.create(request.body(), trx)
+      newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
+      await newResourceType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newResourceType.id, 'reosource_types', tags.tags, false)
+        await setTagsForObject(trx, newResourceType.id, 'resource_types', tags.tags, false)
       }
     })
 

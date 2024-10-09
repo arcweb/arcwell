@@ -73,10 +73,11 @@ export default class CohortsController {
     await auth.authenticate()
     await request.validateUsing(createCohortValidator)
     const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
-    let newCohort = null;
+    let newCohort = null
 
     await db.transaction(async (trx) => {
-      newCohort = await Cohort.create(cleanRequest, trx)
+      newCohort = new Cohort().fill(cleanRequest).useTransaction(trx)
+      await newCohort.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
         await setTagsForObject(trx, newCohort.id, 'cohorts', cleanRequest.tags, false)

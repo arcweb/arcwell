@@ -40,6 +40,7 @@ import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { PersonType } from '@app/shared/schemas/person.schema';
 
 @Component({
   selector: 'aw-person',
@@ -77,6 +78,8 @@ export class PersonComponent implements OnInit {
 
   @Input() personId!: string;
   @Input() typeKey?: string;
+
+  tagsForCreate: TagType[] = [];
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -159,7 +162,14 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            this.personStore.createPerson(this.personForm.value);
+            const personFormPayload: PersonType = {
+              ...this.personForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              personFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.personStore.createPerson(personFormPayload);
           } else {
             this.personStore.updatePerson(this.personForm.value);
           }
@@ -251,5 +261,10 @@ export class PersonComponent implements OnInit {
 
   cohortsRowClick(row: CohortModel) {
     this.router.navigate(['project-management', 'cohorts', row.id]);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

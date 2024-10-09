@@ -111,9 +111,10 @@ export default class PeopleController {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
 
-    let newPerson = null;
+    let newPerson = null
     await db.transaction(async (trx) => {
-      newPerson = await Person.create(request.body(), trx)
+      newPerson = new Person().fill(request.body()).useTransaction(trx)
+      await newPerson.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

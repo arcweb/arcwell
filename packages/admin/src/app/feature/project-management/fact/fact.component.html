@@ -122,6 +122,15 @@
         </h6>
       }
 
+      @if (factStore.inCreateMode()) {
+        <br />
+        <aw-tags-form
+          [tags]="factStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
+
       <div class="form-button-container">
         <button
           mat-button
@@ -145,10 +154,12 @@
       </div>
     </form>
 
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="factStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
+    @if (!factStore.inCreateMode()) {
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="factStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
   </div>
 }

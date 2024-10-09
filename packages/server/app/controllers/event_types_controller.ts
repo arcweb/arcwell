@@ -52,9 +52,10 @@ export default class EventTypesController {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
 
-    let newEventType = null;
+    let newEventType = null
     await db.transaction(async (trx) => {
-      newEventType = await EventType.create(request.body(), trx)
+      newEventType = new EventType().fill(request.body()).useTransaction(trx)
+      await newEventType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

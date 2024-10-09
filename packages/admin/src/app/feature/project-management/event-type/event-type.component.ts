@@ -73,6 +73,8 @@ export class EventTypeComponent implements OnInit {
 
   @Input() eventTypeId!: string;
 
+  tagsForCreate: TagType[] = [];
+
   eventTypeForm = new FormGroup({
     name: new FormControl(
       {
@@ -124,7 +126,16 @@ export class EventTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventTypeStore.inCreateMode()) {
-            this.eventTypeStore.create(this.eventTypeForm.value);
+            const formValue = this.eventTypeForm.value;
+
+            const eventTypeFormPayload: EventTypeType = {
+              ...formValue,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              eventTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.eventTypeStore.create(eventTypeFormPayload);
           } else {
             this.eventTypeStore.update(this.eventTypeForm.value);
           }
@@ -194,5 +205,10 @@ export class EventTypeComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.eventTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

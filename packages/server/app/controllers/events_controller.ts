@@ -82,7 +82,8 @@ export default class EventsController {
     let newEvent = null;
 
     await db.transaction(async (trx) => {
-      newEvent = await Event.create(cleanRequest, trx)
+      newEvent = new Event().fill(cleanRequest).useTransaction(trx)
+      await newEvent.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
         await setTagsForObject(trx, newEvent.id, 'events', cleanRequest.tags, false)

@@ -93,6 +93,14 @@
         </mat-form-field>
       }
 
+      @if (factTypeStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="factTypeStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
+
       <div class="form-button-container">
         <button
           mat-button
@@ -119,9 +127,11 @@
     </form>
 
     <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="factTypeStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
+    @if (!factTypeStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="factTypeStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
   </div>
 }

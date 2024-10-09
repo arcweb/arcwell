@@ -54,6 +54,7 @@ import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { FactType } from '@app/shared/schemas/fact.schema';
 
 @Component({
   selector: 'aw-fact',
@@ -102,6 +103,8 @@ export class FactComponent implements OnInit {
 
   @Input() factId!: string;
   @Input() typeKey?: string;
+
+  tagsForCreate: TagType[] = [];
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -170,7 +173,7 @@ export class FactComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factForm.value;
 
-          const factFormPayload = {
+          const factFormPayload: FactType = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -184,6 +187,9 @@ export class FactComponent implements OnInit {
           };
 
           if (this.factStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              factFormPayload['tags'] = this.tagsForCreate;
+            }
             this.factStore.createFact(factFormPayload);
           } else {
             this.factStore.updateFact(factFormPayload);
@@ -248,5 +254,10 @@ export class FactComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.factStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

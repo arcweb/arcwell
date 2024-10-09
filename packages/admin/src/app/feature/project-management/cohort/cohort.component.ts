@@ -40,6 +40,7 @@ import { PersonType } from '@schemas/person.schema';
 import { BackService } from '@app/shared/services/back.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { CohortType } from '@app/shared/schemas/cohort.schema';
 
 @Component({
   selector: 'aw-cohort',
@@ -76,6 +77,8 @@ export class CohortComponent implements OnInit {
   readonly backService = inject(BackService);
 
   @Input() cohortId!: string;
+
+  tagsForCreate: TagType[] = [];
 
   cohortForm = new FormGroup({
     name: new FormControl(
@@ -143,7 +146,14 @@ export class CohortComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.cohortStore.inCreateMode()) {
-            this.cohortStore.createCohort(this.cohortForm.value);
+            const cohortFormPayload: CohortType = {
+              ...this.cohortForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              cohortFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.cohortStore.createCohort(cohortFormPayload);
           } else {
             this.cohortStore.updateCohort(this.cohortForm.value);
           }
@@ -239,5 +249,10 @@ export class CohortComponent implements OnInit {
       sort: event.active,
       order: event.direction,
     });
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }

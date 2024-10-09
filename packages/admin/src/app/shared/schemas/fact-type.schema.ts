@@ -16,7 +16,7 @@ export const FactTypeSchema = z
     observedAt: z.string().datetime({ offset: true }).optional(),
     facts: z.array(FactSchema).optional(),
     dimensionSchemas: z.array(DimensionSchemaSchema.optional()).optional(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
     createdAt: z.string().datetime({ offset: true }).optional().nullable(),
     updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
@@ -33,7 +33,7 @@ export const FactTypeUpdateSchema = z
     dimensionSchemas: z
       .array(DimensionSchemaUpdateSchema.optional())
       .optional(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.lazy(() => z.array(TagSchema).optional()),
     createdAt: z.string().datetime({ offset: true }).optional().nullable(),
     updatedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })

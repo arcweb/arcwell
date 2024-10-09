@@ -100,9 +100,10 @@ export default class FactsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactValidator)
-    let newFact = null;
+    let newFact = null
     await db.transaction(async (trx) => {
-      newFact = await Fact.create(request.body(), trx)
+      newFact = new Fact().fill(request.body()).useTransaction(trx)
+      await newFact.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {

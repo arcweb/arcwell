@@ -73,6 +73,8 @@ export class ResourceTypeComponent implements OnInit {
 
   @Input() resourceTypeId!: string;
 
+  tagsForCreate: TagType[] = [];
+
   resourceTypeForm = new FormGroup({
     name: new FormControl(
       {
@@ -124,7 +126,14 @@ export class ResourceTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceTypeStore.inCreateMode()) {
-            this.resourceTypeStore.create(this.resourceTypeForm.value);
+            const resourceTypeFormPayload: ResourceTypeType = {
+              ...this.resourceTypeForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              resourceTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.resourceTypeStore.create(resourceTypeFormPayload);
           } else {
             this.resourceTypeStore.update(this.resourceTypeForm.value);
           }
@@ -195,5 +204,10 @@ export class ResourceTypeComponent implements OnInit {
 
   onSetTags(tags: TagType[]): void {
     this.resourceTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: TagType[]) {
+    this.tagsForCreate = tags;
   }
 }
