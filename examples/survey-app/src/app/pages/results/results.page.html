@@ -1,0 +1,16 @@
+<app-home-header (mainAction)="headerMainAction()" />
+
+<ion-content [scrollY]="false">
+  <div class="survey-selection-container">
+    <ion-item>
+      <ion-select label="Select Survey" [(ngModel)]="selectedSurveyType" interface="popover"
+        (ionChange)="onSurveyChange($event)">
+        <ion-select-option *ngFor="let factType of factTypes" [value]="factType">
+          {{ factType.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+
+  <app-chart *ngIf="selectedSurveyType" [chartOptions]="chartOptions" class="demo-chart"></app-chart>
+</ion-content>
