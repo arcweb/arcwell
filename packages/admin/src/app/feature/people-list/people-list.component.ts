@@ -74,7 +74,7 @@ export class PeopleListComponent {
   }
 
   viewAccount(personId: string) {
-    this.router.navigate(['settings', 'user-management', personId]);
+    this.router.navigate(['settings', 'users', personId]);
   }
 
   sortChange(event: Sort) {

@@ -3,13 +3,13 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { AuthStore } from '@app/shared/store/auth.store';
 
 @Component({
-  selector: 'aw-user-management',
+  selector: 'aw-users',
   standalone: true,
   imports: [RouterLink, RouterOutlet],
-  templateUrl: './user-management.component.html',
-  styleUrl: './user-management.component.scss',
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
 })
-export class UserManagementComponent {
+export class UsersComponent {
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
 

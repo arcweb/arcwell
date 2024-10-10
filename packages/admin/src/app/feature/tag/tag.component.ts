@@ -236,7 +236,7 @@ export class TagComponent implements OnInit {
         this.router.navigate(['resources', row.id]);
         break;
       case 'users':
-        this.router.navigate(['settings', 'user-management', row.id]);
+        this.router.navigate(['settings', 'users', row.id]);
         break;
     }
   }

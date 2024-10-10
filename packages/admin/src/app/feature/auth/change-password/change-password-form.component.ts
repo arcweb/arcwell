@@ -60,8 +60,8 @@ export class ChangePasswordComponent implements OnInit {
             .then(() => {
               if (this.authStore.loginStatus() !== 'error') {
                 this.router.navigate([
-                  'user-management',
-                  'list',
+                  'settings',
+                  'users',
                   this.authStore.currentUser()?.id,
                 ]);
               }

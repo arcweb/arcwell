@@ -113,15 +113,6 @@ export class FeaturesMenuComponent {
     });
   }
 
-  viewAccount() {
-    this.router.navigate([
-      'settings',
-      'user-management',
-      'all-users',
-      this.authStore.currentUser()?.id,
-    ]);
-  }
-
   goHome() {
     this.router.navigate(['/']);
   }

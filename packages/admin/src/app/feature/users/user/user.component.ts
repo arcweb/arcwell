@@ -215,7 +215,7 @@ export class UserComponent implements OnInit {
     const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
     if (fromCreateMode) {
-      this.router.navigate(['settings', 'user-management']);
+      this.router.navigate(['settings', 'users']);
     }
   }
 

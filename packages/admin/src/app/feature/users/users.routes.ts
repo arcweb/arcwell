@@ -1,12 +1,12 @@
 import { Route } from '@angular/router';
 import { AllUsersComponent } from './users-list/users-list.component';
-import { UserManagementComponent } from './user-management.component';
+import { UsersComponent } from './users.component';
 import { UserComponent } from './user/user.component';
 
-export const USER_MANAGEMENT_ROUTES: Route[] = [
+export const USERS_ROUTES: Route[] = [
   {
     path: '',
-    component: UserManagementComponent,
+    component: UsersComponent,
     children: [
       {
         path: 'list',

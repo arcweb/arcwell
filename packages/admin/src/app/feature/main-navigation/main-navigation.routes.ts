@@ -22,7 +22,7 @@ import { TagsListComponent } from '../tags-list/tags-list.component';
 import { TagComponent } from '../tag/tag.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { DashboardComponent } from '@feature/dashboard/dashboard.component';
-import { UserComponent } from '../user-management/user/user.component';
+import { UserComponent } from '../users/user/user.component';
 
 export const MAIN_NAVIGATION_ROUTES: Route[] = [
   {
@@ -173,11 +173,9 @@ export const MAIN_NAVIGATION_ROUTES: Route[] = [
         },
       },
       {
-        path: 'settings/user-management',
+        path: 'settings/users',
         loadChildren: () =>
-          import('../user-management/user-management.routes').then(
-            m => m.USER_MANAGEMENT_ROUTES,
-          ),
+          import('../users/users.routes').then(m => m.USERS_ROUTES),
       },
       // fallback routes
       {

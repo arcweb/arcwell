@@ -67,7 +67,7 @@ export class AllUsersComponent {
   }
 
   rowClick(row: UserModel) {
-    this.router.navigate(['settings', 'user-management', row.id]);
+    this.router.navigate(['settings', 'users', row.id]);
   }
 
   reinvite(row: UserModel) {
