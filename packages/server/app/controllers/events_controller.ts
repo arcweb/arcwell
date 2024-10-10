@@ -78,8 +78,15 @@ export default class EventsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventValidator)
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId', 'tags'])
-    let newEvent = null;
+    const cleanRequest = request.only([
+      'typeKey',
+      'startedAt',
+      'endedAt',
+      'personId',
+      'resourceId',
+      'tags',
+    ])
+    let newEvent = null
 
     await db.transaction(async (trx) => {
       newEvent = new Event().fill(cleanRequest).useTransaction(trx)
@@ -155,7 +162,14 @@ export default class EventsController {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
     // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
+    const cleanRequest = request.only([
+      'typeKey',
+      'startedAt',
+      'endedAt',
+      'personId',
+      'resourceId',
+      'tags',
+    ])
     let updatedEvent = null
     await db.transaction(async (trx) => {
       const event = await Event.findOrFail(params.id)

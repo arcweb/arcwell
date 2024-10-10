@@ -1,14 +1,12 @@
 import { DateTime } from 'luxon';
 import { PersonType } from '@shared/schemas/person.schema';
-import { TagType } from '@schemas/tag.schema';
-import { TagModel } from '@shared/models/tag.model';
 
 export class PersonTypeModel {
   public id?: string;
   public key: string;
   public name: string;
   public description?: string;
-  public tags?: TagModel[] | undefined;
+  public tags?: string[] | undefined;
   public createdAt: DateTime;
   public updatedAt: DateTime;
 
@@ -17,9 +15,7 @@ export class PersonTypeModel {
     this.key = data.key;
     this.name = data.name;
     this.description = data.description;
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
   }

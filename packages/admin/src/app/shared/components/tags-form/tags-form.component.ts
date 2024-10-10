@@ -16,7 +16,6 @@ import {
   FormsModule,
   FormSubmittedEvent,
   ReactiveFormsModule,
-  Validators,
   ValueChangeEvent,
 } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';

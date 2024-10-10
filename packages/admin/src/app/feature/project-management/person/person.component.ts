@@ -32,14 +32,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { PersonType } from '@app/shared/schemas/person.schema';
 
 @Component({
@@ -79,7 +78,7 @@ export class PersonComponent implements OnInit {
   @Input() personId!: string;
   @Input() typeKey?: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -229,7 +228,7 @@ export class PersonComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.personStore.setTags(tags);
   }
 
@@ -264,7 +263,7 @@ export class PersonComponent implements OnInit {
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }

@@ -17,13 +17,10 @@ import { firstValueFrom } from 'rxjs';
 import { FactType } from '@schemas/fact.schema';
 import { FactTypeService } from '@shared/services/fact-type.service';
 import { TagService } from '@shared/services/tag.service';
-import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
-import { FactTypeType, FactTypeUpdateType } from '@schemas/fact-type.schema';
-import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -159,7 +156,7 @@ export const FactTypeStore = signalStore(
   ),
   withComputed(({ factType }) => ({
     tagStrings: computed(
-      () => factType()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
+      () => factType()?.tags?.map((tag: string) => tag) ?? [],
     ),
   })),
 );

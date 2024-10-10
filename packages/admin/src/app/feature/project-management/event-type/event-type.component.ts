@@ -34,7 +34,6 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
@@ -73,7 +72,7 @@ export class EventTypeComponent implements OnInit {
 
   @Input() eventTypeId!: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   eventTypeForm = new FormGroup({
     name: new FormControl(
@@ -203,12 +202,12 @@ export class EventTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.eventTypeStore.setTags(tags);
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }

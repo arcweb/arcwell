@@ -16,7 +16,6 @@ import { CohortService } from '@shared/services/cohort.service';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { CohortType, CohortUpdateType } from '@shared/schemas/cohort.schema';
-import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
@@ -312,8 +311,6 @@ export const CohortStore = signalStore(
     }),
   ),
   withComputed(({ cohort }) => ({
-    tagStrings: computed(
-      () => cohort()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
-    ),
+    tagStrings: computed(() => cohort()?.tags?.map((tag: string) => tag) ?? []),
   })),
 );

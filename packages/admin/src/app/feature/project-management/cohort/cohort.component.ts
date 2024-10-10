@@ -32,7 +32,6 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Sort } from '@angular/material/sort';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
@@ -78,7 +77,7 @@ export class CohortComponent implements OnInit {
 
   @Input() cohortId!: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   cohortForm = new FormGroup({
     name: new FormControl(
@@ -205,7 +204,7 @@ export class CohortComponent implements OnInit {
     });
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.cohortStore.setTags(tags);
   }
 
@@ -252,7 +251,7 @@ export class CohortComponent implements OnInit {
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }

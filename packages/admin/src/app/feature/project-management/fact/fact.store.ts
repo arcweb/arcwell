@@ -18,7 +18,6 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { FactType, FactUpdateType } from '@shared/schemas/fact.schema';
 import { FactTypeService } from '@shared/services/fact-type.service';
 import { FactTypeType } from '@schemas/fact-type.schema';
-import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
@@ -230,8 +229,6 @@ export const FactStore = signalStore(
     }),
   ),
   withComputed(({ fact }) => ({
-    tagStrings: computed(
-      () => fact()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
-    ),
+    tagStrings: computed(() => fact()?.tags?.map((tag: string) => tag) ?? []),
   })),
 );

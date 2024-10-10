@@ -32,7 +32,6 @@ import {
   TYPE_KEY_PATTERN,
 } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
-import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
@@ -73,7 +72,7 @@ export class ResourceTypeComponent implements OnInit {
 
   @Input() resourceTypeId!: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   resourceTypeForm = new FormGroup({
     name: new FormControl(
@@ -202,12 +201,12 @@ export class ResourceTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.resourceTypeStore.setTags(tags);
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }
