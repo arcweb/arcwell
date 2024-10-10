@@ -146,8 +146,6 @@ export default class AuthController {
     await request.validateUsing(paramsEmailValidator)
     const cleanrequest = request.only(['email'])
 
-    console.log('cleanrequest', cleanrequest)
-
     const user = await User.findBy('email', cleanrequest.email)
     if (user) {
       User.generateResetCode(user)
