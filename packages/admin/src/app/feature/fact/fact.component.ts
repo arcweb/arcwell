@@ -30,7 +30,6 @@ import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import {
   MatCell,
   MatCellDef,
@@ -53,7 +52,7 @@ import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
-import { DetailHeaderComponent } from '../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactType } from '@app/shared/schemas/fact.schema';
 
 @Component({
@@ -104,7 +103,7 @@ export class FactComponent implements OnInit {
   @Input() factId!: string;
   @Input() typeKey?: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -252,12 +251,12 @@ export class FactComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.factStore.setTags(tags);
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }

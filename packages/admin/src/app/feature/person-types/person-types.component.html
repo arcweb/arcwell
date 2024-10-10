@@ -30,7 +30,7 @@
         @if (element.tags && element.tags.length > 0) {
           @for (tag of element.tags; track $index) {
             <div>
-              {{ tag.pathname }}
+              {{ tag }}
             </div>
           }
         } @else {

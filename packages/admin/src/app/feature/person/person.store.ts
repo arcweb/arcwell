@@ -18,7 +18,6 @@ import { firstValueFrom, forkJoin } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { PersonTypeType } from '@schemas/person-type.schema';
-import { TagType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
@@ -299,8 +298,6 @@ export const PersonStore = signalStore(
     }),
   ),
   withComputed(({ person }) => ({
-    tagStrings: computed(
-      () => person()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
-    ),
+    tagStrings: computed(() => person()?.tags?.map((tag: string) => tag) ?? []),
   })),
 );

@@ -171,7 +171,7 @@ export async function setTagsForObject(
   objectId: string,
   objectType: string,
   tags: string[],
-  isUpdate: boolean = true,
+  isUpdate: boolean = true
 ) {
   if (isUpdate) {
     // Only delete all existing tags on update. For create request, this is unnecessary.

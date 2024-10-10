@@ -1,9 +1,7 @@
 import { DateTime } from 'luxon';
-import { UserType } from '../schemas/user.schema';
+import { UserType } from '@schemas/user.schema';
 import { RoleModel } from './role.model';
 import { PersonModel } from './person.model';
-import { TagType } from '@schemas/tag.schema';
-import { TagModel } from '@shared/models/tag.model';
 
 export class UserModel {
   public id?: string;
@@ -15,7 +13,7 @@ export class UserModel {
   public info?: object;
   public role?: RoleModel;
   public person?: PersonModel;
-  public tags?: TagModel[];
+  public tags?: string[];
   public requiresPasswordChange?: boolean;
 
   constructor(data: UserType) {
@@ -28,9 +26,7 @@ export class UserModel {
     this.info = data.info;
     this.role = data.role ? new RoleModel(data.role) : undefined;
     this.person = data.person ? new PersonModel(data.person) : undefined;
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.requiresPasswordChange = data.requiresPasswordChange;
   }
 

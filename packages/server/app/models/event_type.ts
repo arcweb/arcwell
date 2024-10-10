@@ -1,18 +1,12 @@
 import { DateTime } from 'luxon'
-import {
-  afterDelete,
-  BaseModel,
-  beforeSave,
-  column,
-  hasMany,
-  manyToMany,
-} from '@adonisjs/lucid/orm'
+import { afterDelete, beforeSave, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
+import AwBaseModel from '#models/aw_base_model'
 
-export default class EventType extends BaseModel {
+export default class EventType extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 

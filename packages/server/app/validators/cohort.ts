@@ -29,5 +29,5 @@ export const updateCohortValidator = vine.compile(
  * Validates the people ids for the cohort's attachPeople, detachPeople and setPeople action
  */
 export const peopleIdsValidator = vine.compile(
-  vine.object({ peopleIds: vine.array(vine.string().trim().uuid()).distinct() })
+  vine.object({ peopleIds: vine.array(vine.string().uuid()).distinct() })
 )
