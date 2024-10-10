@@ -15,13 +15,14 @@
 
   .sidenav-container {
     width: layout.$sidenav-width;
-    border-radius: 0 0 16px;
+    border-radius: 0 0 24px;
     background-color: colors.$dark-blue;
     padding: 32px;
 
     .logo {
       width: $image-size;
       height: unset;
+      cursor: pointer;
     }
 
     .features-menu-divider {
@@ -114,11 +115,40 @@
     }
   }
 
+  // Main Content
   .route-content-container {
     height: 100%;
     width: 100%;
     padding: 1em;
     overflow-y: auto;
     background-color: colors.$content-background;
+  }
+
+  // Detail Container
+  .detail-container.mat-drawer.mat-drawer-end {
+    border-radius: 24px 0 24px 24px;
+    min-width: 700px;
+
+    .mat-drawer-inner-container {
+      padding: 32px;
+    }
+
+    .close-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      .close-touch-area {
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
+
+        .close-icon {
+          margin-left: 12px;
+        }
+      }
+    }
   }
 }

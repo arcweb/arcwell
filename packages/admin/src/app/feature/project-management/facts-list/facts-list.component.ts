@@ -96,7 +96,10 @@ export class FactsListComponent {
   }
 
   rowClick(row: FactModel) {
-    this.router.navigate(['project-management', 'facts', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   viewEvent(eventId: string) {

@@ -1,246 +1,240 @@
 @if (tagStore.isReady()) {
-  <div class="table-form-container">
-    <aw-detail-header
-      detailName="Tag"
-      [inEditMode]="tagStore.inEditMode()"
-      [inCreateMode]="tagStore.inCreateMode()"
-      (toggleEditMode)="tagStore.toggleEditMode()"
-      (delete)="onDelete()"
-    ></aw-detail-header>
+  <aw-detail-header
+    detailName="Tag"
+    [inEditMode]="tagStore.inEditMode()"
+    [inCreateMode]="tagStore.inCreateMode()"
+    (toggleEditMode)="tagStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
 
-    <form [formGroup]="tagForm">
-      @if (tagStore.isErrored()) {
-        <aw-error-container [errors]="tagStore.errors()" />
-      }
-
-      <mat-form-field appearance="outline">
-        <mat-label>Pathname</mat-label>
-        <input matInput placeholder="Pathname" formControlName="pathname" />
-        @if (tagForm.controls.pathname.hasError('required')) {
-          <mat-error>
-            Pathname is
-            <strong>required</strong>
-          </mat-error>
-        }
-      </mat-form-field>
-
-      <div class="form-button-container">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()"
-          class="default-button"
-          [disabled]="!tagStore.inEditMode()"
-        >
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          type="submit"
-          class="default-button"
-          [disabled]="
-            !tagStore.inEditMode() || !tagForm.valid || !tagForm.dirty
-          "
-        >
-          Save
-        </button>
-      </div>
-    </form>
-
-    @if (!tagStore.inCreateMode()) {
-      <div class="accordion-area">
-        <h5>Related</h5>
-        <mat-accordion multi>
-          <!-- TODO: Think about refactoring these if the lists are made into one component.
-             The main barrier to refactoring now is the table is different for each type. -->
-          <!-- Events -->
-          <mat-expansion-panel [disabled]="tagStore.eventsCount() < 1">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="tag-panel-title">Events</mat-panel-title>
-              <mat-panel-description class="tag-panel-description">
-                {{ tagStore.eventsCount() }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <aw-events-table
-              [dataSource]="eventsDataSource"
-              [displayedColumns]="eventsColumns"
-              [matSortActive]="this.tagStore.eventsListOptions().sort"
-              [matSortDirection]="this.tagStore.eventsListOptions().order"
-              [length]="this.tagStore.eventsCount()"
-              [pageSizes]="pageSizes"
-              [pageSize]="this.tagStore.eventsListOptions().limit"
-              [pageIndex]="this.tagStore.eventsListOptions().pageIndex"
-              (onPageChanged)="
-                pageChange(
-                  'events',
-                  tagStore.eventsListOptions().sort,
-                  tagStore.eventsListOptions().order,
-                  $event
-                )
-              "
-              (onRowClicked)="rowClick('events', $event)"
-              (onSortChanged)="
-                sortChange(
-                  'events',
-                  tagStore.eventsListOptions().limit,
-                  tagStore.eventsListOptions().offset,
-                  tagStore.eventsListOptions().pageIndex,
-                  $event
-                )
-              "
-              (onViewResourceClicked)="viewResource($event)"
-              (onViewPersonClicked)="viewPerson($event)"
-            ></aw-events-table>
-          </mat-expansion-panel>
-
-          <!-- Facts -->
-          <mat-expansion-panel [disabled]="tagStore.factsCount() < 1">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="tag-panel-title">Facts</mat-panel-title>
-              <mat-panel-description class="tag-panel-description">
-                {{ tagStore.factsCount() }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <aw-facts-table
-              [dataSource]="factsDataSource"
-              [displayedColumns]="factsColumns"
-              [matSortActive]="this.tagStore.factsListOptions().sort"
-              [matSortDirection]="this.tagStore.factsListOptions().order"
-              [length]="this.tagStore.factsCount()"
-              [pageSizes]="pageSizes"
-              [pageSize]="this.tagStore.factsListOptions().limit"
-              [pageIndex]="this.tagStore.factsListOptions().pageIndex"
-              (onPageChanged)="
-                pageChange(
-                  'facts',
-                  tagStore.factsListOptions().sort,
-                  tagStore.factsListOptions().order,
-                  $event
-                )
-              "
-              (onRowClicked)="rowClick('facts', $event)"
-              (onSortChanged)="
-                sortChange(
-                  'facts',
-                  tagStore.factsListOptions().limit,
-                  tagStore.factsListOptions().offset,
-                  tagStore.factsListOptions().pageIndex,
-                  $event
-                )
-              "
-              (onViewEventClicked)="viewEvent($event)"
-              (onViewResourceClicked)="viewResource($event)"
-              (onViewPersonClicked)="viewPerson($event)"
-            ></aw-facts-table>
-          </mat-expansion-panel>
-
-          <!-- People -->
-          <mat-expansion-panel [disabled]="tagStore.peopleCount() < 1">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="tag-panel-title">People</mat-panel-title>
-              <mat-panel-description class="tag-panel-description">
-                {{ tagStore.peopleCount() }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <aw-people-table
-              [dataSource]="peopleDataSource"
-              [displayedColumns]="peopleColumns"
-              [matSortActive]="this.tagStore.peopleListOptions().sort"
-              [matSortDirection]="this.tagStore.peopleListOptions().order"
-              [length]="this.tagStore.peopleCount()"
-              [pageSizes]="pageSizes"
-              [pageSize]="this.tagStore.peopleListOptions().limit"
-              [pageIndex]="this.tagStore.peopleListOptions().pageIndex"
-              (onPageChanged)="
-                pageChange(
-                  'people',
-                  tagStore.peopleListOptions().sort,
-                  tagStore.peopleListOptions().order,
-                  $event
-                )
-              "
-              (onRowClicked)="rowClick('people', $event)"
-              (onSortChanged)="
-                sortChange(
-                  'people',
-                  tagStore.peopleListOptions().limit,
-                  tagStore.peopleListOptions().offset,
-                  tagStore.peopleListOptions().pageIndex,
-                  $event
-                )
-              "
-            ></aw-people-table>
-          </mat-expansion-panel>
-
-          <!-- Resources -->
-          <mat-expansion-panel [disabled]="tagStore.resourcesCount() < 1">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="tag-panel-title">
-                Resources
-              </mat-panel-title>
-              <mat-panel-description class="tag-panel-description">
-                {{ tagStore.resourcesCount() }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <aw-resources-table
-              [dataSource]="resourcesDataSource"
-              [displayedColumns]="resourcesColumns"
-              [matSortActive]="this.tagStore.resourcesListOptions().sort"
-              [matSortDirection]="this.tagStore.resourcesListOptions().order"
-              [length]="this.tagStore.resourcesCount()"
-              [pageSizes]="pageSizes"
-              [pageSize]="this.tagStore.resourcesListOptions().limit"
-              [pageIndex]="this.tagStore.resourcesListOptions().pageIndex"
-              (onPageChanged)="
-                pageChange(
-                  'resources',
-                  tagStore.resourcesListOptions().sort,
-                  tagStore.resourcesListOptions().order,
-                  $event
-                )
-              "
-              (onRowClicked)="rowClick('resources', $event)"
-              (onSortChanged)="
-                sortChange(
-                  'resources',
-                  tagStore.resourcesListOptions().limit,
-                  tagStore.resourcesListOptions().offset,
-                  tagStore.resourcesListOptions().pageIndex,
-                  $event
-                )
-              "
-            ></aw-resources-table>
-          </mat-expansion-panel>
-
-          <!-- Users -->
-          <mat-expansion-panel [disabled]="tagStore.usersCount() < 1">
-            <mat-expansion-panel-header>
-              <mat-panel-title class="tag-panel-title">Users</mat-panel-title>
-              <mat-panel-description class="tag-panel-description">
-                {{ tagStore.usersCount() }}
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <aw-users-table
-              [dataSource]="usersDataSource"
-              [displayedColumns]="usersColumns"
-              [length]="this.tagStore.usersCount()"
-              [pageSizes]="pageSizes"
-              [pageSize]="this.tagStore.usersListOptions().limit"
-              [pageIndex]="this.tagStore.usersListOptions().pageIndex"
-              (onPageChanged)="
-                pageChange(
-                  'users',
-                  tagStore.usersListOptions().sort,
-                  tagStore.usersListOptions().order,
-                  $event
-                )
-              "
-              (onRowClicked)="rowClick('users', $event)"
-              (onViewPersonClicked)="viewPerson($event)"
-            ></aw-users-table>
-          </mat-expansion-panel>
-        </mat-accordion>
-      </div>
+  <form [formGroup]="tagForm">
+    @if (tagStore.isErrored()) {
+      <aw-error-container [errors]="tagStore.errors()" />
     }
-  </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pathname</mat-label>
+      <input matInput placeholder="Pathname" formControlName="pathname" />
+      @if (tagForm.controls.pathname.hasError('required')) {
+        <mat-error>
+          Pathname is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!tagStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="!tagStore.inEditMode() || !tagForm.valid || !tagForm.dirty"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!tagStore.inCreateMode()) {
+    <div class="accordion-area">
+      <h5>Related</h5>
+      <mat-accordion multi>
+        <!-- TODO: Think about refactoring these if the lists are made into one component.
+             The main barrier to refactoring now is the table is different for each type. -->
+        <!-- Events -->
+        <mat-expansion-panel [disabled]="tagStore.eventsCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">Events</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.eventsCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-events-table
+            [dataSource]="eventsDataSource"
+            [displayedColumns]="eventsColumns"
+            [matSortActive]="this.tagStore.eventsListOptions().sort"
+            [matSortDirection]="this.tagStore.eventsListOptions().order"
+            [length]="this.tagStore.eventsCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.eventsListOptions().limit"
+            [pageIndex]="this.tagStore.eventsListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'events',
+                tagStore.eventsListOptions().sort,
+                tagStore.eventsListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('events', $event)"
+            (onSortChanged)="
+              sortChange(
+                'events',
+                tagStore.eventsListOptions().limit,
+                tagStore.eventsListOptions().offset,
+                tagStore.eventsListOptions().pageIndex,
+                $event
+              )
+            "
+            (onViewResourceClicked)="viewResource($event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-events-table>
+        </mat-expansion-panel>
+
+        <!-- Facts -->
+        <mat-expansion-panel [disabled]="tagStore.factsCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">Facts</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.factsCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-facts-table
+            [dataSource]="factsDataSource"
+            [displayedColumns]="factsColumns"
+            [matSortActive]="this.tagStore.factsListOptions().sort"
+            [matSortDirection]="this.tagStore.factsListOptions().order"
+            [length]="this.tagStore.factsCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.factsListOptions().limit"
+            [pageIndex]="this.tagStore.factsListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'facts',
+                tagStore.factsListOptions().sort,
+                tagStore.factsListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('facts', $event)"
+            (onSortChanged)="
+              sortChange(
+                'facts',
+                tagStore.factsListOptions().limit,
+                tagStore.factsListOptions().offset,
+                tagStore.factsListOptions().pageIndex,
+                $event
+              )
+            "
+            (onViewEventClicked)="viewEvent($event)"
+            (onViewResourceClicked)="viewResource($event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-facts-table>
+        </mat-expansion-panel>
+
+        <!-- People -->
+        <mat-expansion-panel [disabled]="tagStore.peopleCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">People</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.peopleCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-people-table
+            [dataSource]="peopleDataSource"
+            [displayedColumns]="peopleColumns"
+            [matSortActive]="this.tagStore.peopleListOptions().sort"
+            [matSortDirection]="this.tagStore.peopleListOptions().order"
+            [length]="this.tagStore.peopleCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.peopleListOptions().limit"
+            [pageIndex]="this.tagStore.peopleListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'people',
+                tagStore.peopleListOptions().sort,
+                tagStore.peopleListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('people', $event)"
+            (onSortChanged)="
+              sortChange(
+                'people',
+                tagStore.peopleListOptions().limit,
+                tagStore.peopleListOptions().offset,
+                tagStore.peopleListOptions().pageIndex,
+                $event
+              )
+            "
+          ></aw-people-table>
+        </mat-expansion-panel>
+
+        <!-- Resources -->
+        <mat-expansion-panel [disabled]="tagStore.resourcesCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">Resources</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.resourcesCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-resources-table
+            [dataSource]="resourcesDataSource"
+            [displayedColumns]="resourcesColumns"
+            [matSortActive]="this.tagStore.resourcesListOptions().sort"
+            [matSortDirection]="this.tagStore.resourcesListOptions().order"
+            [length]="this.tagStore.resourcesCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.resourcesListOptions().limit"
+            [pageIndex]="this.tagStore.resourcesListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'resources',
+                tagStore.resourcesListOptions().sort,
+                tagStore.resourcesListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('resources', $event)"
+            (onSortChanged)="
+              sortChange(
+                'resources',
+                tagStore.resourcesListOptions().limit,
+                tagStore.resourcesListOptions().offset,
+                tagStore.resourcesListOptions().pageIndex,
+                $event
+              )
+            "
+          ></aw-resources-table>
+        </mat-expansion-panel>
+
+        <!-- Users -->
+        <mat-expansion-panel [disabled]="tagStore.usersCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="tag-panel-title">Users</mat-panel-title>
+            <mat-panel-description class="tag-panel-description">
+              {{ tagStore.usersCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-users-table
+            [dataSource]="usersDataSource"
+            [displayedColumns]="usersColumns"
+            [length]="this.tagStore.usersCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.tagStore.usersListOptions().limit"
+            [pageIndex]="this.tagStore.usersListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'users',
+                tagStore.usersListOptions().sort,
+                tagStore.usersListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('users', $event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-users-table>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  }
 }

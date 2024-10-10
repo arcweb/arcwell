@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -71,7 +73,8 @@ export class EventTypeComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() eventTypeId!: string;
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   eventTypeForm = new FormGroup({
     name: new FormControl(
@@ -105,11 +108,11 @@ export class EventTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.eventTypeId) {
-      if (this.eventTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.eventTypeStore.initializeForCreate();
       } else {
-        this.eventTypeStore.initialize(this.eventTypeId).then(() => {
+        this.eventTypeStore.initialize(this.detailId).then(() => {
           this.eventTypeForm.patchValue({
             key: this.eventTypeStore.eventType()?.key,
             name: this.eventTypeStore.eventType()?.name,

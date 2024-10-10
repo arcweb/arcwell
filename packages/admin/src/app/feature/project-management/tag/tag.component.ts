@@ -5,6 +5,8 @@ import {
   effect,
   inject,
   OnInit,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -85,6 +87,8 @@ export class TagComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
+  @Output() closeDrawer = new EventEmitter<void>();
+
   eventsDataSource = new MatTableDataSource<EventModel>();
   eventsColumns: string[] = [
     'startedAt',
@@ -103,7 +107,7 @@ export class TagComponent implements OnInit {
     'observedAt',
   ];
 
-  peopleColumns: string[] = ['id', 'familyName', 'givenName', 'personType'];
+  peopleColumns: string[] = ['familyName', 'givenName', 'personType'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
 
   resourcesDataSource = new MatTableDataSource<ResourceModel>();
@@ -114,7 +118,7 @@ export class TagComponent implements OnInit {
 
   pageSizes = [10, 20, 50];
 
-  @Input() tagId!: string;
+  @Input() detailId!: string;
 
   tagForm = new FormGroup({
     pathname: new FormControl(
@@ -142,11 +146,11 @@ export class TagComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.tagId) {
-      if (this.tagId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.tagStore.initializeForCreate();
       } else {
-        this.tagStore.initialize(this.tagId).then(() => {
+        this.tagStore.initialize(this.detailId).then(() => {
           this.tagForm.patchValue({
             pathname: this.tagStore.tag()?.pathname,
           });

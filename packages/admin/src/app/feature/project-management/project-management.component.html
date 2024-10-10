@@ -2,8 +2,33 @@
   <mat-sidenav mode="side" opened class="sidenav-container" disableClose>
     <aw-features-menu></aw-features-menu>
   </mat-sidenav>
+
   <mat-sidenav-content class="route-content-container">
     <aw-config-bar></aw-config-bar>
     <router-outlet />
   </mat-sidenav-content>
+
+  <mat-sidenav
+    mode="over"
+    position="end"
+    [opened]="detailOpen()"
+    class="detail-container"
+    (closedStart)="closeDetail()"
+  >
+    <div class="close-container">
+      <div
+        class="close-touch-area"
+        (click)="closeDetail()"
+        (keydown.enter)="closeDetail()"
+        tabindex="10"
+      >
+        Close
+        <fa-icon [icon]="faTimes" class="close-icon"></fa-icon>
+      </div>
+    </div>
+
+    @if (detailId() !== null && detailComponent() !== null) {
+      <div #detailComponent></div>
+    }
+  </mat-sidenav>
 </mat-sidenav-container>

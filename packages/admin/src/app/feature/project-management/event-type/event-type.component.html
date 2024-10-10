@@ -1,78 +1,72 @@
 @if (eventTypeStore.isReady()) {
-  <div class="table-form-container">
-    <aw-detail-header
-      detailName="Event Type"
-      [inEditMode]="eventTypeStore.inEditMode()"
-      [inCreateMode]="eventTypeStore.inCreateMode()"
-      (toggleEditMode)="eventTypeStore.toggleEditMode()"
-      (delete)="onDelete()"
-    ></aw-detail-header>
+  <aw-detail-header
+    detailName="Event Type"
+    [inEditMode]="eventTypeStore.inEditMode()"
+    [inCreateMode]="eventTypeStore.inCreateMode()"
+    (toggleEditMode)="eventTypeStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
 
-    <form [formGroup]="eventTypeForm">
-      @if (eventTypeStore.isErrored()) {
-        <aw-error-container [errors]="eventTypeStore.errors()" />
+  <form [formGroup]="eventTypeForm">
+    @if (eventTypeStore.isErrored()) {
+      <aw-error-container [errors]="eventTypeStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (eventTypeForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
       }
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input matInput placeholder="Name" formControlName="name" />
-        @if (eventTypeForm.controls.name.hasError('required')) {
-          <mat-error>
-            Name is
-            <strong>required</strong>
-          </mat-error>
-        }
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="Key" formControlName="key" />
+      @if (eventTypeForm.controls.key.hasError('pattern')) {
+        <mat-error>
+          Lowercase alpha-numeric characters, underscores and hypens
+          <strong>only</strong>
+        </mat-error>
+      }
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Key</mat-label>
-        <input matInput placeholder="Key" formControlName="key" />
-        @if (eventTypeForm.controls.key.hasError('pattern')) {
-          <mat-error>
-            Lowercase alpha-numeric characters, underscores and hypens
-            <strong>only</strong>
-          </mat-error>
-        }
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Description" formControlName="description" />
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <input
-          matInput
-          placeholder="Description"
-          formControlName="description"
-        />
-      </mat-form-field>
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!eventTypeStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !eventTypeStore.inEditMode() ||
+          !eventTypeForm.valid ||
+          !eventTypeForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
 
-      <div class="form-button-container">
-        <button
-          mat-button
-          type="button"
-          (click)="onCancel()"
-          class="default-button"
-          [disabled]="!eventTypeStore.inEditMode()"
-        >
-          Cancel
-        </button>
-        <button
-          mat-flat-button
-          type="submit"
-          class="default-button"
-          [disabled]="
-            !eventTypeStore.inEditMode() ||
-            !eventTypeForm.valid ||
-            !eventTypeForm.dirty
-          "
-        >
-          Save
-        </button>
-      </div>
-    </form>
-
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="eventTypeStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
-  </div>
+  <!--  Tags Section-->
+  <aw-tags-form
+    [tags]="eventTypeStore.tagStrings()"
+    (saveTags)="onSetTags($event)"
+  ></aw-tags-form>
 }

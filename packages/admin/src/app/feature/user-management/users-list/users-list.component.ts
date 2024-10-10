@@ -1,6 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { UsersStore } from './users.store';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   MatCell,
   MatCellDef,
@@ -53,6 +53,7 @@ export class AllUsersComponent {
   readonly dialog = inject(MatDialog);
   readonly userStore = inject(UsersStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   pageSizes = [10, 20, 50];
 
@@ -67,12 +68,10 @@ export class AllUsersComponent {
   }
 
   rowClick(row: UserModel) {
-    this.router.navigate([
-      'project-management',
-      'settings',
-      'user-management',
-      row.id,
-    ]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   reinvite(row: UserModel) {

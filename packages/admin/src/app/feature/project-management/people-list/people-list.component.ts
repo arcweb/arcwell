@@ -70,7 +70,10 @@ export class PeopleListComponent {
   }
 
   rowClick(row: PersonModel) {
-    this.router.navigate(['project-management', 'people', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   viewAccount(personId: string) {

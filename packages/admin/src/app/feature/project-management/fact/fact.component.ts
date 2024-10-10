@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -100,8 +102,9 @@ export class FactComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() factId!: string;
+  @Input() detailId!: string;
   @Input() typeKey?: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -147,11 +150,11 @@ export class FactComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.factId) {
-      if (this.factId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.factStore.initializeForCreate();
       } else {
-        this.factStore.initialize(this.factId).then(() => {
+        this.factStore.initialize(this.detailId).then(() => {
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
             observedAt: this.factStore.fact()?.observedAt?.toJSDate(),

@@ -93,7 +93,10 @@ export class EventsListComponent {
   }
 
   rowClick(row: EventModel) {
-    this.router.navigate(['project-management', 'events', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

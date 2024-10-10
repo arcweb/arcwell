@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -75,7 +77,8 @@ export class CohortComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() cohortId!: string;
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   cohortForm = new FormGroup({
     name: new FormControl(
@@ -101,13 +104,7 @@ export class CohortComponent implements OnInit {
     ),
   });
 
-  peopleColumns: string[] = [
-    'id',
-    'familyName',
-    'givenName',
-    'personType',
-    'delete',
-  ];
+  peopleColumns: string[] = ['familyName', 'givenName', 'personType', 'delete'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
   pageSizes = [10, 20, 50];
 
@@ -125,11 +122,11 @@ export class CohortComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.cohortId) {
-      if (this.cohortId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.cohortStore.initializeForCreate();
       } else {
-        this.cohortStore.initialize(this.cohortId).then(() => {
+        this.cohortStore.initialize(this.detailId).then(() => {
           this.cohortForm.patchValue({
             name: this.cohortStore.cohort()?.name,
             description: this.cohortStore.cohort()?.description,

@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -71,7 +73,8 @@ export class PersonTypeComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() personTypeId!: string;
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   personTypeForm = new FormGroup({
     name: new FormControl(
@@ -105,11 +108,11 @@ export class PersonTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.personTypeId) {
-      if (this.personTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.personTypeStore.initializeForCreate();
       } else {
-        this.personTypeStore.initialize(this.personTypeId).then(() => {
+        this.personTypeStore.initialize(this.detailId).then(() => {
           this.personTypeForm.patchValue({
             key: this.personTypeStore.personType()?.key,
             name: this.personTypeStore.personType()?.name,

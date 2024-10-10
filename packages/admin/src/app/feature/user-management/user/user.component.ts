@@ -2,9 +2,12 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
+  Input,
   input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { UserStore } from './user.store';
 import {
@@ -35,7 +38,6 @@ import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { UserModel } from '@app/shared/models';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -81,7 +83,8 @@ export class UserComponent implements OnInit {
 
   destroyRef = inject(DestroyRef);
 
-  userId = input<string>();
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   userForm = new FormGroup({
     email: new FormControl(
@@ -130,7 +133,7 @@ export class UserComponent implements OnInit {
     // if the route data contains isProfile use the current user id else use the userId from the params
     const userId = this.isProfile()
       ? this.authStore.currentUser()?.id
-      : this.userId();
+      : this.detailId;
     if (userId) {
       if (userId === CREATE_PARTIAL_URL) {
         this.userStore.initializeForCreate();
@@ -173,7 +176,7 @@ export class UserComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
               const userId = this.isProfile()
                 ? this.authStore.currentUser()?.id
-                : this.userId();
+                : this.detailId;
               if (result === true && userId) {
                 this.userStore.invite(userId);
               }
@@ -254,7 +257,7 @@ export class UserComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.userStore.invite(this.userId()!);
+        this.userStore.invite(this.detailId!);
       }
     });
   }

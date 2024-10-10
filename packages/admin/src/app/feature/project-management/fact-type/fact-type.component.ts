@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -90,12 +92,12 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class FactTypeComponent implements OnInit {
   readonly factTypeStore = inject(FactTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() factTypeId!: string;
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   factTypeForm = new FormGroup({
     name: new FormControl(
@@ -141,11 +143,11 @@ export class FactTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.factTypeId) {
-      if (this.factTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.factTypeStore.initializeForCreate();
       } else {
-        this.factTypeStore.initialize(this.factTypeId).then(() => {
+        this.factTypeStore.initialize(this.detailId).then(() => {
           this.factTypeForm.patchValue({
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,

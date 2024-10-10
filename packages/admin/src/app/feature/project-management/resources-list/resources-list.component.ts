@@ -88,7 +88,10 @@ export class ResourcesListComponent {
   }
 
   rowClick(row: ResourceModel) {
-    this.router.navigate(['project-management', 'resources', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

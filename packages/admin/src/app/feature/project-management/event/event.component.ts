@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -76,8 +78,9 @@ export class EventComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() eventId!: string;
+  @Input() detailId!: string;
   @Input() typeKey?: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   eventForm = new FormGroup({
     eventType: new FormControl<EventTypeType | null>(
@@ -118,11 +121,11 @@ export class EventComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.eventId) {
-      if (this.eventId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.eventStore.initializeForCreate();
       } else {
-        this.eventStore.initialize(this.eventId).then(() => {
+        this.eventStore.initialize(this.detailId).then(() => {
           this.eventForm.patchValue({
             eventType: this.eventStore.event()?.eventType,
             startedAt: this.eventStore.event()?.startedAt

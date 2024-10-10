@@ -2,9 +2,12 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
+  input,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -40,6 +43,7 @@ import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { PeopleListStore } from '../people-list/people-list.store';
 
 @Component({
   selector: 'aw-person',
@@ -64,19 +68,21 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
     CohortTableComponent,
     DetailHeaderComponent,
   ],
-  providers: [PersonStore],
+  providers: [PersonStore, PeopleListStore],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss',
 })
 export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
+  readonly peopleListStore = inject(PeopleListStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() personId!: string;
+  @Input() detailId!: string;
   @Input() typeKey?: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -140,11 +146,11 @@ export class PersonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.personId) {
-      if (this.personId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.personStore.initializeForCreate();
       } else {
-        this.personStore.initialize(this.personId).then(() => {
+        this.personStore.initialize(this.detailId).then(() => {
           this.personForm.patchValue({
             familyName: this.personStore.person()?.familyName,
             givenName: this.personStore.person()?.givenName,
@@ -160,8 +166,10 @@ export class PersonComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
             this.personStore.createPerson(this.personForm.value);
+            this.closeDrawer.emit();
           } else {
             this.personStore.updatePerson(this.personForm.value);
+            this.closeDrawer.emit();
           }
         }
         // else if (event instanceof ValueChangeEvent) {
@@ -208,7 +216,8 @@ export class PersonComponent implements OnInit {
       if (result === true) {
         this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
-            this.backService.goBack();
+            this.loadPeopleList();
+            this.closeDrawer.emit();
           }
         });
       }
@@ -251,5 +260,19 @@ export class PersonComponent implements OnInit {
 
   cohortsRowClick(row: CohortModel) {
     this.router.navigate(['project-management', 'cohorts', row.id]);
+  }
+
+  loadPeopleList() {
+    const props: { limit: number; offset: number; typeKey?: string } = {
+      limit: this.peopleListStore.limit(),
+      offset: 0,
+    };
+    if (this.typeKey) {
+      props.typeKey = this.typeKey;
+    }
+    this.peopleListStore.load({
+      limit: this.peopleListStore.limit(),
+      offset: 0,
+    });
   }
 }

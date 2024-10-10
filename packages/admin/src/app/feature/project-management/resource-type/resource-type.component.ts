@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -24,7 +26,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
 import {
@@ -66,12 +68,12 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class ResourceTypeComponent implements OnInit {
   readonly resourceTypeStore = inject(ResourceTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() resourceTypeId!: string;
+  @Input() detailId!: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   resourceTypeForm = new FormGroup({
     name: new FormControl(
@@ -105,11 +107,11 @@ export class ResourceTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.resourceTypeId) {
-      if (this.resourceTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.resourceTypeStore.initializeForCreate();
       } else {
-        this.resourceTypeStore.initialize(this.resourceTypeId).then(() => {
+        this.resourceTypeStore.initialize(this.detailId).then(() => {
           this.resourceTypeForm.patchValue({
             key: this.resourceTypeStore.resourceType()?.key,
             name: this.resourceTypeStore.resourceType()?.name,

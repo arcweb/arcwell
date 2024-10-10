@@ -56,6 +56,9 @@ export class CohortsListComponent {
   }
 
   rowClick(row: CohortModel) {
-    this.router.navigate(['project-management', 'cohorts', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 }

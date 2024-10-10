@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { ResourceStore } from './resource.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -61,13 +63,13 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class ResourceComponent implements OnInit {
   readonly resourceStore = inject(ResourceStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destoyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
-  @Input() resourceId!: string;
+  @Input() detailId!: string;
   @Input() typeKey?: string;
+  @Output() closeDrawer = new EventEmitter<void>();
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -97,11 +99,11 @@ export class ResourceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.resourceId) {
-      if (this.resourceId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.resourceStore.initializeForCreate();
       } else {
-        this.resourceStore.initialize(this.resourceId).then(() => {
+        this.resourceStore.initialize(this.detailId).then(() => {
           this.resourceForm.patchValue({
             name: this.resourceStore.resource()?.name,
             resourceType: this.resourceStore.resource()?.resourceType,
