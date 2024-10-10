@@ -19,7 +19,6 @@ export class ChartService {
     private toastService: ToastService,
   ) { }
 
-  // Method that creates the chart options from facts and config
   createChartOptions(factType: FactType, facts: Fact[], config: ChartConfig): EChartsOption {
     const dates = facts
       .sort((a: any, b: any) => new Date(a[config.dateKey]).getTime() - new Date(b[config.dateKey]).getTime())
@@ -130,7 +129,6 @@ export class ChartService {
     return chartConfigs[surveyType] || null;
   }
 
-  // Refactored method to return an Observable of EChartsOption
   getChartOption(factType: FactType): Observable<EChartsOption> {
     const config = this.getChartConfig(factType.key);
 
@@ -139,7 +137,6 @@ export class ChartService {
       return new Observable(observer => observer.next({} as EChartsOption));
     }
 
-    // Return an observable of chart options
     return this.selectFactTypeResults(factType).pipe(
       map((facts: Fact[]) => this.createChartOptions(factType, facts, config))
     );

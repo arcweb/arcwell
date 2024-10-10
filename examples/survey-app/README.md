@@ -56,10 +56,10 @@ Run migrations only
 docker compose exec server node ace migration:run
 ```
 
+This command will run the seeds for the example-survey-app environment, ensuring that the roles, users, and other necessary data for surveys are populated in the database.
 ```bash
 docker compose exec server node ace db:seed -f "./database/seeders/examples_survey_app_seeder.ts"
 ```
-This command will run the seeds for the example-survey-app environment, ensuring that the roles, users, and other necessary data for surveys are populated in the database.
 
 ---
 

@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 
 interface Filter {
   key: string;
-  operator?: 'eq' | 'gt' | 'gt3' | 'lt' | 'lte' | 'ne',
+  operator?: 'eq' | 'gt' | 'gte' | 'lt' | 'lte' | 'ne',
   value: any;
 }
 

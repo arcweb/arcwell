@@ -1,5 +1,4 @@
 import { DimensionSchema } from "./dimension-schema";
-import { Tag } from "./tag";
 
 export interface FactType {
   id: string;
@@ -8,6 +7,6 @@ export interface FactType {
   key: string;
   name: string;
   description?: string;
-  tags: Tag[];
+  tags: string[];
   dimensionSchemas: DimensionSchema[];
 }
