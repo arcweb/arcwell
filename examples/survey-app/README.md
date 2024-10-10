@@ -90,6 +90,55 @@ Password:	password
 URL: http://localhost:4000
 Login: Use the credentials provided above.
 
+
+## Mobile Testing
+
+### Prerequisites
+
+To run the Survey App in a mobile emulator you will need the following installed for the platform you wish to test:
+
+- [XCode](https://apps.apple.com/us/app/xcode/id497799835) for ios emulation.
+- [Android Studio](https://developer.android.com/studio) for android emulation.
+- Ionic Cli `npm install -g @ionic/cli`
+- Capacitor Cli - `npm install -g @capacitor/cli`  
+
+
+### Setup 
+1. Build from root of survey-app, optionally pass in environmeny configuration.
+```bash
+$ ionic build 
+$ ionic build --configuration=staging
+
+```
+
+2. Add the platform you wish to emulate
+```bash
+$ npx cap add ios
+$ npx cap add android
+```
+
+3. Sync
+```bash
+$ npx cap sync
+```
+
+4. Launch platform emulator
+```bash
+$ npx cap open ios
+$ npx cap open android
+```
+
+### Custom Configuration
+
+The example app uses a .env file for handling custom env vars. Please reference .env.example for adjustable env variables. Adjust the environment api url for your needs or capacitor app id, app name.
+
+1. Replace localhost with your local computer ip if you wish to have the emulated application communicate with your local database.
+
+```env
+http://{your-ip}:3333
+```
+
+
 ---
 
 (C) 2024 Copyright Arcweb Technologies, LLC

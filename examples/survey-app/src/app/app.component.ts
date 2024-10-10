@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { MenuComponent } from '@components/menu/menu.component';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { register } from 'swiper/element';
 
 @Component({
@@ -12,9 +15,21 @@ import { register } from 'swiper/element';
   providers: [],
 })
 export class AppComponent implements OnInit {
-  constructor() { }
+  constructor(
+    private platform: Platform
+  ) { }
 
   ngOnInit(): void {
     register();
+
+    if (Capacitor.getPlatform() !== 'web') {
+      ScreenOrientation.lock({ orientation: 'portrait' });
+    }
+  }
+
+  ngAfterViewInit() {
+    this.platform.ready().then(async () => {
+      SplashScreen.hide();
+    });
   }
 }

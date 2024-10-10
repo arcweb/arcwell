@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3333',
+  apiUrl: process.env['DEVELOPMENT_API_URL'] || 'http://localhost:3333',
 };
 
 /*
