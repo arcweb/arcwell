@@ -6,8 +6,6 @@ import { HomeHeaderComponent } from '@components/home-header/home-header.compone
 import { EChartsOption } from 'echarts';
 import { FactTypeService } from '@services/fact-type.service';
 import { ToastService } from '@services/toast.service';
-import { FactService } from '@services/fact.service';
-import { AuthService } from '@services/auth.service';
 import { Router } from '@angular/router';
 import { FactType } from '@models/fact-type';
 import { ChartService } from '@services/chart.service';
@@ -42,9 +40,7 @@ export class ResultsPage implements OnInit {
   chartOptions: EChartsOption = {};
 
   constructor(
-    private authService: AuthService,
     private chartService: ChartService,
-    private factService: FactService,
     private factTypeService: FactTypeService,
     private router: Router,
     private toastService: ToastService,

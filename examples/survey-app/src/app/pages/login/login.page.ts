@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { IonButton, IonContent, IonHeader, IonImg, IonInput, IonItem, IonTitle, IonToolbar, Platform } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-login',
