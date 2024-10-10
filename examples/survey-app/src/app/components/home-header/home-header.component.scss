@@ -1,0 +1,38 @@
+.toolbase-title {
+  width: unset;
+}
+
+ion-title {
+  justify-content: center;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 125px;
+}
+
+.menu-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+ion-toolbar.header-toolbar {
+  // --padding-top: 60px;
+  --padding-bottom: 5px;
+  --padding-start: 10px;
+  --padding-end: 10px;
+  // --min-height: 112px;
+
+  &.web {
+    --padding-top: 50px;
+  }
+
+  // &.android {
+  // --padding-top: 20px;
+  // --min-height: 75px;
+  // }
+}

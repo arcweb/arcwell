@@ -1,0 +1,106 @@
+<h1 class="survey-header">
+  {{ showResults ? 'Thank you for taking the ' + factType?.name + ' survey !' : factType?.name + ' Survey' }}
+</h1>
+
+<ng-container *ngIf="!showResults">
+  <ion-card *ngIf="!showSurvey">
+    <ion-card-content>
+      <h2 class="question-text">On which side of your body is the affected knee for which you are receiving treatment?
+      </h2>
+      <ion-radio-group [(ngModel)]="sideSelected">
+        <ion-radio labelPlacement="end" justify="start" value="left">Left</ion-radio>
+        <ion-radio labelPlacement="end" justify="start" value="right">Right</ion-radio>
+        <ion-radio labelPlacement="end" justify="start" value="both">Both</ion-radio>
+      </ion-radio-group>
+
+      <ion-button expand="block" fill="solid" color="primary" [disabled]="!sideSelected" (click)="startSurvey()">Start
+        Survey</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <swiper-container #swiperEl [slides-per-view]="1" pagination="false" navigation="false" *ngIf="showSurvey">
+    <!-- Left-side questions -->
+    <ng-container *ngIf="sideSelected === 'left' || sideSelected === 'both'">
+      <swiper-slide *ngFor="let dimensionSchema of questionDimensionSchemas('left'); let i =index">
+        <ion-card>
+          <ion-card-content>
+            <ion-chip>Left Knee - Question {{ i + 1 }} of {{ questionDimensionSchemas('left').length }}</ion-chip>
+            <div class="question-text">{{ dimensionSchema.name }}</div>
+            <ion-radio-group (ionChange)="setAnswer(dimensionSchema.key, $event.target.value)">
+              <ion-radio *ngFor="let label of getRadioLabels(dimensionSchema.key)" color="#000" labelPlacement="end"
+                justify="start" [value]="label.value">
+                {{ label.label }}
+              </ion-radio>
+            </ion-radio-group>
+          </ion-card-content>
+
+          <div class="button-container">
+            <ion-button expand="block" fill="outline" (click)="goToPrevious()">Previous</ion-button>
+            <ion-button expand="block" fill="solid" color="primary" (click)="goToNext()">Next</ion-button>
+          </div>
+        </ion-card>
+      </swiper-slide>
+    </ng-container>
+
+    <!-- Right-side questions -->
+    <ng-container *ngIf="sideSelected === 'right' || sideSelected === 'both'">
+      <swiper-slide *ngFor="let dimensionSchema of questionDimensionSchemas('right'); let i=index">
+        <ion-card>
+          <ion-card-content>
+            <ion-chip>Right Knee - Question {{ i + 1 }} of {{ questionDimensionSchemas('right').length }}</ion-chip>
+            <div class="question-text">{{ dimensionSchema.name }}</div>
+            <ion-radio-group (ionChange)="setAnswer(dimensionSchema.key, $event.target.value)">
+              <ion-radio *ngFor="let label of getRadioLabels(dimensionSchema.key)" color="#000" labelPlacement="end"
+                justify="start" [value]="label.value">
+                {{ label.label }}
+              </ion-radio>
+            </ion-radio-group>
+          </ion-card-content>
+
+          <div class="button-container">
+            <ion-button expand="block" fill="outline" (click)="goToPrevious()">Previous</ion-button>
+            <ion-button expand="block" fill="solid" color="primary" (click)="goToNext()">Next</ion-button>
+          </div>
+        </ion-card>
+      </swiper-slide>
+    </ng-container>
+
+    <!-- Save Button Slide -->
+    <swiper-slide *ngIf="showScore">
+      <ion-card>
+        <ion-card-content>
+          <h2 class="question-text">Survey Completed!</h2>
+
+          <!-- Score for Left Knee -->
+          <ng-container *ngIf="sideSelected === 'left' || sideSelected === 'both'">
+            <p class="score-total">Left Knee Score: {{ surveyConfig.scoreAssessment(totalScoreLeft) }}</p>
+          </ng-container>
+
+          <!-- Score for Right Knee -->
+          <ng-container *ngIf="sideSelected === 'right' || sideSelected === 'both'">
+            <p class="score-total">Right Knee Score: {{ surveyConfig.scoreAssessment(totalScoreRight) }}</p>
+          </ng-container>
+
+          <div class="save-button-container">
+            <ion-button class="save-button" [disabled]="!saveAllowed()" expand="block" fill="solid" color="primary"
+              (click)="saveQuestionnaire()">
+              Save
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </swiper-slide>
+  </swiper-container>
+</ng-container>
+
+
+<app-chart *ngIf="showResults && chartOptions" [chartOptions]="chartOptions" class="demo-chart" />
+
+<div class="action-container">
+  <div *ngIf="!showResults" class="action" (click)="isAlertOpen = true">End Survey</div>
+  <div *ngIf="showResults" class="action" (click)="resetAction.emit()">Return Home</div>
+</div>
+
+<ion-alert [isOpen]="isAlertOpen" header="End Survey Without Saving?"
+  message="Are you sure you want to exit the survey? Your responses won't be saved."
+  [buttons]="alertButtons"></ion-alert>
