@@ -13,7 +13,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ErrorContainerComponent } from '@app/feature/project-management/error-container/error-container.component';
+import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { AuthStore } from '@app/shared/store/auth.store';
 

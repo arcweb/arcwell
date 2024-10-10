@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
 import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
@@ -215,11 +215,7 @@ export class UserComponent implements OnInit {
     const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
     if (fromCreateMode) {
-      this.router.navigate([
-        'project-management',
-        'settings',
-        'user-management',
-      ]);
+      this.router.navigate(['settings', 'user-management']);
     }
   }
 
@@ -260,6 +256,6 @@ export class UserComponent implements OnInit {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', 'list', personId]);
+    this.router.navigate(['people', 'list', personId]);
   }
 }

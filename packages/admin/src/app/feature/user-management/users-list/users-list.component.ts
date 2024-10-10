@@ -15,7 +15,7 @@ import {
   MatTableDataSource,
 } from '@angular/material/table';
 import { UserModel } from '@app/shared/models';
-import { ErrorContainerComponent } from '../../project-management/error-container/error-container.component';
+import { ErrorContainerComponent } from '../../error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { JsonPipe } from '@angular/common';
@@ -67,12 +67,7 @@ export class AllUsersComponent {
   }
 
   rowClick(row: UserModel) {
-    this.router.navigate([
-      'project-management',
-      'settings',
-      'user-management',
-      row.id,
-    ]);
+    this.router.navigate(['settings', 'user-management', row.id]);
   }
 
   reinvite(row: UserModel) {
@@ -94,6 +89,6 @@ export class AllUsersComponent {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', 'list', personId]);
+    this.router.navigate(['people', 'list', personId]);
   }
 }

@@ -129,12 +129,9 @@ export const UserStore = signalStore(
           );
           toastService.sendMessage('Created user.', ToastLevel.SUCCESS);
           // navigate the user to the newly created item
-          router.navigateByUrl(
-            `/project-management/settings/user-management/${resp.data.id}`,
-            {
-              replaceUrl: true,
-            },
-          );
+          router.navigateByUrl(`/settings/user-management/${resp.data.id}`, {
+            replaceUrl: true,
+          });
           return resp.data;
         }
       },

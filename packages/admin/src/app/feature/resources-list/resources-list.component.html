@@ -1,0 +1,24 @@
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Resources'"
+  createLink="/resources/create"
+  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+></aw-table-header>
+
+@if (resourcesListStore.isErrored()) {
+  <aw-error-container [errors]="resourcesListStore.errors()" />
+}
+<div class="table-form-container">
+  <aw-resources-table
+    [dataSource]="dataSource"
+    [displayedColumns]="displayedColumns"
+    [matSortActive]="this.resourcesListStore.sort()"
+    [matSortDirection]="this.resourcesListStore.order()"
+    [length]="this.resourcesListStore.totalData()"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.resourcesListStore.limit()"
+    [pageIndex]="this.resourcesListStore.pageIndex()"
+    (onPageChanged)="this.resourcesListStore.loadPage($event)"
+    (onRowClicked)="rowClick($event)"
+    (onSortChanged)="sortChange($event)"
+  ></aw-resources-table>
+</div>

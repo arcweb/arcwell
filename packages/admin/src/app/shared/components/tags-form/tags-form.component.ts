@@ -21,7 +21,7 @@ import {
 } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { TagType } from '@schemas/tag.schema';
-import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
+import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,

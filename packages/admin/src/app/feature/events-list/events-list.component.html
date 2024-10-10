@@ -1,0 +1,26 @@
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Events'"
+  createLink="/events/create"
+  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+></aw-table-header>
+
+@if (eventsListStore.isErrored()) {
+  <aw-error-container [errors]="eventsListStore.errors()" />
+}
+<div class="table-form-container">
+  <aw-events-table
+    [dataSource]="dataSource"
+    [displayedColumns]="displayedColumns"
+    [matSortActive]="this.eventsListStore.sort()"
+    [matSortDirection]="this.eventsListStore.order()"
+    [length]="this.eventsListStore.totalData()"
+    [pageSizes]="pageSizes"
+    [pageSize]="this.eventsListStore.limit()"
+    [pageIndex]="this.eventsListStore.pageIndex()"
+    (onPageChanged)="this.eventsListStore.loadPage($event)"
+    (onRowClicked)="rowClick($event)"
+    (onSortChanged)="sortChange($event)"
+    (onViewResourceClicked)="viewResource($event)"
+    (onViewPersonClicked)="viewPerson($event)"
+  ></aw-events-table>
+</div>
