@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon';
 import { CohortUpdateType } from '@schemas/cohort.schema';
-import { TagType } from '@schemas/tag.schema';
-import { TagModel } from './tag.model';
 import { PersonModel } from './person.model';
 import { PersonType } from '@schemas/person.schema';
 
@@ -11,7 +9,7 @@ interface CohortBase {
   rules?: object;
   people?: PersonModel[] | undefined;
   peopleCount?: number;
-  tags?: TagModel[] | undefined;
+  tags?: string[] | undefined;
   createdAt: DateTime;
   updatedAt: DateTime;
 }
@@ -29,7 +27,7 @@ export class CohortModel {
   public name: string;
   public description?: string;
   public rules?: object;
-  public tags?: TagModel[] | undefined;
+  public tags?: string[] | undefined;
   public people?: PersonModel[] | undefined;
   public peopleCount?: number;
 
@@ -41,9 +39,7 @@ export class CohortModel {
     this.name = data.name;
     this.description = data.description;
     this.rules = data.rules;
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.people = data.people
       ? data.people.map((person: PersonType) => new PersonModel(person))
       : undefined;

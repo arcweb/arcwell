@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { FactModel } from '@shared/models/fact.model';
-import { UserSchema } from '@shared/schemas/user.schema';
 import { FactTypeSchema } from './fact-type.schema';
-import { TagSchema } from '@schemas/tag.schema';
 import { PersonSchema } from '@schemas/person.schema';
 import { EventSchema } from '@schemas/event.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
@@ -20,7 +18,7 @@ export const FactSchema: any = z
     eventId: z.string().uuid().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional().nullable(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
-    tags: z.lazy(() => z.array(TagSchema).optional()),
+    tags: z.array(z.string()).optional(),
     factType: z.lazy(() => FactTypeSchema.optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -39,7 +37,7 @@ export const FactUpdateSchema = FactSchema.extend({
   eventId: z.string().uuid().optional().nullable(),
   observedAt: z.string().datetime({ offset: true }).optional().nullable(),
   dimensions: z.array(DimensionSchema).optional().nullable(),
-  tags: z.lazy(() => z.array(TagSchema).optional()),
+  tags: z.array(z.string()).optional(),
   factType: z.lazy(() => FactTypeSchema.optional()),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),

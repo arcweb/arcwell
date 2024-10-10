@@ -4,9 +4,9 @@ import vine from '@vinejs/vine'
 const dimensionSchemas = vine.array(
   vine.object({
     key: vine.string().trim(),
-    name: vine.string().trim(),
-    dataType: vine.string().trim(),
-    dataUnit: vine.string().trim().optional(),
+    name: vine.string(),
+    dataType: vine.string(),
+    dataUnit: vine.string().optional(),
     isRequired: vine.boolean(),
   })
 )
@@ -16,7 +16,7 @@ const dimensionSchemas = vine.array(
 export const createFactTypeValidator = vine.compile(
   vine.object({
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
-    name: vine.string().trim(),
+    name: vine.string(),
     dimensionSchemas: dimensionSchemas.optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
@@ -27,9 +27,9 @@ export const createFactTypeValidator = vine.compile(
  */
 export const updateFactTypeValidator = vine.compile(
   vine.object({
-    id: vine.string().trim().uuid(),
+    id: vine.string().uuid(),
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
-    name: vine.string().trim().optional(),
+    name: vine.string().optional(),
     dimensionSchemas: dimensionSchemas.optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })

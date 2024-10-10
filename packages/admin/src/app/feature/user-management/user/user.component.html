@@ -45,7 +45,7 @@
                   <p>Please enter your current password and new password.</p>
                 </div>
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
                   <mat-label>Current Password</mat-label>
                   <input
                     matNativeControl
@@ -55,7 +55,7 @@
                   />
                 </mat-form-field>
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
                   <mat-label>New Password</mat-label>
                   <input
                     matNativeControl
@@ -65,7 +65,7 @@
                   />
                 </mat-form-field>
 
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
                   <mat-label>Confirm Password</mat-label>
                   <input
                     matNativeControl
@@ -100,7 +100,18 @@
         <aw-error-container [errors]="userStore.errors()" />
       }
 
-      <mat-form-field>
+      @if (!userStore.inCreateMode()) {
+        <button
+          mat-button
+          type="button"
+          (click)="reinvite()"
+          class="reinvite-button"
+        >
+          Re-Invite Person
+        </button>
+      }
+
+      <mat-form-field appearance="outline">
         <input matInput placeholder="Email" formControlName="email" />
         @if (userForm.controls.email.hasError('required')) {
           <mat-error>
@@ -110,7 +121,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Role</mat-label>
         <mat-select formControlName="role" [compareWith]="compareRoles">
           @for (role of userStore.roles(); track role.id) {
@@ -128,7 +139,7 @@
       </mat-form-field>
 
       @if (userStore.inCreateMode()) {
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <input
             matInput
             placeholder="Password"

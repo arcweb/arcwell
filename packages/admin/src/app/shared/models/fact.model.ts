@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon';
 import { FactUpdateType } from '@shared/schemas/fact.schema';
 import { FactTypeModel } from '@shared/models/fact-type.model';
-import { TagModel } from '@shared/models/tag.model';
-import { TagType } from '@schemas/tag.schema';
 import { PersonType } from '@schemas/person.schema';
 import { EventType } from '@schemas/event.schema';
 import { PersonModel } from '@shared/models/person.model';
@@ -21,7 +19,7 @@ interface FactBase {
   person?: PersonType | undefined;
   resource?: ResourceType | undefined;
   event?: EventType | undefined;
-  tags?: TagModel[] | undefined;
+  tags?: string[] | undefined;
   info?: object;
   observedAt?: DateTime;
   dimensions: DimensionModel[] | undefined;
@@ -50,7 +48,7 @@ export class FactModel {
   public person?: PersonType;
   public resource?: ResourceType;
   public event?: EventType;
-  public tags?: TagModel[];
+  public tags?: string[];
   public info?: object;
   public observedAt?: DateTime;
   public dimensions: DimensionModel[] | undefined;
@@ -77,8 +75,7 @@ export class FactModel {
       ? DateTime.fromISO(data.observedAt)
       : undefined;
 
-    if (data.tags)
-      this.tags = data.tags.map((tag: TagType) => new TagModel(tag));
+    this.tags = data.tags;
 
     if (data.dimensions) {
       this.dimensions = data.dimensions.map(

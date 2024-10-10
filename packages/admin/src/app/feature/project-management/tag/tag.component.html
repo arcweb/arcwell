@@ -13,7 +13,7 @@
         <aw-error-container [errors]="tagStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Pathname</mat-label>
         <input matInput placeholder="Pathname" formControlName="pathname" />
         @if (tagForm.controls.pathname.hasError('required')) {

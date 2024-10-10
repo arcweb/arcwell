@@ -46,6 +46,7 @@ router
     router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
     router.post('/reset', [AuthController, 'resetPassword']).as('reset')
     router.post('/change', [AuthController, 'changePassword']).as('change')
+    router.post('/set', [AuthController, 'setPassword']).as('set')
   })
   .as('auth')
   .prefix('auth')
@@ -122,7 +123,10 @@ router.resource('roles', RolesController).apiOnly()
 
 // user routes
 // router.get('users/full', [GetAllFullUsersController]).as('users.full')
-router.resource('users', UsersController).apiOnly()
+router.group(() => {
+  router.post('users/invite', [UsersController, 'invite']).as('invite')
+  router.resource('users', UsersController).apiOnly()
+})
 
 // tag routes
 router.group(() => {

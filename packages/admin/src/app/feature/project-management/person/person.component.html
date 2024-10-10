@@ -13,7 +13,7 @@
         <aw-error-container [errors]="personStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Given Name</mat-label>
         <input matInput placeholder="Name" formControlName="givenName" />
         @if (personForm.controls.givenName.hasError('required')) {
@@ -24,7 +24,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Family Name</mat-label>
         <input matInput placeholder="Name" formControlName="familyName" />
         @if (personForm.controls.familyName.hasError('required')) {
@@ -35,7 +35,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Person Type</mat-label>
         <mat-select
           formControlName="personType"
@@ -54,6 +54,14 @@
           </mat-error>
         }
       </mat-form-field>
+
+      @if (personStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="personStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
 
       <div class="form-button-container">
         <button

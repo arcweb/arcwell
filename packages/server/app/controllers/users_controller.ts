@@ -2,7 +2,9 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import db from '@adonisjs/lucid/services/db'
+import mail from '@adonisjs/mail/services/main'
 
 export function getFullUser(id: string) {
   return User.query()
@@ -84,7 +86,16 @@ export default class UsersController {
     // TODO: Add create user functionality back in...
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
-    const newUser = await User.create(request.body())
+    let newUser = null
+    await db.transaction(async (trx) => {
+      newUser = new User().fill(request.body()).useTransaction(trx)
+      await newUser.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newUser.id, 'users', tags.tags, false)
+      }
+    })
 
     return { data: await getFullUser(newUser.id) }
   }
@@ -99,8 +110,16 @@ export default class UsersController {
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['email', 'roleId'])
-    const user = await User.findOrFail(params.id)
-    const updatedUser = await user.merge(cleanRequest).save()
+    let updatedUser = null
+    await db.transaction(async (trx) => {
+      const user = await User.findOrFail(params.id)
+      user.useTransaction(trx)
+      updatedUser = await user.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
+      }
+    })
     return { data: await getFullUser(updatedUser.id) }
   }
 
@@ -115,5 +134,34 @@ export default class UsersController {
     const user = await User.findOrFail(params.id)
     await user.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @invite
+   * @summary Invite a User
+   * @description Set the user temp password and set the requires password flag, then send an email
+   */
+  async invite({ request, auth }: HttpContext) {
+    console.log('\n\nREQUEST\n\n')
+    await auth.authenticate()
+
+    console.log('\n\nAFTER AUTH\n\n')
+    await request.validateUsing(paramsUUIDValidator)
+    const cleanRequest = request.only(['id'])
+
+    console.log('\n\nAFTER VALIDATE\n\n')
+
+    let user = await User.findOrFail(cleanRequest.id)
+
+    console.log('\n\nAFTER USER', user)
+
+    User.generateTempPassword(user)
+    user.merge({ requiresPasswordChange: true })
+    await user.save()
+
+    mail.send((message) => {
+      message.to(user.email).subject('You are invited').htmlView('emails/invite', { user })
+    })
+    return { data: user }
   }
 }

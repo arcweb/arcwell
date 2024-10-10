@@ -1,7 +1,11 @@
 import { AbstractControl } from '@angular/forms';
 
 // custom validator to check that two fields match
-export function InputMatch(controlName: string, matchingControlName: string) {
+export function InputMatch(
+  controlName: string,
+  matchingControlName: string,
+  inverse = false,
+) {
   return (group: AbstractControl) => {
     const control = group.get(controlName);
     const matchingControl = group.get(matchingControlName);
@@ -14,8 +18,10 @@ export function InputMatch(controlName: string, matchingControlName: string) {
       return null;
     }
 
-    if (control.value !== matchingControl.value) {
+    if (!inverse && control.value !== matchingControl.value) {
       matchingControl.setErrors({ mustMatch: true });
+    } else if (inverse && control.value === matchingControl.value) {
+      matchingControl.setErrors({ cannotMatch: true });
     } else {
       matchingControl.setErrors(null);
     }

@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon';
 import { EventTypeModel } from '@shared/models/event-type.model';
 import { EventType } from '@shared/schemas/event.schema';
-import { TagType } from '@schemas/tag.schema';
-import { TagModel } from '@shared/models/tag.model';
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { PersonModel } from '@shared/models/person.model';
@@ -10,7 +8,7 @@ import { ResourceModel } from '@shared/models/resource.model';
 
 interface EventBase {
   typeKey: string;
-  tags?: TagModel[];
+  tags?: string[];
   info?: object;
   startedAt?: DateTime;
   endedAt?: DateTime;
@@ -37,7 +35,7 @@ export class EventModel {
   public info?: object;
   public startedAt?: DateTime;
   public endedAt?: DateTime;
-  public tags?: TagModel[];
+  public tags?: string[];
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public eventType?: EventTypeModel;
@@ -56,9 +54,7 @@ export class EventModel {
     this.endedAt = data.endedAt ? DateTime.fromISO(data.endedAt) : undefined;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.eventType = data.eventType
       ? new EventTypeModel(data.eventType)
       : undefined;

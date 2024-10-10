@@ -16,7 +16,6 @@ import { computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ResourceTypeService } from '@shared/services/resource-type.service';
 import { TagService } from '@shared/services/tag.service';
-import { TagType } from '@schemas/tag.schema';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import {
   ResourceType,
@@ -175,7 +174,7 @@ export const ResourceTypeStore = signalStore(
   ),
   withComputed(({ resourceType }) => ({
     tagStrings: computed(
-      () => resourceType()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
+      () => resourceType()?.tags?.map((tag: string) => tag) ?? [],
     ),
   })),
 );

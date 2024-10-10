@@ -77,6 +77,15 @@ export const UsersStore = signalStore(
         );
       }
     },
+    async invite(userId: string) {
+      patchState(store, setPending());
+      const resp = await firstValueFrom(userService.invite(userId));
+      if (resp.errors) {
+        patchState(store, setErrors(resp.errors));
+      } else {
+        patchState(store, setFulfilled());
+      }
+    },
   })),
   withHooks({
     onInit(store) {

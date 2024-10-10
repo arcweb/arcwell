@@ -1,20 +1,21 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { afterDelete, BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import Role from '#models/role'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 import Tag from '#models/tag'
+import AwBaseModel from '#models/aw_base_model'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
 
-export default class User extends compose(BaseModel, AuthFinder) {
+export default class User extends compose(AwBaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: string
 
@@ -32,6 +33,12 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column({ serializeAs: null })
   declare passwordResetCode: string | null
+
+  @column({ serializeAs: null })
+  declare tempPassword: string | null
+
+  @column()
+  declare requiresPasswordChange: boolean | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -74,5 +81,18 @@ export default class User extends compose(BaseModel, AuthFinder) {
     await user.save()
 
     return user.passwordResetCode
+  }
+
+  static async generateTempPassword(user: User) {
+    let letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let tempPassword = ''
+    for (let i = 0; i < 12; i++) {
+      tempPassword += letters[Math.floor(Math.random() * 62)]
+    }
+
+    user.merge({ tempPassword: tempPassword, requiresPasswordChange: true })
+    await user.save()
+
+    return user.tempPassword
   }
 }

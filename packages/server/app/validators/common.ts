@@ -5,14 +5,14 @@ import vine from '@vinejs/vine'
  */
 export const paramsUUIDValidator = vine.compile(
   vine.object({
-    id: vine.string().trim().uuid(),
+    id: vine.string().uuid(),
   })
 )
 
 export const paramsTripleObjectUUIDValidator = vine.compile(
   vine.object({
-    person_id: vine.string().trim().uuid().optional().nullable(),
-    resource_id: vine.string().trim().uuid().optional().nullable(),
-    event_id: vine.string().trim().uuid().optional().nullable(),
+    person_id: vine.string().uuid().optional().nullable(),
+    resource_id: vine.string().uuid().optional().nullable(),
+    event_id: vine.string().uuid().optional().nullable(),
   })
 )

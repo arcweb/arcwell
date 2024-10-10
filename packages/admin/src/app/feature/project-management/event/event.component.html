@@ -13,7 +13,7 @@
         <aw-error-container [errors]="eventStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Event Type</mat-label>
         <mat-select
           formControlName="eventType"
@@ -33,7 +33,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Started At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
         <input
           matInput
@@ -54,7 +54,7 @@
         </mat-error>
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Ended At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
         <input
           matInput
@@ -91,6 +91,14 @@
         [objectSubTypes]="this.eventStore.resourceTypes()"
       ></aw-object-selector-form-field>
 
+      @if (eventStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="eventStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
+
       <div class="form-button-container">
         <button
           mat-button
@@ -114,10 +122,12 @@
       </div>
     </form>
 
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="eventStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
+    @if (!eventStore.inCreateMode()) {
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="eventStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
   </div>
 }

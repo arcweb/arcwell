@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { column, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Event from '#models/event'
 import Person from '#models/person'
 import Resource from '#models/resource'
 import Fact from '#models/fact'
 import User from '#models/user'
+import AwBaseModel from '#models/aw_base_model'
 
-export default class Tag extends BaseModel {
+export default class Tag extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 

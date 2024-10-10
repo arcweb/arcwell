@@ -1,10 +1,11 @@
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullFactType(id: string, trx?: TransactionClientContract) {
   if (trx) {
@@ -56,8 +57,16 @@ export default class FactTypesController {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
 
-    // @ts-ignore - stringify is required for knex and jsonb arrays
-    const newFactType = await FactType.create(request.body())
+    let newFactType = null
+    await db.transaction(async (trx) => {
+      newFactType = new FactType().fill(request.body()).useTransaction(trx)
+      await newFactType.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newFactType.id, 'fact_types', tags.tags, false)
+      }
+    })
 
     return { data: await getFullFactType(newFactType.id) }
   }
@@ -107,11 +116,16 @@ export default class FactTypesController {
 
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
-    if (cleanRequest.tags) {
-      cleanRequest.tags = JSON.stringify(cleanRequest.tags)
-    }
-    const factType = await FactType.findOrFail(params.id)
-    const updatedFactType = await factType.merge(cleanRequest).save()
+    let updatedFactType = null
+    await db.transaction(async (trx) => {
+      const factType = await FactType.findOrFail(params.id)
+      factType.useTransaction(trx)
+      updatedFactType = await factType.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, factType.id, 'fact_types', cleanRequest.tags)
+      }
+    })
 
     return { data: await getFullFactType(updatedFactType.id) }
   }

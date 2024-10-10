@@ -21,7 +21,11 @@ export class LoginComponent {
 
   constructor() {
     effect(() => {
-      if (this.authStore.currentUser()) {
+      if (this.authStore.loginStatus() === 'set-password') {
+        this.router.navigateByUrl(
+          `auth/set/${this.authStore.currentUser()?.email}`,
+        );
+      } else if (this.authStore.currentUser()) {
         this.router.navigate(['project-management']);
       }
     });

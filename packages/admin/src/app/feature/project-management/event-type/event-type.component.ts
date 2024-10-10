@@ -34,7 +34,6 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
@@ -72,6 +71,8 @@ export class EventTypeComponent implements OnInit {
   readonly backService = inject(BackService);
 
   @Input() eventTypeId!: string;
+
+  tagsForCreate: string[] = [];
 
   eventTypeForm = new FormGroup({
     name: new FormControl(
@@ -124,7 +125,16 @@ export class EventTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.eventTypeStore.inCreateMode()) {
-            this.eventTypeStore.create(this.eventTypeForm.value);
+            const formValue = this.eventTypeForm.value;
+
+            const eventTypeFormPayload: EventTypeType = {
+              ...formValue,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              eventTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.eventTypeStore.create(eventTypeFormPayload);
           } else {
             this.eventTypeStore.update(this.eventTypeForm.value);
           }
@@ -192,7 +202,12 @@ export class EventTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.eventTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

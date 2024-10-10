@@ -13,7 +13,7 @@
         <aw-error-container [errors]="resourceStore.errors()" />
       }
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
         <input matInput placeholder="Name" formControlName="name" />
         @if (resourceForm.controls.name.hasError('required')) {
@@ -24,7 +24,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Resource Type</mat-label>
         <mat-select
           formControlName="resourceType"
@@ -46,6 +46,14 @@
           </mat-error>
         }
       </mat-form-field>
+
+      @if (resourceStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="resourceStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
 
       <div class="form-button-container">
         <button
@@ -72,10 +80,12 @@
       </div>
     </form>
 
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="resourceStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
+    @if (!resourceStore.inCreateMode()) {
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="resourceStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
   </div>
 }

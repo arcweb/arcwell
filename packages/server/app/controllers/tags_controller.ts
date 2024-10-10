@@ -9,6 +9,7 @@ import {
   buildFactsSort,
   buildPeopleSort,
   buildResourcesSort,
+  setTagsForObject,
 } from '#helpers/query_builder'
 
 export default class TagsController {
@@ -77,24 +78,6 @@ export default class TagsController {
         this.usersSubQuery(relatedQuery, queryData)
       })
       .firstOrFail()
-  }
-
-  /**
-   * @count
-   * @summary Count People
-   * @description Returns the count of total people
-   */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
-    const countQuery = db.from('tags').count('*')
-    const queryCount = await countQuery.count('*')
-
-    return {
-      data: {
-        count: +queryCount[0].count,
-      },
-    }
   }
 
   /**
@@ -289,34 +272,7 @@ export default class TagsController {
     const cleanRequest = request.only(['objectType', 'tags'])
 
     await db.transaction(async (trx) => {
-      await trx.rawQuery(
-        'delete from tag_object where object_id = :id and object_type = :objectType',
-        {
-          id: params.id,
-          objectType: cleanRequest.objectType,
-        }
-      )
-
-      for (let tagString of cleanRequest.tags) {
-        let dbTag = await Tag.findBy('pathname', tagString)
-        if (!dbTag) {
-          const newTag = new Tag()
-          newTag.pathname = tagString
-          newTag.useTransaction(trx)
-          dbTag = await newTag.save()
-        }
-
-        await trx.rawQuery(
-          `INSERT INTO public.tag_object
-            (id, tag_id, object_id, object_type, created_at, updated_at)
-            VALUES(gen_random_uuid(), :tagId, :objectId, :objectType, now(), now());`,
-          {
-            tagId: dbTag.id,
-            objectId: params.id,
-            objectType: cleanRequest.objectType,
-          }
-        )
-      }
+      await setTagsForObject(trx, params.id, cleanRequest.objectType, cleanRequest.tags)
     })
 
     response.status(204).send('')
