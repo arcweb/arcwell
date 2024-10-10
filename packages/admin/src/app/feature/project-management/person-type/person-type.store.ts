@@ -17,7 +17,6 @@ import { firstValueFrom } from 'rxjs';
 import { PersonType, PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeService } from '@shared/services/person-type.service';
 import { TagService } from '@shared/services/tag.service';
-import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -167,7 +166,7 @@ export const PersonTypeStore = signalStore(
   ),
   withComputed(({ personType }) => ({
     tagStrings: computed(
-      () => personType()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
+      () => personType()?.tags?.map((tag: string) => tag) ?? [],
     ),
   })),
 );

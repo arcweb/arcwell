@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { column, manyToMany } from '@adonisjs/lucid/orm'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Role from '#models/role'
+import AwBaseModel from '#models/aw_base_model'
 
-export default class Policy extends BaseModel {
+export default class Policy extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: number
 

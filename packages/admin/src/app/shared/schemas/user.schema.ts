@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { UserModel } from '@shared/models';
 import { RoleSchema } from './role.schema';
 import { PersonSchema } from '@shared/schemas/person.schema';
-import { TagSchema } from '@schemas/tag.schema';
 
 // validate data coming from API or sending to API for create
 // TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
@@ -19,7 +18,7 @@ export const UserSchema: any = z
       .lazy(() => PersonSchema)
       .optional()
       .nullable(),
-    tags: z.lazy(() => z.array(TagSchema).optional()),
+    tags: z.array(z.string()).optional(),
     passwordResetCode: z.string().optional().nullable(),
     requiresPasswordChange: z.boolean().optional().nullable(),
   })

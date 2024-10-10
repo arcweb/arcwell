@@ -134,10 +134,14 @@ export default class FactsController {
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
-    await request.validateUsing(updateFactValidator)
+
+    console.log('#######################request=', request.serialize())
+    const cleanRequest = await request.validateUsing(updateFactValidator)
+
+    console.log('#######################showMeTheMoney=', cleanRequest)
 
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
+    // const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
     let updatedFact = null
     await db.transaction(async (trx) => {
       const fact = await Fact.findOrFail(params.id)

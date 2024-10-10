@@ -1,14 +1,12 @@
 import { DateTime } from 'luxon';
-import { ResourceUpdateType } from '../schemas/resource.schema';
-import { TagType } from '../schemas/tag.schema';
+import { ResourceUpdateType } from '@schemas/resource.schema';
 import { ResourceTypeModel } from './resource-type.model';
-import { TagModel } from './tag.model';
 
 interface ResourceBase {
   name: string;
   info?: object;
   typeKey: string;
-  tags?: TagModel[] | undefined;
+  tags?: string[] | undefined;
   createdAt: DateTime;
   updatedAt: DateTime;
   resourceType?: ResourceTypeModel;
@@ -27,7 +25,7 @@ export class ResourceModel {
   public name: string;
   public info?: object;
   public typeKey: string;
-  public tags?: TagModel[] | undefined;
+  public tags?: string[] | undefined;
   public createdAt: DateTime;
   public updatedAt: DateTime;
   public resourceType?: ResourceTypeModel;
@@ -37,9 +35,7 @@ export class ResourceModel {
     this.name = data.name;
     this.info = data.info;
     this.typeKey = data.typeKey;
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.resourceType = data.resourceType

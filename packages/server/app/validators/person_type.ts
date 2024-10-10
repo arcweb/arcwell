@@ -17,7 +17,7 @@ export const createPersonTypeValidator = vine.compile(
  */
 export const updatePersonTypeValidator = vine.compile(
   vine.object({
-    id: vine.string().trim().uuid(),
+    id: vine.string().uuid(),
     name: vine.string().trim().minLength(3),
     key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
     description: vine.string().trim().optional(),

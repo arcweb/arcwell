@@ -29,11 +29,10 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
-import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 
 @Component({
@@ -62,15 +61,14 @@ import { ResourceType } from '@app/shared/schemas/resource.schema';
 })
 export class ResourceComponent implements OnInit {
   readonly resourceStore = inject(ResourceStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
-  destoyRef = inject(DestroyRef);
+  destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
 
   @Input() resourceId!: string;
   @Input() typeKey?: string;
 
-  tagsForCreate: TagType[] = [];
+  tagsForCreate: string[] = [];
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -114,7 +112,7 @@ export class ResourceComponent implements OnInit {
     }
 
     this.resourceForm.events
-      .pipe(takeUntilDestroyed(this.destoyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(resource => {
         if ((resource as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceStore.inCreateMode()) {
@@ -175,12 +173,12 @@ export class ResourceComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.resourceStore.setTags(tags);
   }
 
   // This should only be used during object creation
-  updateTagsForCreate(tags: TagType[]) {
+  updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
 }
