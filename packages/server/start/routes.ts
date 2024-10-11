@@ -25,16 +25,9 @@ const ResourceTypesController = () => import('#controllers/resource_types_contro
 const EventController = () => import('#controllers/events_controller')
 const EventTypeController = () => import('#controllers/event_types_controller')
 const TagsController = () => import('#controllers/tags_controller')
-
 const HealthChecksController = () => import('#controllers/health_checks_controller')
-router.get('/health', [HealthChecksController])
-
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
-
-router.get('/docs/swagger.yaml', async () => {
-  return AutoSwagger.default.docs(router.toJSON(), swagger)
-})
 
 router
   // API Outer Wrapper
@@ -57,48 +50,6 @@ router
           .as('auth')
           .prefix('auth')
 
-        // Cohort Management
-        router.group(() => {
-          router
-            .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
-            .as('cohorts.showWithPeople')
-          router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
-          router
-            .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
-            .as('cohorts.detachPeople')
-          router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
-          router.resource('cohorts', CohortsController).apiOnly()
-        })
-
-        // Server Configuration
-        router
-          .group(() => {
-            router.get('', [ConfigController, 'index']).as('index')
-            router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
-          })
-          .as('config')
-          .prefix('config')
-
-        // Fact Management
-        router.group(() => {
-          router.resource('facts/types', FactTypesController).apiOnly()
-          router
-            .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
-            .as('facts/types.showWithFacts')
-          router.get('facts/count', [FactsController, 'count']).as('facts.count')
-          router.resource('facts', FactsController).apiOnly()
-        })
-
-        // Event Management
-        router.group(() => {
-          router.resource('events/types', EventTypeController).apiOnly()
-          router
-            .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
-            .as('events/types.showWithEvents')
-          router.get('events/count', [EventController, 'count']).as('events.count')
-          router.resource('events', EventController).apiOnly()
-        })
-
         // People Management
         router.group(() => {
           router
@@ -114,6 +65,19 @@ router
           router.resource('people', PeopleController).apiOnly()
         })
 
+        // Cohort Management
+        router.group(() => {
+          router
+            .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
+            .as('cohorts.showWithPeople')
+          router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
+          router
+            .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
+            .as('cohorts.detachPeople')
+          router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+          router.resource('cohorts', CohortsController).apiOnly()
+        })
+
         // Resource Management
         router.group(() => {
           router.resource('resources/types', ResourceTypesController).apiOnly()
@@ -124,14 +88,24 @@ router
           router.resource('resources', ResourcesController).apiOnly()
         })
 
-        // Role Management
-        router.resource('roles', RolesController).apiOnly()
-
-        // User Management
-        // router.get('users/full', [GetAllFullUsersController]).as('users.full')
+        // Event Management
         router.group(() => {
-          router.post('users/invite', [UsersController, 'invite']).as('invite')
-          router.resource('users', UsersController).apiOnly()
+          router.resource('events/types', EventTypeController).apiOnly()
+          router
+            .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
+            .as('events/types.showWithEvents')
+          router.get('events/count', [EventController, 'count']).as('events.count')
+          router.resource('events', EventController).apiOnly()
+        })
+
+        // Fact Management
+        router.group(() => {
+          router.resource('facts/types', FactTypesController).apiOnly()
+          router
+            .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
+            .as('facts/types.showWithFacts')
+          router.get('facts/count', [FactsController, 'count']).as('facts.count')
+          router.resource('facts', FactsController).apiOnly()
         })
 
         // Tags Management
@@ -143,11 +117,6 @@ router
           router.resource('tags', TagsController).apiOnly()
         })
 
-        // Email Orchestration
-        router.group(() => {
-          router.post('email', [EmailsController, 'send']).as('email.send')
-        })
-
         // Data API
         router
           .group(() => {
@@ -157,9 +126,39 @@ router
           })
           .as('data')
           .prefix('data')
+
+        // User Management
+        // router.get('users/full', [GetAllFullUsersController]).as('users.full')
+        router.group(() => {
+          router.post('users/invite', [UsersController, 'invite']).as('invite')
+          router.resource('users', UsersController).apiOnly()
+        })
+
+        // Role Management
+        router.resource('roles', RolesController).apiOnly()
+
+        // Email Orchestration
+        router.group(() => {
+          router.post('email', [EmailsController, 'send']).as('email.send')
+        })
+
+        // Server Configuration
+        router
+          .group(() => {
+            router.get('', [ConfigController, 'index']).as('index')
+            router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
+          })
+          .as('config')
+          .prefix('config')
       })
       .prefix('v1')
       .as('v1')
   })
   .prefix('api')
   .as('api')
+
+// Healthcheck and non-API paths:
+router.get('/health', [HealthChecksController])
+router.get('/docs/swagger.yaml', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
+})
