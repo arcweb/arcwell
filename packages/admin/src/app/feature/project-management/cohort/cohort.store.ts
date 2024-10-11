@@ -21,9 +21,10 @@ import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { SortDirection } from '@angular/material/sort';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
+import { DetailStore } from '../detail/detail.store';
 
 interface CohortPeopleListState {
   limit: number;
@@ -70,7 +71,7 @@ export const CohortStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
-      router = inject(Router),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
@@ -177,13 +178,8 @@ export const CohortStore = signalStore(
 
           toastService.sendMessage('Created cohort.', ToastLevel.SUCCESS);
 
-          // navigate to the newly created cohort and don't save the current route in history
-          router.navigateByUrl(
-            `/project-management/cohorts/${cohortResp.data.id}`,
-            {
-              replaceUrl: true,
-            },
-          );
+          // navigate to the newly created cohort
+          detailStore.routeToNewDetailId(cohortResp.data.id);
         }
       },
       async deleteCohort() {

@@ -25,6 +25,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { DetailStore } from '../detail/detail.store';
 
 interface ResourceTypeState {
   resourceType: ResourceType | null;
@@ -50,8 +51,8 @@ export const ResourceTypeStore = signalStore(
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
-      router = inject(Router),
       toastService = inject(ToastService),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(resourceTypeId: string) {
         patchState(store, setPending());
@@ -139,10 +140,7 @@ export const ResourceTypeStore = signalStore(
           );
 
           // navigate to the newly created item and don't save the current route in the history
-          router.navigateByUrl(
-            `/project-management/resources/types/${resp.data.id}`,
-            { replaceUrl: true },
-          );
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {

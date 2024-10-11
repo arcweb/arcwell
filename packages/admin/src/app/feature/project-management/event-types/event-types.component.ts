@@ -12,7 +12,7 @@ import {
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EventTypeModel } from '@app/shared/models/event-type.model';
 import { EventTypesStore } from './event-types.store';
 import { JsonPipe } from '@angular/common';
@@ -52,6 +52,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 export class EventTypesComponent {
   public eventTypesStore = inject(EventTypesStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   dataSource = new MatTableDataSource<EventTypeModel>();
 
@@ -66,7 +67,10 @@ export class EventTypesComponent {
   }
 
   handleClick(row: EventTypeModel) {
-    this.router.navigate(['project-management', 'events', 'types', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

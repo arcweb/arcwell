@@ -11,10 +11,9 @@ export const USER_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'list',
         component: AllUsersComponent,
-      },
-      {
-        path: ':userId',
-        component: UserComponent,
+        data: {
+          detailComponent: UserComponent,
+        },
       },
       {
         path: '',

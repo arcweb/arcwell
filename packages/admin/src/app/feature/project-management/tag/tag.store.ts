@@ -25,6 +25,7 @@ import { EventType } from '@app/shared/schemas/event.schema';
 import { FactType } from '@app/shared/schemas/fact.schema';
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { UserType } from '@app/shared/schemas/user.schema';
+import { DetailStore } from '../detail/detail.store';
 
 interface RelatedListState {
   limit: number;
@@ -127,7 +128,7 @@ export const TagStore = signalStore(
       store,
       tagService = inject(TagService),
       toastService = inject(ToastService),
-      router = inject(Router),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(tagId: string) {
         patchState(store, setPending());
@@ -277,10 +278,8 @@ export const TagStore = signalStore(
 
           toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
 
-          // navigate to the newly created item and don't save the current route in the history
-          router.navigateByUrl(`/project-management/tags/${store.tag().id}`, {
-            replaceUrl: true,
-          });
+          // navigate to the newly created item
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
 

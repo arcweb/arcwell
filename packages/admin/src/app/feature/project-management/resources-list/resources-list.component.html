@@ -1,7 +1,7 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Resources'"
   createLink="/project-management/resources/create"
-  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+  [createLinkQueryParams]="{ type_key: typeKey$ | async }"
 ></aw-table-header>
 
 @if (resourcesListStore.isErrored()) {

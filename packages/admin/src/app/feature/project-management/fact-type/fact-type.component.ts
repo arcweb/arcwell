@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -51,6 +53,7 @@ import {
 } from '@angular/material/table';
 import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-fact-type',
@@ -89,12 +92,11 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class FactTypeComponent implements OnInit {
   readonly factTypeStore = inject(FactTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
-  @Input() factTypeId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -142,11 +144,11 @@ export class FactTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.factTypeId) {
-      if (this.factTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.factTypeStore.initializeForCreate();
       } else {
-        this.factTypeStore.initialize(this.factTypeId).then(() => {
+        this.factTypeStore.initialize(this.detailId).then(() => {
           this.factTypeForm.patchValue({
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
@@ -204,7 +206,7 @@ export class FactTypeComponent implements OnInit {
 
   onCancel() {
     if (this.factTypeStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.factTypeStore.inEditMode()) {
@@ -232,7 +234,7 @@ export class FactTypeComponent implements OnInit {
       if (result === true) {
         this.factTypeStore.delete().then(() => {
           if (this.factTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

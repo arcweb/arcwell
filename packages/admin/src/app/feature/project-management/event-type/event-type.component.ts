@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -38,6 +40,7 @@ import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-event-type',
@@ -69,8 +72,9 @@ export class EventTypeComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
-  @Input() eventTypeId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -106,11 +110,11 @@ export class EventTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.eventTypeId) {
-      if (this.eventTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.eventTypeStore.initializeForCreate();
       } else {
-        this.eventTypeStore.initialize(this.eventTypeId).then(() => {
+        this.eventTypeStore.initialize(this.detailId).then(() => {
           this.eventTypeForm.patchValue({
             key: this.eventTypeStore.eventType()?.key,
             name: this.eventTypeStore.eventType()?.name,
@@ -191,7 +195,7 @@ export class EventTypeComponent implements OnInit {
       if (result === true) {
         this.eventTypeStore.delete().then(() => {
           if (this.eventTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

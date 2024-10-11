@@ -25,6 +25,7 @@ import { ResourceTypeService } from '@app/shared/services/resource-type.service'
 import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { DetailStore } from '../detail/detail.store';
 
 interface ResourceState {
   resource: ResourceType | null;
@@ -52,7 +53,7 @@ export const ResourceStore = signalStore(
       resourceService = inject(ResourceService),
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
-      router = inject(Router),
+      detailStore = inject(DetailStore),
       toastService = inject(ToastService),
     ) => ({
       async initialize(resourceId: string) {
@@ -160,10 +161,7 @@ export const ResourceStore = signalStore(
           toastService.sendMessage('Resource created.', ToastLevel.SUCCESS);
 
           // navigate to the new resource
-          router.navigateByUrl(
-            `/project-management/resources/${resp.data.id}`,
-            { replaceUrl: true },
-          );
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {

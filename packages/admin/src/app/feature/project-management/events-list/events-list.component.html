@@ -1,7 +1,7 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Events'"
   createLink="/project-management/events/create"
-  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+  [createLinkQueryParams]="{ type_key: typeKey$ | async }"
 ></aw-table-header>
 
 @if (eventsListStore.isErrored()) {

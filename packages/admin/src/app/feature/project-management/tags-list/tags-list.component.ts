@@ -16,7 +16,7 @@ import {
 } from '@angular/material/table';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { MatIcon } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { TagModel } from '@app/shared/models/tag.model';
@@ -52,6 +52,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 export class TagsListComponent {
   readonly tagsListStore = inject(TagsListStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   pageSizes = [10, 20, 50];
 
@@ -67,6 +68,9 @@ export class TagsListComponent {
   displayedColumns: string[] = ['pathname'];
 
   handleClick(row: TagModel) {
-    this.router.navigate(['project-management', 'tags', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 }

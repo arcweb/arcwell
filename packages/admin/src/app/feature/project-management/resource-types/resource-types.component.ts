@@ -16,7 +16,7 @@ import {
   MatHeaderRow,
   MatTableDataSource,
 } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
@@ -53,6 +53,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 export class ResourceTypesComponent {
   public resourceTypesStore = inject(ResourceTypesStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   dataSource = new MatTableDataSource<ResourceTypeModel>();
 
@@ -67,7 +68,10 @@ export class ResourceTypesComponent {
   }
 
   handleClick(row: ResourceTypeModel) {
-    this.router.navigate(['project-management', 'resources', 'types', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

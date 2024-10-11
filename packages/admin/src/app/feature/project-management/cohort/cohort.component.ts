@@ -2,9 +2,11 @@ import {
   Component,
   DestroyRef,
   effect,
+  EventEmitter,
   inject,
   Input,
   OnInit,
+  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -39,6 +41,7 @@ import { PersonType } from '@schemas/person.schema';
 import { BackService } from '@app/shared/services/back.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 
 @Component({
@@ -73,9 +76,9 @@ export class CohortComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  private detailStore = inject(DetailStore);
 
-  @Input() cohortId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -103,13 +106,7 @@ export class CohortComponent implements OnInit {
     ),
   });
 
-  peopleColumns: string[] = [
-    'id',
-    'familyName',
-    'givenName',
-    'personType',
-    'delete',
-  ];
+  peopleColumns: string[] = ['familyName', 'givenName', 'personType', 'delete'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
   pageSizes = [10, 20, 50];
 
@@ -127,11 +124,11 @@ export class CohortComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.cohortId) {
-      if (this.cohortId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.cohortStore.initializeForCreate();
       } else {
-        this.cohortStore.initialize(this.cohortId).then(() => {
+        this.cohortStore.initialize(this.detailId).then(() => {
           this.cohortForm.patchValue({
             name: this.cohortStore.cohort()?.name,
             description: this.cohortStore.cohort()?.description,
@@ -171,7 +168,7 @@ export class CohortComponent implements OnInit {
 
   onCancel() {
     if (this.cohortStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.cohortStore.inEditMode()) {
@@ -197,7 +194,7 @@ export class CohortComponent implements OnInit {
       if (result === true) {
         this.cohortStore.deleteCohort().then(() => {
           if (this.cohortStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

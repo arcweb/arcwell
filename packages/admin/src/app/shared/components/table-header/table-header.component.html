@@ -5,8 +5,7 @@
   <div class="icons-container">
     <button
       mat-button
-      [routerLink]="[createLink()]"
-      [queryParams]="createLinkQueryParams()"
+      (click)="onCreate()"
       matTooltip="Add new"
       class="table-header-button label-large font-weight-regular"
     >

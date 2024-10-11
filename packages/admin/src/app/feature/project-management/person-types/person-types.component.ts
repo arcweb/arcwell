@@ -13,7 +13,7 @@ import {
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PersonTypeModel } from '@app/shared/models/person-type.model';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { JsonPipe } from '@angular/common';
@@ -53,6 +53,7 @@ import { TableHeaderComponent } from '../../../shared/components/table-header/ta
 export class PersonTypesComponent {
   public personTypesStore = inject(PersonTypesStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   dataSource = new MatTableDataSource<PersonTypeModel>();
 
@@ -67,7 +68,10 @@ export class PersonTypesComponent {
   }
 
   handleClick(row: PersonTypeModel) {
-    this.router.navigate(['project-management', 'people', 'types', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

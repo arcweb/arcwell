@@ -64,7 +64,7 @@ export class EventsListComponent {
   readonly featureStore = inject(FeatureStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   pageSizes = [10, 20, 50];
@@ -93,7 +93,10 @@ export class EventsListComponent {
   }
 
   rowClick(row: EventModel) {
-    this.router.navigate(['project-management', 'events', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {
@@ -108,10 +111,14 @@ export class EventsListComponent {
   }
 
   viewResource(resourceId: string) {
-    this.router.navigate(['project-management', 'resources', resourceId]);
+    this.router.navigate(['project-management', 'resources', 'list'], {
+      queryParams: { detail_id: resourceId },
+    });
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 }

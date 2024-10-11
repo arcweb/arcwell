@@ -64,7 +64,7 @@ export class FactsListComponent {
   readonly featureStore = inject(FeatureStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   pageSizes = [10, 20, 50];
@@ -96,19 +96,28 @@ export class FactsListComponent {
   }
 
   rowClick(row: FactModel) {
-    this.router.navigate(['project-management', 'facts', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   viewEvent(eventId: string) {
-    this.router.navigate(['project-management', 'events', eventId]);
+    this.router.navigate(['project-management', 'events', 'list'], {
+      queryParams: { detail_id: eventId },
+    });
   }
 
   viewResource(resourceId: string) {
-    this.router.navigate(['project-management', 'resources', resourceId]);
+    this.router.navigate(['project-management', 'resources', 'list'], {
+      queryParams: { detail_id: resourceId },
+    });
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 
   sortChange(event: Sort) {
