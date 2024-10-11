@@ -185,7 +185,10 @@ export class PersonComponent implements OnInit {
     this.cohortForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
-        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+        if (
+          (event as ControlEvent) instanceof FormSubmittedEvent &&
+          this.cohortForm.value.cohort
+        ) {
           this.personStore.attachCohort(this.cohortForm.value.cohort.id);
           this.cohortForm.reset();
         }

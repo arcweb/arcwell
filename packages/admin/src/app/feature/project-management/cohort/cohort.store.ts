@@ -15,13 +15,16 @@ import {
 import { CohortService } from '@shared/services/cohort.service';
 import { computed, inject } from '@angular/core';
 import { firstValueFrom, forkJoin } from 'rxjs';
-import { CohortType, CohortUpdateType } from '@shared/schemas/cohort.schema';
+import {
+  CohortNewType,
+  CohortType,
+  CohortUpdateType,
+} from '@shared/schemas/cohort.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { SortDirection } from '@angular/material/sort';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
-import { ActivatedRoute, Router } from '@angular/router';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { DetailStore } from '../detail/detail.store';
@@ -64,6 +67,12 @@ export const CohortStore = signalStore(
   withDevtools('cohort'),
   withState(initialState),
   withRequestStatus(),
+  withComputed(({ cohort }) => ({
+    tagStrings: computed(() => cohort()?.tags?.map((tag: string) => tag) ?? []),
+    id: computed(() => cohort()?.id ?? ''),
+    peopleCount: computed(() => cohort()?.peopleCount ?? 0),
+    people: computed(() => cohort()?.people ?? []),
+  })),
   withMethods(
     (
       store,
@@ -125,8 +134,11 @@ export const CohortStore = signalStore(
         patchState(store, { inEditMode: !store.inEditMode() });
       },
       async updateCohort(updateCohortFormData: CohortUpdateType) {
+        const id = store.cohort()?.id;
         patchState(store, setPending());
-        updateCohortFormData.id = store.cohort().id;
+        if (id) {
+          updateCohortFormData.id = id;
+        }
         const resp = await firstValueFrom(
           cohortService.update(updateCohortFormData),
         );
@@ -145,7 +157,7 @@ export const CohortStore = signalStore(
           toastService.sendMessage('Updated cohort.', ToastLevel.SUCCESS);
         }
       },
-      async createCohort(createCohortFormData: CohortType) {
+      async createCohort(createCohortFormData: CohortNewType) {
         console.log('createCohortFormData', createCohortFormData);
         patchState(store, setPending());
 
@@ -184,9 +196,7 @@ export const CohortStore = signalStore(
       },
       async deleteCohort() {
         patchState(store, setPending());
-        const resp = await firstValueFrom(
-          cohortService.delete(store.cohort().id),
-        );
+        const resp = await firstValueFrom(cohortService.delete(store.id()));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
@@ -200,7 +210,7 @@ export const CohortStore = signalStore(
       async setTags(tags: string[]) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          tagService.setTags(store.cohort().id, 'cohorts', tags),
+          tagService.setTags(store.id(), 'cohorts', tags),
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
@@ -227,7 +237,7 @@ export const CohortStore = signalStore(
         );
         const resp = await firstValueFrom(
           cohortService.getCohortWithPeople({
-            id: store.cohort().id,
+            id: store.id(),
             limit: store.peopleListOptions().limit,
             offset: store.peopleListOptions().offset,
             sort: store.peopleListOptions().sort,
@@ -251,7 +261,7 @@ export const CohortStore = signalStore(
       async attachPerson(personId: string) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          cohortService.attachPerson(store.cohort().id, personId),
+          cohortService.attachPerson(store.id(), personId),
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
@@ -272,13 +282,13 @@ export const CohortStore = signalStore(
       async detachPerson(personId: string) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
-          cohortService.detachPerson(store.cohort().id, personId),
+          cohortService.detachPerson(store.id(), personId),
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
           const isLastPersonOnPage = isRelationLastOnPage(
-            store.cohort().peopleCount,
+            store.peopleCount(),
             store.peopleListOptions().limit,
             store.peopleListOptions().pageIndex,
             store.peopleListOptions().offset,
@@ -306,7 +316,4 @@ export const CohortStore = signalStore(
       },
     }),
   ),
-  withComputed(({ cohort }) => ({
-    tagStrings: computed(() => cohort()?.tags?.map((tag: string) => tag) ?? []),
-  })),
 );

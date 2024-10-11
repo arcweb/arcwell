@@ -10,6 +10,7 @@ import {
   CohortResponseType,
   CohortType,
   CohortUpdateType,
+  CohortNewType,
 } from '@shared/schemas/cohort.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
@@ -141,7 +142,7 @@ export class CohortService {
   }
 
   create(
-    cohort: CohortType,
+    cohort: CohortNewType,
   ): Observable<CohortResponseType | ErrorResponseType> {
     return this.http
       .post<CohortResponseType>(`${environment.apiUrl}/cohorts`, cohort)

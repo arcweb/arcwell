@@ -5,7 +5,7 @@ import { DimensionSchemaSchema } from '@schemas/dimension-schema.schema';
 
 export const FactTypeSchema = z
   .object({
-    id: z.string().uuid(), //.optional(),
+    id: z.string().uuid(),
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
@@ -38,7 +38,7 @@ export const FactTypeResponseSchema = z.object({
 });
 
 export type FactTypeType = z.infer<typeof FactTypeSchema>;
-export type FactTypeNewType = z.infer<typeof FactTypeUpdateSchema>;
+export type FactTypeNewType = z.infer<typeof FactTypeNewSchema>;
 export type FactTypeUpdateType = z.infer<typeof FactTypeUpdateSchema>;
 export type FactTypesResponseType = z.infer<typeof FactTypesResponseSchema>;
 export type FactTypeResponseType = z.infer<typeof FactTypeResponseSchema>;
