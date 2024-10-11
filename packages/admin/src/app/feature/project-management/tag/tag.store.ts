@@ -279,8 +279,7 @@ export const TagStore = signalStore(
           toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
 
           // navigate to the newly created item
-          // TODO: Why is this not keeping the drawer open?
-          detailStore.routeToNewDetailId(resp.id);
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
 

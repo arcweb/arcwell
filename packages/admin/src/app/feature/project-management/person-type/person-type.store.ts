@@ -127,9 +127,10 @@ export const PersonTypeStore = signalStore(
           );
 
           toastService.sendMessage('Person Type created.', ToastLevel.SUCCESS);
+          console.log('resp', resp);
           router.navigate([], {
             relativeTo: router.routerState.root,
-            queryParams: { detail_id: resp.id },
+            queryParams: { detail_id: resp.data.id },
           });
         }
       },
