@@ -36,117 +36,130 @@ router.get('/docs/swagger.yaml', async () => {
   return AutoSwagger.default.docs(router.toJSON(), swagger)
 })
 
-// auth routes
 router
+  // API Outer Wrapper
   .group(() => {
-    // router.post('/register', [AuthController, 'register']).as('register')
-    router.post('/login', [AuthController, 'login']).as('login')
-    router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
-    router.get('/me', [AuthController, 'me']).as('me')
-    router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
-    router.post('/reset', [AuthController, 'resetPassword']).as('reset')
-    router.post('/change', [AuthController, 'changePassword']).as('change')
-    router.post('/set', [AuthController, 'setPassword']).as('set')
+    router
+      // V1 Mid Wrapper
+      .group(() => {
+        // Authentication
+        router
+          .group(() => {
+            // router.post('/register', [AuthController, 'register']).as('register')
+            router.post('/login', [AuthController, 'login']).as('login')
+            router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
+            router.get('/me', [AuthController, 'me']).as('me')
+            router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
+            router.post('/reset', [AuthController, 'resetPassword']).as('reset')
+            router.post('/change', [AuthController, 'changePassword']).as('change')
+            router.post('/set', [AuthController, 'setPassword']).as('set')
+          })
+          .as('auth')
+          .prefix('auth')
+
+        // Cohort Management
+        router.group(() => {
+          router
+            .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
+            .as('cohorts.showWithPeople')
+          router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
+          router
+            .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
+            .as('cohorts.detachPeople')
+          router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+          router.resource('cohorts', CohortsController).apiOnly()
+        })
+
+        // Server Configuration
+        router
+          .group(() => {
+            router.get('', [ConfigController, 'index']).as('index')
+            router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
+          })
+          .as('config')
+          .prefix('config')
+
+        // Fact Management
+        router.group(() => {
+          router.resource('facts/types', FactTypesController).apiOnly()
+          router
+            .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
+            .as('facts/types.showWithFacts')
+          router.get('facts/count', [FactsController, 'count']).as('facts.count')
+          router.resource('facts', FactsController).apiOnly()
+        })
+
+        // Event Management
+        router.group(() => {
+          router.resource('events/types', EventTypeController).apiOnly()
+          router
+            .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
+            .as('events/types.showWithEvents')
+          router.get('events/count', [EventController, 'count']).as('events.count')
+          router.resource('events', EventController).apiOnly()
+        })
+
+        // People Management
+        router.group(() => {
+          router
+            .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
+            .as('people.showWithCohorts')
+          router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
+          router.delete('people/:id/detach', [PeopleController, 'detachCohort']).as('people.detachCohort')
+          router.resource('people/types', PersonTypesController).apiOnly()
+          router
+            .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
+            .as('people/types.showWithPeople')
+          router.get('people/count', [PeopleController, 'count']).as('people.count')
+          router.resource('people', PeopleController).apiOnly()
+        })
+
+        // Resource Management
+        router.group(() => {
+          router.resource('resources/types', ResourceTypesController).apiOnly()
+          router
+            .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
+            .as('resources/types.showWithResources')
+          router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
+          router.resource('resources', ResourcesController).apiOnly()
+        })
+
+        // Role Management
+        router.resource('roles', RolesController).apiOnly()
+
+        // User Management
+        // router.get('users/full', [GetAllFullUsersController]).as('users.full')
+        router.group(() => {
+          router.post('users/invite', [UsersController, 'invite']).as('invite')
+          router.resource('users', UsersController).apiOnly()
+        })
+
+        // Tags Management
+        router.group(() => {
+          router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+          router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
+          router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
+          router.get('tags/count', [TagsController, 'count']).as('tags.count')
+          router.resource('tags', TagsController).apiOnly()
+        })
+
+        // Email Orchestration
+        router.group(() => {
+          router.post('email', [EmailsController, 'send']).as('email.send')
+        })
+
+        // Data API
+        router
+          .group(() => {
+            router.post('/insert', [DataFactsController, 'insert']).as('data.insert')
+            router.patch('/update/:id', [DataFactsController, 'update']).as('data.update')
+            router.get('/query', [DataFactsController, 'query']).as('facts.query')
+          })
+          .as('data')
+          .prefix('data')
+      })
+      .prefix('v1')
+      .as('v1')
   })
-  .as('auth')
-  .prefix('auth')
-
-// cohort routes
-router.group(() => {
-  router
-    .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
-    .as('cohorts.showWithPeople')
-  router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
-  router
-    .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
-    .as('cohorts.detachPeople')
-  router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
-  router.resource('cohorts', CohortsController).apiOnly()
-})
-
-// config routes
-router
-  .group(() => {
-    router.get('', [ConfigController, 'index']).as('index')
-    router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
-  })
-  .as('config')
-  .prefix('config')
-
-// fact routes
-router.group(() => {
-  router.resource('facts/types', FactTypesController).apiOnly()
-  router
-    .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
-    .as('facts/types.showWithFacts')
-  router.get('facts/count', [FactsController, 'count']).as('facts.count')
-  router.resource('facts', FactsController).apiOnly()
-})
-
-// event routes
-router.group(() => {
-  router.resource('events/types', EventTypeController).apiOnly()
-  router
-    .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
-    .as('events/types.showWithEvents')
-  router.get('events/count', [EventController, 'count']).as('events.count')
-  router.resource('events', EventController).apiOnly()
-})
-
-// people routes
-router.group(() => {
-  router
-    .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
-    .as('people.showWithCohorts')
-  router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
-  router.delete('people/:id/detach', [PeopleController, 'detachCohort']).as('people.detachCohort')
-  router.resource('people/types', PersonTypesController).apiOnly()
-  router
-    .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
-    .as('people/types.showWithPeople')
-  router.get('people/count', [PeopleController, 'count']).as('people.count')
-  router.resource('people', PeopleController).apiOnly()
-})
-
-// resource routes
-router.group(() => {
-  router.resource('resources/types', ResourceTypesController).apiOnly()
-  router
-    .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
-    .as('resources/types.showWithResources')
-  router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
-  router.resource('resources', ResourcesController).apiOnly()
-})
-
-// role routes
-router.resource('roles', RolesController).apiOnly()
-
-// user routes
-// router.get('users/full', [GetAllFullUsersController]).as('users.full')
-router.group(() => {
-  router.post('users/invite', [UsersController, 'invite']).as('invite')
-  router.resource('users', UsersController).apiOnly()
-})
-
-// tag routes
-router.group(() => {
-  router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
-  router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
-  router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
-  router.get('tags/count', [TagsController, 'count']).as('tags.count')
-  router.resource('tags', TagsController).apiOnly()
-})
-
-// email routes
-router.group(() => {
-  router.post('email', [EmailsController, 'send']).as('email.send')
-})
-
-router
-  .group(() => {
-    router.post('/insert', [DataFactsController, 'insert']).as('data.insert')
-    router.patch('/update/:id', [DataFactsController, 'update']).as('data.update')
-    router.get('/query', [DataFactsController, 'query']).as('facts.query')
-  })
-  .as('data')
-  .prefix('data')
+  .prefix('api')
+  .as('api')
