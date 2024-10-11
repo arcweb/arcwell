@@ -32,7 +32,6 @@ import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import {
   MatCell,
   MatCellDef,
@@ -55,7 +54,8 @@ import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
+import { FactType } from '@app/shared/schemas/fact.schema';
 import { DetailStore } from '../detail/detail.store';
 
 @Component({
@@ -104,6 +104,8 @@ export class FactComponent implements OnInit {
 
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
+
+  tagsForCreate: string[] = [];
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -172,7 +174,7 @@ export class FactComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factForm.value;
 
-          const factFormPayload = {
+          const factFormPayload: FactType = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -186,6 +188,9 @@ export class FactComponent implements OnInit {
           };
 
           if (this.factStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              factFormPayload['tags'] = this.tagsForCreate;
+            }
             this.factStore.createFact(factFormPayload);
           } else {
             this.factStore.updateFact(factFormPayload);
@@ -248,7 +253,12 @@ export class FactComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.factStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

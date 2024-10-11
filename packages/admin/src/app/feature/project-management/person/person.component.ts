@@ -35,16 +35,15 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { PeopleListStore } from '../people-list/people-list.store';
 import { DetailStore } from '../detail/detail.store';
+import { PersonType } from '@app/shared/schemas/person.schema';
 
 @Component({
   selector: 'aw-person',
@@ -84,6 +83,8 @@ export class PersonComponent implements OnInit {
   // TODO: figure out why an initial value is required for typeKey when dynamically loading this component
   @Input() typeKey: string | undefined = undefined;
   @Input() detailId!: string;
+
+  tagsForCreate: string[] = [];
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -166,7 +167,14 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            this.personStore.createPerson(this.personForm.value);
+            const personFormPayload: PersonType = {
+              ...this.personForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              personFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.personStore.createPerson(personFormPayload);
           } else {
             this.personStore.updatePerson(this.personForm.value);
           }
@@ -227,7 +235,7 @@ export class PersonComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.personStore.setTags(tags);
   }
 
@@ -261,5 +269,10 @@ export class PersonComponent implements OnInit {
     this.router.navigate(['project-management', 'cohorts', 'list'], {
       queryParams: { detail_id: row.id },
     });
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

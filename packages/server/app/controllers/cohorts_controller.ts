@@ -1,4 +1,4 @@
-import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
+import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
 import {
   createCohortValidator,
@@ -73,11 +73,16 @@ export default class CohortsController {
     await auth.authenticate()
     await request.validateUsing(createCohortValidator)
     const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
-    // TODO: remove this when we change the type of tags
-    if (cleanRequest.tags) {
-      cleanRequest.tags = JSON.stringify(cleanRequest.tags)
-    }
-    const newCohort = await Cohort.create(cleanRequest)
+    let newCohort = null
+
+    await db.transaction(async (trx) => {
+      newCohort = new Cohort().fill(cleanRequest).useTransaction(trx)
+      await newCohort.save()
+
+      if (cleanRequest.tags && cleanRequest.tags.length > 0) {
+        await setTagsForObject(trx, newCohort.id, 'cohorts', cleanRequest.tags, false)
+      }
+    })
 
     return {
       data: await getFullCohort(newCohort.id),
@@ -126,12 +131,17 @@ export default class CohortsController {
     await request.validateUsing(updateCohortValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
-    // TODO: remove this when we change the type of tags
-    if (cleanRequest.tags) {
-      cleanRequest.tags = JSON.stringify(cleanRequest.tags)
-    }
-    const cohort = await Cohort.findOrFail(params.id)
-    const updatedCohort = await cohort.merge(cleanRequest).save()
+
+    let updatedCohort = null
+    await db.transaction(async (trx) => {
+      const cohort = await Cohort.findOrFail(params.id)
+      cohort.useTransaction(trx)
+      updatedCohort = await cohort.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags)
+      }
+    })
 
     return { data: await getFullCohort(updatedCohort.id) }
   }

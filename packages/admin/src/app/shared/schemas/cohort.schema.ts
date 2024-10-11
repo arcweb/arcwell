@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { TagSchema } from './tag.schema';
 import { CohortModel } from '../models/cohort.model';
 import { PersonSchema } from './person.schema';
 
@@ -9,7 +8,7 @@ export const CohortSchema: any = z
     name: z.string(),
     description: z.string().optional().nullable(),
     rules: z.object({}).passthrough(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.array(z.string()).optional(),
     people: z.lazy(() => z.array(PersonSchema).optional()),
     peopleCount: z.number().optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),

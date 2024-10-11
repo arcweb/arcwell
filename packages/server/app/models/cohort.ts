@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
-import { afterDelete, BaseModel, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, column, manyToMany } from '@adonisjs/lucid/orm'
 import Person from '#models/person'
 import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import Tag from '#models/tag'
+import AwBaseModel from '#models/aw_base_model'
 
-export default class Cohort extends BaseModel {
+export default class Cohort extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 

@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { PersonModel } from '@shared/models/person.model';
 import { UserSchema } from '@shared/schemas/user.schema';
 import { PersonTypeSchema } from './person-type.schema';
-import { TagSchema } from '@schemas/tag.schema';
 import { CohortSchema } from './cohort.schema';
 
 export const PersonSchema: any = z
@@ -11,7 +10,7 @@ export const PersonSchema: any = z
     familyName: z.string(),
     givenName: z.string(),
     typeKey: z.string(),
-    tags: z.lazy(() => z.array(TagSchema).optional()),
+    tags: z.array(z.string()).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
     personType: PersonTypeSchema.optional(),
     cohorts: z.lazy(() => z.array(CohortSchema).optional()),
@@ -27,7 +26,7 @@ export const PersonUpdateSchema = PersonSchema.extend({
   familyName: z.string().optional(),
   givenName: z.string().optional(),
   typeKey: z.string().optional(),
-  tags: z.lazy(() => z.array(TagSchema).optional()),
+  tags: z.array(z.string()).optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
@@ -47,7 +46,7 @@ export const PersonResponseSchema = z.object({
   data: PersonSchema,
 });
 
-export const PeoplCountSchema = z.object({
+export const PeopleCountSchema = z.object({
   data: z.object({
     count: z.number(),
   }),
@@ -57,7 +56,7 @@ export type PersonType = z.infer<typeof PersonSchema>;
 export type PersonUpdateType = z.infer<typeof PersonUpdateSchema>;
 export type PeopleResponseType = z.infer<typeof PeopleResponseSchema>;
 export type PersonResponseType = z.infer<typeof PersonResponseSchema>;
-export type PeopleCountType = z.infer<typeof PeoplCountSchema>;
+export type PeopleCountType = z.infer<typeof PeopleCountSchema>;
 
 // Deserializer / Serializer
 export const deserializePerson = (data: PersonType): PersonModel => {

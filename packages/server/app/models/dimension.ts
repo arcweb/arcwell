@@ -1,12 +1,9 @@
-import { column } from '@adonisjs/lucid/orm'
-
 export default class Dimension {
-  @column()
-  declare key: string
+  key: string
+  value: string
 
-  @column()
-  declare value: string
-
-  @column()
-  declare factId: string
+  constructor(key: string, value: string) {
+    this.key = key
+    this.value = value
+  }
 }

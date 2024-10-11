@@ -3,7 +3,7 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
-import { buildApiQuery, buildEventsSort } from '#helpers/query_builder'
+import { buildApiQuery, buildEventsSort, setTagsForObject } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 
 export default class EventsController {
@@ -78,8 +78,24 @@ export default class EventsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventValidator)
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
-    const newEvent = await Event.create(cleanRequest)
+    const cleanRequest = request.only([
+      'typeKey',
+      'startedAt',
+      'endedAt',
+      'personId',
+      'resourceId',
+      'tags',
+    ])
+    let newEvent = null
+
+    await db.transaction(async (trx) => {
+      newEvent = new Event().fill(cleanRequest).useTransaction(trx)
+      await newEvent.save()
+
+      if (cleanRequest.tags && cleanRequest.tags.length > 0) {
+        await setTagsForObject(trx, newEvent.id, 'events', cleanRequest.tags, false)
+      }
+    })
 
     let returnQuery = await Event.query()
       .where('id', newEvent.id)
@@ -146,9 +162,24 @@ export default class EventsController {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
     // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
-    const event = await Event.findOrFail(params.id)
-    const updatedEvent = await event.merge(cleanRequest).save()
+    const cleanRequest = request.only([
+      'typeKey',
+      'startedAt',
+      'endedAt',
+      'personId',
+      'resourceId',
+      'tags',
+    ])
+    let updatedEvent = null
+    await db.transaction(async (trx) => {
+      const event = await Event.findOrFail(params.id)
+      event.useTransaction(trx)
+      updatedEvent = await event.merge(cleanRequest).save()
+
+      if (cleanRequest.tags) {
+        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
+      }
+    })
 
     let returnQuery = Event.query()
       .where('id', updatedEvent.id)

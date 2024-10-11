@@ -3,8 +3,6 @@ import { PersonUpdateType } from '@shared/schemas/person.schema';
 import { PersonTypeModel } from '@shared/models/person-type.model';
 import { UserModel } from '@shared/models/user.model';
 import { UserType } from '@schemas/user.schema';
-import { TagModel } from '@shared/models/tag.model';
-import { TagType } from '@schemas/tag.schema';
 import { CohortModel } from '@shared/models/cohort.model';
 import { CohortType } from '@schemas/cohort.schema';
 
@@ -13,7 +11,7 @@ interface PersonBase {
   familyName: string;
   givenName: string;
   typeKey: string;
-  tags?: TagModel[];
+  tags?: string[];
   info?: object;
   cohorts?: CohortModel[] | undefined;
   cohortsCount?: number;
@@ -39,7 +37,7 @@ export class PersonModel {
   public familyName: string;
   public givenName: string;
   public typeKey: string;
-  public tags?: TagModel[];
+  public tags?: string[];
   public info?: object;
   public cohorts?: CohortModel[] | undefined;
   public cohortsCount?: number;
@@ -53,9 +51,7 @@ export class PersonModel {
     this.familyName = data.familyName;
     this.givenName = data.givenName;
     this.typeKey = data.typeKey;
-    this.tags = data.tags
-      ? data.tags.map((tag: TagType) => new TagModel(tag))
-      : undefined;
+    this.tags = data.tags;
     this.info = data.info;
     this.cohorts = data.cohorts
       ? data.cohorts.map((cohort: CohortType) => new CohortModel(cohort))

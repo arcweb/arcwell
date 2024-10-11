@@ -16,7 +16,6 @@ import {
   FormsModule,
   FormSubmittedEvent,
   ReactiveFormsModule,
-  Validators,
   ValueChangeEvent,
 } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -63,10 +62,13 @@ export class TagsFormComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   tags = input.required<TagType[]>();
+  inEditMode = input<boolean>(true);
+
+  // Special output that should only be by TagsForm when being used in create mode for an object
+  updateTagsForCreate = output<TagType[]>();
   saveTags = output<TagType[]>();
 
   tagForm = new FormGroup({
-    tags: new FormControl([], Validators.required),
     searchTag: new FormControl(''),
   });
   constructor() {
@@ -83,7 +85,7 @@ export class TagsFormComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           this.tagStore.resetForm();
-          this.saveTags.emit(this.tags());
+          this.saveTags.emit(this.tagStore.tags());
         } else if (event instanceof ValueChangeEvent) {
           console.log('ValueChangeEvent', event.value.searchTag);
           this.tagStore.searchTags(event.value.searchTag);
@@ -98,6 +100,7 @@ export class TagsFormComponent implements OnInit {
       this.tagStore.addNewTag(tag);
       // Clear the input value
       this.tagForm.controls.searchTag.setValue('');
+      this.updateTagsForCreate.emit(this.tagStore.tags());
     }
   }
 
@@ -106,6 +109,7 @@ export class TagsFormComponent implements OnInit {
     this.tagStore.addNewTag(event.option.value);
     // this.tagStore.addTag(event.option.viewValue);
     this.tagForm.controls.searchTag.setValue('');
+    this.updateTagsForCreate.emit(this.tagStore.tags());
     event.option.deselect();
   }
 
@@ -121,6 +125,7 @@ export class TagsFormComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
         this.tagStore.removeTag(tag);
+        this.updateTagsForCreate.emit(this.tagStore.tags());
       }
     });
   }

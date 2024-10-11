@@ -44,6 +44,14 @@
       <input matInput placeholder="Description" formControlName="description" />
     </mat-form-field>
 
+    @if (personTypeStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="personTypeStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
     <div class="form-button-container">
       <button
         mat-button
@@ -69,9 +77,11 @@
     </div>
   </form>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="personTypeStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+  @if (!personTypeStore.inCreateMode()) {
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="personTypeStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
 }

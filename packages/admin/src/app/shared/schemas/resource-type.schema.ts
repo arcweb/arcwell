@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { ResourceSchema } from './resource.schema';
 import { ResourceTypeModel } from '../models/resource-type.model';
-import { TagSchema } from '@schemas/tag.schema';
 
 export const ResourceTypeSchema: any = z
   .object({
@@ -9,7 +8,7 @@ export const ResourceTypeSchema: any = z
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.array(z.string()).optional(),
     resources: z.array(ResourceSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -22,7 +21,7 @@ export const ResourceTypeUpdateSchema = z
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.array(z.string()).optional(),
     resources: z.array(ResourceSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),

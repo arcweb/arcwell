@@ -1,19 +1,13 @@
 import { DateTime } from 'luxon'
-import {
-  afterDelete,
-  BaseModel,
-  beforeSave,
-  column,
-  hasMany,
-  manyToMany,
-} from '@adonisjs/lucid/orm'
+import { afterDelete, beforeSave, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Fact from '#models/fact'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
 import DimensionSchema from '#models/dimension_schema'
+import AwBaseModel from '#models/aw_base_model'
 
-export default class FactType extends BaseModel {
+export default class FactType extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 

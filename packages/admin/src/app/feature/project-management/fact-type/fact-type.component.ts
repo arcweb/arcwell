@@ -35,7 +35,6 @@ import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { FactTypeStore } from '@feature/project-management/fact-type/fact-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
@@ -98,6 +97,8 @@ export class FactTypeComponent implements OnInit {
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
+
+  tagsForCreate: string[] = [];
 
   factTypeForm = new FormGroup({
     name: new FormControl(
@@ -167,12 +168,15 @@ export class FactTypeComponent implements OnInit {
             ? JSON.parse(formValue.dimensionSchemas)
             : [];
 
-          const factTypeFormPayload = {
+          const factTypeFormPayload: any = {
             ...formValue,
             dimensionSchemas: dimensionsSquemaJson,
           };
 
           if (this.factTypeStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              factTypeFormPayload['tags'] = this.tagsForCreate;
+            }
             this.factTypeStore.create(factTypeFormPayload);
           } else {
             this.factTypeStore.update(factTypeFormPayload);
@@ -241,7 +245,12 @@ export class FactTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.factTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

@@ -54,6 +54,14 @@
       }
     </mat-form-field>
 
+    @if (personStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="personStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
     <div class="form-button-container">
       <button
         mat-button

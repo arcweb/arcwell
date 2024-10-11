@@ -19,7 +19,6 @@ import { EventService } from '@app/shared/services/event.service';
 import { EventTypeService } from '@app/shared/services/event-type.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
-import { TagType } from '@schemas/tag.schema';
 import { ToastService } from '@app/shared/services/toast.service';
 import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
@@ -233,8 +232,6 @@ export const EventStore = signalStore(
     }),
   ),
   withComputed(({ event }) => ({
-    tagStrings: computed(
-      () => event()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
-    ),
+    tagStrings: computed(() => event()?.tags?.map((tag: string) => tag) ?? []),
   })),
 );

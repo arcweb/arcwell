@@ -46,6 +46,14 @@
       }
     </mat-form-field>
 
+    @if (resourceStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="resourceStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
     <div class="form-button-container">
       <button
         mat-button
@@ -71,9 +79,11 @@
     </div>
   </form>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="resourceStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+  @if (!resourceStore.inCreateMode()) {
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="resourceStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
 }

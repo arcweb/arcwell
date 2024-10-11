@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { EventSchema } from './event.schema';
 import { EventTypeModel } from '../models/event-type.model';
-import { TagSchema } from '@schemas/tag.schema';
 
 export const EventTypeSchema: any = z
   .object({
@@ -9,7 +8,7 @@ export const EventTypeSchema: any = z
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.array(z.string()).optional(),
     events: z.array(EventSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
@@ -22,7 +21,7 @@ export const EventTypeUpdateSchema = z
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
-    tags: z.array(TagSchema).optional(),
+    tags: z.array(z.string()).optional(),
     events: z.array(EventSchema).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),

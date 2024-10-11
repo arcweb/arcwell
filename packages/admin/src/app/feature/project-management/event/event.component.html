@@ -75,14 +75,22 @@
       [objectSubTypes]="this.eventStore.personTypes()"
     ></aw-object-selector-form-field>
 
-    <aw-object-selector-form-field
-      formControlName="resource"
-      placeholder="Search for Resource"
-      label="Resource"
-      objectType="resources"
-      displayProperty="name"
-      [objectSubTypes]="this.eventStore.resourceTypes()"
-    ></aw-object-selector-form-field>
+      <aw-object-selector-form-field
+        formControlName="resource"
+        placeholder="Search for Resource"
+        label="Resource"
+        objectType="resources"
+        displayProperty="name"
+        [objectSubTypes]="this.eventStore.resourceTypes()"
+      ></aw-object-selector-form-field>
+
+      @if (eventStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="eventStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
 
     <div class="form-button-container">
       <button
@@ -107,9 +115,12 @@
     </div>
   </form>
 
-  <!--  Tags Section-->
-  <aw-tags-form
-    [tags]="eventStore.tagStrings()"
-    (saveTags)="onSetTags($event)"
-  ></aw-tags-form>
+    @if (!eventStore.inCreateMode()) {
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="eventStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
+  </div>
 }

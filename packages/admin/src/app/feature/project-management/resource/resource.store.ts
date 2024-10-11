@@ -21,7 +21,6 @@ import { computed, inject } from '@angular/core';
 import { ResourceService } from '@app/shared/services/resource.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
-import { TagType } from '@schemas/tag.schema';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -194,7 +193,7 @@ export const ResourceStore = signalStore(
   ),
   withComputed(({ resource }) => ({
     tagStrings: computed(
-      () => resource()?.tags?.map((tag: TagType) => tag.pathname) ?? [],
+      () => resource()?.tags?.map((tag: string) => tag) ?? [],
     ),
   })),
 );

@@ -1,20 +1,21 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { afterDelete, BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import Role from '#models/role'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 import Tag from '#models/tag'
+import AwBaseModel from '#models/aw_base_model'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
 
-export default class User extends compose(BaseModel, AuthFinder) {
+export default class User extends compose(AwBaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: string
 

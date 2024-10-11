@@ -32,7 +32,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import {
   OwlDateTimeModule,
   OwlNativeDateTimeModule,
@@ -44,6 +43,7 @@ import { BackButtonComponent } from '@app/shared/components/back-button/back-but
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
+import { EventType } from '@app/shared/schemas/event.schema';
 
 @Component({
   selector: 'aw-event',
@@ -81,6 +81,8 @@ export class EventComponent implements OnInit {
 
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
+
+  tagsForCreate: string[] = [];
 
   eventForm = new FormGroup({
     eventType: new FormControl<EventTypeType | null>(
@@ -148,7 +150,7 @@ export class EventComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.eventForm.value;
 
-          const eventFormPayload = {
+          const eventFormPayload: EventType = {
             ...formValue,
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
@@ -159,6 +161,9 @@ export class EventComponent implements OnInit {
           };
 
           if (this.eventStore.inCreateMode()) {
+            if (this.tagsForCreate.length > 0) {
+              eventFormPayload['tags'] = this.tagsForCreate;
+            }
             this.eventStore.create(eventFormPayload);
           } else {
             this.eventStore.update(eventFormPayload);
@@ -226,7 +231,12 @@ export class EventComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.eventStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

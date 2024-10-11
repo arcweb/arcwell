@@ -34,7 +34,6 @@ import {
   TYPE_KEY_PATTERN,
 } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
-import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
@@ -73,6 +72,8 @@ export class ResourceTypeComponent implements OnInit {
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
+
+  tagsForCreate: string[] = [];
 
   resourceTypeForm = new FormGroup({
     name: new FormControl(
@@ -125,7 +126,14 @@ export class ResourceTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceTypeStore.inCreateMode()) {
-            this.resourceTypeStore.create(this.resourceTypeForm.value);
+            const resourceTypeFormPayload: ResourceTypeType = {
+              ...this.resourceTypeForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              resourceTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.resourceTypeStore.create(resourceTypeFormPayload);
           } else {
             this.resourceTypeStore.update(this.resourceTypeForm.value);
           }
@@ -194,7 +202,12 @@ export class ResourceTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.resourceTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

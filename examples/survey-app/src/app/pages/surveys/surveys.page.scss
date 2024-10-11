@@ -1,0 +1,17 @@
+.surveys-header {
+  font-weight: 600;
+}
+
+.spinner-wrapper {
+  width: 100%;
+  height: calc(100vh - 187px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  ion-spinner {
+    height: 75px;
+    width: 75px;
+  }
+}

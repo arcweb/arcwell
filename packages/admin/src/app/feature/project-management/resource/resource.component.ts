@@ -31,11 +31,11 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
-import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
+import { ResourceType } from '@app/shared/schemas/resource.schema';
 
 @Component({
   selector: 'aw-resource',
@@ -64,11 +64,13 @@ import { DetailStore } from '../detail/detail.store';
 export class ResourceComponent implements OnInit {
   readonly resourceStore = inject(ResourceStore);
   readonly dialog = inject(MatDialog);
-  destoyRef = inject(DestroyRef);
+  destroyRef = inject(DestroyRef);
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
+
+  tagsForCreate: string[] = [];
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -112,11 +114,18 @@ export class ResourceComponent implements OnInit {
     }
 
     this.resourceForm.events
-      .pipe(takeUntilDestroyed(this.destoyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(resource => {
         if ((resource as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceStore.inCreateMode()) {
-            this.resourceStore.create(this.resourceForm.value);
+            const resourceFormPayload: ResourceType = {
+              ...this.resourceForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              resourceFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.resourceStore.create(resourceFormPayload);
           } else {
             this.resourceStore.update(this.resourceForm.value);
           }
@@ -166,7 +175,12 @@ export class ResourceComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.resourceStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

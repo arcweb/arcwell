@@ -1,9 +1,10 @@
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
 import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullResourceType(id: string) {
   return ResourceType.query().preload('tags').where('id', id).firstOrFail()
@@ -50,7 +51,16 @@ export default class ResourceTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
-    const newResourceType = await ResourceType.create(request.body())
+    let newResourceType = null
+    await db.transaction(async (trx) => {
+      newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
+      await newResourceType.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newResourceType.id, 'resource_types', tags.tags, false)
+      }
+    })
 
     return { data: await getFullResourceType(newResourceType.id) }
   }
@@ -90,8 +100,17 @@ export default class ResourceTypesController {
     await auth.authenticate()
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
-    const resourceType = await ResourceType.findOrFail(params.id)
-    const updatedResourceType = await resourceType.merge(request.body()).save()
+    let updatedResourceType = null
+    await db.transaction(async (trx) => {
+      const resourceType = await ResourceType.findOrFail(params.id)
+      resourceType.useTransaction(trx)
+      updatedResourceType = await resourceType.merge(request.body()).save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags) {
+        await setTagsForObject(trx, resourceType.id, 'resource_types', tags.tags)
+      }
+    })
 
     return { data: await getFullResourceType(updatedResourceType.id) }
   }

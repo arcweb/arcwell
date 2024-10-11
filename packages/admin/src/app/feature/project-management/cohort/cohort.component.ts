@@ -34,7 +34,6 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Sort } from '@angular/material/sort';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
-import { TagType } from '@schemas/tag.schema';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
@@ -43,6 +42,7 @@ import { BackService } from '@app/shared/services/back.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
+import { CohortType } from '@app/shared/schemas/cohort.schema';
 
 @Component({
   selector: 'aw-cohort',
@@ -79,6 +79,8 @@ export class CohortComponent implements OnInit {
   private detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
+
+  tagsForCreate: string[] = [];
 
   cohortForm = new FormGroup({
     name: new FormControl(
@@ -140,7 +142,14 @@ export class CohortComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.cohortStore.inCreateMode()) {
-            this.cohortStore.createCohort(this.cohortForm.value);
+            const cohortFormPayload: CohortType = {
+              ...this.cohortForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              cohortFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.cohortStore.createCohort(cohortFormPayload);
           } else {
             this.cohortStore.updateCohort(this.cohortForm.value);
           }
@@ -192,7 +201,7 @@ export class CohortComponent implements OnInit {
     });
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.cohortStore.setTags(tags);
   }
 
@@ -236,5 +245,10 @@ export class CohortComponent implements OnInit {
       sort: event.active,
       order: event.direction,
     });
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }

@@ -1,5 +1,8 @@
 @if (tagStore.isReady()) {
-  <h5 class="card-title">Tags</h5>
+  @if (inEditMode()) {
+    <h5 class="card-title">Tags</h5>
+  }
+
   <form [formGroup]="tagForm">
     @if (tagStore.isErrored()) {
       <aw-error-container [errors]="tagStore.errors()" />
@@ -39,23 +42,25 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <div class="form-button-container">
-      <button
-        mat-button
-        type="button"
-        (click)="onCancel()"
-        class="default-button"
-      >
-        Cancel
-      </button>
-      <button
-        mat-flat-button
-        type="submit"
-        class="default-button"
-        [disabled]="!tagStore.changesMade()"
-      >
-        Save
-      </button>
-    </div>
+    @if (inEditMode()) {
+      <div class="form-button-container">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()"
+          class="default-button"
+        >
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="!tagStore.changesMade()"
+        >
+          Save
+        </button>
+      </div>
+    }
   </form>
 }

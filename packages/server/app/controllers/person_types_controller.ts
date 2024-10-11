@@ -1,9 +1,10 @@
-import { buildApiQuery } from '#helpers/query_builder'
+import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createPersonTypeValidator, updatePersonTypeValidator } from '#validators/person_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export function getFullPersonType(id: string) {
   return PersonType.query().preload('tags').where('id', id).firstOrFail()
@@ -50,7 +51,16 @@ export default class PersonTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonTypeValidator)
-    const newPersonType = await PersonType.create(request.body())
+    let newPersonType = null
+    await db.transaction(async (trx) => {
+      newPersonType = new PersonType().fill(request.body()).useTransaction(trx)
+      await newPersonType.save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags && tags.tags.length > 0) {
+        await setTagsForObject(trx, newPersonType.id, 'person_types', tags.tags, false)
+      }
+    })
 
     return { data: await getFullPersonType(newPersonType.id) }
   }
@@ -90,8 +100,17 @@ export default class PersonTypesController {
     await auth.authenticate()
     await request.validateUsing(updatePersonTypeValidator)
     await paramsUUIDValidator.validate(params)
-    const personType = await PersonType.findOrFail(params.id)
-    const updatedPersonType = await personType.merge(request.body()).save()
+    let updatedPersonType = null
+    await db.transaction(async (trx) => {
+      const personType = await PersonType.findOrFail(params.id)
+      personType.useTransaction(trx)
+      updatedPersonType = await personType.merge(request.body()).save()
+
+      const tags = request.only(['tags'])
+      if (tags.tags) {
+        await setTagsForObject(trx, personType.id, 'person_types', tags.tags)
+      }
+    })
 
     return { data: await getFullPersonType(updatedPersonType.id) }
   }

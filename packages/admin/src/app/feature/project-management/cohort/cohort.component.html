@@ -23,10 +23,22 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <input matInput placeholder="Description" formControlName="description" />
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input
+          matInput
+          placeholder="Description"
+          formControlName="description"
+        />
+      </mat-form-field>
+
+      @if (cohortStore.inCreateMode()) {
+        <aw-tags-form
+          [tags]="cohortStore.tagStrings()"
+          (updateTagsForCreate)="updateTagsForCreate($event)"
+          [inEditMode]="false"
+        ></aw-tags-form>
+      }
 
     <div class="form-button-container">
       <button
@@ -100,10 +112,13 @@
       </div>
     }
 
-    <!--  Tags Section-->
-    <aw-tags-form
-      [tags]="cohortStore.tagStrings()"
-      (saveTags)="onSetTags($event)"
-    ></aw-tags-form>
-  }
+      @if (!cohortStore.inCreateMode()) {
+        <!--  Tags Section-->
+        <aw-tags-form
+          [tags]="cohortStore.tagStrings()"
+          (saveTags)="onSetTags($event)"
+        ></aw-tags-form>
+      }
+    }
+  </div>
 }

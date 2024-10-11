@@ -35,7 +35,6 @@ import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { PersonTypeStore } from '@feature/project-management/person-type/person-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TagType } from '@schemas/tag.schema';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
@@ -76,6 +75,8 @@ export class PersonTypeComponent implements OnInit {
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
+
+  tagsForCreate: string[] = [];
 
   personTypeForm = new FormGroup({
     name: new FormControl(
@@ -128,7 +129,14 @@ export class PersonTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personTypeStore.inCreateMode()) {
-            this.personTypeStore.create(this.personTypeForm.value);
+            const personTypeFormPayload: any = {
+              ...this.personTypeForm.value,
+            };
+
+            if (this.tagsForCreate.length > 0) {
+              personTypeFormPayload['tags'] = this.tagsForCreate;
+            }
+            this.personTypeStore.create(personTypeFormPayload);
           } else {
             this.personTypeStore.update(this.personTypeForm.value);
           }
@@ -196,7 +204,12 @@ export class PersonTypeComponent implements OnInit {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
   }
 
-  onSetTags(tags: TagType[]): void {
+  onSetTags(tags: string[]): void {
     this.personTypeStore.setTags(tags);
+  }
+
+  // This should only be used during object creation
+  updateTagsForCreate(tags: string[]) {
+    this.tagsForCreate = tags;
   }
 }
