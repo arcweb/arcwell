@@ -56,6 +56,7 @@ import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-fact',
@@ -97,14 +98,12 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class FactComponent implements OnInit {
   readonly factStore = inject(FactStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Input() typeKey?: string;
-  @Output() closeDrawer = new EventEmitter<void>();
+  @Input() typeKey: string | undefined = undefined;
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -209,7 +208,7 @@ export class FactComponent implements OnInit {
 
   onCancel() {
     if (this.factStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.factStore.inEditMode()) {
@@ -238,7 +237,7 @@ export class FactComponent implements OnInit {
       if (result === true) {
         this.factStore.deleteFact().then(() => {
           if (this.factStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

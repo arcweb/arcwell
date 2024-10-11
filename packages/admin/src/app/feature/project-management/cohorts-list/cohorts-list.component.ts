@@ -38,7 +38,7 @@ export class CohortsListComponent {
   // TODO: Technically there wouldn't be route params here so should this be set up differently?
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   dataSource = new MatTableDataSource<CohortModel>();

@@ -39,8 +39,8 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-resource-type',
@@ -70,10 +70,9 @@ export class ResourceTypeComponent implements OnInit {
   readonly resourceTypeStore = inject(ResourceTypeStore);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   resourceTypeForm = new FormGroup({
     name: new FormControl(
@@ -156,7 +155,7 @@ export class ResourceTypeComponent implements OnInit {
 
   onCancel() {
     if (this.resourceTypeStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.resourceTypeStore.inEditMode()) {
@@ -184,7 +183,7 @@ export class ResourceTypeComponent implements OnInit {
       if (result === true) {
         this.resourceTypeStore.delete().then(() => {
           if (this.resourceTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

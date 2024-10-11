@@ -43,6 +43,7 @@ import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-event',
@@ -76,11 +77,10 @@ export class EventComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Input() typeKey?: string;
-  @Output() closeDrawer = new EventEmitter<void>();
+  @Input() typeKey: string | undefined = undefined;
 
   eventForm = new FormGroup({
     eventType: new FormControl<EventTypeType | null>(
@@ -180,7 +180,7 @@ export class EventComponent implements OnInit {
 
   onCancel() {
     if (this.eventStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.eventStore.inEditMode()) {
@@ -215,7 +215,7 @@ export class EventComponent implements OnInit {
       if (result === true) {
         this.eventStore.delete().then(() => {
           if (this.eventStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

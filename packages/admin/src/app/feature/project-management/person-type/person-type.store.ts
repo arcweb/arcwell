@@ -19,9 +19,9 @@ import { PersonTypeService } from '@shared/services/person-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { TagType } from '@schemas/tag.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { Router } from '@angular/router';
 
 interface PersonTypeState {
   personType: PersonType | null;
@@ -128,14 +128,10 @@ export const PersonTypeStore = signalStore(
           );
 
           toastService.sendMessage('Person Type created.', ToastLevel.SUCCESS);
-
-          // navigate to the newly created item and don't save the current route in history`
-          router.navigateByUrl(
-            `project-management/people/types/${resp.data.id}`,
-            {
-              replaceUrl: true,
-            },
-          );
+          router.navigate([], {
+            relativeTo: router.routerState.root,
+            queryParams: { detail_id: resp.id },
+          });
         }
       },
       async delete() {

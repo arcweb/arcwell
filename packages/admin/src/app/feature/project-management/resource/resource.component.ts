@@ -26,7 +26,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
@@ -34,8 +34,8 @@ import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { TagType } from '@app/shared/schemas/tag.schema';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-resource',
@@ -65,11 +65,10 @@ export class ResourceComponent implements OnInit {
   readonly resourceStore = inject(ResourceStore);
   readonly dialog = inject(MatDialog);
   destoyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Input() typeKey?: string;
-  @Output() closeDrawer = new EventEmitter<void>();
+  @Input() typeKey: string | undefined = undefined;
 
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -129,7 +128,7 @@ export class ResourceComponent implements OnInit {
 
   onCancel() {
     if (this.resourceStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.resourceStore.inEditMode()) {
@@ -156,7 +155,7 @@ export class ResourceComponent implements OnInit {
       if (result === true) {
         this.resourceStore.delete().then(() => {
           if (this.resourceStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

@@ -22,6 +22,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { DetailStore } from '../detail/detail.store';
 
 interface EventTypeState {
   eventType: EventType | null;
@@ -49,6 +50,7 @@ export const EventTypeStore = signalStore(
       featureStore = inject(FeatureStore),
       router = inject(Router),
       toastService = inject(ToastService),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(eventTypeId: string) {
         patchState(store, setPending());
@@ -125,10 +127,8 @@ export const EventTypeStore = signalStore(
 
           toastService.sendMessage('Created event type.', ToastLevel.SUCCESS);
 
-          // navigate the user to the newly created item and dont save the current route in history
-          router.navigateByUrl(`/project-management/events/types/${resp.id}`, {
-            replaceUrl: true,
-          });
+          // navigate the user to the newly created item
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {

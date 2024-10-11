@@ -41,6 +41,7 @@ import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-event-type',
@@ -72,9 +73,9 @@ export class EventTypeComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   eventTypeForm = new FormGroup({
     name: new FormControl(
@@ -184,7 +185,7 @@ export class EventTypeComponent implements OnInit {
       if (result === true) {
         this.eventTypeStore.delete().then(() => {
           if (this.eventTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

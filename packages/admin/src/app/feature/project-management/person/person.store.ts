@@ -24,6 +24,7 @@ import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { Router } from '@angular/router';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
+import { DetailStore } from '../detail/detail.store';
 
 interface PersonCohortsListState {
   limit: number;
@@ -66,7 +67,7 @@ export const PersonStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
-      router = inject(Router),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(personId: string) {
         patchState(store, setPending());
@@ -178,9 +179,10 @@ export const PersonStore = signalStore(
           );
           toastService.sendMessage('Created person.', ToastLevel.SUCCESS);
           // navigate the user to the newly created item
-          router.navigateByUrl(`/project-management/people/${resp.data.id}`, {
-            replaceUrl: true,
-          });
+          detailStore.routeToNewDetailId(
+            resp.data.id,
+            resp.data.personType.key,
+          );
         }
       },
       async deletePerson() {

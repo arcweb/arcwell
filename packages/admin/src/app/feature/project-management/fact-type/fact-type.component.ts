@@ -54,6 +54,7 @@ import {
 } from '@angular/material/table';
 import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-fact-type',
@@ -94,10 +95,9 @@ export class FactTypeComponent implements OnInit {
   readonly factTypeStore = inject(FactTypeStore);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   factTypeForm = new FormGroup({
     name: new FormControl(
@@ -202,7 +202,7 @@ export class FactTypeComponent implements OnInit {
 
   onCancel() {
     if (this.factTypeStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.factTypeStore.inEditMode()) {
@@ -230,7 +230,7 @@ export class FactTypeComponent implements OnInit {
       if (result === true) {
         this.factTypeStore.delete().then(() => {
           if (this.factTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

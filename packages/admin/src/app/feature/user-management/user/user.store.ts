@@ -1,6 +1,7 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { DetailStore } from '@app/feature/project-management/detail/detail.store';
 import { ToastLevel } from '@app/shared/models';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { UserType, UserUpdateType } from '@app/shared/schemas/user.schema';
@@ -43,6 +44,7 @@ export const UserStore = signalStore(
       roleService = inject(RoleService),
       toastService = inject(ToastService),
       router = inject(Router),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(userId: string) {
         patchState(store, setPending());
@@ -111,7 +113,7 @@ export const UserStore = signalStore(
           );
         }
       },
-      async create(createUserFormData: UserType) {
+      async create(createUserFormData: UserType): Promise<UserType> {
         patchState(store, setPending());
         const resp = await firstValueFrom(
           userService.create(createUserFormData),
@@ -129,12 +131,7 @@ export const UserStore = signalStore(
           );
           toastService.sendMessage('Created user.', ToastLevel.SUCCESS);
           // navigate the user to the newly created item
-          router.navigateByUrl(
-            `/project-management/settings/user-management/${resp.data.id}`,
-            {
-              replaceUrl: true,
-            },
-          );
+          detailStore.routeToNewDetailId(resp.data.id);
           return resp.data;
         }
       },

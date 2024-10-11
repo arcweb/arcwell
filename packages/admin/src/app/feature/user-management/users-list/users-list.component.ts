@@ -93,6 +93,8 @@ export class AllUsersComponent {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', 'list', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 }

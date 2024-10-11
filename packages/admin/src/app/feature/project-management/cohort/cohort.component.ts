@@ -42,6 +42,7 @@ import { PersonType } from '@schemas/person.schema';
 import { BackService } from '@app/shared/services/back.service';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-cohort',
@@ -75,10 +76,9 @@ export class CohortComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  private detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   cohortForm = new FormGroup({
     name: new FormControl(
@@ -159,7 +159,7 @@ export class CohortComponent implements OnInit {
 
   onCancel() {
     if (this.cohortStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.cohortStore.inEditMode()) {
@@ -185,7 +185,7 @@ export class CohortComponent implements OnInit {
       if (result === true) {
         this.cohortStore.deleteCohort().then(() => {
           if (this.cohortStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

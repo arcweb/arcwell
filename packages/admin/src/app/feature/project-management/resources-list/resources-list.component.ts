@@ -63,7 +63,7 @@ export class ResourcesListComponent {
   readonly featureStore = inject(FeatureStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   pageSizes = [10, 20, 50];

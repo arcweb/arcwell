@@ -1,15 +1,10 @@
 import {
   AfterViewInit,
   Component,
-  ComponentRef,
   Type,
-  ViewContainerRef,
+  effect,
   inject,
   signal,
-  OnDestroy,
-  ViewChild,
-  EventEmitter,
-  effect,
 } from '@angular/core';
 import { AuthStore } from '@shared/store/auth.store';
 import {
@@ -23,35 +18,14 @@ import { FeaturesMenuComponent } from '@feature/project-management/features-menu
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { ConfigBarComponent } from '../../shared/components/config-bar/config-bar.component';
+import { DetailComponent } from './detail/detail.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CohortComponent } from './cohort/cohort.component';
-import { UserComponent } from '../user-management/user/user.component';
-import { EventTypeComponent } from './event-type/event-type.component';
-import { EventComponent } from './event/event.component';
-import { FactComponent } from './fact/fact.component';
-import { FactTypeComponent } from './fact-type/fact-type.component';
-import { PersonComponent } from './person/person.component';
-import { PersonTypeComponent } from './person-type/person-type.component';
-import { ResourceComponent } from './resource/resource.component';
-import { ResourceTypeComponent } from './resource-type/resource-type.component';
-import { TagComponent } from './tag/tag.component';
-
-// create compound type of all detail components
-export type DetailComponentType =
-  | CohortComponent
-  | EventComponent
-  | EventTypeComponent
-  | FactComponent
-  | FactTypeComponent
-  | PersonComponent
-  | PersonTypeComponent
-  | ResourceComponent
-  | ResourceTypeComponent
-  | TagComponent
-  | UserComponent;
+import { DetailComponentType } from './detail/detail.component';
+import { DetailStore } from './detail/detail.store';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'aw-home',
@@ -62,88 +36,58 @@ export type DetailComponentType =
     RouterOutlet,
     MatSidenavModule,
     ConfigBarComponent,
+    DetailComponent,
     FontAwesomeModule,
+    DetailComponent,
+    MatButtonModule,
   ],
+  providers: [DetailStore],
   templateUrl: './project-management.component.html',
   styleUrl: './project-management.component.scss',
 })
-export class ProjectManagementComponent implements AfterViewInit, OnDestroy {
+export class ProjectManagementComponent implements AfterViewInit {
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
+  public detailStore = inject(DetailStore);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly navigation = this.router.events.pipe(
     takeUntilDestroyed(),
     filter(event => event instanceof NavigationEnd),
   );
-  @ViewChild('detailComponent', { read: ViewContainerRef })
-  private viewContainer = inject(ViewContainerRef);
-  public detailComponent = signal<Type<DetailComponentType> | null>(null);
-  detailId = signal<string | null>(null);
-  private componentRef!: ComponentRef<DetailComponentType>;
-
-  public detailOpen = signal<boolean>(false);
-  public faTimes = faTimes;
+  faTimes = faTimes;
+  detailId = signal<string>('');
+  detailComponent = signal<Type<DetailComponentType> | null>(null);
+  typeKey = signal<string | undefined>(undefined);
 
   constructor() {
     this.navigation.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        console.log('navigation');
-        // get the detail_id queryparam from the url
-        const { detail_id } = this.activatedRoute.snapshot.queryParams;
-        // if the detail_id queryparam is not present, clear the detailComponent and detailId signals
-        console.log('detail_id', detail_id);
-        if (!detail_id) {
-          this.detailId.set(null);
-          this.detailComponent.set(null);
-          this.viewContainer.clear();
-          this.detailOpen.set(false);
+        // get the detail_id, type_key queryparam from the url
+        const { detail_id, type_key } =
+          this.activatedRoute.snapshot.queryParams;
+        this.detailId.set(detail_id || '');
+        this.typeKey.set(type_key);
+        console.log(detail_id);
+        // get the detailComponent from the route data
+        // TODO: look into refactoring routing so that the detailComponent is not nested so deeply
+        // when getting it from the user-managment
+        const detailComponent =
+          this.activatedRoute.snapshot.firstChild?.data['detailComponent'] ||
+          this.activatedRoute.snapshot.firstChild?.firstChild?.firstChild?.data[
+            'detailComponent'
+          ];
+        if (detailComponent) {
+          this.detailComponent.set(detailComponent);
         } else {
-          this.detailOpen.set(true);
-          this.detailId.set(detail_id);
-          // get the detailComponent from the route data
-          // TODO: look into refactoring routing so that the detailComponent is not nested so deeply
-          // when getting it from the user-managment route
-          const detailComponent =
-            this.activatedRoute.snapshot.firstChild?.data['detailComponent'] ||
-            this.activatedRoute.snapshot.firstChild?.firstChild?.firstChild
-              ?.data['detailComponent'];
-
-          if (detailComponent) {
-            console.log('detailComponent', detailComponent);
-            console.log('this.viewContainer', this.viewContainer);
-            this.detailComponent.set(detailComponent);
-            this.componentRef =
-              this.viewContainer.createComponent(detailComponent);
-            this.componentRef.instance.detailId = this.detailId()!;
-            this.componentRef.instance.closeDrawer = new EventEmitter<void>();
-            this.componentRef.instance.closeDrawer.subscribe(() =>
-              this.closeDetail(),
-            );
-          }
+          this.detailComponent.set(null);
         }
+        // set the drawerOpen based on the presence of the detail_id queryparam
+        this.detailStore.setDrawerOpen(
+          !!this.activatedRoute.snapshot.queryParams['detail_id'],
+        );
       }
     });
-
-    // effect(() => {
-    //   if (this.detailOpen()) {
-    //     const detailComponent = this.detailComponent();
-    //     console.log('detailComponent', detailComponent);
-    //     if (detailComponent) {
-    //       console.log(this.viewContainer);
-    //       this.viewContainer.clear();
-    //       this.componentRef =
-    //         this.viewContainer.createComponent(detailComponent);
-    //       if (this.detailId() !== undefined && this.detailId() !== null) {
-    //         this.componentRef.instance.detailId = this.detailId()!;
-    //         this.componentRef.instance.closeDrawer = new EventEmitter<void>();
-    //         this.componentRef.instance.closeDrawer.subscribe(() =>
-    //           this.closeDetail(),
-    //         );
-    //       }
-    //     }
-    //   }
-    // });
   }
 
   ngAfterViewInit() {
@@ -154,15 +98,6 @@ export class ProjectManagementComponent implements AfterViewInit, OnDestroy {
 
   closeDetail() {
     // remove the detail_id queryparam causing the detail sidenav to close
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: {},
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.componentRef) {
-      this.componentRef.destroy();
-    }
+    this.detailStore.clearDetailId();
   }
 }

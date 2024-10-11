@@ -41,6 +41,7 @@ import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
 import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-person-type',
@@ -72,9 +73,9 @@ export class PersonTypeComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   personTypeForm = new FormGroup({
     name: new FormControl(
@@ -156,7 +157,7 @@ export class PersonTypeComponent implements OnInit {
 
   onCancel() {
     if (this.personTypeStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.personTypeStore.inEditMode()) {
@@ -184,7 +185,7 @@ export class PersonTypeComponent implements OnInit {
       if (result === true) {
         this.personTypeStore.delete().then(() => {
           if (this.personTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

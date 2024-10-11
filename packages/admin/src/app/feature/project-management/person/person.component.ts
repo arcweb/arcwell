@@ -44,6 +44,7 @@ import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 import { PeopleListStore } from '../people-list/people-list.store';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-person',
@@ -68,7 +69,7 @@ import { PeopleListStore } from '../people-list/people-list.store';
     CohortTableComponent,
     DetailHeaderComponent,
   ],
-  providers: [PersonStore, PeopleListStore],
+  providers: [PersonStore, PeopleListStore, DetailStore],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss',
 })
@@ -78,11 +79,11 @@ export class PersonComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
+  // TODO: figure out why an initial value is required for typeKey when dynamically loading this component
+  @Input() typeKey: string | undefined = undefined;
   @Input() detailId!: string;
-  @Input() typeKey?: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -166,11 +167,10 @@ export class PersonComponent implements OnInit {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
             this.personStore.createPerson(this.personForm.value);
-            this.closeDrawer.emit();
           } else {
             this.personStore.updatePerson(this.personForm.value);
-            this.closeDrawer.emit();
           }
+          this.detailStore.setDrawerOpen(false);
         }
         // else if (event instanceof ValueChangeEvent) {
         // This is here for an example.  Also, there are other events that can be caught
@@ -189,7 +189,7 @@ export class PersonComponent implements OnInit {
 
   onCancel() {
     if (this.personStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.personStore.inEditMode()) {
@@ -216,8 +216,7 @@ export class PersonComponent implements OnInit {
       if (result === true) {
         this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
-            this.loadPeopleList();
-            this.closeDrawer.emit();
+            this.detailStore.clearDetailId();
           }
         });
       }
@@ -259,20 +258,8 @@ export class PersonComponent implements OnInit {
   }
 
   cohortsRowClick(row: CohortModel) {
-    this.router.navigate(['project-management', 'cohorts', row.id]);
-  }
-
-  loadPeopleList() {
-    const props: { limit: number; offset: number; typeKey?: string } = {
-      limit: this.peopleListStore.limit(),
-      offset: 0,
-    };
-    if (this.typeKey) {
-      props.typeKey = this.typeKey;
-    }
-    this.peopleListStore.load({
-      limit: this.peopleListStore.limit(),
-      offset: 0,
+    this.router.navigate(['project-management', 'cohorts', 'list'], {
+      queryParams: { detail_id: row.id },
     });
   }
 }

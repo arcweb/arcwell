@@ -44,7 +44,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         },
       },
       {
-        path: 'people/list/:typeKey',
+        path: 'people/list/:type_key',
         component: PeopleListComponent,
         data: {
           detailComponent: PersonComponent,
@@ -82,7 +82,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         },
       },
       {
-        path: 'resources/list/:typeKey',
+        path: 'resources/list/:type_key',
         component: ResourcesListComponent,
         data: {
           detailComponent: ResourceComponent,
@@ -108,7 +108,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         },
       },
       {
-        path: 'events/list/:typeKey',
+        path: 'events/list/:type_key',
         component: EventsListComponent,
         data: {
           detailComponent: EventComponent,
@@ -134,7 +134,7 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
         },
       },
       {
-        path: 'facts/list/:typeKey',
+        path: 'facts/list/:type_key',
         component: FactsListComponent,
         data: {
           detailComponent: FactComponent,

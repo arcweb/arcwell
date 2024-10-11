@@ -39,6 +39,7 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DetailStore } from '@app/feature/project-management/detail/detail.store';
 
 @Component({
   selector: 'aw-user',
@@ -71,6 +72,7 @@ export class UserComponent implements OnInit {
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private detailStore = inject(DetailStore);
   readonly isProfile = toSignal(
     this.activatedRoute.data.pipe(
       takeUntilDestroyed(),
@@ -84,7 +86,6 @@ export class UserComponent implements OnInit {
   destroyRef = inject(DestroyRef);
 
   @Input() detailId!: string;
-  @Output() closeDrawer = new EventEmitter<void>();
 
   userForm = new FormGroup({
     email: new FormControl(
@@ -149,7 +150,7 @@ export class UserComponent implements OnInit {
 
     this.userForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(event => {
+      .subscribe(async event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.userStore.inCreateMode()) {
             const formValue = this.userForm.value;
@@ -161,7 +162,9 @@ export class UserComponent implements OnInit {
                 : null,
               requiresPasswordChange: true,
             };
-            this.userStore.create(userFormPayload);
+            const newUser = await this.userStore.create(userFormPayload);
+            // TODO: figure out why this is necessary and this function has a stale value
+            this.detailId = newUser.id;
             // ask to invite user
             const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
               data: {
@@ -218,11 +221,7 @@ export class UserComponent implements OnInit {
     const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
     if (fromCreateMode) {
-      this.router.navigate([
-        'project-management',
-        'settings',
-        'user-management',
-      ]);
+      this.detailStore.clearDetailId();
     }
   }
 
@@ -263,6 +262,8 @@ export class UserComponent implements OnInit {
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', 'list', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 }
