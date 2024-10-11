@@ -63,11 +63,13 @@ export class ProjectManagementComponent implements AfterViewInit {
   constructor() {
     this.navigation.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // get the detail_id, type_key queryparam from the url
-        const { detail_id, type_key } =
-          this.activatedRoute.snapshot.queryParams;
+        // get the detail_id queryparam from the url
+        const { detail_id } = this.activatedRoute.snapshot.queryParams;
         this.detailId.set(detail_id || '');
-        this.typeKey.set(type_key);
+
+        // get the type_key from childs url params
+        const urlParams = this.activatedRoute.firstChild?.snapshot?.params;
+        this.typeKey.set(urlParams ? urlParams['type_key'] : undefined);
 
         // get the detailComponent from the route data
         // TODO: look into refactoring routing so that the detailComponent is not nested so deeply

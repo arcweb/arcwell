@@ -30,16 +30,10 @@ export const DetailStore = signalStore(
           queryParams: {},
         });
       },
-      routeToNewDetailId(detailId: string, typeKey?: string) {
-        const params: { detail_id: string; typeKey?: string } = {
-          detail_id: detailId,
-        };
-        if (typeKey) {
-          params.typeKey = typeKey;
-        }
+      routeToNewDetailId(detailId: string) {
         router.navigate([], {
           relativeTo: activatedRoute,
-          queryParams: params,
+          queryParams: { detail_id: detailId },
         });
       },
     }),

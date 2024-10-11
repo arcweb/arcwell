@@ -198,7 +198,7 @@ export const FactStore = signalStore(
           toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
 
           // navigate to the new item
-          detailStore.routeToNewDetailId(resp.data.id, resp.data.factType.key);
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async deleteFact() {

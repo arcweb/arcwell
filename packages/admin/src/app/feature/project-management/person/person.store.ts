@@ -178,10 +178,7 @@ export const PersonStore = signalStore(
           );
           toastService.sendMessage('Created person.', ToastLevel.SUCCESS);
           // navigate the user to the newly created item
-          detailStore.routeToNewDetailId(
-            resp.data.id,
-            resp.data.personType.key,
-          );
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async deletePerson() {

@@ -204,7 +204,7 @@ export const EventStore = signalStore(
           toastService.sendMessage('Created event.', ToastLevel.SUCCESS);
 
           // navigate to the new item
-          detailStore.routeToNewDetailId(resp.data.id, resp.data.eventType.key);
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {

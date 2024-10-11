@@ -161,10 +161,7 @@ export const ResourceStore = signalStore(
           toastService.sendMessage('Resource created.', ToastLevel.SUCCESS);
 
           // navigate to the new resource
-          detailStore.routeToNewDetailId(
-            resp.data.id,
-            resp.data.resourceType.key,
-          );
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {
