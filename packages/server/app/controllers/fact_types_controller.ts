@@ -53,8 +53,7 @@ export default class FactTypesController {
    * @summary Create FactType
    * @description Create a new type definition for use by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createFactTypeValidator)
 
     let newFactType = null
@@ -76,8 +75,7 @@ export default class FactTypesController {
    * @summary Get FactType
    * @description Retrieve an individual type definition used by Fact records. See schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
 
     return {
@@ -91,8 +89,7 @@ export default class FactTypesController {
    * @description Retireve a list of Fact records of a given FactType
    * @paramUse(sortable, filterable)
    */
-  async showWithFacts({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async showWithFacts({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
       data: await FactType.query()
@@ -110,8 +107,7 @@ export default class FactTypesController {
    * @summary Update FactType
    * @description Update an existing type definition used by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateFactTypeValidator)
 
     await paramsUUIDValidator.validate(params)
@@ -135,8 +131,7 @@ export default class FactTypesController {
    * @summary Delete FactType
    * @description Remove a type definition used by Fact records from Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const factType = await FactType.findOrFail(params.id)
     await factType.delete()

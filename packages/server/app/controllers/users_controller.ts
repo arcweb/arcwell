@@ -27,8 +27,7 @@ export default class UsersController {
    * @description Returns a list of User records
    * @paramUse(sortable, filterable)
    */
-  async index({ auth, request }: HttpContext) {
-    await auth.authenticate()
+  async index({ request }: HttpContext) {
     const queryData = request.qs()
 
     let [query, countQuery] = buildApiQuery(User.query(), queryData, 'users')
@@ -59,8 +58,7 @@ export default class UsersController {
    * @summary Get User
    * @description Returns an individual User record
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
       data: await User.query()
@@ -82,9 +80,8 @@ export default class UsersController {
    * @summary Create User
    * @description Create a new User record within Arcwell
    */
-  async store({ request, auth }: HttpContext) {
+  async store({ request }: HttpContext) {
     // TODO: Add create user functionality back in...
-    await auth.authenticate()
     await request.validateUsing(createUserValidator)
     let newUser = null
     await db.transaction(async (trx) => {
@@ -105,8 +102,7 @@ export default class UsersController {
    * @summary Update User
    * @description Update details of an existing User record within Arcwell
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['email', 'roleId'])
@@ -128,8 +124,7 @@ export default class UsersController {
    * @summary Delete User
    * @description Remove a User from this instance of Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const user = await User.findOrFail(params.id)
     await user.delete()
@@ -141,10 +136,8 @@ export default class UsersController {
    * @summary Invite a User
    * @description Set the user temp password and set the requires password flag, then send an email
    */
-  async invite({ request, auth }: HttpContext) {
+  async invite({ request }: HttpContext) {
     console.log('\n\nREQUEST\n\n')
-    await auth.authenticate()
-
     console.log('\n\nAFTER AUTH\n\n')
     await request.validateUsing(paramsUUIDValidator)
     const cleanRequest = request.only(['id'])

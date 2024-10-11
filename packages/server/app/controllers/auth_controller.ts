@@ -119,8 +119,6 @@ export default class AuthController {
    * @description Convenience method to return the authenticated user's User record.
    */
   async me({ auth }: HttpContext) {
-    await auth.check()
-
     if (!auth.user) {
       throwCustomHttpError(
         {
@@ -191,8 +189,7 @@ export default class AuthController {
    * @summary Change Password
    * @description Processes a user's attempt to change their password.
    */
-  async changePassword({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async changePassword({ request }: HttpContext) {
     await request.validateUsing(loginValidator)
     const cleanRequest = request.only(['email', 'password', 'newPassword'])
     const user = await User.verifyCredentials(cleanRequest.email, cleanRequest.password)

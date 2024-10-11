@@ -41,81 +41,107 @@ router
             // router.post('/register', [AuthController, 'register']).as('register')
             router.post('/login', [AuthController, 'login']).as('login')
             router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
-            router.get('/me', [AuthController, 'me']).as('me')
+            router.get('/me', [AuthController, 'me']).as('me').use(middleware.auth())
             router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
-            router.post('/reset', [AuthController, 'resetPassword']).as('reset')
-            router.post('/change', [AuthController, 'changePassword']).as('change')
+            router
+              .post('/reset', [AuthController, 'resetPassword'])
+              .as('reset')
+              .use(middleware.auth())
+            router
+              .post('/change', [AuthController, 'changePassword'])
+              .as('change')
+              .use(middleware.auth())
             router.post('/set', [AuthController, 'setPassword']).as('set')
           })
           .as('auth')
           .prefix('auth')
 
         // People Management
-        router.group(() => {
-          router
-            .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
-            .as('people.showWithCohorts')
-          router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
-          router.delete('people/:id/detach', [PeopleController, 'detachCohort']).as('people.detachCohort')
-          router.resource('people/types', PersonTypesController).apiOnly()
-          router
-            .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
-            .as('people/types.showWithPeople')
-          router.get('people/count', [PeopleController, 'count']).as('people.count')
-          router.resource('people', PeopleController).apiOnly()
-        })
+        router
+          .group(() => {
+            router
+              .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
+              .as('people.showWithCohorts')
+            router
+              .post('people/:id/attach', [PeopleController, 'attachCohort'])
+              .as('people.attachCohort')
+            router
+              .delete('people/:id/detach', [PeopleController, 'detachCohort'])
+              .as('people.detachCohort')
+            router.resource('people/types', PersonTypesController).apiOnly()
+            router
+              .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
+              .as('people/types.showWithPeople')
+            router.get('people/count', [PeopleController, 'count']).as('people.count')
+            router.resource('people', PeopleController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Cohort Management
-        router.group(() => {
-          router
-            .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
-            .as('cohorts.showWithPeople')
-          router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
-          router
-            .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
-            .as('cohorts.detachPeople')
-          router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
-          router.resource('cohorts', CohortsController).apiOnly()
-        })
+        router
+          .group(() => {
+            router
+              .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
+              .as('cohorts.showWithPeople')
+            router
+              .post('cohorts/:id/attach', [CohortsController, 'attachPeople'])
+              .as('cohorts.attachPeople')
+            router
+              .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
+              .as('cohorts.detachPeople')
+            router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+            router.resource('cohorts', CohortsController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Resource Management
-        router.group(() => {
-          router.resource('resources/types', ResourceTypesController).apiOnly()
-          router
-            .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
-            .as('resources/types.showWithResources')
-          router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
-          router.resource('resources', ResourcesController).apiOnly()
-        })
+        router
+          .group(() => {
+            router.resource('resources/types', ResourceTypesController).apiOnly()
+            router
+              .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
+              .as('resources/types.showWithResources')
+            router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
+            router.resource('resources', ResourcesController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Event Management
-        router.group(() => {
-          router.resource('events/types', EventTypeController).apiOnly()
-          router
-            .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
-            .as('events/types.showWithEvents')
-          router.get('events/count', [EventController, 'count']).as('events.count')
-          router.resource('events', EventController).apiOnly()
-        })
+        router
+          .group(() => {
+            router.resource('events/types', EventTypeController).apiOnly()
+            router
+              .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
+              .as('events/types.showWithEvents')
+            router.get('events/count', [EventController, 'count']).as('events.count')
+            router.resource('events', EventController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Fact Management
-        router.group(() => {
-          router.resource('facts/types', FactTypesController).apiOnly()
-          router
-            .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
-            .as('facts/types.showWithFacts')
-          router.get('facts/count', [FactsController, 'count']).as('facts.count')
-          router.resource('facts', FactsController).apiOnly()
-        })
+        router
+          .group(() => {
+            router.resource('facts/types', FactTypesController).apiOnly()
+            router
+              .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
+              .as('facts/types.showWithFacts')
+            router.get('facts/count', [FactsController, 'count']).as('facts.count')
+            router.resource('facts', FactsController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Tags Management
-        router.group(() => {
-          router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
-          router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
-          router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
-          router.get('tags/count', [TagsController, 'count']).as('tags.count')
-          router.resource('tags', TagsController).apiOnly()
-        })
+        router
+          .group(() => {
+            router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
+            router
+              .get('tags/:id/:object_name', [TagsController, 'showRelated'])
+              .as('tags.showRelated')
+            router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
+            router.get('tags/count', [TagsController, 'count']).as('tags.count')
+            router.resource('tags', TagsController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Data API
         router
@@ -126,27 +152,28 @@ router
           })
           .as('data')
           .prefix('data')
+          .use(middleware.auth())
 
         // User Management
         // router.get('users/full', [GetAllFullUsersController]).as('users.full')
-        router.group(() => {
-          router.post('users/invite', [UsersController, 'invite']).as('invite')
-          router.resource('users', UsersController).apiOnly()
-        })
+        router
+          .group(() => {
+            router.post('users/invite', [UsersController, 'invite']).as('invite')
+            router.resource('users', UsersController).apiOnly()
+          })
+          .use(middleware.auth())
 
         // Role Management
-        router.resource('roles', RolesController).apiOnly()
-
-        // Email Orchestration
-        router.group(() => {
-          router.post('email', [EmailsController, 'send']).as('email.send')
-        })
+        router.resource('roles', RolesController).apiOnly().use('*', middleware.auth())
 
         // Server Configuration
         router
           .group(() => {
             router.get('', [ConfigController, 'index']).as('index')
-            router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
+            router
+              .get('features-menu', [ConfigController, 'featuresMenu'])
+              .as('featuresMenu')
+              .use(middleware.auth())
           })
           .as('config')
           .prefix('config')
