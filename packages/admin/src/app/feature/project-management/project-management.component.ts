@@ -68,7 +68,7 @@ export class ProjectManagementComponent implements AfterViewInit {
           this.activatedRoute.snapshot.queryParams;
         this.detailId.set(detail_id || '');
         this.typeKey.set(type_key);
-        console.log(detail_id);
+
         // get the detailComponent from the route data
         // TODO: look into refactoring routing so that the detailComponent is not nested so deeply
         // when getting it from the user-managment
@@ -77,11 +77,8 @@ export class ProjectManagementComponent implements AfterViewInit {
           this.activatedRoute.snapshot.firstChild?.firstChild?.firstChild?.data[
             'detailComponent'
           ];
-        if (detailComponent) {
-          this.detailComponent.set(detailComponent);
-        } else {
-          this.detailComponent.set(null);
-        }
+        this.detailComponent.set(detailComponent || null);
+
         // set the drawerOpen based on the presence of the detail_id queryparam
         this.detailStore.setDrawerOpen(
           !!this.activatedRoute.snapshot.queryParams['detail_id'],

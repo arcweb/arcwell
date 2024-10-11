@@ -34,22 +34,18 @@
       }
     </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <input
-          matInput
-          placeholder="Description"
-          formControlName="description"
-        />
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Description" formControlName="description" />
+    </mat-form-field>
 
-      @if (eventTypeStore.inCreateMode()) {
-        <aw-tags-form
-          [tags]="eventTypeStore.tagStrings()"
-          (updateTagsForCreate)="updateTagsForCreate($event)"
-          [inEditMode]="false"
-        ></aw-tags-form>
-      }
+    @if (eventTypeStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="eventTypeStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
 
     <div class="form-button-container">
       <button
@@ -76,12 +72,11 @@
     </div>
   </form>
 
-    @if (!eventTypeStore.inCreateMode()) {
-      <!--  Tags Section-->
-      <aw-tags-form
-        [tags]="eventTypeStore.tagStrings()"
-        (saveTags)="onSetTags($event)"
-      ></aw-tags-form>
-    }
-  </div>
+  @if (!eventTypeStore.inCreateMode()) {
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="eventTypeStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
 }

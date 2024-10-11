@@ -2,12 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
-  input,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
