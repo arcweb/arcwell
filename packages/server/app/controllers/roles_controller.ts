@@ -52,7 +52,7 @@ export default class RolesController {
    * @summary Create Role
    * @description Create a new Role within Arcwell
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
     const newRole = await Role.create(request.body())

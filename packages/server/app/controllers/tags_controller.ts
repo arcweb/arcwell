@@ -206,7 +206,7 @@ export default class TagsController {
     await request.validateUsing(updateTagValidator)
     const cleanRequest = request.only(['pathname'])
     const tag = await Tag.findOrFail(params.id)
-    const updatedTag = await tag.merge(cleanRequest).save()
+    await tag.merge(cleanRequest).save()
     return { data: await this.tagQueryWithAllRelated(params.id, { limit: 10, offset: 0 }) }
   }
 

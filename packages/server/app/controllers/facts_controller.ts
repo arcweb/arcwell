@@ -100,17 +100,17 @@ export default class FactsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactValidator)
-    let newFact = null
-    await db.transaction(async (trx) => {
-      newFact = new Fact().fill(request.body()).useTransaction(trx)
+    const responseFact = await db.transaction(async (trx) => {
+      const newFact = new Fact().fill(request.body()).useTransaction(trx)
       await newFact.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newFact.id, 'facts', tags.tags, false)
       }
+      return newFact
     })
-    return { data: await getFullFact(newFact.id) }
+    return { data: await getFullFact(responseFact.id) }
   }
 
   /**
@@ -134,11 +134,7 @@ export default class FactsController {
    */
   async update({ params, request, auth }: HttpContext) {
     await auth.authenticate()
-
-    console.log('#######################request=', request.serialize())
     const cleanRequest = await request.validateUsing(updateFactValidator)
-
-    console.log('#######################showMeTheMoney=', cleanRequest)
 
     await paramsUUIDValidator.validate(params)
     // const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])

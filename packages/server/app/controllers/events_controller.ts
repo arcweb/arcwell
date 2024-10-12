@@ -86,15 +86,14 @@ export default class EventsController {
       'resourceId',
       'tags',
     ])
-    let newEvent = null
-
-    await db.transaction(async (trx) => {
-      newEvent = new Event().fill(cleanRequest).useTransaction(trx)
-      await newEvent.save()
+    const newEvent = await db.transaction(async (trx) => {
+      const event = new Event().fill(cleanRequest).useTransaction(trx)
+      await event.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, newEvent.id, 'events', cleanRequest.tags, false)
+        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags, false)
       }
+      return event
     })
 
     let returnQuery = await Event.query()
@@ -170,19 +169,20 @@ export default class EventsController {
       'resourceId',
       'tags',
     ])
-    let updatedEvent = null
-    await db.transaction(async (trx) => {
+    // let updatedEvent = null
+    const newEvent = await db.transaction(async (trx) => {
       const event = await Event.findOrFail(params.id)
       event.useTransaction(trx)
-      updatedEvent = await event.merge(cleanRequest).save()
+      const updatedEvent = await event.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
       }
+      return updatedEvent
     })
 
     let returnQuery = Event.query()
-      .where('id', updatedEvent.id)
+      .where('id', newEvent.id)
       .preload('tags')
       .preload('person', (person) => {
         person.preload('tags')

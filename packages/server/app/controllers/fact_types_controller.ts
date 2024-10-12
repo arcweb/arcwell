@@ -57,18 +57,18 @@ export default class FactTypesController {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
 
-    let newFactType = null
-    await db.transaction(async (trx) => {
-      newFactType = new FactType().fill(request.body()).useTransaction(trx)
+    const createdFactType = await db.transaction(async (trx) => {
+      const newFactType = new FactType().fill(request.body()).useTransaction(trx)
       await newFactType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newFactType.id, 'fact_types', tags.tags, false)
       }
+      return newFactType
     })
 
-    return { data: await getFullFactType(newFactType.id) }
+    return { data: await getFullFactType(createdFactType.id) }
   }
 
   /**
@@ -116,18 +116,19 @@ export default class FactTypesController {
 
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
-    let updatedFactType = null
-    await db.transaction(async (trx) => {
+
+    const responseFactType = await db.transaction(async (trx) => {
       const factType = await FactType.findOrFail(params.id)
       factType.useTransaction(trx)
-      updatedFactType = await factType.merge(cleanRequest).save()
+      const updatedFactType = await factType.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, factType.id, 'fact_types', cleanRequest.tags)
       }
+      return updatedFactType
     })
 
-    return { data: await getFullFactType(updatedFactType.id) }
+    return { data: await getFullFactType(responseFactType.id) }
   }
 
   /**
