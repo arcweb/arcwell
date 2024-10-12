@@ -10,6 +10,9 @@ import PersonType from '#models/person_type'
 import ResourceType from '#models/resource_type'
 import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
+import db from '@adonisjs/lucid/services/db'
+import { installConfigValidator } from '#validators/config'
+import { createFactTypeWithTags } from '#controllers/fact_types_controller'
 
 export default class ConfigController {
   /**
@@ -90,22 +93,66 @@ export default class ConfigController {
   }
 
   /**
+   * @installData
+   * @summary Install Seed Data
+   * @description Allows third-party developers to install seed data for various types into Arcwell.
+   * This method handles fact_types, person_types, resource_types, event_types, tags, roles, users.
+   */
+  async install({ auth, request }: HttpContext) {
+    await auth.authenticate()
+
+    const payload = request.body()
+    await request.validateUsing(installConfigValidator)
+
+    let counts = {
+      fact_types: 0,
+      person_types: 0,
+      resource_types: 0,
+      event_types: 0,
+      tags: 0,
+      roles: 0,
+      users: 0,
+    }
+
+    await db.transaction(async (trx) => {
+
+      if (payload.fact_types && payload.fact_types.length > 0) {
+        for (const factTypeData of payload.fact_types) {
+          await createFactTypeWithTags(trx, factTypeData, factTypeData.tags);
+          counts.fact_types++;
+        }
+      }
+
+      // if (payload.tags && payload.tags.length > 0) {
+      //   for (const tagData of payload.tags) {
+      //     const newTag = new Tag().fill(tagData).useTransaction(trx)
+      //     await newTag.save()
+      //     counts.tags++
+      //   }
+      // }
+
+    })
+
+    return { data: counts }
+  }
+
+  /**
    * Handle form submission for the create action
    */
-  async store({}: HttpContext) {}
+  async store({ }: HttpContext) { }
 
   /**
    * Show individual record
    */
-  async show({}: HttpContext) {}
+  async show({ }: HttpContext) { }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({}: HttpContext) {}
+  async update({ }: HttpContext) { }
 
   /**
    * Delete record
    */
-  async destroy({}: HttpContext) {}
+  async destroy({ }: HttpContext) { }
 }

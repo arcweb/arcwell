@@ -15,6 +15,30 @@ export function getFullFactType(id: string, trx?: TransactionClientContract) {
   }
 }
 
+export const createFactTypeWithTags = async (trx: TransactionClientContract, createData: any, tags?: string[]): Promise<FactType> => {
+  const newFactType = new FactType().fill(createData).useTransaction(trx)
+  await newFactType.save()
+
+  if (tags && tags.length > 0) {
+    await setTagsForObject(trx, newFactType.id, 'fact_types', tags, false)
+  }
+
+  return newFactType
+}
+
+export const updateFactTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags?: string[]): Promise<FactType> => {
+  const factType = await FactType.findOrFail(id)
+  factType.useTransaction(trx)
+
+  const updatedFactType = await factType.merge(updateData).save()
+
+  if (tags) {
+    await setTagsForObject(trx, factType.id, 'fact_types', tags)
+  }
+
+  return updatedFactType
+}
+
 export default class FactTypesController {
   /**
    * @index
@@ -53,22 +77,14 @@ export default class FactTypesController {
    * @summary Create FactType
    * @description Create a new type definition for use by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async store({ request, auth }: HttpContext) {
+  async store({ auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createFactTypeValidator)
 
-    let newFactType = null
-    await db.transaction(async (trx) => {
-      newFactType = new FactType().fill(request.body()).useTransaction(trx)
-      await newFactType.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newFactType.id, 'fact_types', tags.tags, false)
-      }
+    return db.transaction(async (trx) => {
+      const newFactType = await createFactTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await getFullFactType(newFactType.id, trx) }
     })
-
-    return { data: await getFullFactType(newFactType.id) }
   }
 
   /**
@@ -110,24 +126,17 @@ export default class FactTypesController {
    * @summary Update FactType
    * @description Update an existing type definition used by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async update({ params, request, auth }: HttpContext) {
+  async update({ auth, request, params }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(updateFactTypeValidator)
-
     await paramsUUIDValidator.validate(params)
+
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
-    let updatedFactType = null
-    await db.transaction(async (trx) => {
-      const factType = await FactType.findOrFail(params.id)
-      factType.useTransaction(trx)
-      updatedFactType = await factType.merge(cleanRequest).save()
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, factType.id, 'fact_types', cleanRequest.tags)
-      }
+    return await db.transaction(async (trx) => {
+      const updatedFactType = await updateFactTypeWithTags(trx, params.id, cleanRequest, request.input('tags'));
+      return { data: await getFullFactType(updatedFactType.id, trx) }
     })
-
-    return { data: await getFullFactType(updatedFactType.id) }
   }
 
   /**

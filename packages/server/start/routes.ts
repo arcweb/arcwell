@@ -147,6 +147,7 @@ router
           .group(() => {
             router.get('', [ConfigController, 'index']).as('index')
             router.get('features-menu', [ConfigController, 'featuresMenu']).as('featuresMenu')
+            router.post('install', [ConfigController, 'install']).as('install')
           })
           .as('config')
           .prefix('config')
