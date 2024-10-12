@@ -503,7 +503,9 @@ export default class DataFactsController {
     rawQueryString += whereClause
 
     // Execute the query using the database client with bindings as an object
-    const result = await db.rawQuery(rawQueryString, bindings, { mode: 'read' })
+    const result = await db.rawQuery(rawQueryString, bindings, {
+      mode: 'read',
+    })
 
     const transformedData = transformDataFactResponse(result.rows)
 

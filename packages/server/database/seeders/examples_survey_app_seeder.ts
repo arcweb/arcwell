@@ -32,7 +32,9 @@ export default class SurveyAppSeeder extends BaseSeeder {
 
     const patientRole = await Role.firstOrCreate({ name: 'patient' }, { name: 'patient' })
 
-    const patientPerson = await PersonFactory.merge({ typeKey: patientPersonType.key }).create()
+    const patientPerson = await PersonFactory.merge({
+      typeKey: patientPersonType.key,
+    }).create()
 
     await User.firstOrCreate(
       { email: 'patient@example.com' },
@@ -221,8 +223,14 @@ export default class SurveyAppSeeder extends BaseSeeder {
         key: 'q1_response',
         name: 'How would you describe the pain you usually have from your knee?',
       },
-      { key: 'q2_response', name: 'Have you had any trouble with washing and drying yourself?' },
-      { key: 'q3_response', name: 'Have you had any trouble getting in and out of a car?' },
+      {
+        key: 'q2_response',
+        name: 'Have you had any trouble with washing and drying yourself?',
+      },
+      {
+        key: 'q3_response',
+        name: 'Have you had any trouble getting in and out of a car?',
+      },
       {
         key: 'q4_response',
         name: 'For how long have you been able to walk before the pain becomes severe?',
@@ -232,7 +240,10 @@ export default class SurveyAppSeeder extends BaseSeeder {
         name: 'After a meal, how painful has it been to stand up from a chair?',
       },
       { key: 'q6_response', name: 'Have you been limping when walking?' },
-      { key: 'q7_response', name: 'Could you kneel down and get up again afterwards?' },
+      {
+        key: 'q7_response',
+        name: 'Could you kneel down and get up again afterwards?',
+      },
       {
         key: 'q8_response',
         name: 'Have you been troubled by pain from your knee in bed at night?',
@@ -241,8 +252,14 @@ export default class SurveyAppSeeder extends BaseSeeder {
         key: 'q9_response',
         name: 'How much has pain from your knee interfered with your usual work?',
       },
-      { key: 'q10_response', name: 'Have you felt that your knee might suddenly give way?' },
-      { key: 'q11_response', name: 'Could you do the household shopping on your own?' },
+      {
+        key: 'q10_response',
+        name: 'Have you felt that your knee might suddenly give way?',
+      },
+      {
+        key: 'q11_response',
+        name: 'Could you do the household shopping on your own?',
+      },
       { key: 'q12_response', name: 'Could you walk down a flight of stairs?' },
       { key: 'assessment_score', name: 'Sum of responses' },
     ]

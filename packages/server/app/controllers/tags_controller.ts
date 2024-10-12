@@ -207,7 +207,12 @@ export default class TagsController {
     const cleanRequest = request.only(['pathname'])
     const tag = await Tag.findOrFail(params.id)
     await tag.merge(cleanRequest).save()
-    return { data: await this.tagQueryWithAllRelated(params.id, { limit: 10, offset: 0 }) }
+    return {
+      data: await this.tagQueryWithAllRelated(params.id, {
+        limit: 10,
+        offset: 0,
+      }),
+    }
   }
 
   /**
