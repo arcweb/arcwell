@@ -41,14 +41,18 @@ export type CohortsResponseType = z.infer<typeof CohortsResponseSchema>;
 export type CohortResponseType = z.infer<typeof CohortResponseSchema>;
 
 // Deserializer / Serializer
-export const deserializeCohort = (data: CohortType): CohortModel => {
+export const deserializeCohort = (
+  data: CohortType | CohortNewType,
+): CohortModel => {
   return new CohortModel(data);
 };
 
-// export const serializeCohort = (data: CohortModel): CohortType => {
-//   return {
-//     ...data,
-//     createdAt: data.createdAt.toISO(),
-//     updatedAt: data.updatedAt.toISO(),
-//   };
-// };
+export const serializeCohort = (
+  cohort: CohortModel,
+): CohortType | CohortNewType => {
+  return {
+    ...cohort,
+    createdAt: cohort.createdAt ? cohort.createdAt.toISO() : undefined,
+    updatedAt: cohort.updatedAt ? cohort.updatedAt.toISO() : undefined,
+  };
+};

@@ -158,7 +158,6 @@ export const CohortStore = signalStore(
         }
       },
       async createCohort(createCohortFormData: CohortNewType) {
-        console.log('createCohortFormData', createCohortFormData);
         patchState(store, setPending());
 
         const { cohortResp, personTypesResp } = await firstValueFrom(
