@@ -1,23 +1,33 @@
 import { DateTime } from 'luxon';
-import { ResourceUpdateType } from '@schemas/resource.schema';
+import { ResourceNewType, ResourceType } from '@schemas/resource.schema';
 import { ResourceTypeModel } from './resource-type.model';
+import { DimensionModel } from '@shared/models/dimension.model';
+import { DimensionType } from '@schemas/dimension.schema';
 
 export class ResourceModel {
   public id?: string;
   public name: string;
-  public info?: object;
+  public dimensions?: DimensionModel[];
   public typeKey: string;
   public tags?: string[] | undefined;
+  public resourceType?: ResourceTypeModel;
   public createdAt: DateTime;
   public updatedAt: DateTime;
-  public resourceType?: ResourceTypeModel;
 
-  constructor(data: ResourceUpdateType) {
-    this.id = data.id;
+  constructor(data: ResourceType | ResourceNewType) {
+    if ('id' in data && data.id) {
+      this.id = data.id;
+    }
     this.name = data.name;
-    this.info = data.info;
     this.typeKey = data.typeKey;
     this.tags = data.tags;
+
+    if (data.dimensions) {
+      this.dimensions = data.dimensions.map(
+        (dimension: DimensionType) => new DimensionModel(dimension),
+      );
+    }
+
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.resourceType = data.resourceType

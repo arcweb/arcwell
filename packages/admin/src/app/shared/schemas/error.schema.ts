@@ -9,7 +9,7 @@ export const ErrorSchema = z
   })
   .strict();
 
-const ErrorsSchema: any = z.object({
+export const ErrorsSchema: any = z.object({
   errors: z.array(ErrorSchema),
   info: z.object({}).passthrough().optional(),
 });
