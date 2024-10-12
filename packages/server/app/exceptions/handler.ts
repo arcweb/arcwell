@@ -4,6 +4,7 @@ import { errors as vineErrors } from '@vinejs/vine'
 import { errors as adonisCoreErrors } from '@adonisjs/core'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as lucidErrors } from '@adonisjs/lucid'
+// Keeping this commented out import as a reminder when we implement polices
 // import { errors as bouncerErrors } from '@adonisjs/bouncer'
 
 interface ValidationFrameworkError {
@@ -22,6 +23,13 @@ export interface CustomError {
   meta?: {
     [key: string]: any
   }
+}
+
+interface UnknownDatabaseError {
+  message?: string
+  code?: string
+  type?: string
+  status?: number
 }
 
 export default class HttpExceptionHandler extends ExceptionHandler {
@@ -141,19 +149,20 @@ export default class HttpExceptionHandler extends ExceptionHandler {
      */
 
     if (error instanceof Object) {
-      let title
+      const err = error as UnknownDatabaseError
+      let title = 'Unknown Database Error'
       let code
-      const detail = error && error.message ? error.message : 'No Further Information'
+      const detail = err && err.message ? err.message : 'No Further Information'
 
-      switch (error.code) {
+      switch (err.code) {
         case '23503': {
-          title = error && error.type ? error.type : 'Database Error'
-          code = error && error.code ? error.code : 'DB_FOREIGN_KEY_CONSTRAINT'
+          title = err && err.type ? err.type : 'Database Error'
+          code = err && err.code ? err.code : 'DB_FOREIGN_KEY_CONSTRAINT'
           break
         }
         case '22P02': {
-          title = error && error.type ? error.type : 'Database Error'
-          code = error && error.code ? error.code : 'DB_INVALID_UUID'
+          title = err && err.type ? err.type : 'Database Error'
+          code = err && err.code ? err.code : 'DB_INVALID_UUID'
           break
         }
         default: {
@@ -168,7 +177,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
       }
 
       const newError = this.transformGenericErrors([customError])
-      ctx.response.status(error.status ? error.status : 500).send(newError)
+      ctx.response.status(err.status ? err.status : 500).send(newError)
       return
     }
 
@@ -179,7 +188,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
     ])
     ctx.response.status(500).send(newError)
     return
-    // return super.handle(error, ctx)  // TODO or should we throw this which gives more detail, but uncontrolled format
   }
 
   /**
@@ -189,7 +197,7 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * @note You should not attempt to send a response from this method.
    */
   async report(error: unknown, ctx: HttpContext) {
-    console.log('I CAN REPORT THIS SOMEWHERE!!!!!!', error)
+    console.error('[Optional] Report to logging service', error)
     return super.report(error, ctx)
   }
 }
