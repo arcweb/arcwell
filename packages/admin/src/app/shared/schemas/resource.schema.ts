@@ -61,7 +61,7 @@ export const serializeResource = (data: ResourceModel): ResourceType => {
     dimensions: data.dimensions
       ? data.dimensions.map(dimension => serializeDimension(dimension))
       : undefined,
-    createdAt: data.createdAt ? data.createdAt.toISO() : undefined,
-    updatedAt: data.updatedAt ? data.updatedAt.toISO() : undefined,
+    createdAt: data.createdAt?.toISO() ?? undefined,
+    updatedAt: data.updatedAt?.toISO() ?? undefined,
   };
 };

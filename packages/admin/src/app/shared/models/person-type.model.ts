@@ -7,8 +7,8 @@ export class PersonTypeModel {
   public name: string;
   public description?: string;
   public tags?: string[] | undefined;
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
   constructor(data: PersonType) {
     this.id = data.id;
@@ -16,8 +16,8 @@ export class PersonTypeModel {
     this.name = data.name;
     this.description = data.description;
     this.tags = data.tags;
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
   }
 
   // add helper methods here

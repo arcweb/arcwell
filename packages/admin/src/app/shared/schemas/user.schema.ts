@@ -11,8 +11,8 @@ export const UserSchema: any = z
     email: z.string(),
     roleId: z.string().uuid(),
     personId: z.string().uuid().optional().nullable(),
-    createdAt: z.string().datetime({ offset: true }),
-    updatedAt: z.string().datetime({ offset: true }),
+    createdAt: z.string().datetime({ offset: true }).optional(),
+    updatedAt: z.string().datetime({ offset: true }).optional(),
     role: z.lazy(() => RoleSchema).optional(),
     person: z
       .lazy(() => PersonSchema)
@@ -62,7 +62,7 @@ export const deserializeUser = (data: UserType): UserModel => {
 export const serializeUser = (data: UserModel): UserType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt?.toISO() ?? undefined,
+    updatedAt: data.updatedAt?.toISO() ?? undefined,
   };
 };

@@ -21,7 +21,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { EventStore } from './event.store';
 import { MatDialog } from '@angular/material/dialog';
@@ -71,7 +71,6 @@ import { EventType } from '@app/shared/schemas/event.schema';
 })
 export class EventComponent implements OnInit {
   readonly eventStore = inject(EventStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly detailStore = inject(DetailStore);
@@ -91,7 +90,6 @@ export class EventComponent implements OnInit {
       Validators.required,
     ),
     endedAt: new FormControl({ value: '', disabled: true }),
-    // info: new FormControl({ value: '', disabled: true }),
     person: new FormControl<PersonType | null>({ value: null, disabled: true }),
     resource: new FormControl<ResourceType | null>({
       value: null,

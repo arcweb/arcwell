@@ -11,8 +11,8 @@ export class ResourceModel {
   public typeKey: string;
   public tags?: string[] | undefined;
   public resourceType?: ResourceTypeModel;
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
   constructor(data: ResourceType | ResourceNewType) {
     if ('id' in data && data.id) {
@@ -28,8 +28,9 @@ export class ResourceModel {
       );
     }
 
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
+
     this.resourceType = data.resourceType
       ? new ResourceTypeModel(data.resourceType)
       : undefined;

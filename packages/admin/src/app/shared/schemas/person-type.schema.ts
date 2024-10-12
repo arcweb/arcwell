@@ -55,7 +55,7 @@ export const deserializePersonType = (
 export const serializePersonType = (data: PersonTypeModel): PersonTypeType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt?.toISO() ?? undefined,
+    updatedAt: data.updatedAt?.toISO() ?? undefined,
   };
 };

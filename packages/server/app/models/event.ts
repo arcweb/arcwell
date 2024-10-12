@@ -1,5 +1,12 @@
 import { DateTime } from 'luxon'
-import { afterDelete, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterDelete,
+  beforeSave,
+  belongsTo,
+  column,
+  hasMany,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import EventType from '#models/event_type'
 import Fact from '#models/fact'
@@ -7,13 +14,14 @@ import Tag from '#models/tag'
 import Person from '#models/person'
 import Resource from '#models/resource'
 import AwBaseModel from '#models/aw_base_model'
+import Dimension from '#models/dimension'
 
 export default class Event extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
   @column()
-  declare info: Object | null
+  declare dimensions: Dimension[]
 
   @column()
   declare typeKey: string
@@ -59,5 +67,14 @@ export default class Event extends AwBaseModel {
   @afterDelete()
   static async detachTags(event: Event) {
     await event.related('tags').detach()
+  }
+
+  @beforeSave()
+  static async generateJson(event: Event) {
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (event.dimensions && typeof event.dimensions !== 'string') {
+      // @ts-ignore - ignoring because dimensions have to be stringify-ed to get around knex & postgresql jsonb issue
+      event.dimensions = JSON.stringify(event.dimensions)
+    }
   }
 }

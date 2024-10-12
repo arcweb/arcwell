@@ -38,9 +38,8 @@ import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
-import { PeopleListStore } from '../people-list/people-list.store';
 import { DetailStore } from '../detail/detail.store';
-import { PersonType } from '@app/shared/schemas/person.schema';
+import { PersonNewType, PersonType } from '@app/shared/schemas/person.schema';
 
 @Component({
   selector: 'aw-person',
@@ -65,13 +64,12 @@ import { PersonType } from '@app/shared/schemas/person.schema';
     CohortTableComponent,
     DetailHeaderComponent,
   ],
-  providers: [PersonStore, PeopleListStore, DetailStore],
+  providers: [PersonStore, DetailStore],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss',
 })
 export class PersonComponent implements OnInit {
   readonly personStore = inject(PersonStore);
-  readonly peopleListStore = inject(PeopleListStore);
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
@@ -164,7 +162,7 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            const personFormPayload: PersonType = {
+            const personFormPayload: PersonType | PersonNewType = {
               ...this.personForm.value,
             };
 
