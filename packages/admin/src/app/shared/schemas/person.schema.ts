@@ -12,7 +12,7 @@ export const PersonSchema: any = z
     typeKey: z.string(),
     tags: z.array(z.string()).optional(),
     user: z.lazy(() => UserSchema.optional().nullable()),
-    personType: PersonTypeSchema.optional(),
+    personType: z.lazy(() => PersonTypeSchema.optional()),
     cohorts: z.lazy(() => z.array(CohortSchema).optional()),
     cohortsCount: z.number().optional().nullable(),
     createdAt: z.string().datetime({ offset: true }).optional(),

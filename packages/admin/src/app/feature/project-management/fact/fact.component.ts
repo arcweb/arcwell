@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -25,7 +23,7 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { FactTypeType } from '@schemas/fact-type.schema';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CREATE_PARTIAL_URL } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -53,7 +51,6 @@ import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { EventType } from '@schemas/event.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactType } from '@app/shared/schemas/fact.schema';
 import { DetailStore } from '../detail/detail.store';

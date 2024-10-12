@@ -22,7 +22,6 @@ import {
   ResourceUpdateType,
 } from '@app/shared/schemas/resource.schema';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';

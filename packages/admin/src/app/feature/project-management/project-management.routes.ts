@@ -1,4 +1,4 @@
-import { EventType, Route } from '@angular/router';
+import { Route } from '@angular/router';
 import { EventsListComponent } from '@app/feature/project-management/events-list/events-list.component';
 import { ResourcesListComponent } from '@feature/project-management/resources-list/resources-list.component';
 import { PersonTypesComponent } from '@app/feature/project-management/person-types/person-types.component';

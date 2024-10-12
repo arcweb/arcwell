@@ -1,6 +1,5 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { DetailStore } from '@app/feature/project-management/detail/detail.store';
 import { ToastLevel } from '@app/shared/models';
 import { RoleType } from '@app/shared/schemas/role.schema';
@@ -43,7 +42,6 @@ export const UserStore = signalStore(
       userService = inject(UserService),
       roleService = inject(RoleService),
       toastService = inject(ToastService),
-      router = inject(Router),
       detailStore = inject(DetailStore),
     ) => ({
       async initialize(userId: string) {

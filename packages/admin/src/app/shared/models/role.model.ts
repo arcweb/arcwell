@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
-import { UserType } from '../schemas/user.schema';
+import { UserType } from '@schemas/user.schema';
 import { UserModel } from './user.model';
+import { RoleType } from '@schemas/role.schema';
 
 export class RoleModel {
   public id?: string;
@@ -9,7 +10,7 @@ export class RoleModel {
   public updatedAt: DateTime;
   public users?: UserModel[];
 
-  constructor(data: any) {
+  constructor(data: RoleType) {
     this.id = data.id;
     this.name = data.name;
     this.createdAt = DateTime.fromISO(data.createdAt);

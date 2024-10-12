@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -25,7 +23,7 @@ import { ErrorContainerComponent } from '@feature/project-management/error-conta
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { FactTypeType } from '@schemas/fact-type.schema';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import {
   CREATE_PARTIAL_URL,
   TYPE_KEY_PATTERN,
@@ -38,7 +36,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import {
   MatCell,
   MatCellDef,

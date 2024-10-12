@@ -19,7 +19,6 @@ import { FactTypeService } from '@shared/services/fact-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
-import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
 
