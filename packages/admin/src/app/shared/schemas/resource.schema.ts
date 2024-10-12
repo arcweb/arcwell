@@ -4,10 +4,10 @@ import { ResourceTypeSchema } from './resource-type.schema';
 
 export const ResourceSchema: any = z
   .object({
-    id: z.string().uuid().optional(),
+    id: z.string().uuid(),
     name: z.string(),
-    info: z.object({}).passthrough(),
     typeKey: z.string(),
+    info: z.object({}).passthrough(),
     resourceType: ResourceTypeSchema.optional(),
     tags: z.array(z.string()).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),

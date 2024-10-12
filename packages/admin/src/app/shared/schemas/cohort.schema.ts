@@ -48,11 +48,11 @@ export const deserializeCohort = (
 };
 
 export const serializeCohort = (
-  cohort: CohortModel,
+  data: CohortModel,
 ): CohortType | CohortNewType => {
   return {
-    ...cohort,
-    createdAt: cohort.createdAt ? cohort.createdAt.toISO() : undefined,
-    updatedAt: cohort.updatedAt ? cohort.updatedAt.toISO() : undefined,
+    ...data,
+    createdAt: data.createdAt ? data.createdAt.toISO() : undefined,
+    updatedAt: data.updatedAt ? data.updatedAt.toISO() : undefined,
   };
 };

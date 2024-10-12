@@ -4,20 +4,14 @@ import { DimensionModel } from '@shared/models/dimension.model';
 export const DimensionSchema: any = z
   .object({
     key: z.string(),
-    value: z.string().or(z.number()),
-    factId: z.string().uuid().optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
+    value: z.string().or(z.number()).or(z.date()),
   })
   .strict();
 
 // Validate data going to the API for update
 export const DimensionUpdateSchema = DimensionSchema.extend({
   key: z.string().optional(),
-  value: z.string().or(z.number()).optional(),
-  factId: z.string().uuid().optional(),
-  createdAt: z.string().datetime({ offset: true }).optional(),
-  updatedAt: z.string().datetime({ offset: true }).optional(),
+  value: z.string().or(z.number()).or(z.date()).optional(),
 }).strict();
 
 //  Multiple People
@@ -55,7 +49,5 @@ export const deserializeDimension = (data: DimensionType): DimensionModel => {
 export const serializeDimension = (data: DimensionModel): DimensionType => {
   return {
     ...data,
-    createdAt: data.createdAt?.toISO(),
-    updatedAt: data.updatedAt?.toISO(),
   };
 };

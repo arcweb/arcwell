@@ -7,8 +7,6 @@ export const DimensionSchemaSchema: any = z.object({
   dataType: z.string(),
   dataUnit: z.string().optional(),
   isRequired: z.boolean(),
-  createdAt: z.string().datetime({ offset: true }).optional(),
-  updatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 // Validate data going to the API for update
@@ -18,9 +16,6 @@ export const DimensionSchemaUpdateSchema = DimensionSchemaSchema.extend({
   dataType: z.string(),
   dataUnit: z.string().optional(),
   isRequired: z.boolean(),
-  factId: z.string().uuid().optional(),
-  createdAt: z.string().datetime({ offset: true }).optional(),
-  updatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 //  Multiple People
@@ -68,7 +63,5 @@ export const serializeDimensionSchema = (
 ): DimensionSchemaType => {
   return {
     ...data,
-    createdAt: data.createdAt?.toISO(),
-    updatedAt: data.updatedAt?.toISO(),
   };
 };

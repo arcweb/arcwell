@@ -2,24 +2,6 @@ import { DateTime } from 'luxon';
 import { ResourceUpdateType } from '@schemas/resource.schema';
 import { ResourceTypeModel } from './resource-type.model';
 
-interface ResourceBase {
-  name: string;
-  info?: object;
-  typeKey: string;
-  tags?: string[] | undefined;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  resourceType?: ResourceTypeModel;
-}
-
-export interface ResourcePreSave extends ResourceBase {
-  id?: never;
-}
-
-export interface ResourcePostSave extends ResourceBase {
-  id: string;
-}
-
 export class ResourceModel {
   public id?: string;
   public name: string;

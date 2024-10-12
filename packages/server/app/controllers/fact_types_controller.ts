@@ -27,7 +27,7 @@ export default class FactTypesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(FactType.query(), queryData, 'event_types')
+    let [query, countQuery] = buildApiQuery(FactType.query(), queryData, 'fact_types')
 
     query.preload('tags')
 
