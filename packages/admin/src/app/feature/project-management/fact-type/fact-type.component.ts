@@ -238,10 +238,6 @@ export class FactTypeComponent implements OnInit {
     });
   }
 
-  compareFactTypes(pt1: FactTypeType, pt2: FactTypeType): boolean {
-    return pt1 && pt2 ? pt1.id === pt2.id : false;
-  }
-
   onSetTags(tags: string[]): void {
     this.factTypeStore.setTags(tags);
   }

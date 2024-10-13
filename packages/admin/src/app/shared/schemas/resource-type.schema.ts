@@ -1,32 +1,32 @@
 import { z } from 'zod';
 import { ResourceSchema } from './resource.schema';
 import { ResourceTypeModel } from '../models/resource-type.model';
+import {
+  DimensionSchemaSchema,
+  serializeDimensionSchema,
+} from '@schemas/dimension-schema.schema';
 
 export const ResourceTypeSchema: any = z
-  .object({
-    id: z.string().uuid().optional(),
-    key: z.string(),
-    name: z.string(),
-    description: z.string().optional().nullable(),
-    tags: z.array(z.string()).optional(),
-    resources: z.array(ResourceSchema).optional(),
-    createdAt: z.string().datetime({ offset: true }).optional(),
-    updatedAt: z.string().datetime({ offset: true }).optional(),
-  })
-  .strict();
-
-export const ResourceTypeUpdateSchema = z
   .object({
     id: z.string().uuid(),
     key: z.string(),
     name: z.string(),
     description: z.string().optional().nullable(),
+    dimensionSchemas: z.lazy(() =>
+      z.array(DimensionSchemaSchema.optional()).optional(),
+    ),
     tags: z.array(z.string()).optional(),
-    resources: z.array(ResourceSchema).optional(),
+    resources: z.lazy(() => z.array(ResourceSchema).optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
   .strict();
+
+export const ResourceTypeNewSchema = ResourceTypeSchema.omit({ id: true });
+
+export const ResourceTypeUpdateSchema = ResourceTypeSchema.pick({
+  id: true,
+}).merge(ResourceTypeSchema.omit({ id: true }).partial());
 
 export const ResourceTypesResponseSchema = z.object({
   data: z.array(ResourceTypeSchema),
@@ -42,6 +42,7 @@ export const ResourceTypeResponseSchema = z.object({
 });
 
 export type ResourceTypeType = z.infer<typeof ResourceTypeSchema>;
+export type ResourceTypeNewType = z.infer<typeof ResourceTypeNewSchema>;
 export type ResourceTypeUpdateType = z.infer<typeof ResourceTypeUpdateSchema>;
 export type ResourceTypesResponseType = z.infer<
   typeof ResourceTypesResponseSchema
@@ -61,6 +62,11 @@ export const serializeResourceType = (
 ): ResourceTypeType => {
   return {
     ...data,
+    dimensionSchemas: data.dimensionSchemas
+      ? data.dimensionSchemas.map(dimensionSchema =>
+          serializeDimensionSchema(dimensionSchema),
+        )
+      : undefined,
     createdAt: data.createdAt?.toISO(),
     updatedAt: data.updatedAt?.toISO(),
   };

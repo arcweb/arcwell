@@ -10,8 +10,10 @@ export const FactTypeSchema = z
     name: z.string(),
     description: z.string().optional().nullable(),
     observedAt: z.string().datetime({ offset: true }).optional(),
-    facts: z.array(FactSchema).optional(),
-    dimensionSchemas: z.array(DimensionSchemaSchema.optional()).optional(),
+    facts: z.lazy(() => z.array(FactSchema).optional()),
+    dimensionSchemas: z.lazy(() =>
+      z.array(DimensionSchemaSchema.optional()).optional(),
+    ),
     tags: z.array(z.string()).optional(),
     createdAt: z.string().datetime({ offset: true }).optional().nullable(),
     updatedAt: z.string().datetime({ offset: true }).optional().nullable(),

@@ -55,7 +55,9 @@ export const deserializeResource = (
   return new ResourceModel(data);
 };
 
-export const serializeResource = (data: ResourceModel): ResourceType => {
+export const serializeResource = (
+  data: ResourceModel,
+): ResourceType | ResourceNewType => {
   return {
     ...data,
     dimensions: data.dimensions

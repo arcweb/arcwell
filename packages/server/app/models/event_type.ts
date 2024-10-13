@@ -5,6 +5,7 @@ import Event from '#models/event'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
 import AwBaseModel from '#models/aw_base_model'
+import DimensionSchema from '#models/dimension_schema'
 
 export default class EventType extends AwBaseModel {
   @column({ isPrimary: true })
@@ -18,6 +19,9 @@ export default class EventType extends AwBaseModel {
 
   @column()
   declare description: string
+
+  @column()
+  declare dimensionSchemas: DimensionSchema[]
 
   @hasMany(() => Event, { foreignKey: 'typeKey', localKey: 'key' })
   declare events: HasMany<typeof Event>
@@ -42,10 +46,15 @@ export default class EventType extends AwBaseModel {
   }
 
   @beforeSave()
-  // generate a key based on the name if one is not provided
-  static async generateKey(type: EventType) {
+  static async generateKeyAndJson(type: EventType) {
+    // generate a key based on the name if one is not provided
     if (!type.key) {
       type.key = generateTypeKey(type.name)
+    }
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (type.dimensionSchemas && typeof type.dimensionSchemas !== 'string') {
+      // @ts-ignore - ignoring because dimensionSchemas has to be stringify-ed to get around knex & postgresql jsonb issue
+      type.dimensionSchemas = JSON.stringify(type.dimensionSchemas)
     }
   }
 }

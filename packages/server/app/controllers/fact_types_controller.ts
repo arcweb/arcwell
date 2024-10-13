@@ -88,7 +88,7 @@ export default class FactTypesController {
   /**
    * @showWithFacts
    * @summary List Facts by Type
-   * @description Retireve a list of Fact records of a given FactType
+   * @description Retrieve a list of Fact records of a given FactType
    * @paramUse(sortable, filterable)
    */
   async showWithFacts({ params, auth }: HttpContext) {
