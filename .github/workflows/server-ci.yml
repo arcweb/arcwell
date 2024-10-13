@@ -18,7 +18,7 @@ jobs:
 
     outputs:
       server: ${{ steps.filter.outputs.server }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
     if: ${{ needs.changes.outputs.server == 'true' }}
 
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-  
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -76,12 +76,12 @@ jobs:
           tags: ${{ env.SERVER_IMAGE }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      
+
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-  
+
       - name: Health Check
         run: |
           docker compose up -d
@@ -103,12 +103,12 @@ jobs:
             echo "Health check failed after 10 attempts. Exiting."
             exit 1
           fi
-  
+
   lint-server:
-    needs: build-server
+    needs: changes
 
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -128,12 +128,12 @@ jobs:
           docker pull ${{ env.SERVER_IMAGE }}
           docker compose run server npm run lint
         continue-on-error: true
-  
+
   test-server:
     needs: build-server
 
     runs-on: ubuntu-latest
-  
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
