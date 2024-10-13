@@ -99,7 +99,7 @@ jobs:
           fi
 
   lint-admin:
-    needs: changes
+    needs: build-admin
 
     runs-on: ubuntu-latest
 
