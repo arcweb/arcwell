@@ -1,7 +1,7 @@
 import vine from '@vinejs/vine'
 
 /**
- * Validates the person type's creation action
+ * Validates the Resource creation action
  */
 export const createResourceValidator = vine.compile(
   vine.object({
@@ -10,6 +10,6 @@ export const createResourceValidator = vine.compile(
 )
 
 /**
- * Validates the person type's update action
+ * Validates the Resource update action
  */
 export const updateResourceValidator = vine.compile(vine.object({}))

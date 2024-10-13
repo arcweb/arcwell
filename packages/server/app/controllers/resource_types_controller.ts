@@ -5,9 +5,38 @@ import { createResourceTypeValidator, updateResourceTypeValidator } from '#valid
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
-export function getFullResourceType(id: string) {
-  return ResourceType.query().preload('tags').where('id', id).firstOrFail()
+export function getFullResourceType(id: string, trx?: TransactionClientContract) {
+  if (trx) {
+    return ResourceType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
+  } else {
+    return ResourceType.query().where('id', id).preload('tags').firstOrFail()
+  }
+}
+
+export const createResourceTypeWithTags = async (trx: TransactionClientContract, createData: any, tags: string[]): Promise<ResourceType> => {
+  const newResourceType = new ResourceType().fill(createData).useTransaction(trx)
+  await newResourceType.save()
+
+  if (tags && tags.length > 0) {
+    await setTagsForObject(trx, newResourceType.id, 'resource_types', tags, false)
+  }
+
+  return newResourceType
+}
+
+export const updateResourceTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<ResourceType> => {
+  const resourceType = await ResourceType.findOrFail(id)
+  resourceType.useTransaction(trx)
+
+  const updatedResourceType = await resourceType.merge(updateData).save()
+
+  if (tags) {
+    await setTagsForObject(trx, resourceType.id, 'resource_types', tags)
+  }
+
+  return updatedResourceType
 }
 
 export default class ResourceTypesController {
@@ -48,21 +77,14 @@ export default class ResourceTypesController {
    * @summary Create ResourceType
    * @description Create a new type definition and schema for Resource objects in Arcwell
    */
-  async store({ request, auth }: HttpContext) {
+  async store({ auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createResourceTypeValidator)
-    let newResourceType = null
-    await db.transaction(async (trx) => {
-      newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
-      await newResourceType.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newResourceType.id, 'resource_types', tags.tags, false)
-      }
+    return db.transaction(async (trx) => {
+      const newResourceType = await createResourceTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await getFullResourceType(newResourceType.id, trx) }
     })
-
-    return { data: await getFullResourceType(newResourceType.id) }
   }
 
   /**
@@ -100,19 +122,13 @@ export default class ResourceTypesController {
     await auth.authenticate()
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
-    let updatedResourceType = null
-    await db.transaction(async (trx) => {
-      const resourceType = await ResourceType.findOrFail(params.id)
-      resourceType.useTransaction(trx)
-      updatedResourceType = await resourceType.merge(request.body()).save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags) {
-        await setTagsForObject(trx, resourceType.id, 'resource_types', tags.tags)
-      }
+    const cleanRequest = request.only(['name', 'key', 'description'])
+
+    return await db.transaction(async (trx) => {
+      const updatedResourceType = await updateResourceTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await getFullResourceType(updatedResourceType.id, trx) }
     })
-
-    return { data: await getFullResourceType(updatedResourceType.id) }
   }
 
   /**

@@ -13,6 +13,7 @@ import FactType from '#models/fact_type'
 import db from '@adonisjs/lucid/services/db'
 import { installConfigValidator } from '#validators/config'
 import { createFactTypeWithTags } from '#controllers/fact_types_controller'
+import { createResourceTypeWithTags } from '#controllers/resource_types_controller'
 
 export default class ConfigController {
   /**
@@ -114,7 +115,7 @@ export default class ConfigController {
       users: 0,
     }
 
-    await db.transaction(async (trx) => {
+    return await db.transaction(async (trx) => {
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {
@@ -123,17 +124,15 @@ export default class ConfigController {
         }
       }
 
-      // if (payload.tags && payload.tags.length > 0) {
-      //   for (const tagData of payload.tags) {
-      //     const newTag = new Tag().fill(tagData).useTransaction(trx)
-      //     await newTag.save()
-      //     counts.tags++
-      //   }
-      // }
+      if (payload.resource_types && payload.resource_types.length > 0) {
+        for (const resourceTypeData of payload.resource_types) {
+          await createResourceTypeWithTags(trx, resourceTypeData, resourceTypeData.tags);
+          counts.resource_types++;
+        }
+      }
 
+      return { data: counts }
     })
-
-    return { data: counts }
   }
 
   /**
