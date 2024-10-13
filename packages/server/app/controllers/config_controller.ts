@@ -14,6 +14,7 @@ import db from '@adonisjs/lucid/services/db'
 import { installConfigValidator } from '#validators/config'
 import { createFactTypeWithTags } from '#controllers/fact_types_controller'
 import { createResourceTypeWithTags } from '#controllers/resource_types_controller'
+import { createEventTypeWithTags } from '#controllers/event_types_controller'
 
 export default class ConfigController {
   /**
@@ -116,6 +117,13 @@ export default class ConfigController {
     }
 
     return await db.transaction(async (trx) => {
+
+      if (payload.event_types && payload.event_types.length > 0) {
+        for (const eventTypeData of payload.event_types) {
+          await createEventTypeWithTags(trx, eventTypeData, eventTypeData.tags);
+          counts.event_types++;
+        }
+      }
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {

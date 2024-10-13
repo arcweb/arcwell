@@ -5,9 +5,38 @@ import { createEventTypeValidator, updateEventTypeValidator } from '#validators/
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
-export function getFullEventType(id: string) {
-  return EventType.query().preload('tags').where('id', id).firstOrFail()
+export function getFullEventType(id: string, trx?: TransactionClientContract) {
+  if (trx) {
+    return EventType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
+  } else {
+    return EventType.query().where('id', id).preload('tags').firstOrFail()
+  }
+}
+
+export const createEventTypeWithTags = async (trx: TransactionClientContract, createData: any, tags: string[]): Promise<EventType> => {
+  const newEventType = new EventType().fill(createData).useTransaction(trx)
+  await newEventType.save()
+
+  if (tags && tags.length > 0) {
+    await setTagsForObject(trx, newEventType.id, 'event_types', tags, false)
+  }
+
+  return newEventType
+}
+
+export const updateEventTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<EventType> => {
+  const eventType = await EventType.findOrFail(id)
+  eventType.useTransaction(trx)
+
+  const updatedEventType = await eventType.merge(updateData).save()
+
+  if (tags) {
+    await setTagsForObject(trx, eventType.id, 'event_types', tags)
+  }
+
+  return updatedEventType
 }
 
 export default class EventTypesController {
@@ -48,21 +77,14 @@ export default class EventTypesController {
    * @summary Create EventType
    * @description Create a new type definition and schema for Events
    */
-  async store({ request, auth }: HttpContext) {
+  async store({ auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createEventTypeValidator)
 
-    let newEventType = null
-    await db.transaction(async (trx) => {
-      newEventType = new EventType().fill(request.body()).useTransaction(trx)
-      await newEventType.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newEventType.id, 'event_types', tags.tags, false)
-      }
+    return db.transaction(async (trx) => {
+      const newEventType = await createEventTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await getFullEventType(newEventType.id, trx) }
     })
-    return { data: await getFullEventType(newEventType.id) }
   }
 
   /**
@@ -108,19 +130,12 @@ export default class EventTypesController {
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    let updatedEventType = null
-    await db.transaction(async (trx) => {
-      const eventType = await EventType.findOrFail(params.id)
-      eventType.useTransaction(trx)
-      updatedEventType = await eventType.merge(request.body()).save()
+    const cleanRequest = request.only(['name', 'key', 'description'])
 
-      const tags = request.only(['tags'])
-      if (tags.tags) {
-        await setTagsForObject(trx, eventType.id, 'event_types', tags.tags)
-      }
+    return db.transaction(async (trx) => {
+      const updatedEventType = await updateEventTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await getFullEventType(updatedEventType.id, trx) }
     })
-
-    return { data: await getFullEventType(updatedEventType.id) }
   }
 
   /**
