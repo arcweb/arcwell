@@ -15,6 +15,7 @@ import { installConfigValidator } from '#validators/config'
 import { createFactTypeWithTags } from '#controllers/fact_types_controller'
 import { createResourceTypeWithTags } from '#controllers/resource_types_controller'
 import { createEventTypeWithTags } from '#controllers/event_types_controller'
+import { createRole } from '#controllers/roles_controller'
 
 export default class ConfigController {
   /**
@@ -116,7 +117,7 @@ export default class ConfigController {
       users: 0,
     }
 
-    return await db.transaction(async (trx) => {
+    return db.transaction(async (trx) => {
 
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
@@ -136,6 +137,13 @@ export default class ConfigController {
         for (const resourceTypeData of payload.resource_types) {
           await createResourceTypeWithTags(trx, resourceTypeData, resourceTypeData.tags);
           counts.resource_types++;
+        }
+      }
+
+      if (payload.roles && payload.roles.length > 0) {
+        for (const roleData of payload.roles) {
+          await createRole(trx, roleData);
+          counts.roles++;
         }
       }
 

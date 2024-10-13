@@ -3,12 +3,36 @@ import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
 import { buildApiQuery } from '#helpers/query_builder'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import db from '@adonisjs/lucid/services/db'
 
-export function getFullRole(id: string) {
-  return Role.query()
-    .where('id', id)
-    .preload('users', (users) => users.preload('person').preload('tags'))
-    .firstOrFail()
+export function getFullRole(id: string, trx?: TransactionClientContract) {
+  if (trx) {
+    return Role.query({ client: trx })
+      .where('id', id)
+      .preload('users', (users) => users.preload('person').preload('tags'))
+      .firstOrFail()
+  } else {
+    return Role.query()
+      .where('id', id)
+      .preload('users', (users) => users.preload('person').preload('tags'))
+      .firstOrFail()
+  }
+}
+
+export const createRole = async (trx: TransactionClientContract, createData: any) => {
+  const newRole = new Role().fill(createData).useTransaction(trx)
+  await newRole.save()
+
+  return newRole
+}
+
+export const updateRole = async (trx: TransactionClientContract, id: string, updateData: any) => {
+  const role = await Role.findOrFail(id)
+  role.useTransaction(trx)
+  const updatedRole = await role.merge(updateData).save()
+
+  return updatedRole
 }
 
 export default class RolesController {
@@ -52,11 +76,14 @@ export default class RolesController {
    * @summary Create Role
    * @description Create a new Role within Arcwell
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({ auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createRoleValidator)
-    const newRole = await Role.create(request.body())
-    return { data: await getFullRole(newRole.id) }
+
+    return await db.transaction(async (trx) => {
+      const newRole = await createRole(trx, request.body())
+      return { data: await getFullRole(newRole.id, trx) }
+    })
   }
 
   /**
@@ -68,10 +95,13 @@ export default class RolesController {
     await auth.authenticate()
     await request.validateUsing(updateRoleValidator)
     await paramsUUIDValidator.validate(params)
-    const role = await Role.findOrFail(params.id)
+
     const cleanRequest = request.only(['name'])
-    const updateRole = await role.merge(cleanRequest).save()
-    return { data: await getFullRole(updateRole.id) }
+
+    return await db.transaction(async (trx) => {
+      const updatedRole = await updateRole(trx, params.id, cleanRequest)
+      return { data: await getFullRole(updatedRole.id, trx) }
+    })
   }
 
   /**
