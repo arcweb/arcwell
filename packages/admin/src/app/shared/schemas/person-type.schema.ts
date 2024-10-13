@@ -5,7 +5,6 @@ import {
   DimensionSchemaSchema,
   serializeDimensionSchema,
 } from '@schemas/dimension-schema.schema';
-import { ResourceTypeSchema } from '@schemas/resource-type.schema';
 
 export const PersonTypeSchema = z
   .object({

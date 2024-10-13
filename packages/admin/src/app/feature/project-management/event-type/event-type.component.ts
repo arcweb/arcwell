@@ -18,7 +18,7 @@ import {
   TouchedChangeEvent,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import {
   CREATE_PARTIAL_URL,
@@ -36,7 +36,6 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
 
@@ -66,10 +65,8 @@ import { DetailStore } from '../detail/detail.store';
 })
 export class EventTypeComponent implements OnInit {
   readonly eventTypeStore = inject(EventTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
@@ -164,19 +161,15 @@ export class EventTypeComponent implements OnInit {
   }
 
   onCancel() {
-    if (this.eventTypeStore.inCreateMode()) {
-      this.backService.goBack();
-    } else {
-      // reset the form
-      if (this.eventTypeStore.inEditMode()) {
-        this.eventTypeForm.patchValue({
-          key: this.eventTypeStore.eventType()?.key,
-          name: this.eventTypeStore.eventType()?.name,
-          description: this.eventTypeStore.eventType()?.description,
-        });
-      }
-      this.eventTypeStore.toggleEditMode();
+    // reset the form
+    if (this.eventTypeStore.inEditMode()) {
+      this.eventTypeForm.patchValue({
+        key: this.eventTypeStore.eventType()?.key,
+        name: this.eventTypeStore.eventType()?.name,
+        description: this.eventTypeStore.eventType()?.description,
+      });
     }
+    this.eventTypeStore.toggleEditMode();
   }
 
   onDelete() {

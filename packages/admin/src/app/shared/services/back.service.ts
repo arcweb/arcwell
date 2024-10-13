@@ -2,6 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
+interface LocationState {
+  navigationId?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -10,7 +14,7 @@ export class BackService {
   private router = inject(Router);
 
   goBack(url?: string) {
-    const locationState = this.location.getState() as any;
+    const locationState = this.location.getState() as LocationState;
     if (
       locationState &&
       locationState.navigationId &&

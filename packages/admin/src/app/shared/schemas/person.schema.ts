@@ -5,6 +5,7 @@ import { PersonTypeSchema } from './person-type.schema';
 import { CohortSchema } from './cohort.schema';
 import { DimensionSchema, serializeDimension } from '@schemas/dimension.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const PersonSchema: any = z
   .object({
     id: z.string().uuid(),

@@ -3,6 +3,7 @@ import { ResourceModel } from '../models/resource.model';
 import { ResourceTypeSchema } from './resource-type.schema';
 import { DimensionSchema, serializeDimension } from '@schemas/dimension.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const ResourceSchema: any = z
   .object({
     id: z.string().uuid(),

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const ConfigSchema: any = z
   .object({
     arcwell: z.object({

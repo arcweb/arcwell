@@ -6,6 +6,7 @@ import { EventSchema } from '@schemas/event.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
 import { DimensionSchema } from '@schemas/dimension.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const FactSchema: any = z
   .object({
     id: z.string().uuid().optional(),

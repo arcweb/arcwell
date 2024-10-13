@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { UserSchema } from './user.schema';
 import { RoleModel } from '../models';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const RoleSchema: any = z
   .object({
     id: z.string().uuid().optional(),

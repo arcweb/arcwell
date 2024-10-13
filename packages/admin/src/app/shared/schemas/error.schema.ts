@@ -9,6 +9,7 @@ export const ErrorSchema = z
   })
   .strict();
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const ErrorsSchema: any = z.object({
   errors: z.array(ErrorSchema),
   info: z.object({}).passthrough().optional(),

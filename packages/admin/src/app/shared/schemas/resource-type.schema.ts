@@ -6,6 +6,7 @@ import {
   serializeDimensionSchema,
 } from '@schemas/dimension-schema.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const ResourceTypeSchema: any = z
   .object({
     id: z.string().uuid(),

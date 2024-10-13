@@ -5,6 +5,7 @@ import { PersonSchema } from '@schemas/person.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
 import { DimensionSchema, serializeDimension } from '@schemas/dimension.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const EventSchema: any = z
   .object({
     id: z.string().uuid(),

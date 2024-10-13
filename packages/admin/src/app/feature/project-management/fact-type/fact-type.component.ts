@@ -22,7 +22,6 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { FactTypeType } from '@schemas/fact-type.schema';
 import { RouterLink } from '@angular/router';
 import {
   CREATE_PARTIAL_URL,
@@ -49,8 +48,9 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { JsonPipe } from '@angular/common';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
+import { FactTypeNewType } from '@schemas/fact-type.schema';
 
 @Component({
   selector: 'aw-fact-type',
@@ -165,8 +165,10 @@ export class FactTypeComponent implements OnInit {
             ? JSON.parse(formValue.dimensionSchemas)
             : [];
 
-          const factTypeFormPayload: any = {
-            ...formValue,
+          const factTypeFormPayload: FactTypeNewType = {
+            name: this.factTypeForm.value['name'] ?? '',
+            key: this.factTypeForm.value['key'] ?? '',
+            description: this.factTypeForm.value['description'] ?? '',
             dimensionSchemas: dimensionsSquemaJson,
           };
 
