@@ -16,6 +16,7 @@ import { createFactTypeWithTags } from '#controllers/fact_types_controller'
 import { createResourceTypeWithTags } from '#controllers/resource_types_controller'
 import { createEventTypeWithTags } from '#controllers/event_types_controller'
 import { createRole } from '#controllers/roles_controller'
+import { createPersonTypeWithTags } from '#controllers/person_types_controller'
 
 export default class ConfigController {
   /**
@@ -130,6 +131,13 @@ export default class ConfigController {
         for (const factTypeData of payload.fact_types) {
           await createFactTypeWithTags(trx, factTypeData, factTypeData.tags);
           counts.fact_types++;
+        }
+      }
+
+      if (payload.person_types && payload.person_types.length > 0) {
+        for (const personTypeData of payload.person_types) {
+          await createPersonTypeWithTags(trx, personTypeData, personTypeData.tags);
+          counts.person_types++;
         }
       }
 

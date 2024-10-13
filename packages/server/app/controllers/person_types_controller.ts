@@ -5,10 +5,40 @@ import { createPersonTypeValidator, updatePersonTypeValidator } from '#validator
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
-export function getFullPersonType(id: string) {
-  return PersonType.query().preload('tags').where('id', id).firstOrFail()
+export function getFullPersonType(id: string, trx?: TransactionClientContract) {
+  if (trx) {
+    return PersonType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
+  } else {
+    return PersonType.query().where('id', id).preload('tags').firstOrFail()
+  }
 }
+
+export const createPersonTypeWithTags = async (trx: TransactionClientContract, createData: any, tags: string[]): Promise<PersonType> => {
+  const newPersonType = new PersonType().fill(createData).useTransaction(trx)
+  await newPersonType.save()
+
+  if (tags && tags.length > 0) {
+    await setTagsForObject(trx, newPersonType.id, 'person_types', tags, false)
+  }
+
+  return newPersonType
+}
+
+export const updatePersonTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<PersonType> => {
+  const personType = await PersonType.findOrFail(id)
+  personType.useTransaction(trx)
+
+  const updatedPersonType = await personType.merge(updateData).save()
+
+  if (tags) {
+    await setTagsForObject(trx, personType.id, 'person_types', tags)
+  }
+
+  return updatedPersonType
+}
+
 export default class PersonTypesController {
   /**
    * @index
@@ -51,18 +81,11 @@ export default class PersonTypesController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createPersonTypeValidator)
-    let newPersonType = null
-    await db.transaction(async (trx) => {
-      newPersonType = new PersonType().fill(request.body()).useTransaction(trx)
-      await newPersonType.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newPersonType.id, 'person_types', tags.tags, false)
-      }
+    return db.transaction(async (trx) => {
+      const newPersonType = await createPersonTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await getFullPersonType(newPersonType.id, trx) }
     })
-
-    return { data: await getFullPersonType(newPersonType.id) }
   }
 
   /**
@@ -100,19 +123,13 @@ export default class PersonTypesController {
     await auth.authenticate()
     await request.validateUsing(updatePersonTypeValidator)
     await paramsUUIDValidator.validate(params)
-    let updatedPersonType = null
-    await db.transaction(async (trx) => {
-      const personType = await PersonType.findOrFail(params.id)
-      personType.useTransaction(trx)
-      updatedPersonType = await personType.merge(request.body()).save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags) {
-        await setTagsForObject(trx, personType.id, 'person_types', tags.tags)
-      }
+    const cleanRequest = request.only(['name', 'key', 'description'])
+
+    return db.transaction(async (trx) => {
+      const updatedPersonType = await updatePersonTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await getFullPersonType(updatedPersonType.id, trx) }
     })
-
-    return { data: await getFullPersonType(updatedPersonType.id) }
   }
 
   /**
