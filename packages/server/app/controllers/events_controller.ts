@@ -3,8 +3,10 @@ import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventValidator, updateEventValidator } from '#validators/event'
 import type { HttpContext } from '@adonisjs/core/http'
-import { buildApiQuery, buildEventsSort, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery, buildEventsSort } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
+import EventService from '#services/event_service'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
 
 export default class EventsController {
   /**
@@ -12,7 +14,7 @@ export default class EventsController {
    * @summary Count Events
    * @description Returns the count of total events
    */
-  async count({}: HttpContext) {
+  async count({ }: HttpContext) {
     const countQuery = db.from('events').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -35,20 +37,7 @@ export default class EventsController {
 
     let [query, countQuery] = buildApiQuery(Event.query(), queryData, 'events', 'typeKey')
 
-    query
-      .preload('tags')
-      .preload('person', (person: any) => {
-        person.preload('tags')
-        person.preload('user', (user: any) => {
-          user.preload('tags')
-        })
-      })
-      .preload('resource', (resource: any) => {
-        resource.preload('tags')
-      })
-      .preload('eventType', (tags: any) => {
-        tags.preload('tags')
-      })
+    query.apply((scopes: ExtractScopes<typeof Event>) => scopes.fullEvent())
 
     buildEventsSort(query, queryData)
 
@@ -83,42 +72,11 @@ export default class EventsController {
       'resourceId',
       'tags',
     ])
-    const newEvent = await db.transaction(async (trx) => {
-      const event = new Event().fill(cleanRequest).useTransaction(trx)
-      await event.save()
 
-      if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags, false)
-      }
-      return event
+    return db.transaction(async (trx) => {
+      const newEvent = await EventService.createEventWithTags(trx, cleanRequest, cleanRequest.tags)
+      return EventService.getFullEvent(newEvent.id, trx)
     })
-
-    let returnQuery = await Event.query()
-      .where('id', newEvent.id)
-      .preload('tags')
-      .preload('eventType', (tags) => {
-        tags.preload('tags')
-      })
-      .firstOrFail()
-
-    const createdEvent = await Event.query()
-      .where('id', returnQuery.id)
-      .preload('tags')
-      .preload('person', (person) => {
-        person.preload('tags')
-        person.preload('user', (user) => {
-          user.preload('tags')
-        })
-      })
-      .preload('resource', (resource) => {
-        resource.preload('tags')
-      })
-      .preload('eventType', (tags) => {
-        tags.preload('tags')
-      })
-      .firstOrFail()
-
-    return { data: createdEvent }
   }
 
   /**
@@ -128,24 +86,7 @@ export default class EventsController {
    */
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
-    return {
-      data: await Event.query()
-        .where('id', params.id)
-        .preload('tags')
-        .preload('person', (person) => {
-          person.preload('tags')
-          person.preload('user', (user) => {
-            user.preload('tags')
-          })
-        })
-        .preload('resource', (resource) => {
-          resource.preload('tags')
-        })
-        .preload('eventType', (tags) => {
-          tags.preload('tags')
-        })
-        .firstOrFail(),
-    }
+    return { data: await EventService.getFullEvent(params.id) }
   }
 
   /**
@@ -156,6 +97,7 @@ export default class EventsController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
+
     // TODO Add person/personId and resource/resourceId when implemented
     const cleanRequest = request.only([
       'typeKey',
@@ -163,38 +105,12 @@ export default class EventsController {
       'endedAt',
       'personId',
       'resourceId',
-      'tags',
     ])
-    // let updatedEvent = null
-    const newEvent = await db.transaction(async (trx) => {
-      const event = await Event.findOrFail(params.id)
-      event.useTransaction(trx)
-      const updatedEvent = await event.merge(cleanRequest).save()
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
-      }
-      return updatedEvent
+    return db.transaction(async (trx) => {
+      const updatedEvent = await EventService.updateEventWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await EventService.getFullEvent(updatedEvent.id, trx) }
     })
-
-    let returnQuery = Event.query()
-      .where('id', newEvent.id)
-      .preload('tags')
-      .preload('person', (person) => {
-        person.preload('tags')
-        person.preload('user', (user) => {
-          user.preload('tags')
-        })
-      })
-      .preload('resource', (resource) => {
-        resource.preload('tags')
-      })
-      .preload('eventType', (tags) => {
-        tags.preload('tags')
-      })
-      .firstOrFail()
-
-    return { data: await returnQuery }
   }
 
   /**

@@ -4,7 +4,7 @@ import { createFactTypeSchema } from '#validators/fact_type'
 import { createPersonTypeSchema } from '#validators/person_type';
 import { createResourceTypeSchema } from '#validators/resource_type';
 import { createRoleSchema } from '#validators/role';
-import { createUserSchema } from './user';
+import { createUserSchema } from '#validators/user';
 
 export const installConfigSchema = vine.object({
   event_types: vine.array(createEventTypeSchema).optional(),

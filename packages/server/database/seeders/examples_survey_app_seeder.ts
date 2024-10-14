@@ -30,7 +30,10 @@ export default class SurveyAppSeeder extends BaseSeeder {
       { key: 'patient', name: 'Patient' }
     )
 
-    const patientRole = await Role.firstOrCreate({ name: 'patient' }, { name: 'patient' })
+    const superAdminRole = await Role.firstOrCreate(
+      { name: 'Super Admin' },
+      { name: 'Super Admin' }
+    )
 
     const patientPerson = await PersonFactory.merge({
       typeKey: patientPersonType.key,
@@ -42,7 +45,7 @@ export default class SurveyAppSeeder extends BaseSeeder {
         email: 'patient@example.com',
         password: 'password',
         personId: patientPerson.id,
-        roleId: patientRole.id,
+        roleId: superAdminRole.id,
       }
     )
 
