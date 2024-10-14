@@ -28,7 +28,7 @@ test.group('Router tag', () => {
     assert.equal(data.data.pathname, tag?.pathname)
   })
 
-  test('tag udate test', async ({ assert, client }) => {
+  test('tag update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const tag = await Tag.first()
 
