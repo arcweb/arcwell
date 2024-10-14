@@ -159,7 +159,7 @@ export class TagService {
   create(tag: TagType): Observable<TagType | ErrorResponseType> {
     return this.http.post<TagType>(`${environment.apiUrl}/tags`, tag).pipe(
       map((response: TagType) => {
-        return deserializeTag(response);
+        return deserializeTag(response.data);
       }),
       catchError(error => {
         return defaultErrorResponseHandler(error);

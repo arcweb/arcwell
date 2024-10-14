@@ -278,7 +278,7 @@ export const TagStore = signalStore(
           toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
 
           // navigate to the newly created item
-          detailStore.routeToNewDetailId(resp.data.id);
+          detailStore.routeToNewDetailId(resp.id);
         }
       },
 
