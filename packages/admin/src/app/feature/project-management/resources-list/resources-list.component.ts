@@ -26,6 +26,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 @Component({
   selector: 'aw-resources-list',
@@ -61,6 +62,7 @@ export class ResourcesListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -85,6 +87,16 @@ export class ResourcesListComponent {
         typeKey: typeKey,
       });
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.resourcesListStore.load({
+          limit: this.resourcesListStore.limit(),
+          offset: this.resourcesListStore.offset(),
+          typeKey: this.resourcesListStore.typeKey(),
+        });
+      });
   }
 
   rowClick(row: ResourceModel) {

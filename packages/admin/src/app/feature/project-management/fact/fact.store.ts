@@ -26,6 +26,7 @@ import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface FactState {
   fact: FactType | null;
@@ -61,6 +62,7 @@ export const FactStore = signalStore(
       tagService = inject(TagService),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(factId: string) {
         patchState(store, setPending());
@@ -174,6 +176,9 @@ export const FactStore = signalStore(
           );
 
           toastService.sendMessage('Updated fact.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async createFact(createFactFormData: FactType) {
@@ -194,8 +199,11 @@ export const FactStore = signalStore(
             { fact: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+
           toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
 
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate to the new item
           detailStore.routeToNewDetailId(resp.data.id);
         }
@@ -208,7 +216,13 @@ export const FactStore = signalStore(
           toastService.sendMessage('Error deleting fact.', ToastLevel.ERROR);
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+
           toastService.sendMessage('Deleted fact.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

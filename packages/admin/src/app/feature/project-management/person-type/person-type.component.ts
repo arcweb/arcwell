@@ -191,11 +191,7 @@ export class PersonTypeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.personTypeStore.delete().then(() => {
-          if (this.personTypeStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.personTypeStore.delete();
       }
     });
   }

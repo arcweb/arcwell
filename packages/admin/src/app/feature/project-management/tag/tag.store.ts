@@ -25,6 +25,7 @@ import { FactType } from '@app/shared/schemas/fact.schema';
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { UserType } from '@app/shared/schemas/user.schema';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface RelatedListState {
   limit: number;
@@ -128,6 +129,7 @@ export const TagStore = signalStore(
       tagService = inject(TagService),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(tagId: string) {
         patchState(store, setPending());
@@ -238,7 +240,10 @@ export const TagStore = signalStore(
             },
             setFulfilled(),
           );
+
           toastService.sendMessage('Updated tag.', ToastLevel.SUCCESS);
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
 
@@ -249,7 +254,6 @@ export const TagStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // TODO: Do we need to do this if we are navigating away?
           patchState(
             store,
             {
@@ -277,8 +281,10 @@ export const TagStore = signalStore(
 
           toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
 
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate to the newly created item
-          detailStore.routeToNewDetailId(resp.data.id);
+          detailStore.routeToNewDetailId(resp.id);
         }
       },
 
@@ -310,6 +316,13 @@ export const TagStore = signalStore(
             },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Deleted tag.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
 

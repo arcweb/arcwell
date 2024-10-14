@@ -28,6 +28,7 @@ import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface CohortPeopleListState {
   limit: number;
@@ -81,6 +82,7 @@ export const CohortStore = signalStore(
       tagService = inject(TagService),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(cohortId: string) {
         patchState(store, setPending());
@@ -154,7 +156,11 @@ export const CohortStore = signalStore(
             },
             setFulfilled(),
           );
+
           toastService.sendMessage('Updated cohort.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async createCohort(createCohortFormData: CohortNewType) {
@@ -189,6 +195,8 @@ export const CohortStore = signalStore(
 
           toastService.sendMessage('Created cohort.', ToastLevel.SUCCESS);
 
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate to the newly created cohort
           detailStore.routeToNewDetailId(cohortResp.data.id);
         }
@@ -204,6 +212,13 @@ export const CohortStore = signalStore(
             { inEditMode: false, peopleListOptions: initialPeopleListState },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Deleted cohort.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

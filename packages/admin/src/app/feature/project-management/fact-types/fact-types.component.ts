@@ -22,6 +22,8 @@ import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'aw-fact-types',
   standalone: true,
@@ -53,6 +55,7 @@ export class FactTypesComponent {
   public factTypesStore = inject(FactTypesStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  readonly refreshService = inject(RefreshService);
 
   dataSource = new MatTableDataSource<FactTypeModel>();
 
@@ -64,6 +67,17 @@ export class FactTypesComponent {
     effect(() => {
       this.dataSource.data = this.factTypesStore.factTypes();
     });
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.factTypesStore.load({
+          limit: this.factTypesStore.limit(),
+          offset: this.factTypesStore.offset(),
+          sort: this.factTypesStore.sort(),
+          order: this.factTypesStore.order(),
+          pageIndex: this.factTypesStore.pageIndex(),
+        });
+      });
   }
 
   handleClick(row: FactTypeModel) {

@@ -22,6 +22,8 @@ import { ResourceTypesStore } from './resource-types.store';
 import { ResourceTypeModel } from '@app/shared/models/resource-type.model';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-resource-types',
@@ -54,6 +56,7 @@ export class ResourceTypesComponent {
   public resourceTypesStore = inject(ResourceTypesStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  readonly refreshService = inject(RefreshService);
 
   dataSource = new MatTableDataSource<ResourceTypeModel>();
 
@@ -65,6 +68,18 @@ export class ResourceTypesComponent {
     effect(() => {
       this.dataSource.data = this.resourceTypesStore.resourceTypes();
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.resourceTypesStore.load({
+          limit: this.resourceTypesStore.limit(),
+          offset: this.resourceTypesStore.offset(),
+          sort: this.resourceTypesStore.sort(),
+          order: this.resourceTypesStore.order(),
+          pageIndex: this.resourceTypesStore.pageIndex(),
+        });
+      });
   }
 
   handleClick(row: ResourceTypeModel) {

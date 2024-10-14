@@ -14,6 +14,7 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 @Component({
   selector: 'aw-people-list',
@@ -37,6 +38,7 @@ export class PeopleListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   pageSizes = [10, 20, 50];
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
@@ -67,6 +69,19 @@ export class PeopleListComponent {
         typeKey: typeKey,
       });
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.peopleListStore.load({
+          limit: this.peopleListStore.limit(),
+          offset: this.peopleListStore.offset(),
+          sort: this.peopleListStore.sort(),
+          order: this.peopleListStore.order(),
+          pageIndex: this.peopleListStore.pageIndex(),
+          typeKey: this.peopleListStore.typeKey(),
+        });
+      });
   }
 
   rowClick(row: PersonModel) {

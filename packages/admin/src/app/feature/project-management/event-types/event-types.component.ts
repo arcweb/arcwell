@@ -22,6 +22,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -53,6 +55,7 @@ export class EventTypesComponent {
   public eventTypesStore = inject(EventTypesStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  readonly refreshService = inject(RefreshService);
 
   dataSource = new MatTableDataSource<EventTypeModel>();
 
@@ -64,6 +67,18 @@ export class EventTypesComponent {
     effect(() => {
       this.dataSource.data = this.eventTypesStore.eventTypes();
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.eventTypesStore.load({
+          limit: this.eventTypesStore.limit(),
+          offset: this.eventTypesStore.offset(),
+          sort: this.eventTypesStore.sort(),
+          order: this.eventTypesStore.order(),
+          pageIndex: this.eventTypesStore.pageIndex(),
+        });
+      });
   }
 
   handleClick(row: EventTypeModel) {

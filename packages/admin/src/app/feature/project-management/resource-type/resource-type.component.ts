@@ -187,11 +187,7 @@ export class ResourceTypeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.resourceTypeStore.delete().then(() => {
-          if (this.resourceTypeStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.resourceTypeStore.delete();
       }
     });
   }

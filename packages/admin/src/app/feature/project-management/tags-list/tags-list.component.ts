@@ -22,6 +22,8 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { TagModel } from '@app/shared/models/tag.model';
 import { TagsListStore } from './tags-list.store';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-tags-list',
@@ -54,6 +56,7 @@ export class TagsListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   pageSizes = [10, 20, 50];
 
   dataSource = new MatTableDataSource<TagModel>();
@@ -62,6 +65,15 @@ export class TagsListComponent {
     effect(() => {
       this.dataSource.data = this.tagsListStore.tags();
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.tagsListStore.load(
+          this.tagsListStore.limit(),
+          this.tagsListStore.offset(),
+        );
+      });
   }
 
   // TODO: Make this an object array that has display names, so headers aren't locked to the field name.

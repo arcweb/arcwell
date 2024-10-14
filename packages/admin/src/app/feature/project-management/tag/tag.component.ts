@@ -192,11 +192,7 @@ export class TagComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.tagStore.deleteTag().then(() => {
-          if (this.tagStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.tagStore.deleteTag();
       }
     });
   }

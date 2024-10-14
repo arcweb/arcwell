@@ -21,6 +21,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -48,6 +49,7 @@ export const FactTypeStore = signalStore(
       featureStore = inject(FeatureStore),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(factTypeId: string) {
         patchState(store, setPending());
@@ -90,16 +92,18 @@ export const FactTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
-          toastService.sendMessage('Updated Fact Type.', ToastLevel.SUCCESS);
-
           patchState(
             store,
             { factType: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Updated Fact Type.', ToastLevel.SUCCESS);
+
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createFactTypeFormData: FactType) {
@@ -110,9 +114,6 @@ export const FactTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           toastService.sendMessage('Created Fact Type.', ToastLevel.SUCCESS);
           patchState(
             store,
@@ -120,8 +121,12 @@ export const FactTypeStore = signalStore(
             setFulfilled(),
           );
 
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
           // navigate the user to the newly created item
           detailStore.routeToNewDetailId(resp.data.id);
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async delete() {
@@ -132,10 +137,16 @@ export const FactTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage('Deleted Fact Type.', ToastLevel.SUCCESS);
+
           // load the feature list with the latest list of subfeatures
           featureStore.load();
-
-          patchState(store, { inEditMode: false }, setFulfilled());
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {
