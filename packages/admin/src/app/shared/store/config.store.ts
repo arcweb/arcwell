@@ -8,7 +8,7 @@ import {
 } from './request-status.feature';
 import { inject } from '@angular/core';
 import { ConfigService } from '../services/config.service';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 interface ConfigState {
   config: ConfigModel | null;
@@ -26,7 +26,7 @@ export const ConfigStore = signalStore(
   withMethods((store, configService = inject(ConfigService)) => ({
     async load() {
       patchState(store, setPending());
-      const resp: ConfigModel = await lastValueFrom(configService.getConfig());
+      const resp: ConfigModel = await firstValueFrom(configService.getConfig());
       patchState(store, { config: resp }, setFulfilled());
     },
   })),

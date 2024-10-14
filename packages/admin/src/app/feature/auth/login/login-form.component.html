@@ -1,7 +1,7 @@
 <form
   [formGroup]="loginForm"
   (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
-  class="loginForm"
+  class="login-form"
 >
   <mat-icon class="logo" svgIcon="arcwell-logo-blue"></mat-icon>
 

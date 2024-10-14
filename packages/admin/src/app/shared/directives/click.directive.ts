@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 @Directive({
+  // eslint-disable-next-line @angular-eslint/directive-selector
   selector: '[click], [mat-dialog-close]',
 
   standalone: true,
@@ -17,8 +18,6 @@ export class ClickDirective implements OnChanges, OnInit {
   @Input() disabled?: boolean | null;
   @Input() disablePointer?: boolean;
   private el: ElementRef = inject(ElementRef);
-
-  constructor() {}
 
   ngOnInit() {
     this.updateCursor();

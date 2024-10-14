@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import { ResourceStore } from './resource.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -35,7 +33,10 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
-import { ResourceType } from '@app/shared/schemas/resource.schema';
+import {
+  ResourceNewType,
+  ResourceType,
+} from '@app/shared/schemas/resource.schema';
 
 @Component({
   selector: 'aw-resource',
@@ -118,7 +119,7 @@ export class ResourceComponent implements OnInit {
       .subscribe(resource => {
         if ((resource as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.resourceStore.inCreateMode()) {
-            const resourceFormPayload: ResourceType = {
+            const resourceFormPayload: ResourceType | ResourceNewType = {
               ...this.resourceForm.value,
             };
 

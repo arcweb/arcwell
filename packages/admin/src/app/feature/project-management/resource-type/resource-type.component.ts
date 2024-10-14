@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {

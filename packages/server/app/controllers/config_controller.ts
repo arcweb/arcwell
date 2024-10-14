@@ -46,8 +46,7 @@ export default class ConfigController {
    * @summary Features Menu
    * @description Returns a nested list representing all current top-level features and sub-features/types active in Arcwell.
    */
-  async featuresMenu({ auth }: HttpContext) {
-    await auth.authenticate()
+  async featuresMenu({}: HttpContext) {
     // clone the featureMenuConfig so we don't modify the original
     // TODO: Find a better way to clone the featureMenuConfig
     const featuresBaseMenuConfig = JSON.parse(JSON.stringify(featureMenuConfig))

@@ -46,8 +46,7 @@ export default class PersonTypesController {
    * @summary Create PersonType
    * @description Create a new class type of Person, specificying schema and storage rules.
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createPersonTypeValidator)
 
     return db.transaction(async (trx) => {
@@ -87,8 +86,7 @@ export default class PersonTypesController {
    * @summary Update PersonType
    * @description Update the definition for an existing individual Person Type.
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updatePersonTypeValidator)
     await paramsUUIDValidator.validate(params)
 
@@ -105,8 +103,7 @@ export default class PersonTypesController {
    * @summary Delete PersonType
    * @description Remove the definition for an existing Person Type from Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const personType = await PersonType.findOrFail(params.id)
     await personType.delete()

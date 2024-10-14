@@ -22,7 +22,6 @@ import { ResourceService } from '@app/shared/services/resource.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
-import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';

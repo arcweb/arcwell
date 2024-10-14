@@ -1,3 +1,5 @@
+import { ConfigType } from '@schemas/config.schema';
+
 interface ArcwellModel {
   id: string;
   name: string;
@@ -14,7 +16,7 @@ export class ConfigModel {
   public arcwell: ArcwellModel;
   public mail: MailModel;
 
-  constructor(data: any) {
+  constructor(data: ConfigType) {
     this.arcwell = data.arcwell;
     this.mail = data.mail;
   }

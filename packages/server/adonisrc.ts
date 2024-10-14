@@ -40,7 +40,7 @@ export default defineConfig({
     () => import('@adonisjs/bouncer/bouncer_provider'),
     () => import('@adonisjs/mail/mail_provider'),
     () => import('@adonisjs/core/providers/edge_provider'),
-    () => import('@adonisjs/static/static_provider')
+    () => import('@adonisjs/static/static_provider'),
   ],
 
   /*
@@ -85,7 +85,7 @@ export default defineConfig({
     {
       pattern: 'public/**',
       reloadServer: false,
-    }
+    },
   ],
 
   directories: {

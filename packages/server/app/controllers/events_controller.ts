@@ -12,9 +12,7 @@ export default class EventsController {
    * @summary Count Events
    * @description Returns the count of total events
    */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
+  async count({}: HttpContext) {
     const countQuery = db.from('events').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -75,8 +73,7 @@ export default class EventsController {
    * @summary Create Event
    * @description Create a new Event record within Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createEventValidator)
     const cleanRequest = request.only([
       'typeKey',
@@ -86,15 +83,14 @@ export default class EventsController {
       'resourceId',
       'tags',
     ])
-    let newEvent = null
-
-    await db.transaction(async (trx) => {
-      newEvent = new Event().fill(cleanRequest).useTransaction(trx)
-      await newEvent.save()
+    const newEvent = await db.transaction(async (trx) => {
+      const event = new Event().fill(cleanRequest).useTransaction(trx)
+      await event.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, newEvent.id, 'events', cleanRequest.tags, false)
+        await setTagsForObject(trx, event.id, 'events', cleanRequest.tags, false)
       }
+      return event
     })
 
     let returnQuery = await Event.query()
@@ -157,8 +153,7 @@ export default class EventsController {
    * @summary Update Event
    * @description Update an individual Event record within Arcwell
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
     // TODO Add person/personId and resource/resourceId when implemented
@@ -170,19 +165,20 @@ export default class EventsController {
       'resourceId',
       'tags',
     ])
-    let updatedEvent = null
-    await db.transaction(async (trx) => {
+    // let updatedEvent = null
+    const newEvent = await db.transaction(async (trx) => {
       const event = await Event.findOrFail(params.id)
       event.useTransaction(trx)
-      updatedEvent = await event.merge(cleanRequest).save()
+      const updatedEvent = await event.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, event.id, 'events', cleanRequest.tags)
       }
+      return updatedEvent
     })
 
     let returnQuery = Event.query()
-      .where('id', updatedEvent.id)
+      .where('id', newEvent.id)
       .preload('tags')
       .preload('person', (person) => {
         person.preload('tags')
@@ -206,8 +202,7 @@ export default class EventsController {
    * @summary Delete Event
    * @description Remove an individual Event from this Arcwell instance
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const event = await Event.findOrFail(params.id)
     await event.delete()

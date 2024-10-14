@@ -23,11 +23,17 @@ export default class extends BaseSeeder {
     await PersonTypeFactory.merge({ key: 'staff', name: 'Staff' }).create()
     await PersonTypeFactory.merge({ key: 'temp', name: 'Temp' }).create()
 
-    await ResourceTypeFactory.merge({ key: 'medical-device', name: 'Medical Device' }).create()
+    await ResourceTypeFactory.merge({
+      key: 'medical-device',
+      name: 'Medical Device',
+    }).create()
     await ResourceTypeFactory.merge({ key: 'room', name: 'Room' }).create()
     await ResourceTypeFactory.merge({ key: 'bed', name: 'Bed' }).create()
 
-    await EventTypeFactory.merge({ key: 'appointment', name: 'Appointment' }).create()
+    await EventTypeFactory.merge({
+      key: 'appointment',
+      name: 'Appointment',
+    }).create()
     await EventTypeFactory.merge({ key: 'surgery', name: 'Surgery' }).create()
     await EventTypeFactory.merge({ key: 'intake', name: 'Intake' }).create()
     await EventTypeFactory.merge({ key: 'release', name: 'Release' }).create()
@@ -61,9 +67,15 @@ export default class extends BaseSeeder {
       throw new Error('A event type not found. Run the default seeder first')
     }
 
-    const person1 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
-    const person2 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
-    const person3 = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
+    const person1 = await PersonFactory.merge({
+      typeKey: staffPersonType.key,
+    }).create()
+    const person2 = await PersonFactory.merge({
+      typeKey: staffPersonType.key,
+    }).create()
+    const person3 = await PersonFactory.merge({
+      typeKey: staffPersonType.key,
+    }).create()
 
     await User.createMany([
       {
@@ -138,9 +150,15 @@ export default class extends BaseSeeder {
 
     // const factType2 = await FactTypeFactory.with('dimensionSchemas', 8).create()
 
-    const person = await PersonFactory.merge({ typeKey: staffPersonType.key }).create()
-    const event = await EventFactory.merge({ typeKey: apptEventType.key }).create()
-    const resource = await ResourceFactory.merge({ typeKey: deviceResourceType.key }).create()
+    const person = await PersonFactory.merge({
+      typeKey: staffPersonType.key,
+    }).create()
+    const event = await EventFactory.merge({
+      typeKey: apptEventType.key,
+    }).create()
+    const resource = await ResourceFactory.merge({
+      typeKey: deviceResourceType.key,
+    }).create()
 
     await FactFactory.merge({ typeKey: factType.key }).createMany(2)
     // create a fact with a person, resource, and event
@@ -152,10 +170,19 @@ export default class extends BaseSeeder {
       dimensions: [],
     }).create()
     // create a fact with just a person
-    await FactFactory.merge({ typeKey: factType.key, personId: person.id }).create()
+    await FactFactory.merge({
+      typeKey: factType.key,
+      personId: person.id,
+    }).create()
     // create a fact with just a resource
-    await FactFactory.merge({ typeKey: factType2.key, resourceId: resource.id }).create()
+    await FactFactory.merge({
+      typeKey: factType2.key,
+      resourceId: resource.id,
+    }).create()
     // create a fact with just an event
-    await FactFactory.merge({ typeKey: factType2.key, eventId: event.id }).create()
+    await FactFactory.merge({
+      typeKey: factType2.key,
+      eventId: event.id,
+    }).create()
   }
 }

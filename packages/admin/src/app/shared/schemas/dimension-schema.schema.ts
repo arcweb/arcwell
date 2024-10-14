@@ -1,14 +1,13 @@
 import { z } from 'zod';
 import { DimensionSchemaModel } from '@shared/models/dimension-schema.model';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const DimensionSchemaSchema: any = z.object({
   key: z.string(),
   name: z.string(),
   dataType: z.string(),
   dataUnit: z.string().optional(),
   isRequired: z.boolean(),
-  createdAt: z.string().datetime({ offset: true }).optional(),
-  updatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 // Validate data going to the API for update
@@ -18,9 +17,6 @@ export const DimensionSchemaUpdateSchema = DimensionSchemaSchema.extend({
   dataType: z.string(),
   dataUnit: z.string().optional(),
   isRequired: z.boolean(),
-  factId: z.string().uuid().optional(),
-  createdAt: z.string().datetime({ offset: true }).optional(),
-  updatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 //  Multiple People
@@ -68,7 +64,5 @@ export const serializeDimensionSchema = (
 ): DimensionSchemaType => {
   return {
     ...data,
-    createdAt: data.createdAt?.toISO(),
-    updatedAt: data.updatedAt?.toISO(),
   };
 };

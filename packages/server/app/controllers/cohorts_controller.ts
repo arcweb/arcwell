@@ -6,7 +6,6 @@ import {
   updateCohortValidator,
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
-import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -69,19 +68,19 @@ export default class CohortsController {
    * @summary Create Cohort
    * @description Insert a new Cohort record into Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createCohortValidator)
-    const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
-    let newCohort = null
+    const cleanRequest = request.only(['name', 'description', 'tags'])
+    // let newCohortId: string
 
-    await db.transaction(async (trx) => {
-      newCohort = new Cohort().fill(cleanRequest).useTransaction(trx)
-      await newCohort.save()
+    const newCohort = await db.transaction(async (trx) => {
+      const cohort = new Cohort().fill(cleanRequest).useTransaction(trx)
+      await cohort.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, newCohort.id, 'cohorts', cleanRequest.tags, false)
+        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags, false)
       }
+      return cohort
     })
 
     return {
@@ -94,8 +93,7 @@ export default class CohortsController {
    * @summary Get Cohort
    * @description Retrieve the details of an individual Cohort record.
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
       data: await Cohort.query()
@@ -111,8 +109,7 @@ export default class CohortsController {
    * @summary Get Cohort with People List
    * @description Retrieve the details of an individual Cohorot, but include a list of the member People records.
    */
-  async showWithPeople({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async showWithPeople({ params, request }: HttpContext) {
     await paramsUUIDValidator.validate(params)
 
     const queryData = request.qs()
@@ -126,21 +123,20 @@ export default class CohortsController {
    * @summary Update Cohort
    * @description Update the details for an existing individual Cohort record.
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateCohortValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
+    const cleanRequest = request.only(['name', 'description', 'tags'])
 
-    let updatedCohort = null
-    await db.transaction(async (trx) => {
-      const cohort = await Cohort.findOrFail(params.id)
-      cohort.useTransaction(trx)
-      updatedCohort = await cohort.merge(cleanRequest).save()
+    const updatedCohort = await db.transaction(async (trx) => {
+      const existingCohort = await Cohort.findOrFail(params.id)
+      existingCohort.useTransaction(trx)
+      const cohort = await existingCohort.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
-        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags)
+        await setTagsForObject(trx, updatedCohort.id, 'cohorts', cleanRequest.tags)
       }
+      return cohort
     })
 
     return { data: await getFullCohort(updatedCohort.id) }
@@ -151,8 +147,7 @@ export default class CohortsController {
    * @summary Delete Cohort
    * @description Remove the indicated Cohort from the Arcwell instance.
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const cohort = await Cohort.findOrFail(params.id)
     await cohort.delete()
@@ -165,8 +160,7 @@ export default class CohortsController {
    * @description Manage grouping by adding People to this Cohort.
    * @paramQuery peopleIds - Array of IDs of Person records to add
    */
-  async attachPeople({ params, request, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async attachPeople({ params, request, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     await request.validateUsing(peopleIdsValidator)
     const cleanRequest = request.only(['peopleIds'])
@@ -183,8 +177,7 @@ export default class CohortsController {
    * @description Manage grouping by removing People from this Cohort.
    * @paramQuery peopleIds - Array of IDs of Person records to remove
    */
-  async detachPeople({ params, request, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async detachPeople({ params, request, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     await request.validateUsing(peopleIdsValidator)
     const cleanRequest = request.only(['peopleIds'])
@@ -201,8 +194,7 @@ export default class CohortsController {
    * @description Manage grouping by setting the complete membership of People within this Cohort.
    * @paramQuery peopleIds - Array of IDs of Person records to set as the membership of the Cohort
    */
-  async setPeople({ params, request, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async setPeople({ params, request, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     await request.validateUsing(peopleIdsValidator)
     const cleanRequest = request.only(['peopleIds'])

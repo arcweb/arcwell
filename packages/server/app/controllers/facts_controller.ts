@@ -32,9 +32,7 @@ export default class FactsController {
    * @summary Count facts
    * @description Returns the count of total facts
    */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
+  async count({}: HttpContext) {
     const countQuery = db.from('facts').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -51,8 +49,7 @@ export default class FactsController {
    * @description Retrieve a list of Fact records. This method is best used for administrative and management functions. Consider the Data API for querying facts with dimension for statistical and review purposes.
    * @paramUse(sortable, filterable)
    */
-  async index({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async index({ request }: HttpContext) {
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
 
@@ -97,20 +94,19 @@ export default class FactsController {
    * @summary Create Fact
    * @description Create a Fact within Arcwell's data system. This method is intended for administrative and management use. Consider the Data API for inserting facts with dimension for application and statistical purposes.
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createFactValidator)
-    let newFact = null
-    await db.transaction(async (trx) => {
-      newFact = new Fact().fill(request.body()).useTransaction(trx)
+    const responseFact = await db.transaction(async (trx) => {
+      const newFact = new Fact().fill(request.body()).useTransaction(trx)
       await newFact.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newFact.id, 'facts', tags.tags, false)
       }
+      return newFact
     })
-    return { data: await getFullFact(newFact.id) }
+    return { data: await getFullFact(responseFact.id) }
   }
 
   /**
@@ -118,8 +114,7 @@ export default class FactsController {
    * @summary Get Fact
    * @description Retrieve an individual Fact record. This method is best used for administrative and management functions. Consider the Data API for querying facts with dimension for statistical and review purposes.
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
 
     return {
@@ -132,27 +127,23 @@ export default class FactsController {
    * @summary Update Fact
    * @description Update an existing Fact record. This method is best used for administrative and management functions. Consider the Data API for inserting and manipulating facts with dimension for statistical and review purposes.
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
-
-    console.log('#######################request=', request.serialize())
-    const cleanRequest = await request.validateUsing(updateFactValidator)
-
-    console.log('#######################showMeTheMoney=', cleanRequest)
+  async update({ params, request }: HttpContext) {
+    await request.validateUsing(updateFactValidator)
 
     await paramsUUIDValidator.validate(params)
-    // const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
-    let updatedFact = null
-    await db.transaction(async (trx) => {
+    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
+
+    const responseFact = await db.transaction(async (trx) => {
       const fact = await Fact.findOrFail(params.id)
       fact.useTransaction(trx)
-      updatedFact = await fact.merge(cleanRequest).save()
+      const updatedFact = await fact.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
       }
+      return updatedFact
     })
-    return { data: await getFullFact(updatedFact.id) }
+    return { data: await getFullFact(responseFact.id) }
   }
 
   /**
@@ -160,8 +151,7 @@ export default class FactsController {
    * @summary Delete Fact
    * @description Remove a Fact record. This method is best used for administrative and management functions. Consider the Data API for data set manipulation.
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const fact = await Fact.findOrFail(params.id)
     await fact.delete()

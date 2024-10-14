@@ -8,8 +8,8 @@ export class UserModel {
   public email: string;
   public roleId: string;
   public personId: string;
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
   public info?: object;
   public role?: RoleModel;
   public person?: PersonModel;
@@ -21,8 +21,8 @@ export class UserModel {
     this.email = data.email;
     this.roleId = data.roleId;
     this.personId = data.personId;
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.info = data.info;
     this.role = data.role ? new RoleModel(data.role) : undefined;
     this.person = data.person ? new PersonModel(data.person) : undefined;

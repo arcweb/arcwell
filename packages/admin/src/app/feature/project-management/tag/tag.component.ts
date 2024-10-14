@@ -5,8 +5,6 @@ import {
   effect,
   inject,
   OnInit,
-  Output,
-  EventEmitter,
 } from '@angular/core';
 import {
   ControlEvent,

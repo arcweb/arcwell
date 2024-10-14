@@ -46,8 +46,7 @@ export default class EventTypesController {
    * @summary Create EventType
    * @description Create a new type definition and schema for Events
    */
-  async store({ auth, request }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createEventTypeValidator)
 
     return db.transaction(async (trx) => {
@@ -94,8 +93,7 @@ export default class EventTypesController {
    * @summary Update EventType
    * @description Update an individual EventType definition
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
 
@@ -112,8 +110,7 @@ export default class EventTypesController {
    * @summary Delete EventType
    * @description Remove an individual EventType definition from this Arcwell instance
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const eventType = await EventType.findOrFail(params.id)
     await eventType.delete()

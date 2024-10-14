@@ -1,59 +1,38 @@
 import { DateTime } from 'luxon';
 import { EventTypeModel } from '@shared/models/event-type.model';
-import { EventType } from '@shared/schemas/event.schema';
+import { EventNewType, EventType } from '@shared/schemas/event.schema';
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { PersonModel } from '@shared/models/person.model';
 import { ResourceModel } from '@shared/models/resource.model';
-
-interface EventBase {
-  typeKey: string;
-  tags?: string[];
-  info?: object;
-  startedAt?: DateTime;
-  endedAt?: DateTime;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  eventType?: EventTypeModel;
-  personId?: string;
-  person?: PersonType;
-  resourceId?: string;
-  resource?: ResourceType;
-}
-
-export interface EventPreSave extends EventBase {
-  id?: never;
-}
-
-export interface EventPostSave extends EventBase {
-  id: string;
-}
+import { DimensionModel } from '@shared/models/dimension.model';
 
 export class EventModel {
   public id?: string;
   public typeKey: string;
   public info?: object;
-  public startedAt?: DateTime;
+  public startedAt: DateTime;
   public endedAt?: DateTime;
+  public dimensions?: DimensionModel[];
   public tags?: string[];
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
   public eventType?: EventTypeModel;
   public personId?: string;
   public resourceId?: string;
   public person?: PersonType;
   public resource?: ResourceType;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
-  constructor(data: EventType) {
-    this.id = data.id;
+  constructor(data: EventType | EventNewType) {
+    if ('id' in data && data.id) {
+      this.id = data.id;
+    }
     this.typeKey = data.typeKey;
     this.info = data.info;
-    this.startedAt = data.startedAt
-      ? DateTime.fromISO(data.startedAt)
-      : undefined;
+    this.startedAt = DateTime.fromISO(data.startedAt);
     this.endedAt = data.endedAt ? DateTime.fromISO(data.endedAt) : undefined;
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.tags = data.tags;
     this.eventType = data.eventType
       ? new EventTypeModel(data.eventType)

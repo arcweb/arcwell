@@ -20,7 +20,6 @@ import { EventTypeService } from '@app/shared/services/event-type.service';
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@app/shared/services/toast.service';
-import { Router } from '@angular/router';
 import { ToastLevel } from '@app/shared/models';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';

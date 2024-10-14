@@ -20,9 +20,7 @@ export default class ResourcesController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
+  async count({}: HttpContext) {
     const countQuery = db.from('resources').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -73,21 +71,21 @@ export default class ResourcesController {
    * @summary Create Resource
    * @description Create a new Resource within Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createResourceValidator)
-    let newResource = null
-    await db.transaction(async (trx) => {
-      newResource = new Resource().fill(request.body()).useTransaction(trx)
+
+    const responseResource = await db.transaction(async (trx) => {
+      const newResource = new Resource().fill(request.body()).useTransaction(trx)
       await newResource.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newResource.id, 'resources', tags.tags, false)
       }
+      return newResource
     })
 
-    return { data: await getFullResource(newResource.id) }
+    return { data: await getFullResource(responseResource.id) }
   }
 
   /**
@@ -114,22 +112,22 @@ export default class ResourcesController {
    * @summary Update Resource
    * @description Update an existing Resource within Arcwell
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateResourceValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['name', 'typeKey', 'tags'])
-    let updatedResource = null
-    await db.transaction(async (trx) => {
+
+    const responseResource = await db.transaction(async (trx) => {
       const resource = await Resource.findOrFail(params.id)
       resource.useTransaction(trx)
-      updatedResource = await resource.merge(cleanRequest).save()
+      const updatedResource = await resource.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, resource.id, 'resources', cleanRequest.tags)
       }
+      return updatedResource
     })
-    return { data: await getFullResource(updatedResource.id) }
+    return { data: await getFullResource(responseResource.id) }
   }
 
   /**
@@ -137,8 +135,7 @@ export default class ResourcesController {
    * @summary Delete Resource
    * @description Remove an individual Resource from this Arcwell instance
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const resource = await Resource.findOrFail(params.id)
     await resource.delete()

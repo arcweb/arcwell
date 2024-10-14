@@ -13,7 +13,7 @@ export default class extends BaseSchema {
   async down() {
     this.schema.alterTable('users', (table) => {
       table.dropColumn('temp_password')
-      table.dropColumn('requires_pasword_change')
+      table.dropColumn('requires_password_change')
     })
   }
 }

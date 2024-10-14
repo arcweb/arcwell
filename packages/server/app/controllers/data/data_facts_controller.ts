@@ -225,8 +225,7 @@ export default class DataFactsController {
    * @param {HttpContext} context - The HTTP context containing authentication and request information.
    * @returns {Promise<object>} - Returns the newly created fact along with all related data.
    */
-  async insert({ auth, request }: HttpContext): Promise<object> {
-    await auth.authenticate()
+  async insert({ request }: HttpContext): Promise<object> {
     await request.validateUsing(insertDataFactValidator)
     const cleanRequest = request.only([
       'typeKey',
@@ -284,8 +283,7 @@ export default class DataFactsController {
    * @param {HttpContext} context - The HTTP context containing authentication, request, and params information.
    * @returns {Promise<object>} - Returns the updated fact along with all related data.
    */
-  async update({ auth, request, params }: HttpContext): Promise<object> {
-    await auth.authenticate()
+  async update({ request, params }: HttpContext): Promise<object> {
     await request.validateUsing(updateDataFactValidator)
     const cleanRequest = request.only([
       'typeKey',
@@ -358,8 +356,7 @@ export default class DataFactsController {
    * @returns {Promise<object>} - Returns an object containing the filtered facts and their dimensions.
    * @throws {Error} - Throws an error if an unsupported operator is provided or validation fails.
    */
-  async query({ auth, request }: HttpContext): Promise<object> {
-    await auth.authenticate()
+  async query({ request }: HttpContext): Promise<object> {
     const params = request.qs()
     await paramsTripleObjectUUIDValidator.validate(params)
 
@@ -503,7 +500,9 @@ export default class DataFactsController {
     rawQueryString += whereClause
 
     // Execute the query using the database client with bindings as an object
-    const result = await db.rawQuery(rawQueryString, bindings, { mode: 'read' })
+    const result = await db.rawQuery(rawQueryString, bindings, {
+      mode: 'read',
+    })
 
     const transformedData = transformDataFactResponse(result.rows)
 

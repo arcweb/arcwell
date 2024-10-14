@@ -21,7 +21,6 @@ import { PersonTypeType } from '@schemas/person-type.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
-import { Router } from '@angular/router';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { DetailStore } from '../detail/detail.store';
 

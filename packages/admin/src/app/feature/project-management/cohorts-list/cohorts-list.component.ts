@@ -50,7 +50,7 @@ export class CohortsListComponent {
     effect(() => {
       this.dataSource.data = this.cohortsListStore.cohorts();
     });
-    this.typeKey$.subscribe(typeKey => {
+    this.typeKey$.subscribe(() => {
       this.cohortsListStore.load(this.cohortsListStore.limit(), 0);
     });
   }

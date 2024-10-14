@@ -18,7 +18,7 @@ import { authApiClient } from '@adonisjs/auth/plugins/api_client'
 export const plugins: Config['plugins'] = [
   assert(),
   apiClient({
-    baseURL: `http://${env.get('HOST')}:${env.get('PORT')}`
+    baseURL: `http://${env.get('HOST')}:${env.get('PORT')}`,
   }),
   pluginAdonisJS(app),
   authApiClient(app),

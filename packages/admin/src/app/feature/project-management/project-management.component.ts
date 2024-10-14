@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  Type,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { AfterViewInit, Component, Type, inject, signal } from '@angular/core';
 import { AuthStore } from '@shared/store/auth.store';
 import {
   ActivatedRoute,
@@ -17,7 +10,7 @@ import {
 import { FeaturesMenuComponent } from '@feature/project-management/features-menu/features-menu.component';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { ConfigBarComponent } from '../../shared/components/config-bar/config-bar.component';
+import { ConfigBarComponent } from '@shared/components/config-bar/config-bar.component';
 import { DetailComponent } from './detail/detail.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';

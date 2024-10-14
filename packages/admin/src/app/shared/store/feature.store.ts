@@ -6,7 +6,7 @@ import {
   setFulfilled,
 } from '@shared/store/request-status.feature';
 import { inject } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { FeatureModel } from '@shared/models/feature.model';
 import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
@@ -40,7 +40,7 @@ export const FeatureStore = signalStore(
     ) => ({
       async load() {
         patchState(store, setPending());
-        const resp: FeatureModel[] = await lastValueFrom(
+        const resp: FeatureModel[] = await firstValueFrom(
           featureService.getFeatures(),
         );
         this.setActiveFeatureAndSubfeatureByRoute(router.url, resp);

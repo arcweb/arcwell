@@ -3,7 +3,6 @@ import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { EventModel } from '@app/shared/models/event.model';
-import { EventType } from '@app/shared/schemas/event.schema';
 import { EventService } from '@app/shared/services/event.service';
 import {
   setErrors,

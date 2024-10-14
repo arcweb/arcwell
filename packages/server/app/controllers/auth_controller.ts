@@ -119,8 +119,6 @@ export default class AuthController {
    * @description Convenience method to return the authenticated user's User record.
    */
   async me({ auth }: HttpContext) {
-    await auth.check()
-
     if (!auth.user) {
       throwCustomHttpError(
         {
@@ -191,8 +189,7 @@ export default class AuthController {
    * @summary Change Password
    * @description Processes a user's attempt to change their password.
    */
-  async changePassword({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async changePassword({ request }: HttpContext) {
     await request.validateUsing(loginValidator)
     const cleanRequest = request.only(['email', 'password', 'newPassword'])
     const user = await User.verifyCredentials(cleanRequest.email, cleanRequest.password)
@@ -215,7 +212,7 @@ export default class AuthController {
    * @summary Set Password
    * @description Sets a users password only when the user entry has a temp password set.  This is exclusively used by the invite system.
    */
-  async setPassword({ request, auth }: HttpContext) {
+  async setPassword({ request }: HttpContext) {
     await request.validateUsing(setPasswordValidator)
     const cleanRequest = request.only(['tempPassword', 'password', 'email'])
 

@@ -18,7 +18,6 @@ import { EventType, EventUpdateType } from '@shared/schemas/event.schema';
 import { EventTypeService } from '@shared/services/event-type.service';
 import { TagService } from '@shared/services/tag.service';
 import { FeatureStore } from '@app/shared/store/feature.store';
-import { Router } from '@angular/router';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
@@ -47,7 +46,6 @@ export const EventTypeStore = signalStore(
       eventTypeService = inject(EventTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
-      router = inject(Router),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
     ) => ({

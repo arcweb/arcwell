@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -24,8 +22,8 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { PersonTypeType } from '@schemas/person-type.schema';
-import { Router, RouterLink } from '@angular/router';
+import { PersonTypeNewType, PersonTypeType } from '@schemas/person-type.schema';
+import { RouterLink } from '@angular/router';
 import {
   TYPE_KEY_PATTERN,
   CREATE_PARTIAL_URL,
@@ -38,8 +36,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
 
 @Component({
@@ -68,10 +65,8 @@ import { DetailStore } from '../detail/detail.store';
 })
 export class PersonTypeComponent implements OnInit {
   readonly personTypeStore = inject(PersonTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
@@ -84,7 +79,10 @@ export class PersonTypeComponent implements OnInit {
         value: '',
         disabled: true,
       },
-      [Validators.required, Validators.minLength(3)],
+      {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(3)],
+      },
     ),
     key: new FormControl(
       {
@@ -129,8 +127,10 @@ export class PersonTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personTypeStore.inCreateMode()) {
-            const personTypeFormPayload: any = {
-              ...this.personTypeForm.value,
+            const personTypeFormPayload: PersonTypeNewType = {
+              name: this.personTypeForm.value['name'] ?? '',
+              key: this.personTypeForm.value['key'] ?? '',
+              description: this.personTypeForm.value['description'] ?? '',
             };
 
             if (this.tagsForCreate.length > 0) {

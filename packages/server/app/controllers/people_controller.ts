@@ -36,9 +36,7 @@ export default class PeopleController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
+  async count({}: HttpContext) {
     const countQuery = db.from('people').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -56,8 +54,6 @@ export default class PeopleController {
    * @paramUse(sortable, filterable)
    */
   async index({ request, auth }: HttpContext) {
-    await auth.authenticate()
-
     const queryData = request.qs()
 
     const typeKey = queryData['typeKey']
@@ -107,22 +103,21 @@ export default class PeopleController {
    * @summary Create Person
    * @description Create a new Person record within Arcwell.
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createPersonValidator)
 
-    let newPerson = null
-    await db.transaction(async (trx) => {
-      newPerson = new Person().fill(request.body()).useTransaction(trx)
+    const responsePerson = await db.transaction(async (trx) => {
+      const newPerson = new Person().fill(request.body()).useTransaction(trx)
       await newPerson.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newPerson.id, 'people', tags.tags, false)
       }
+      return newPerson
     })
 
-    return { data: await getFullPerson(newPerson.id) }
+    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**
@@ -130,8 +125,7 @@ export default class PeopleController {
    * @summary Get Person
    * @description Return individual details about a single Person record.
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
       data: await Person.query()
@@ -152,8 +146,7 @@ export default class PeopleController {
    * @summary Get Person with Cohorts
    * @description Return details about a Person and include Cohorts of which they are a member.
    */
-  async showWithCohorts({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async showWithCohorts({ params, request }: HttpContext) {
     await paramsUUIDValidator.validate(params)
 
     const queryData = request.qs()
@@ -170,24 +163,24 @@ export default class PeopleController {
    * @summary Update Person
    * @description Update the details for an existing individual Person record.
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
 
-    let updatedPerson = null
-    await db.transaction(async (trx) => {
+    const responsePerson = await db.transaction(async (trx) => {
       const person = await Person.findOrFail(params.id)
       person.useTransaction(trx)
-      updatedPerson = await person.merge(cleanRequest).save()
+      const updatedPerson = await person.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
       }
+
+      return updatedPerson
     })
 
-    return { data: await getFullPerson(updatedPerson.id) }
+    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**
@@ -195,8 +188,7 @@ export default class PeopleController {
    * @summary Delete Person
    * @description Remove an individual Person record from Arcwell.
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const person = await Person.findOrFail(params.id)
     await person.delete()
@@ -208,8 +200,7 @@ export default class PeopleController {
    * @summary Add Person to Cohort
    * @description Manage grouping by adding a Person to a Cohort.
    */
-  async attachCohort({ params, request, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async attachCohort({ params, request, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     await request.validateUsing(cohortIdsValidator)
     const cleanRequest = request.only(['cohortIds'])
@@ -225,8 +216,7 @@ export default class PeopleController {
    * @summary Remove Person from Cohort
    * @description Manage grouping by removing a Person from a Cohort.
    */
-  async detachCohort({ params, request, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async detachCohort({ params, request, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     await request.validateUsing(cohortIdsValidator)
     const cleanRequest = request.only(['cohortIds'])
