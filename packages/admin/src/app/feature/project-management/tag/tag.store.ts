@@ -284,7 +284,7 @@ export const TagStore = signalStore(
           // refresh the list
           refreshService.triggerRefresh();
           // navigate to the newly created item
-          detailStore.routeToNewDetailId(resp.data.id);
+          detailStore.routeToNewDetailId(resp.id);
         }
       },
 
