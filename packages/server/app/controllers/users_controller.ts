@@ -153,7 +153,10 @@ export default class UsersController {
     await user.save()
 
     mail.send((message) => {
-      message.to(user.email).subject('You are invited').htmlView('emails/invite', { user, host: cleanRequest.host })
+      message
+        .to(user.email)
+        .subject('You are invited')
+        .htmlView('emails/invite', { user, host: cleanRequest.host })
     })
     return { data: user }
   }
