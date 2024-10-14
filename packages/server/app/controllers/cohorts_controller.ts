@@ -75,9 +75,8 @@ export default class CohortsController {
     await paramsUUIDValidator.validate(params)
     return {
       data: await Cohort.query()
-        .orderBy('name', 'asc')
-        .preload('tags')
         .where('id', params.id)
+        .preload('tags')
         .firstOrFail(),
     }
   }
@@ -85,7 +84,7 @@ export default class CohortsController {
   /**
    * @showWithPeople
    * @summary Get Cohort with People List
-   * @description Retrieve the details of an individual Cohorot, but include a list of the member People records.
+   * @description Retrieve the details of an individual Cohort, but include a list of the member People records.
    */
   async showWithPeople({ params, request }: HttpContext) {
     await paramsUUIDValidator.validate(params)

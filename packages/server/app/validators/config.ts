@@ -6,6 +6,9 @@ import { createResourceTypeSchema } from '#validators/resource_type';
 import { createRoleSchema } from '#validators/role';
 import { createUserSchema } from '#validators/user';
 
+/**
+ * Validates the installation configuration
+ */
 export const installConfigSchema = vine.object({
   event_types: vine.array(createEventTypeSchema).optional(),
   fact_types: vine.array(createFactTypeSchema).optional(),

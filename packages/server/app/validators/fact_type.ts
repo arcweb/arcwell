@@ -11,6 +11,9 @@ const dimensionSchemas = vine.array(
   })
 )
 
+/**
+ * Validates the factType's create action
+ */
 export const createFactTypeSchema = vine.object({
   key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
   name: vine.string(),
@@ -18,16 +21,6 @@ export const createFactTypeSchema = vine.object({
   tags: vine.array(vine.string().trim()).optional(),
 })
 
-export const updateFactTypeSchema = vine.object({
-  key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
-  name: vine.string().optional(),
-  dimensionSchemas: dimensionSchemas.optional(),
-  tags: vine.array(vine.string().trim()).optional(),
-})
-
-/**
- * Validates the factType's create action
- */
 export const createFactTypeValidator = vine.compile(createFactTypeSchema)
 
 /**
@@ -42,4 +35,11 @@ export const createFactTypeArrayValidator = vine.compile(
 /**
  * Validates the factType's update action
  */
+export const updateFactTypeSchema = vine.object({
+  key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),
+  name: vine.string().optional(),
+  dimensionSchemas: dimensionSchemas.optional(),
+  tags: vine.array(vine.string().trim()).optional(),
+})
+
 export const updateFactTypeValidator = vine.compile(updateFactTypeSchema)
