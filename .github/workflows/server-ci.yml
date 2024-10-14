@@ -55,9 +55,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: buildx-${{ github.ref_name }}
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-            buildx-
+            ${{ runner.os }}-buildx-
 
       - name: Pull Server Image for Cache (if exists)
         run: |
