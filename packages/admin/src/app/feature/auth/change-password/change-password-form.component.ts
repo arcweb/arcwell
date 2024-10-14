@@ -48,7 +48,7 @@ export class ChangePasswordComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    console.log('this is to test linting5');
+    console.log('this is to test linting6');
     this.changeForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
