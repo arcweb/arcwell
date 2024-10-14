@@ -55,9 +55,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: buildx-${{ github.ref_name }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            buildx-
 
       - name: Pull Server Image for Cache (if exists)
         run: |
@@ -81,6 +81,16 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Save Docker Image
+        run: |
+          docker save ${{ env.SERVER_IMAGE }} -o server-image.tar
+
+      - name: Upload Image Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-image
+          path: server-image.tar
 
       - name: Health Check
         run: |
@@ -116,16 +126,17 @@ jobs:
       - name: Setup Docker Environment
         run: docker info
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Download Image Artifact
+        uses: actions/download-artifact@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: server-image
+
+      - name: Load Docker Image
+        run: |
+          docker load -i server-image.tar
 
       - name: Lint Server
         run: |
-          docker pull ${{ env.SERVER_IMAGE }}
           docker compose run server npm run lint
         continue-on-error: true
 
@@ -141,14 +152,15 @@ jobs:
       - name: Setup Docker Environment
         run: docker info
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Download Image Artifact
+        uses: actions/download-artifact@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: server-image
+
+      - name: Load Docker Image
+        run: |
+          docker load -i server-image.tar
 
       - name: Test Server
         run: |
-          docker pull ${{ env.SERVER_IMAGE }}
           docker compose run server npm run test
