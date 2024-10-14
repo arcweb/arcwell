@@ -24,7 +24,7 @@ jobs:
         with:
           filters: |
             admin:
-              - 'admin/**'
+              - 'packages/admin/**'
 
   build-admin:
     needs: changes
