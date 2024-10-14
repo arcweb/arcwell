@@ -1,43 +1,11 @@
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import ResourceType from '#models/resource_type'
+import ResourceTypeService from '#services/resource_type_service'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import { TransactionClientContract } from '@adonisjs/lucid/types/database'
-
-export function getFullResourceType(id: string, trx?: TransactionClientContract) {
-  if (trx) {
-    return ResourceType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
-  } else {
-    return ResourceType.query().where('id', id).preload('tags').firstOrFail()
-  }
-}
-
-export const createResourceTypeWithTags = async (trx: TransactionClientContract, createData: any, tags: string[]): Promise<ResourceType> => {
-  const newResourceType = new ResourceType().fill(createData).useTransaction(trx)
-  await newResourceType.save()
-
-  if (tags && tags.length > 0) {
-    await setTagsForObject(trx, newResourceType.id, 'resource_types', tags, false)
-  }
-
-  return newResourceType
-}
-
-export const updateResourceTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<ResourceType> => {
-  const resourceType = await ResourceType.findOrFail(id)
-  resourceType.useTransaction(trx)
-
-  const updatedResourceType = await resourceType.merge(updateData).save()
-
-  if (tags) {
-    await setTagsForObject(trx, resourceType.id, 'resource_types', tags)
-  }
-
-  return updatedResourceType
-}
 
 export default class ResourceTypesController {
   /**
@@ -82,8 +50,8 @@ export default class ResourceTypesController {
     await request.validateUsing(createResourceTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newResourceType = await createResourceTypeWithTags(trx, request.body(), request.input('tags'))
-      return { data: await getFullResourceType(newResourceType.id, trx) }
+      const newResourceType = await ResourceTypeService.createResourceTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await ResourceTypeService.getFullResourceType(newResourceType.id, trx) }
     })
   }
 
@@ -126,8 +94,8 @@ export default class ResourceTypesController {
     const cleanRequest = request.only(['name', 'key', 'description'])
 
     return await db.transaction(async (trx) => {
-      const updatedResourceType = await updateResourceTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
-      return { data: await getFullResourceType(updatedResourceType.id, trx) }
+      const updatedResourceType = await ResourceTypeService.updateResourceTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await ResourceTypeService.getFullResourceType(updatedResourceType.id, trx) }
     })
   }
 

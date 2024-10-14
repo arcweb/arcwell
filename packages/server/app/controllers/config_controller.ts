@@ -12,11 +12,12 @@ import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
 import db from '@adonisjs/lucid/services/db'
 import { installConfigValidator } from '#validators/config'
-import { createFactTypeWithTags } from '#controllers/fact_types_controller'
-import { createResourceTypeWithTags } from '#controllers/resource_types_controller'
-import { createEventTypeWithTags } from '#controllers/event_types_controller'
-import { createRole } from '#controllers/roles_controller'
-import { createPersonTypeWithTags } from '#controllers/person_types_controller'
+import FactTypeService from '#services/fact_type_service'
+import EventTypeService from '#services/event_type_service'
+import PersonTypeService from '#services/person_type_service'
+import ResourceTypeService from '#services/resource_type_service'
+import RoleService from '#services/role_service'
+import TagService from '#services/tag_service'
 
 export default class ConfigController {
   /**
@@ -122,36 +123,43 @@ export default class ConfigController {
 
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
-          await createEventTypeWithTags(trx, eventTypeData, eventTypeData.tags);
+          await EventTypeService.createEventTypeWithTags(trx, eventTypeData, eventTypeData.tags);
           counts.event_types++;
         }
       }
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {
-          await createFactTypeWithTags(trx, factTypeData, factTypeData.tags);
+          await FactTypeService.createFactTypeWithTags(trx, factTypeData, factTypeData.tags);
           counts.fact_types++;
         }
       }
 
       if (payload.person_types && payload.person_types.length > 0) {
         for (const personTypeData of payload.person_types) {
-          await createPersonTypeWithTags(trx, personTypeData, personTypeData.tags);
+          await PersonTypeService.createPersonTypeWithTags(trx, personTypeData, personTypeData.tags);
           counts.person_types++;
         }
       }
 
       if (payload.resource_types && payload.resource_types.length > 0) {
         for (const resourceTypeData of payload.resource_types) {
-          await createResourceTypeWithTags(trx, resourceTypeData, resourceTypeData.tags);
+          await ResourceTypeService.createResourceTypeWithTags(trx, resourceTypeData, resourceTypeData.tags);
           counts.resource_types++;
         }
       }
 
       if (payload.roles && payload.roles.length > 0) {
         for (const roleData of payload.roles) {
-          await createRole(trx, roleData);
+          await RoleService.createRole(trx, roleData);
           counts.roles++;
+        }
+      }
+
+      if (payload.tags && payload.tags.length > 0) {
+        for (const tagData of payload.tags) {
+          await TagService.createTag(trx, tagData);
+          counts.tags++;
         }
       }
 

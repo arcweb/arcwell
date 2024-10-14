@@ -3,37 +3,8 @@ import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
 import { buildApiQuery } from '#helpers/query_builder'
-import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import db from '@adonisjs/lucid/services/db'
-
-export function getFullRole(id: string, trx?: TransactionClientContract) {
-  if (trx) {
-    return Role.query({ client: trx })
-      .where('id', id)
-      .preload('users', (users) => users.preload('person').preload('tags'))
-      .firstOrFail()
-  } else {
-    return Role.query()
-      .where('id', id)
-      .preload('users', (users) => users.preload('person').preload('tags'))
-      .firstOrFail()
-  }
-}
-
-export const createRole = async (trx: TransactionClientContract, createData: any) => {
-  const newRole = new Role().fill(createData).useTransaction(trx)
-  await newRole.save()
-
-  return newRole
-}
-
-export const updateRole = async (trx: TransactionClientContract, id: string, updateData: any) => {
-  const role = await Role.findOrFail(id)
-  role.useTransaction(trx)
-  const updatedRole = await role.merge(updateData).save()
-
-  return updatedRole
-}
+import RoleService from '#services/role_service'
 
 export default class RolesController {
   /**
@@ -81,8 +52,8 @@ export default class RolesController {
     await request.validateUsing(createRoleValidator)
 
     return await db.transaction(async (trx) => {
-      const newRole = await createRole(trx, request.body())
-      return { data: await getFullRole(newRole.id, trx) }
+      const newRole = await RoleService.createRole(trx, request.body())
+      return { data: await RoleService.getFullRole(newRole.id, trx) }
     })
   }
 
@@ -99,8 +70,8 @@ export default class RolesController {
     const cleanRequest = request.only(['name'])
 
     return await db.transaction(async (trx) => {
-      const updatedRole = await updateRole(trx, params.id, cleanRequest)
-      return { data: await getFullRole(updatedRole.id, trx) }
+      const updatedRole = await RoleService.updateRole(trx, params.id, cleanRequest)
+      return { data: await RoleService.getFullRole(updatedRole.id, trx) }
     })
   }
 

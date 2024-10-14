@@ -1,43 +1,11 @@
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import FactType from '#models/fact_type'
+import FactTypeService from '#services/fact_type_service'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import { TransactionClientContract } from '@adonisjs/lucid/types/database'
-
-export function getFullFactType(id: string, trx?: TransactionClientContract) {
-  if (trx) {
-    return FactType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
-  } else {
-    return FactType.query().where('id', id).preload('tags').firstOrFail()
-  }
-}
-
-export const createFactTypeWithTags = async (trx: TransactionClientContract, createData: any, tags?: string[]): Promise<FactType> => {
-  const newFactType = new FactType().fill(createData).useTransaction(trx)
-  await newFactType.save()
-
-  if (tags && tags.length > 0) {
-    await setTagsForObject(trx, newFactType.id, 'fact_types', tags, false)
-  }
-
-  return newFactType
-}
-
-export const updateFactTypeWithTags = async (trx: TransactionClientContract, id: string, updateData: any, tags?: string[]): Promise<FactType> => {
-  const factType = await FactType.findOrFail(id)
-  factType.useTransaction(trx)
-
-  const updatedFactType = await factType.merge(updateData).save()
-
-  if (tags) {
-    await setTagsForObject(trx, factType.id, 'fact_types', tags)
-  }
-
-  return updatedFactType
-}
 
 export default class FactTypesController {
   /**
@@ -82,8 +50,8 @@ export default class FactTypesController {
     await request.validateUsing(createFactTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newFactType = await createFactTypeWithTags(trx, request.body(), request.input('tags'))
-      return { data: await getFullFactType(newFactType.id, trx) }
+      const newFactType = await FactTypeService.createFactTypeWithTags(trx, request.body(), request.input('tags'))
+      return { data: await FactTypeService.getFullFactType(newFactType.id, trx) }
     })
   }
 
@@ -134,8 +102,8 @@ export default class FactTypesController {
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
 
     return await db.transaction(async (trx) => {
-      const updatedFactType = await updateFactTypeWithTags(trx, params.id, cleanRequest, request.input('tags'));
-      return { data: await getFullFactType(updatedFactType.id, trx) }
+      const updatedFactType = await FactTypeService.updateFactTypeWithTags(trx, params.id, cleanRequest, request.input('tags'));
+      return { data: await FactTypeService.getFullFactType(updatedFactType.id, trx) }
     })
   }
 
