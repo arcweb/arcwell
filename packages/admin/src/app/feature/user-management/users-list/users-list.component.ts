@@ -23,6 +23,8 @@ import { UsersTableComponent } from '@app/shared/components/users-table/users-ta
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-users-list',
@@ -54,6 +56,7 @@ export class AllUsersComponent {
   readonly userStore = inject(UsersStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  readonly refreshService = inject(RefreshService);
 
   pageSizes = [10, 20, 50];
 
@@ -65,6 +68,12 @@ export class AllUsersComponent {
     effect(() => {
       this.dataSource.data = this.userStore.users();
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.userStore.load(this.userStore.limit(), this.userStore.offset());
+      });
   }
 
   rowClick(row: UserModel) {

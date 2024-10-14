@@ -25,6 +25,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface ResourceTypeState {
   resourceType: ResourceType | null;
@@ -52,6 +53,7 @@ export const ResourceTypeStore = signalStore(
       featureStore = inject(FeatureStore),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(resourceTypeId: string) {
         patchState(store, setPending());
@@ -101,19 +103,21 @@ export const ResourceTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
+          patchState(
+            store,
+            { resourceType: resp.data, inEditMode: false },
+            setFulfilled(),
+          );
 
           toastService.sendMessage(
             'Updated resource type.',
             ToastLevel.SUCCESS,
           );
 
-          patchState(
-            store,
-            { resourceType: resp.data, inEditMode: false },
-            setFulfilled(),
-          );
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createResourceTypeFormData: ResourceTypeType) {
@@ -124,9 +128,6 @@ export const ResourceTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           patchState(
             store,
             { resourceType: resp.data, inEditMode: false, inCreateMode: false },
@@ -138,7 +139,11 @@ export const ResourceTypeStore = signalStore(
             ToastLevel.SUCCESS,
           );
 
-          // navigate to the newly created item and don't save the current route in the history
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
+          // navigate to the newly created item
           detailStore.routeToNewDetailId(resp.data.id);
         }
       },
@@ -150,10 +155,18 @@ export const ResourceTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          toastService.sendMessage(
+            'Deleted resource type.',
+            ToastLevel.SUCCESS,
+          );
+          patchState(store, { inEditMode: false }, setFulfilled());
+
           // load the feature list with the latest list of subfeatures
           featureStore.load();
-
-          patchState(store, { inEditMode: false }, setFulfilled());
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

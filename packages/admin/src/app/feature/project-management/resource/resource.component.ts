@@ -163,11 +163,7 @@ export class ResourceComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.resourceStore.delete().then(() => {
-          if (this.resourceStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.resourceStore.delete();
       }
     });
   }

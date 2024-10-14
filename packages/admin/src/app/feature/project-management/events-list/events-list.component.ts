@@ -26,6 +26,7 @@ import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 @Component({
   selector: 'aw-events-list',
@@ -62,6 +63,7 @@ export class EventsListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -90,6 +92,16 @@ export class EventsListComponent {
         typeKey: typeKey,
       });
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.eventsListStore.load({
+          limit: this.eventsListStore.limit(),
+          offset: this.eventsListStore.offset(),
+          typeKey: this.eventsListStore.typeKey(),
+        });
+      });
   }
 
   rowClick(row: EventModel) {

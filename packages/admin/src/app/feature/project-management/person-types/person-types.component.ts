@@ -22,6 +22,8 @@ import { MatIconButton } from '@angular/material/button';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { TableHeaderComponent } from '../../../shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-person-types',
@@ -54,6 +56,7 @@ export class PersonTypesComponent {
   public personTypesStore = inject(PersonTypesStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private refreshService = inject(RefreshService);
 
   dataSource = new MatTableDataSource<PersonTypeModel>();
 
@@ -65,6 +68,19 @@ export class PersonTypesComponent {
     effect(() => {
       this.dataSource.data = this.personTypesStore.personTypes();
     });
+
+    // refreshes the list on CUD operations
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.personTypesStore.load({
+          limit: this.personTypesStore.limit(),
+          offset: this.personTypesStore.offset(),
+          sort: this.personTypesStore.sort(),
+          order: this.personTypesStore.order(),
+          pageIndex: this.personTypesStore.pageIndex(),
+        });
+      });
   }
 
   handleClick(row: PersonTypeModel) {
