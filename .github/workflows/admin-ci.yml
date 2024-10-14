@@ -121,7 +121,7 @@ jobs:
         run: |
           docker pull ${{ env.ADMIN_IMAGE }}
           docker compose run admin npm run lint
-          docker compose exec admin ng test --watch=false
+          docker compose run admin ng test --watch=false
 #        continue-on-error: true
 
 #  test-admin:
