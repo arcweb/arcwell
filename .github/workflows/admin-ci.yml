@@ -98,7 +98,7 @@ jobs:
             exit 1
           fi
 
-  lint-admin:
+  lint-test-admin:
     needs: build-admin
 
     runs-on: ubuntu-latest
@@ -121,28 +121,29 @@ jobs:
         run: |
           docker pull ${{ env.ADMIN_IMAGE }}
           docker compose run admin npm run lint
-        continue-on-error: true
+          docker compose run admin npm run test --watch=false
+#        continue-on-error: true
 
-  test-admin:
-    needs: build-admin
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Docker Environment
-        run: docker info
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Test Admin
-        run: |
-          docker pull ${{ env.ADMIN_IMAGE }}
-          docker compose run admin npm run test
+#  test-admin:
+#    needs: build-admin
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Docker Environment
+#        run: docker info
+#
+#      - name: Login to GitHub Container Registry
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Test Admin
+#        run: |
+#          docker pull ${{ env.ADMIN_IMAGE }}
+#          docker compose run admin npm run test --watch=false
