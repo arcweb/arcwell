@@ -87,7 +87,7 @@ export class AllUsersComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true && row.id) {
-        this.userStore.invite(row.id);
+        this.userStore.invite(row.id, location.origin);
       }
     });
   }

@@ -95,9 +95,9 @@ export const AuthStore = signalStore(
       }
       patchState(store, { currentUser: user, loginStatus: 'success' });
     },
-    async forgotPassword(email: string) {
+    async forgotPassword(email: string, host: string) {
       patchState(store, { loginStatus: 'pending' });
-      await firstValueFrom(authService.sendPasswordReset(email));
+      await firstValueFrom(authService.sendPasswordReset(email, host));
       patchState(store, { loginStatus: 'none' });
     },
     async resetPassword(reset: ResetType) {

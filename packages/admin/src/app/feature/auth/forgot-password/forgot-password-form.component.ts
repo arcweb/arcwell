@@ -49,7 +49,10 @@ export class ForgotPasswordComponent implements OnInit {
           (event as ControlEvent) instanceof FormSubmittedEvent &&
           this.forgotForm.controls.email.value
         ) {
-          this.authStore.forgotPassword(this.forgotForm.controls.email.value);
+          this.authStore.forgotPassword(
+            this.forgotForm.controls.email.value,
+            location.origin,
+          );
 
           this.router.navigate(['/']);
         }

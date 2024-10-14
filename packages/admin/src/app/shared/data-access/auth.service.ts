@@ -73,8 +73,8 @@ export class AuthService {
     );
   }
 
-  sendPasswordReset(email: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/auth/forgot`, { email: email });
+  sendPasswordReset(email: string, host: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/auth/forgot`, { email, host });
   }
 
   resetPassword(
