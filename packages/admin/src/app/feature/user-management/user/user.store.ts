@@ -133,9 +133,9 @@ export const UserStore = signalStore(
           return resp.data;
         }
       },
-      async invite(userId: string) {
+      async invite(userId: string, host: string) {
         patchState(store, setPending());
-        const resp = await firstValueFrom(userService.invite(userId));
+        const resp = await firstValueFrom(userService.invite(userId, host));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {

@@ -122,9 +122,12 @@ export class UserService {
       );
   }
 
-  invite(id: string): Observable<UserModel | ErrorResponseType> {
+  invite(id: string, host: string): Observable<UserModel | ErrorResponseType> {
     return this.http
-      .post<UserResponseType>(`${environment.apiUrl}/users/invite`, { id: id })
+      .post<UserResponseType>(`${environment.apiUrl}/users/invite`, {
+        id,
+        host,
+      })
       .pipe(
         map((response: UserResponseType) => {
           const parsedResponse = UserResponseSchema.parse(response);
