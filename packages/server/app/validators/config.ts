@@ -4,6 +4,7 @@ import { createFactTypeSchema } from '#validators/fact_type'
 import { createPersonTypeSchema } from '#validators/person_type';
 import { createResourceTypeSchema } from '#validators/resource_type';
 import { createRoleSchema } from '#validators/role';
+import { createUserSchema } from './user';
 
 export const installConfigValidator = vine.compile(
   vine.object({
@@ -12,5 +13,6 @@ export const installConfigValidator = vine.compile(
     person_types: vine.array(createPersonTypeSchema).optional(),
     resource_types: vine.array(createResourceTypeSchema).optional(),
     roles: vine.array(createRoleSchema).optional(),
+    users: vine.array(createUserSchema).optional(),
   })
 );
