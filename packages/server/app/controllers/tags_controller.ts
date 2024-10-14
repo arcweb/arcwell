@@ -85,9 +85,7 @@ export default class TagsController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ auth }: HttpContext) {
-    await auth.authenticate()
-
+  async count({}: HttpContext) {
     const countQuery = db.from('tags').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -132,8 +130,7 @@ export default class TagsController {
    * @summary Create Tag
    * @description Create a new Tag within Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createTagValidator)
     const newTag = await Tag.create(request.body())
     return { data: newTag }
@@ -201,8 +198,7 @@ export default class TagsController {
    * @description Update an existing Tag
    * Show the related records of the tag for the given object type
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateTagValidator)
     const cleanRequest = request.only(['pathname'])
     const tag = await Tag.findOrFail(params.id)
@@ -220,8 +216,7 @@ export default class TagsController {
    * @summary Delete Tag
    * @description Remove the indicated Tag from Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     const tag = await Tag.findOrFail(params.id)
     await tag.delete()
     response.status(204).send('')
@@ -270,8 +265,7 @@ export default class TagsController {
    * @summary Set Tags
    * @description Set the tags associated with a given Arcwell object
    */
-  async setTags({ params, response, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async setTags({ params, response, request }: HttpContext) {
     await request.validateUsing(setTagsValidator)
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['objectType', 'tags'])

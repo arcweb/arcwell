@@ -18,8 +18,7 @@ export default class RolesController {
    * @description Returns a list of Roles defined within Arcwell
    * @paramUse(sortable, filterable)
    */
-  async index({ auth, request }: HttpContext) {
-    await auth.authenticate()
+  async index({ request }: HttpContext) {
     const queryData = request.qs()
 
     let [query, countQuery] = buildApiQuery(Role.query(), queryData, 'roles')
@@ -41,8 +40,7 @@ export default class RolesController {
    * @summary Get Role
    * @description Retrieve details on an individual Role within Arcwell
    */
-  async show({ params, auth }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return { data: await Role.findOrFail(params.id) }
   }
@@ -52,8 +50,7 @@ export default class RolesController {
    * @summary Create Role
    * @description Create a new Role within Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createRoleValidator)
     const newRole = await Role.create(request.body())
     return { data: await getFullRole(newRole.id) }
@@ -64,8 +61,7 @@ export default class RolesController {
    * @summary Update Role
    * @description Update the details of an existing Role within Arcwell
    */
-  async update({ params, auth, request }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateRoleValidator)
     await paramsUUIDValidator.validate(params)
     const role = await Role.findOrFail(params.id)
@@ -79,8 +75,7 @@ export default class RolesController {
    * @summary Delete Role
    * @description Remove a specific Role from this instance of Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const role = await Role.findOrFail(params.id)
     await role.delete()

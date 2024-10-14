@@ -48,8 +48,7 @@ export default class ResourceTypesController {
    * @summary Create ResourceType
    * @description Create a new type definition and schema for Resource objects in Arcwell
    */
-  async store({ request, auth }: HttpContext) {
-    await auth.authenticate()
+  async store({ request }: HttpContext) {
     await request.validateUsing(createResourceTypeValidator)
     const responseResourceType = await db.transaction(async (trx) => {
       const newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
@@ -96,8 +95,7 @@ export default class ResourceTypesController {
    * @summary Update ResourceType
    * @description Update a specific ResourceType definition within Arcwell
    */
-  async update({ params, request, auth }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
 
@@ -121,8 +119,7 @@ export default class ResourceTypesController {
    * @summary Delete ResourceType
    * @description Remove a specific ResourceType definition from Arcwell
    */
-  async destroy({ params, auth, response }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params, response }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const resourceType = await ResourceType.findOrFail(params.id)
     await resourceType.delete()
