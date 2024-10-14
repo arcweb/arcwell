@@ -212,7 +212,7 @@ export default class AuthController {
    * @summary Set Password
    * @description Sets a users password only when the user entry has a temp password set.  This is exclusively used by the invite system.
    */
-  async setPassword({ request, auth }: HttpContext) {
+  async setPassword({ request }: HttpContext) {
     await request.validateUsing(setPasswordValidator)
     const cleanRequest = request.only(['tempPassword', 'password', 'email'])
 

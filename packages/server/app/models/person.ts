@@ -1,5 +1,13 @@
 import { DateTime } from 'luxon'
-import { afterDelete, belongsTo, column, hasMany, hasOne, manyToMany } from '@adonisjs/lucid/orm'
+import {
+  afterDelete,
+  beforeSave,
+  belongsTo,
+  column,
+  hasMany,
+  hasOne,
+  manyToMany,
+} from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { BelongsTo, HasMany, HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
 import PersonType from '#models/person_type'
@@ -8,6 +16,7 @@ import Cohort from '#models/cohort'
 import Tag from '#models/tag'
 import Event from '#models/event'
 import AwBaseModel from '#models/aw_base_model'
+import Dimension from '#models/dimension'
 
 export default class Person extends AwBaseModel {
   @column({ isPrimary: true })
@@ -21,6 +30,9 @@ export default class Person extends AwBaseModel {
 
   @column()
   declare typeKey: string
+
+  @column()
+  declare dimensions: Dimension[]
 
   @belongsTo(() => PersonType, { foreignKey: 'typeKey', localKey: 'key' })
   declare personType: BelongsTo<typeof PersonType>
@@ -62,6 +74,15 @@ export default class Person extends AwBaseModel {
   serializeExtras() {
     return {
       cohortsCount: Number.parseInt(this.$extras.cohorts_count),
+    }
+  }
+
+  @beforeSave()
+  static async generateJson(person: Person) {
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (person.dimensions && typeof person.dimensions !== 'string') {
+      // @ts-ignore - ignoring because dimensions have to be stringify-ed to get around knex & postgresql jsonb issue
+      person.dimensions = JSON.stringify(person.dimensions)
     }
   }
 }

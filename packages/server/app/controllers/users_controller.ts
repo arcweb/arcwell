@@ -83,18 +83,18 @@ export default class UsersController {
   async store({ request }: HttpContext) {
     // TODO: Add create user functionality back in...
     await request.validateUsing(createUserValidator)
-    let newUser = null
-    await db.transaction(async (trx) => {
-      newUser = new User().fill(request.body()).useTransaction(trx)
+    const responseUser = await db.transaction(async (trx) => {
+      const newUser = new User().fill(request.body()).useTransaction(trx)
       await newUser.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newUser.id, 'users', tags.tags, false)
       }
+      return newUser
     })
 
-    return { data: await getFullUser(newUser.id) }
+    return { data: await getFullUser(responseUser.id) }
   }
 
   /**
@@ -105,18 +105,18 @@ export default class UsersController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['email', 'roleId'])
-    let updatedUser = null
-    await db.transaction(async (trx) => {
+    const cleanRequest = request.only(['email', 'roleId', 'tags'])
+    const responseUser = await db.transaction(async (trx) => {
       const user = await User.findOrFail(params.id)
       user.useTransaction(trx)
-      updatedUser = await user.merge(cleanRequest).save()
+      const updatedUser = await user.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
       }
+      return updatedUser
     })
-    return { data: await getFullUser(updatedUser.id) }
+    return { data: await getFullUser(responseUser.id) }
   }
 
   /**

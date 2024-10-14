@@ -24,7 +24,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { TagsFormComponent } from '@app/shared/components/tags-form/tags-form.component';
 import {
@@ -36,8 +36,8 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { ResourceTypeStore } from '../resource-type/resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-resource-type',
@@ -65,12 +65,11 @@ import { DetailHeaderComponent } from '../../../shared/components/detail-header/
 })
 export class ResourceTypeComponent implements OnInit {
   readonly resourceTypeStore = inject(ResourceTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
-  @Input() resourceTypeId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -106,11 +105,11 @@ export class ResourceTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.resourceTypeId) {
-      if (this.resourceTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.resourceTypeStore.initializeForCreate();
       } else {
-        this.resourceTypeStore.initialize(this.resourceTypeId).then(() => {
+        this.resourceTypeStore.initialize(this.detailId).then(() => {
           this.resourceTypeForm.patchValue({
             key: this.resourceTypeStore.resourceType()?.key,
             name: this.resourceTypeStore.resourceType()?.name,
@@ -162,7 +161,7 @@ export class ResourceTypeComponent implements OnInit {
 
   onCancel() {
     if (this.resourceTypeStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.resourceTypeStore.inEditMode()) {
@@ -190,7 +189,7 @@ export class ResourceTypeComponent implements OnInit {
       if (result === true) {
         this.resourceTypeStore.delete().then(() => {
           if (this.resourceTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

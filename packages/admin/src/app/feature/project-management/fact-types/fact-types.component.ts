@@ -13,7 +13,7 @@ import {
   MatTable,
   MatTableDataSource,
 } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FactTypeModel } from '@app/shared/models/fact-type.model';
 import { ErrorContainerComponent } from '@feature/project-management/error-container/error-container.component';
 import { JsonPipe } from '@angular/common';
@@ -52,6 +52,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 export class FactTypesComponent {
   public factTypesStore = inject(FactTypesStore);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   dataSource = new MatTableDataSource<FactTypeModel>();
 
@@ -66,7 +67,10 @@ export class FactTypesComponent {
   }
 
   handleClick(row: FactTypeModel) {
-    this.router.navigate(['project-management', 'facts', 'types', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

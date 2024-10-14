@@ -51,17 +51,17 @@ export default class EventTypesController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createEventTypeValidator)
 
-    let newEventType = null
-    await db.transaction(async (trx) => {
-      newEventType = new EventType().fill(request.body()).useTransaction(trx)
+    const eventType = await db.transaction(async (trx) => {
+      const newEventType = new EventType().fill(request.body()).useTransaction(trx)
       await newEventType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newEventType.id, 'event_types', tags.tags, false)
       }
+      return newEventType
     })
-    return { data: await getFullEventType(newEventType.id) }
+    return { data: await getFullEventType(eventType.id) }
   }
 
   /**
@@ -106,19 +106,19 @@ export default class EventTypesController {
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    let updatedEventType = null
-    await db.transaction(async (trx) => {
+    const newEventType = await db.transaction(async (trx) => {
       const eventType = await EventType.findOrFail(params.id)
       eventType.useTransaction(trx)
-      updatedEventType = await eventType.merge(request.body()).save()
+      const updatedEventType = await eventType.merge(request.body()).save()
 
       const tags = request.only(['tags'])
       if (tags.tags) {
         await setTagsForObject(trx, eventType.id, 'event_types', tags.tags)
       }
+      return updatedEventType
     })
 
-    return { data: await getFullEventType(updatedEventType.id) }
+    return { data: await getFullEventType(newEventType.id) }
   }
 
   /**

@@ -1,6 +1,6 @@
-import { Component, output, input } from '@angular/core';
+import { Component, output, input, inject } from '@angular/core';
 import { MatButtonModule, MatIconButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCirclePlus,
@@ -8,9 +8,10 @@ import {
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 
 interface QueryParams {
-  typeKey?: string;
+  type_key?: string;
 }
 
 @Component({
@@ -27,8 +28,9 @@ interface QueryParams {
   styleUrl: './table-header.component.scss',
 })
 export class TableHeaderComponent {
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   tableName = input.required<string>();
-  createLink = input.required<string>();
   createLinkQueryParams = input<QueryParams>();
 
   // hook these up when we have the functionality
@@ -38,4 +40,14 @@ export class TableHeaderComponent {
   faCirclePlus = faCirclePlus;
   faBars = faBars;
   faMagnifyingGlass = faMagnifyingGlass;
+
+  onCreate() {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        ...this.createLinkQueryParams(),
+        detail_id: CREATE_PARTIAL_URL,
+      },
+    });
+  }
 }

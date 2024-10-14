@@ -39,22 +39,23 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'people/list',
         component: PeopleListComponent,
+        data: {
+          detailComponent: PersonComponent,
+        },
       },
       {
-        path: 'people/list/:typeKey',
+        path: 'people/list/:type_key',
         component: PeopleListComponent,
+        data: {
+          detailComponent: PersonComponent,
+        },
       },
       {
         path: 'people/types',
         component: PersonTypesComponent,
-      },
-      {
-        path: 'people/types/:personTypeId',
-        component: PersonTypeComponent,
-      },
-      {
-        path: 'people/:personId',
-        component: PersonComponent,
+        data: {
+          detailComponent: PersonTypeComponent,
+        },
       },
       {
         path: 'people',
@@ -64,35 +65,35 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'cohorts/list',
         component: CohortsListComponent,
+        data: {
+          detailComponent: CohortComponent,
+        },
       },
       {
         path: 'cohorts',
         redirectTo: 'cohorts/list',
       },
-      {
-        path: 'cohorts/:cohortId',
-        component: CohortComponent,
-      },
       // resources routes
       {
         path: 'resources/list',
         component: ResourcesListComponent,
+        data: {
+          detailComponent: ResourceComponent,
+        },
       },
       {
-        path: 'resources/list/:typeKey',
+        path: 'resources/list/:type_key',
         component: ResourcesListComponent,
+        data: {
+          detailComponent: ResourceComponent,
+        },
       },
       {
         path: 'resources/types',
         component: ResourceTypesComponent,
-      },
-      {
-        path: 'resources/types/:resourceTypeId',
-        component: ResourceTypeComponent,
-      },
-      {
-        path: 'resources/:resourceId',
-        component: ResourceComponent,
+        data: {
+          detailComponent: ResourceTypeComponent,
+        },
       },
       {
         path: 'resources',
@@ -102,22 +103,23 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'events/list',
         component: EventsListComponent,
+        data: {
+          detailComponent: EventComponent,
+        },
       },
       {
-        path: 'events/list/:typeKey',
+        path: 'events/list/:type_key',
         component: EventsListComponent,
+        data: {
+          detailComponent: EventComponent,
+        },
       },
       {
         path: 'events/types',
         component: EventTypesComponent,
-      },
-      {
-        path: 'events/types/:eventTypeId',
-        component: EventTypeComponent,
-      },
-      {
-        path: 'events/:eventId',
-        component: EventComponent,
+        data: {
+          detailComponent: EventTypeComponent,
+        },
       },
       {
         path: 'events',
@@ -127,22 +129,23 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'facts/list',
         component: FactsListComponent,
+        data: {
+          detailComponent: FactComponent,
+        },
       },
       {
-        path: 'facts/list/:typeKey',
+        path: 'facts/list/:type_key',
         component: FactsListComponent,
+        data: {
+          detailComponent: FactComponent,
+        },
       },
       {
         path: 'facts/types',
         component: FactTypesComponent,
-      },
-      {
-        path: 'facts/types/:factTypeId',
-        component: FactTypeComponent,
-      },
-      {
-        path: 'facts/:factId',
-        component: FactComponent,
+        data: {
+          detailComponent: FactTypeComponent,
+        },
       },
       {
         path: 'facts',
@@ -152,10 +155,9 @@ export const PROJECT_MANAGEMENT_ROUTES: Route[] = [
       {
         path: 'tags/list',
         component: TagsListComponent,
-      },
-      {
-        path: 'tags/:tagId',
-        component: TagComponent,
+        data: {
+          detailComponent: TagComponent,
+        },
       },
       {
         path: 'tags',

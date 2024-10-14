@@ -50,18 +50,18 @@ export default class ResourceTypesController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createResourceTypeValidator)
-    let newResourceType = null
-    await db.transaction(async (trx) => {
-      newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
+    const responseResourceType = await db.transaction(async (trx) => {
+      const newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
       await newResourceType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newResourceType.id, 'resource_types', tags.tags, false)
       }
+      return newResourceType
     })
 
-    return { data: await getFullResourceType(newResourceType.id) }
+    return { data: await getFullResourceType(responseResourceType.id) }
   }
 
   /**
@@ -98,19 +98,20 @@ export default class ResourceTypesController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
-    let updatedResourceType = null
-    await db.transaction(async (trx) => {
+
+    const responseResourceType = await db.transaction(async (trx) => {
       const resourceType = await ResourceType.findOrFail(params.id)
       resourceType.useTransaction(trx)
-      updatedResourceType = await resourceType.merge(request.body()).save()
+      const updatedResourceType = await resourceType.merge(request.body()).save()
 
       const tags = request.only(['tags'])
       if (tags.tags) {
         await setTagsForObject(trx, resourceType.id, 'resource_types', tags.tags)
       }
+      return updatedResourceType
     })
 
-    return { data: await getFullResourceType(updatedResourceType.id) }
+    return { data: await getFullResourceType(responseResourceType.id) }
   }
 
   /**

@@ -3,7 +3,7 @@ import {
   DestroyRef,
   effect,
   inject,
-  input,
+  Input,
   OnInit,
 } from '@angular/core';
 import { UserStore } from './user.store';
@@ -35,8 +35,8 @@ import { InputMatch } from '@app/shared/helpers/input-match.helper';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
-import { UserModel } from '@app/shared/models';
 import { MatDialog } from '@angular/material/dialog';
+import { DetailStore } from '@app/feature/project-management/detail/detail.store';
 
 @Component({
   selector: 'aw-user',
@@ -69,6 +69,7 @@ export class UserComponent implements OnInit {
   readonly authStore = inject(AuthStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private detailStore = inject(DetailStore);
   readonly isProfile = toSignal(
     this.activatedRoute.data.pipe(
       takeUntilDestroyed(),
@@ -81,7 +82,7 @@ export class UserComponent implements OnInit {
 
   destroyRef = inject(DestroyRef);
 
-  userId = input<string>();
+  @Input() detailId!: string;
 
   userForm = new FormGroup({
     email: new FormControl(
@@ -130,7 +131,7 @@ export class UserComponent implements OnInit {
     // if the route data contains isProfile use the current user id else use the userId from the params
     const userId = this.isProfile()
       ? this.authStore.currentUser()?.id
-      : this.userId();
+      : this.detailId;
     if (userId) {
       if (userId === CREATE_PARTIAL_URL) {
         this.userStore.initializeForCreate();
@@ -146,7 +147,7 @@ export class UserComponent implements OnInit {
 
     this.userForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(event => {
+      .subscribe(async event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.userStore.inCreateMode()) {
             const formValue = this.userForm.value;
@@ -158,7 +159,9 @@ export class UserComponent implements OnInit {
                 : null,
               requiresPasswordChange: true,
             };
-            this.userStore.create(userFormPayload);
+            const newUser = await this.userStore.create(userFormPayload);
+            // TODO: figure out why this is necessary and this function has a stale value
+            this.detailId = newUser.id;
             // ask to invite user
             const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
               data: {
@@ -173,7 +176,7 @@ export class UserComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
               const userId = this.isProfile()
                 ? this.authStore.currentUser()?.id
-                : this.userId();
+                : this.detailId;
               if (result === true && userId) {
                 this.userStore.invite(userId);
               }
@@ -215,11 +218,7 @@ export class UserComponent implements OnInit {
     const fromCreateMode = this.userStore.inCreateMode();
     this.userStore.toggleEditMode();
     if (fromCreateMode) {
-      this.router.navigate([
-        'project-management',
-        'settings',
-        'user-management',
-      ]);
+      this.detailStore.clearDetailId();
     }
   }
 
@@ -254,12 +253,14 @@ export class UserComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.userStore.invite(this.userId()!);
+        this.userStore.invite(this.detailId!);
       }
     });
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', 'list', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 }

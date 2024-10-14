@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 import { AuthStore } from '@shared/store/auth.store';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';

@@ -326,7 +326,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"rules\": {\n        \"someRule\": \"someValue\"\n    },\n    \"tags\": [\"a/b/c\"]\n}\n",
+					"raw": "{\n    \"name\": \"foo\",\n    \"description\": \"bar\",\n    \"tags\": [\"a/b/c\"]\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -4356,7 +4356,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"b028705a-d9a9-4312-bfba-5f6eef932763\",\n    \"name\": \"foobar\",\n    \"description\": \"barfoo\",\n    \"rules\": {\n        \"rule1\": \"foorule\"\n    },\n    \"tags\": [\"d/e/f\"]\n}",
+					"raw": "{\n    \"id\": \"b028705a-d9a9-4312-bfba-5f6eef932763\",\n    \"name\": \"foobar\",\n    \"description\": \"barfoo\"\n      },\n    \"tags\": [\"d/e/f\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

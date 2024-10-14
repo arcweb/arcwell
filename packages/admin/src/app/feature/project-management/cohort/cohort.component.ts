@@ -36,10 +36,10 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { PersonType } from '@schemas/person.schema';
-import { BackService } from '@app/shared/services/back.service';
-import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
-import { CohortType } from '@app/shared/schemas/cohort.schema';
+import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
+import { CohortNewType } from '@app/shared/schemas/cohort.schema';
 
 @Component({
   selector: 'aw-cohort',
@@ -73,19 +73,19 @@ export class CohortComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  private detailStore = inject(DetailStore);
 
-  @Input() cohortId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
   cohortForm = new FormGroup({
-    name: new FormControl(
+    name: new FormControl<string>(
       {
         value: '',
         disabled: true,
       },
-      Validators.required,
+      { nonNullable: true, validators: [Validators.required] },
     ),
     description: new FormControl({
       value: '',
@@ -103,13 +103,7 @@ export class CohortComponent implements OnInit {
     ),
   });
 
-  peopleColumns: string[] = [
-    'id',
-    'familyName',
-    'givenName',
-    'personType',
-    'delete',
-  ];
+  peopleColumns: string[] = ['familyName', 'givenName', 'personType', 'delete'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
   pageSizes = [10, 20, 50];
 
@@ -122,16 +116,16 @@ export class CohortComponent implements OnInit {
         this.cohortForm.disable();
         this.peopleForm.enable();
       }
-      this.peopleDataSource.data = this.cohortStore.cohort()?.people;
+      this.peopleDataSource.data = this.cohortStore.people();
     });
   }
 
   ngOnInit(): void {
-    if (this.cohortId) {
-      if (this.cohortId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.cohortStore.initializeForCreate();
       } else {
-        this.cohortStore.initialize(this.cohortId).then(() => {
+        this.cohortStore.initialize(this.detailId).then(() => {
           this.cohortForm.patchValue({
             name: this.cohortStore.cohort()?.name,
             description: this.cohortStore.cohort()?.description,
@@ -145,8 +139,9 @@ export class CohortComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.cohortStore.inCreateMode()) {
-            const cohortFormPayload: CohortType = {
-              ...this.cohortForm.value,
+            const cohortFormPayload: CohortNewType = {
+              name: this.cohortForm.value['name'] ?? '',
+              description: this.cohortForm.value['description'] ?? '',
             };
 
             if (this.tagsForCreate.length > 0) {
@@ -154,7 +149,11 @@ export class CohortComponent implements OnInit {
             }
             this.cohortStore.createCohort(cohortFormPayload);
           } else {
-            this.cohortStore.updateCohort(this.cohortForm.value);
+            this.cohortStore.updateCohort({
+              id: this.cohortStore.id(),
+              name: this.cohortForm.value['name'] ?? '',
+              description: this.cohortForm.value['description'] ?? '',
+            });
           }
         }
       });
@@ -171,7 +170,7 @@ export class CohortComponent implements OnInit {
 
   onCancel() {
     if (this.cohortStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.cohortStore.inEditMode()) {
@@ -197,7 +196,7 @@ export class CohortComponent implements OnInit {
       if (result === true) {
         this.cohortStore.deleteCohort().then(() => {
           if (this.cohortStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

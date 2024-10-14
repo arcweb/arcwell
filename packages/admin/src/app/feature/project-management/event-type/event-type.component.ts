@@ -18,7 +18,7 @@ import {
   TouchedChangeEvent,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import {
   CREATE_PARTIAL_URL,
@@ -36,8 +36,8 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-event-type',
@@ -65,12 +65,11 @@ import { DetailHeaderComponent } from '@app/shared/components/detail-header/deta
 })
 export class EventTypeComponent implements OnInit {
   readonly eventTypeStore = inject(EventTypeStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
-  @Input() eventTypeId!: string;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -106,11 +105,11 @@ export class EventTypeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.eventTypeId) {
-      if (this.eventTypeId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.eventTypeStore.initializeForCreate();
       } else {
-        this.eventTypeStore.initialize(this.eventTypeId).then(() => {
+        this.eventTypeStore.initialize(this.detailId).then(() => {
           this.eventTypeForm.patchValue({
             key: this.eventTypeStore.eventType()?.key,
             name: this.eventTypeStore.eventType()?.name,
@@ -162,19 +161,15 @@ export class EventTypeComponent implements OnInit {
   }
 
   onCancel() {
-    if (this.eventTypeStore.inCreateMode()) {
-      this.backService.goBack();
-    } else {
-      // reset the form
-      if (this.eventTypeStore.inEditMode()) {
-        this.eventTypeForm.patchValue({
-          key: this.eventTypeStore.eventType()?.key,
-          name: this.eventTypeStore.eventType()?.name,
-          description: this.eventTypeStore.eventType()?.description,
-        });
-      }
-      this.eventTypeStore.toggleEditMode();
+    // reset the form
+    if (this.eventTypeStore.inEditMode()) {
+      this.eventTypeForm.patchValue({
+        key: this.eventTypeStore.eventType()?.key,
+        name: this.eventTypeStore.eventType()?.name,
+        description: this.eventTypeStore.eventType()?.description,
+      });
     }
+    this.eventTypeStore.toggleEditMode();
   }
 
   onDelete() {
@@ -191,7 +186,7 @@ export class EventTypeComponent implements OnInit {
       if (result === true) {
         this.eventTypeStore.delete().then(() => {
           if (this.eventTypeStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }

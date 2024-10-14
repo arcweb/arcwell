@@ -124,6 +124,9 @@ export class FeaturesMenuComponent {
   }
 
   goHome() {
-    this.router.navigate(['/']);
+    // if route is not dashboard, navigate to dashboard
+    if (this.router.url !== '/project-management/dashboard') {
+      this.router.navigate(['/']);
+    }
   }
 }

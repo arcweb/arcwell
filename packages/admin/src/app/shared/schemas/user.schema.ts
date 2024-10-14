@@ -3,16 +3,15 @@ import { UserModel } from '@shared/models';
 import { RoleSchema } from './role.schema';
 import { PersonSchema } from '@shared/schemas/person.schema';
 
-// validate data coming from API or sending to API for create
-// TODO: Do we want to have both request and response schemas?  Or do we want to make some fields optional?
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const UserSchema: any = z
   .object({
     id: z.string().uuid().optional(),
     email: z.string(),
     roleId: z.string().uuid(),
     personId: z.string().uuid().optional().nullable(),
-    createdAt: z.string().datetime({ offset: true }),
-    updatedAt: z.string().datetime({ offset: true }),
+    createdAt: z.string().datetime({ offset: true }).optional(),
+    updatedAt: z.string().datetime({ offset: true }).optional(),
     role: z.lazy(() => RoleSchema).optional(),
     person: z
       .lazy(() => PersonSchema)
@@ -62,7 +61,7 @@ export const deserializeUser = (data: UserType): UserModel => {
 export const serializeUser = (data: UserModel): UserType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt?.toISO() ?? undefined,
+    updatedAt: data.updatedAt?.toISO() ?? undefined,
   };
 };

@@ -33,13 +33,13 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
-import { PersonType } from '@app/shared/schemas/person.schema';
+import { DetailStore } from '../detail/detail.store';
+import { PersonNewType, PersonType } from '@app/shared/schemas/person.schema';
 
 @Component({
   selector: 'aw-person',
@@ -64,7 +64,7 @@ import { PersonType } from '@app/shared/schemas/person.schema';
     CohortTableComponent,
     DetailHeaderComponent,
   ],
-  providers: [PersonStore],
+  providers: [PersonStore, DetailStore],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss',
 })
@@ -73,10 +73,11 @@ export class PersonComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
-  @Input() personId!: string;
-  @Input() typeKey?: string;
+  // TODO: figure out why an initial value is required for typeKey when dynamically loading this component
+  @Input() typeKey: string | undefined = undefined;
+  @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
 
@@ -142,11 +143,11 @@ export class PersonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.personId) {
-      if (this.personId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.personStore.initializeForCreate();
       } else {
-        this.personStore.initialize(this.personId).then(() => {
+        this.personStore.initialize(this.detailId).then(() => {
           this.personForm.patchValue({
             familyName: this.personStore.person()?.familyName,
             givenName: this.personStore.person()?.givenName,
@@ -161,7 +162,7 @@ export class PersonComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.personStore.inCreateMode()) {
-            const personFormPayload: PersonType = {
+            const personFormPayload: PersonType | PersonNewType = {
               ...this.personForm.value,
             };
 
@@ -172,6 +173,7 @@ export class PersonComponent implements OnInit {
           } else {
             this.personStore.updatePerson(this.personForm.value);
           }
+          this.detailStore.setDrawerOpen(false);
         }
         // else if (event instanceof ValueChangeEvent) {
         // This is here for an example.  Also, there are other events that can be caught
@@ -181,7 +183,10 @@ export class PersonComponent implements OnInit {
     this.cohortForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
-        if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+        if (
+          (event as ControlEvent) instanceof FormSubmittedEvent &&
+          this.cohortForm.value.cohort
+        ) {
           this.personStore.attachCohort(this.cohortForm.value.cohort.id);
           this.cohortForm.reset();
         }
@@ -190,7 +195,7 @@ export class PersonComponent implements OnInit {
 
   onCancel() {
     if (this.personStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.personStore.inEditMode()) {
@@ -217,7 +222,7 @@ export class PersonComponent implements OnInit {
       if (result === true) {
         this.personStore.deletePerson().then(() => {
           if (this.personStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }
@@ -259,7 +264,9 @@ export class PersonComponent implements OnInit {
   }
 
   cohortsRowClick(row: CohortModel) {
-    this.router.navigate(['project-management', 'cohorts', row.id]);
+    this.router.navigate(['project-management', 'cohorts', 'list'], {
+      queryParams: { detail_id: row.id },
+    });
   }
 
   // This should only be used during object creation

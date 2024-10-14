@@ -4,6 +4,7 @@
 @mixin dashboard-theme($theme) {
   .dashboard-card {
     border-radius: layout.$full-card-border-radius;
+
     mat-card-content {
       color: colors.$dark-blue;
     }

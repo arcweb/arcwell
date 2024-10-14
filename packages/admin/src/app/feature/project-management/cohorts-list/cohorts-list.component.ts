@@ -38,7 +38,7 @@ export class CohortsListComponent {
   // TODO: Technically there wouldn't be route params here so should this be set up differently?
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   dataSource = new MatTableDataSource<CohortModel>();
@@ -50,12 +50,15 @@ export class CohortsListComponent {
     effect(() => {
       this.dataSource.data = this.cohortsListStore.cohorts();
     });
-    this.typeKey$.subscribe(typeKey => {
+    this.typeKey$.subscribe(() => {
       this.cohortsListStore.load(this.cohortsListStore.limit(), 0);
     });
   }
 
   rowClick(row: CohortModel) {
-    this.router.navigate(['project-management', 'cohorts', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 }

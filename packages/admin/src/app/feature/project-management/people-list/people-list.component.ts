@@ -40,7 +40,7 @@ export class PeopleListComponent {
   pageSizes = [10, 20, 50];
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
   faCirclePlus = faCirclePlus;
 
@@ -70,11 +70,19 @@ export class PeopleListComponent {
   }
 
   rowClick(row: PersonModel) {
-    this.router.navigate(['project-management', 'people', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   viewAccount(personId: string) {
-    this.router.navigate(['user-management', 'list', personId]);
+    this.router.navigate(
+      ['project-management', 'settings', 'user-management', 'list'],
+      {
+        queryParams: { detail_id: personId },
+      },
+    );
   }
 
   sortChange(event: Sort) {

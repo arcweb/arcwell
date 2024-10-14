@@ -1,62 +1,43 @@
 import { DateTime } from 'luxon';
-import { PersonUpdateType } from '@shared/schemas/person.schema';
+import { PersonNewType, PersonType } from '@shared/schemas/person.schema';
 import { PersonTypeModel } from '@shared/models/person-type.model';
 import { UserModel } from '@shared/models/user.model';
-import { UserType } from '@schemas/user.schema';
 import { CohortModel } from '@shared/models/cohort.model';
 import { CohortType } from '@schemas/cohort.schema';
-
-// Base interface with common properties
-interface PersonBase {
-  familyName: string;
-  givenName: string;
-  typeKey: string;
-  tags?: string[];
-  info?: object;
-  cohorts?: CohortModel[] | undefined;
-  cohortsCount?: number;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  personType?: PersonTypeModel;
-  user?: UserType;
-}
-
-// TODO: WIP.  This might be a decent way make id required after saving
-// Interface for person before saving (no id)
-export interface PersonPreSave extends PersonBase {
-  id?: never;
-}
-
-// Interface for person after saving (id is required)
-export interface PersonPostSave extends PersonBase {
-  id: string;
-}
+import { DimensionModel } from '@shared/models/dimension.model';
+import { DimensionType } from '@schemas/dimension.schema';
 
 export class PersonModel {
   public id?: string;
   public familyName: string;
   public givenName: string;
   public typeKey: string;
+  public dimensions?: DimensionModel[];
   public tags?: string[];
-  public info?: object;
-  public cohorts?: CohortModel[] | undefined;
+  public cohorts?: CohortModel[];
   public cohortsCount?: number;
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
   public personType?: PersonTypeModel;
   public user?: UserModel;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
-  constructor(data: PersonUpdateType) {
-    this.id = data.id;
+  constructor(data: PersonType | PersonNewType) {
+    if ('id' in data && data.id) {
+      this.id = data.id;
+    }
     this.familyName = data.familyName;
     this.givenName = data.givenName;
     this.typeKey = data.typeKey;
     this.tags = data.tags;
-    this.info = data.info;
+    if (data.dimensions) {
+      this.dimensions = data.dimensions.map(
+        (dimension: DimensionType) => new DimensionModel(dimension),
+      );
+    }
     this.cohorts = data.cohorts
       ? data.cohorts.map((cohort: CohortType) => new CohortModel(cohort))
       : undefined;
-    this.cohortsCount = data.cohortsCount ||= 0;
+    this.cohortsCount = data.cohortsCount ?? 0;
     this.createdAt = DateTime.fromISO(data.createdAt);
     this.updatedAt = DateTime.fromISO(data.updatedAt);
     this.personType = data.personType

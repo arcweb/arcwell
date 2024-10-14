@@ -32,7 +32,6 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
 import { MatTableDataSource } from '@angular/material/table';
@@ -48,6 +47,7 @@ import { FactModel } from '@app/shared/models/fact.model';
 import { ResourceModel } from '@app/shared/models/resource.model';
 import { UserModel } from '@app/shared/models';
 import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-tag',
@@ -83,7 +83,7 @@ export class TagComponent implements OnInit {
   private router = inject(Router);
   readonly dialog = inject(MatDialog);
   readonly destroyRef = inject(DestroyRef);
-  readonly backService = inject(BackService);
+  readonly detailStore = inject(DetailStore);
 
   eventsDataSource = new MatTableDataSource<EventModel>();
   eventsColumns: string[] = [
@@ -103,7 +103,7 @@ export class TagComponent implements OnInit {
     'observedAt',
   ];
 
-  peopleColumns: string[] = ['id', 'familyName', 'givenName', 'personType'];
+  peopleColumns: string[] = ['familyName', 'givenName', 'personType'];
   peopleDataSource = new MatTableDataSource<PersonModel>();
 
   resourcesDataSource = new MatTableDataSource<ResourceModel>();
@@ -114,7 +114,7 @@ export class TagComponent implements OnInit {
 
   pageSizes = [10, 20, 50];
 
-  @Input() tagId!: string;
+  @Input() detailId!: string;
 
   tagForm = new FormGroup({
     pathname: new FormControl(
@@ -142,11 +142,11 @@ export class TagComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.tagId) {
-      if (this.tagId === CREATE_PARTIAL_URL) {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
         this.tagStore.initializeForCreate();
       } else {
-        this.tagStore.initialize(this.tagId).then(() => {
+        this.tagStore.initialize(this.detailId).then(() => {
           this.tagForm.patchValue({
             pathname: this.tagStore.tag()?.pathname,
           });
@@ -169,7 +169,7 @@ export class TagComponent implements OnInit {
 
   onCancel() {
     if (this.tagStore.inCreateMode()) {
-      this.backService.goBack();
+      this.detailStore.clearDetailId();
     } else {
       // reset the form
       if (this.tagStore.inEditMode()) {
@@ -194,7 +194,7 @@ export class TagComponent implements OnInit {
       if (result === true) {
         this.tagStore.deleteTag().then(() => {
           if (this.tagStore.errors().length === 0) {
-            this.backService.goBack();
+            this.detailStore.clearDetailId();
           }
         });
       }
@@ -224,25 +224,30 @@ export class TagComponent implements OnInit {
   ) {
     switch (objectType) {
       case 'events':
-        this.router.navigate(['project-management', 'events', row.id]);
+        this.router.navigate(['project-management', 'events', 'list'], {
+          queryParams: { detail_id: row.id },
+        });
         break;
       case 'facts':
-        this.router.navigate(['project-management', 'facts', row.id]);
+        this.router.navigate(['project-management', 'facts', 'list'], {
+          queryParams: { detail_id: row.id },
+        });
         break;
       case 'people':
-        this.router.navigate(['project-management', 'people', row.id]);
+        this.router.navigate(['project-management', 'people', 'list'], {
+          queryParams: { detail_id: row.id },
+        });
         break;
       case 'resources':
-        this.router.navigate(['project-management', 'resources', row.id]);
+        this.router.navigate(['project-management', 'resources', 'list'], {
+          queryParams: { detail_id: row.id },
+        });
         break;
       case 'users':
-        this.router.navigate([
-          'project-management',
-          'settings',
-          'user-management',
-          'all-users',
-          row.id,
-        ]);
+        this.router.navigate(
+          ['project-management', 'settings', 'user-management', 'all-users'],
+          { queryParams: { detail_id: row.id } },
+        );
         break;
     }
   }
@@ -265,14 +270,20 @@ export class TagComponent implements OnInit {
   }
 
   viewEvent(eventId: string) {
-    this.router.navigate(['project-management', 'events', eventId]);
+    this.router.navigate(['project-management', 'events', 'list'], {
+      queryParams: { detail_id: eventId },
+    });
   }
 
   viewResource(resourceId: string) {
-    this.router.navigate(['project-management', 'resources', resourceId]);
+    this.router.navigate(['project-management', 'resources', 'list'], {
+      queryParams: { detail_id: resourceId },
+    });
   }
 
   viewPerson(personId: string) {
-    this.router.navigate(['project-management', 'people', personId]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: personId },
+    });
   }
 }

@@ -15,7 +15,7 @@ import {
 
 import { EventTypeService } from '@shared/services/event-type.service';
 import { inject } from '@angular/core';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { EventTypeModel } from '@app/shared/models/event-type.model';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';

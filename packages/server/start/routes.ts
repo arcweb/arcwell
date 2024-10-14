@@ -187,5 +187,6 @@ router
 // Healthcheck and non-API paths:
 router.get('/health', [HealthChecksController])
 router.get('/docs/swagger.yaml', async () => {
+  // @ts-ignore - AutoSwagger isn't exporting default correctly for ESM
   return AutoSwagger.default.docs(router.toJSON(), swagger)
 })

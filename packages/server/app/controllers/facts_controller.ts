@@ -96,17 +96,17 @@ export default class FactsController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createFactValidator)
-    let newFact = null
-    await db.transaction(async (trx) => {
-      newFact = new Fact().fill(request.body()).useTransaction(trx)
+    const responseFact = await db.transaction(async (trx) => {
+      const newFact = new Fact().fill(request.body()).useTransaction(trx)
       await newFact.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newFact.id, 'facts', tags.tags, false)
       }
+      return newFact
     })
-    return { data: await getFullFact(newFact.id) }
+    return { data: await getFullFact(responseFact.id) }
   }
 
   /**
@@ -128,24 +128,22 @@ export default class FactsController {
    * @description Update an existing Fact record. This method is best used for administrative and management functions. Consider the Data API for inserting and manipulating facts with dimension for statistical and review purposes.
    */
   async update({ params, request }: HttpContext) {
-    console.log('#######################request=', request.serialize())
-    const cleanRequest = await request.validateUsing(updateFactValidator)
-
-    console.log('#######################showMeTheMoney=', cleanRequest)
+    await request.validateUsing(updateFactValidator)
 
     await paramsUUIDValidator.validate(params)
-    // const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
-    let updatedFact = null
-    await db.transaction(async (trx) => {
+    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
+
+    const responseFact = await db.transaction(async (trx) => {
       const fact = await Fact.findOrFail(params.id)
       fact.useTransaction(trx)
-      updatedFact = await fact.merge(cleanRequest).save()
+      const updatedFact = await fact.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
       }
+      return updatedFact
     })
-    return { data: await getFullFact(updatedFact.id) }
+    return { data: await getFullFact(responseFact.id) }
   }
 
   /**

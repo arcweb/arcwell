@@ -50,18 +50,18 @@ export default class PersonTypesController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createPersonTypeValidator)
-    let newPersonType = null
-    await db.transaction(async (trx) => {
-      newPersonType = new PersonType().fill(request.body()).useTransaction(trx)
+    const responsePersonType = await db.transaction(async (trx) => {
+      const newPersonType = new PersonType().fill(request.body()).useTransaction(trx)
       await newPersonType.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newPersonType.id, 'person_types', tags.tags, false)
       }
+      return newPersonType
     })
 
-    return { data: await getFullPersonType(newPersonType.id) }
+    return { data: await getFullPersonType(responsePersonType.id) }
   }
 
   /**
@@ -98,19 +98,19 @@ export default class PersonTypesController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updatePersonTypeValidator)
     await paramsUUIDValidator.validate(params)
-    let updatedPersonType = null
-    await db.transaction(async (trx) => {
+    const responsePersonType = await db.transaction(async (trx) => {
       const personType = await PersonType.findOrFail(params.id)
       personType.useTransaction(trx)
-      updatedPersonType = await personType.merge(request.body()).save()
+      const updatedPersonType = await personType.merge(request.body()).save()
 
       const tags = request.only(['tags'])
       if (tags.tags) {
         await setTagsForObject(trx, personType.id, 'person_types', tags.tags)
       }
+      return updatedPersonType
     })
 
-    return { data: await getFullPersonType(updatedPersonType.id) }
+    return { data: await getFullPersonType(responsePersonType.id) }
   }
 
   /**

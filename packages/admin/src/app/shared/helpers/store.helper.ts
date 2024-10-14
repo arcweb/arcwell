@@ -6,7 +6,7 @@ export function isRelationLastOnPage(
   totalCount: number,
   limit: number,
   pageIndex: number,
-  offset: number
+  offset: number,
 ) {
   const countAfterRemove = totalCount - 1;
   const maxPageIndex = Math.ceil(totalCount / limit) - 1;

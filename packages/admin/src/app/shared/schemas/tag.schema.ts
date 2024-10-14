@@ -6,6 +6,7 @@ import { FactSchema } from './fact.schema';
 import { ResourceSchema } from './resource.schema';
 import { UserSchema } from './user.schema';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const TagSchema: any = z
   .object({
     id: z.string().uuid().optional(),

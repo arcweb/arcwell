@@ -1,5 +1,4 @@
-import { DateTime } from 'luxon';
-import { FactUpdateType } from '@shared/schemas/fact.schema';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 export class DimensionSchemaModel {
   public key: string;
@@ -7,19 +6,12 @@ export class DimensionSchemaModel {
   public dataType: string;
   public dataUnit: string;
   public isRequired: boolean;
-  public createdAt?: DateTime;
-  public updatedAt?: DateTime;
 
-  constructor(data: FactUpdateType) {
+  constructor(data: DimensionSchemaType) {
     this.key = data.key;
     this.name = data.name;
     this.dataType = data.dataType;
     this.dataUnit = data.dataUnit;
-    this.isRequired = data.isRequired;
-
-    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
-    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
+    this.isRequired = data.isRequired ?? true;
   }
-
-  // add helper methods here
 }

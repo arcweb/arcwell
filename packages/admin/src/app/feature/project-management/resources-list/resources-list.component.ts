@@ -63,7 +63,7 @@ export class ResourcesListComponent {
   readonly featureStore = inject(FeatureStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
-    map(({ typeKey }) => typeKey),
+    map(({ type_key: typeKey }) => typeKey),
   );
 
   pageSizes = [10, 20, 50];
@@ -88,7 +88,10 @@ export class ResourcesListComponent {
   }
 
   rowClick(row: ResourceModel) {
-    this.router.navigate(['project-management', 'resources', row.id]);
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
 
   sortChange(event: Sort) {

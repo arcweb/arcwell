@@ -1,4 +1,8 @@
-import { deserializeSubfeature } from '../schemas/subfeature.schema';
+import {
+  deserializeSubfeature,
+  SubfeatureType,
+} from '@schemas/subfeature.schema';
+import { FeatureType } from '@schemas/feature.schema';
 
 export class FeatureModel {
   public name: string;
@@ -6,12 +10,14 @@ export class FeatureModel {
   public icon: string;
   public subfeatures: FeatureModel[];
 
-  constructor(data: any) {
+  constructor(data: FeatureType) {
     this.name = data.name;
     this.path = data.path;
     this.icon = data.icon;
     this.subfeatures = data.subfeatures
-      ? data.subfeatures.map((feature: any) => deserializeSubfeature(feature))
+      ? data.subfeatures.map((subFeature: SubfeatureType) =>
+          deserializeSubfeature(subFeature),
+        )
       : [];
   }
 

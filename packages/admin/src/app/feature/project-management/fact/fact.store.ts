@@ -21,11 +21,11 @@ import { FactTypeType } from '@schemas/fact-type.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
-import { Router } from '@angular/router';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
+import { DetailStore } from '../detail/detail.store';
 
 interface FactState {
   fact: FactType | null;
@@ -60,7 +60,7 @@ export const FactStore = signalStore(
       resourceTypeService = inject(ResourceTypeService),
       tagService = inject(TagService),
       toastService = inject(ToastService),
-      router = inject(Router),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(factId: string) {
         patchState(store, setPending());
@@ -196,10 +196,8 @@ export const FactStore = signalStore(
           );
           toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
 
-          // navigate to the new item and do not save the current route in history
-          router.navigateByUrl(`/project-management/facts/${resp.data.id}`, {
-            replaceUrl: true,
-          });
+          // navigate to the new item
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async deleteFact() {

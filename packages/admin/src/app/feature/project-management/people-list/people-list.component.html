@@ -1,7 +1,6 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'People'"
-  createLink="/project-management/people/create"
-  [createLinkQueryParams]="{ typeKey: typeKey$ | async }"
+  [createLinkQueryParams]="{ type_key: typeKey$ | async }"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {

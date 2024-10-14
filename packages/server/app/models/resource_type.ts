@@ -5,6 +5,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Tag from '#models/tag'
 import { generateTypeKey } from '#helpers/generate_type_key'
 import AwBaseModel from '#models/aw_base_model'
+import DimensionSchema from '#models/dimension_schema'
 
 export default class ResourceType extends AwBaseModel {
   @column({ isPrimary: true })
@@ -18,6 +19,9 @@ export default class ResourceType extends AwBaseModel {
 
   @column()
   declare description: string
+
+  @column()
+  declare dimensionSchemas: DimensionSchema[]
 
   @hasMany(() => Resource, { foreignKey: 'typeKey', localKey: 'key' })
   declare resources: HasMany<typeof Resource>
@@ -43,9 +47,15 @@ export default class ResourceType extends AwBaseModel {
 
   @beforeSave()
   // generate a key based on the name if one is not provided
-  static async generateKey(type: ResourceType) {
+  static async generateKeyAndJson(type: ResourceType) {
+    // generate a key based on the name if one is not provided
     if (!type.key) {
       type.key = generateTypeKey(type.name)
+    }
+    // stringify jsonb column to circumvent issue with knex and postgresql
+    if (type.dimensionSchemas && typeof type.dimensionSchemas !== 'string') {
+      // @ts-ignore - ignoring because dimensionSchemas has to be stringify-ed to get around knex & postgresql jsonb issue
+      type.dimensionSchemas = JSON.stringify(type.dimensionSchemas)
     }
   }
 }
