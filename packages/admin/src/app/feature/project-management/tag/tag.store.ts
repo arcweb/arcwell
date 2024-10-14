@@ -18,7 +18,6 @@ import { TagType, TagUpdateType } from '@schemas/tag.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
-import { Router } from '@angular/router';
 import { SortDirection } from '@angular/material/sort';
 import { PersonType } from '@app/shared/schemas/person.schema';
 import { EventType } from '@app/shared/schemas/event.schema';

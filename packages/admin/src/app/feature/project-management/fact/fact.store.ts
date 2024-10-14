@@ -21,7 +21,6 @@ import { FactTypeType } from '@schemas/fact-type.schema';
 import { TagService } from '@shared/services/tag.service';
 import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
-import { Router } from '@angular/router';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';

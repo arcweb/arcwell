@@ -15,7 +15,6 @@ import {
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { FactModel } from '@shared/models/fact.model';
 import { PersonModel } from '@app/shared/models/person.model';
 import { UserModel } from '@app/shared/models';
 import { JsonPipe } from '@angular/common';

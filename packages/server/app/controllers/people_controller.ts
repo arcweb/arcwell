@@ -111,18 +111,18 @@ export default class PeopleController {
     await auth.authenticate()
     await request.validateUsing(createPersonValidator)
 
-    let newPerson = null
-    await db.transaction(async (trx) => {
-      newPerson = new Person().fill(request.body()).useTransaction(trx)
+    const responsePerson = await db.transaction(async (trx) => {
+      const newPerson = new Person().fill(request.body()).useTransaction(trx)
       await newPerson.save()
 
       const tags = request.only(['tags'])
       if (tags.tags && tags.tags.length > 0) {
         await setTagsForObject(trx, newPerson.id, 'people', tags.tags, false)
       }
+      return newPerson
     })
 
-    return { data: await getFullPerson(newPerson.id) }
+    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**
@@ -176,18 +176,19 @@ export default class PeopleController {
     await paramsUUIDValidator.validate(params)
     const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
 
-    let updatedPerson = null
-    await db.transaction(async (trx) => {
+    const responsePerson = await db.transaction(async (trx) => {
       const person = await Person.findOrFail(params.id)
       person.useTransaction(trx)
-      updatedPerson = await person.merge(cleanRequest).save()
+      const updatedPerson = await person.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
         await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
       }
+
+      return updatedPerson
     })
 
-    return { data: await getFullPerson(updatedPerson.id) }
+    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**

@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -38,11 +36,10 @@ import { PeopleTableComponent } from '@app/shared/components/people-table/people
 import { PageEvent } from '@angular/material/paginator';
 import { ObjectSelectorFormFieldComponent } from '@app/shared/component-library/form/object-selector-form-field/object-selector-form-field.component';
 import { PersonType } from '@schemas/person.schema';
-import { BackService } from '@app/shared/services/back.service';
-import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
-import { DetailHeaderComponent } from '../../../shared/components/detail-header/detail-header.component';
+import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
+import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
-import { CohortType } from '@app/shared/schemas/cohort.schema';
+import { CohortNewType } from '@app/shared/schemas/cohort.schema';
 
 @Component({
   selector: 'aw-cohort',
@@ -83,12 +80,12 @@ export class CohortComponent implements OnInit {
   tagsForCreate: string[] = [];
 
   cohortForm = new FormGroup({
-    name: new FormControl(
+    name: new FormControl<string>(
       {
         value: '',
         disabled: true,
       },
-      Validators.required,
+      { nonNullable: true, validators: [Validators.required] },
     ),
     description: new FormControl({
       value: '',
@@ -119,7 +116,7 @@ export class CohortComponent implements OnInit {
         this.cohortForm.disable();
         this.peopleForm.enable();
       }
-      this.peopleDataSource.data = this.cohortStore.cohort()?.people;
+      this.peopleDataSource.data = this.cohortStore.people();
     });
   }
 
@@ -142,8 +139,9 @@ export class CohortComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           if (this.cohortStore.inCreateMode()) {
-            const cohortFormPayload: CohortType = {
-              ...this.cohortForm.value,
+            const cohortFormPayload: CohortNewType = {
+              name: this.cohortForm.value['name'] ?? '',
+              description: this.cohortForm.value['description'] ?? '',
             };
 
             if (this.tagsForCreate.length > 0) {
@@ -151,7 +149,11 @@ export class CohortComponent implements OnInit {
             }
             this.cohortStore.createCohort(cohortFormPayload);
           } else {
-            this.cohortStore.updateCohort(this.cohortForm.value);
+            this.cohortStore.updateCohort({
+              id: this.cohortStore.id(),
+              name: this.cohortForm.value['name'] ?? '',
+              description: this.cohortForm.value['description'] ?? '',
+            });
           }
         }
       });

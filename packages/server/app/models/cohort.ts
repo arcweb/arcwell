@@ -15,9 +15,6 @@ export default class Cohort extends AwBaseModel {
   @column()
   declare description: string | null
 
-  @column()
-  declare rules: Object | null
-
   @manyToMany(() => Person, {
     pivotTimestamps: true,
     pivotTable: 'cohort_person',

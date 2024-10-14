@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { FeatureModel } from '../models/feature.model';
 import { SubFeatureSchema } from './subfeature.schema';
 
-// TODO: Look at using z.lazy() to avoid circular dependency and define subfeatures without using FeatureSchemaBase
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const FeatureSchema: any = z
   .object({
     name: z.string(),
     path: z.string(),
     icon: z.string(),
-    subfeatures: z.array(SubFeatureSchema).optional(),
+    subfeatures: z.lazy(() => z.array(SubFeatureSchema).optional()),
   })
   .strict();
 

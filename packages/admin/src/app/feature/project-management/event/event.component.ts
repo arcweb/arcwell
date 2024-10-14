@@ -2,11 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
   OnInit,
-  Output,
 } from '@angular/core';
 import {
   ControlEvent,
@@ -23,7 +21,7 @@ import { MatLabel, MatFormField, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '../error-container/error-container.component';
 import { EventStore } from './event.store';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,7 +38,6 @@ import { ObjectSelectorFormFieldComponent } from '@shared/component-library/form
 import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import { BackService } from '@app/shared/services/back.service';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 import { DetailStore } from '../detail/detail.store';
 import { EventType } from '@app/shared/schemas/event.schema';
@@ -74,7 +71,6 @@ import { EventType } from '@app/shared/schemas/event.schema';
 })
 export class EventComponent implements OnInit {
   readonly eventStore = inject(EventStore);
-  private router = inject(Router);
   readonly dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   readonly detailStore = inject(DetailStore);
@@ -94,7 +90,6 @@ export class EventComponent implements OnInit {
       Validators.required,
     ),
     endedAt: new FormControl({ value: '', disabled: true }),
-    // info: new FormControl({ value: '', disabled: true }),
     person: new FormControl<PersonType | null>({ value: null, disabled: true }),
     resource: new FormControl<ResourceType | null>({
       value: null,

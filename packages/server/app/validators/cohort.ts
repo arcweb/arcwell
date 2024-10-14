@@ -7,7 +7,6 @@ export const createCohortValidator = vine.compile(
   vine.object({
     name: vine.string().trim(),
     description: vine.string().trim().optional(),
-    rules: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )
@@ -20,7 +19,6 @@ export const updateCohortValidator = vine.compile(
     id: vine.string().trim().uuid(),
     name: vine.string().trim().optional(),
     description: vine.string().trim().optional(),
-    rules: vine.object({}).allowUnknownProperties().optional(),
     tags: vine.array(vine.string().trim()).optional(),
   })
 )

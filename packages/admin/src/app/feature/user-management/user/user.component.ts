@@ -2,12 +2,9 @@ import {
   Component,
   DestroyRef,
   effect,
-  EventEmitter,
   inject,
   Input,
-  input,
   OnInit,
-  Output,
 } from '@angular/core';
 import { UserStore } from './user.store';
 import {

@@ -1,43 +1,36 @@
 import { DateTime } from 'luxon';
-import { ResourceUpdateType } from '@schemas/resource.schema';
+import { ResourceNewType, ResourceType } from '@schemas/resource.schema';
 import { ResourceTypeModel } from './resource-type.model';
-
-interface ResourceBase {
-  name: string;
-  info?: object;
-  typeKey: string;
-  tags?: string[] | undefined;
-  createdAt: DateTime;
-  updatedAt: DateTime;
-  resourceType?: ResourceTypeModel;
-}
-
-export interface ResourcePreSave extends ResourceBase {
-  id?: never;
-}
-
-export interface ResourcePostSave extends ResourceBase {
-  id: string;
-}
+import { DimensionModel } from '@shared/models/dimension.model';
+import { DimensionType } from '@schemas/dimension.schema';
 
 export class ResourceModel {
   public id?: string;
   public name: string;
-  public info?: object;
+  public dimensions?: DimensionModel[];
   public typeKey: string;
   public tags?: string[] | undefined;
-  public createdAt: DateTime;
-  public updatedAt: DateTime;
   public resourceType?: ResourceTypeModel;
+  public createdAt?: DateTime;
+  public updatedAt?: DateTime;
 
-  constructor(data: ResourceUpdateType) {
-    this.id = data.id;
+  constructor(data: ResourceType | ResourceNewType) {
+    if ('id' in data && data.id) {
+      this.id = data.id;
+    }
     this.name = data.name;
-    this.info = data.info;
     this.typeKey = data.typeKey;
     this.tags = data.tags;
-    this.createdAt = DateTime.fromISO(data.createdAt);
-    this.updatedAt = DateTime.fromISO(data.updatedAt);
+
+    if (data.dimensions) {
+      this.dimensions = data.dimensions.map(
+        (dimension: DimensionType) => new DimensionModel(dimension),
+      );
+    }
+
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
+
     this.resourceType = data.resourceType
       ? new ResourceTypeModel(data.resourceType)
       : undefined;

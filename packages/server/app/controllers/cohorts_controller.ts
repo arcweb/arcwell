@@ -6,7 +6,6 @@ import {
   updateCohortValidator,
 } from '#validators/cohort'
 import { paramsUUIDValidator } from '#validators/common'
-import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -72,16 +71,17 @@ export default class CohortsController {
   async store({ request, auth }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(createCohortValidator)
-    const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
-    let newCohort = null
+    const cleanRequest = request.only(['name', 'description', 'tags'])
+    // let newCohortId: string
 
-    await db.transaction(async (trx) => {
-      newCohort = new Cohort().fill(cleanRequest).useTransaction(trx)
-      await newCohort.save()
+    const newCohort = await db.transaction(async (trx) => {
+      const cohort = new Cohort().fill(cleanRequest).useTransaction(trx)
+      await cohort.save()
 
       if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, newCohort.id, 'cohorts', cleanRequest.tags, false)
+        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags, false)
       }
+      return cohort
     })
 
     return {
@@ -130,17 +130,17 @@ export default class CohortsController {
     await auth.authenticate()
     await request.validateUsing(updateCohortValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'description', 'rules', 'tags'])
+    const cleanRequest = request.only(['name', 'description', 'tags'])
 
-    let updatedCohort = null
-    await db.transaction(async (trx) => {
-      const cohort = await Cohort.findOrFail(params.id)
-      cohort.useTransaction(trx)
-      updatedCohort = await cohort.merge(cleanRequest).save()
+    const updatedCohort = await db.transaction(async (trx) => {
+      const existingCohort = await Cohort.findOrFail(params.id)
+      existingCohort.useTransaction(trx)
+      const cohort = await existingCohort.merge(cleanRequest).save()
 
       if (cleanRequest.tags) {
-        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags)
+        await setTagsForObject(trx, updatedCohort.id, 'cohorts', cleanRequest.tags)
       }
+      return cohort
     })
 
     return { data: await getFullCohort(updatedCohort.id) }

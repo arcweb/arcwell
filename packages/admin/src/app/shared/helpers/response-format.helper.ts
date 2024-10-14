@@ -17,7 +17,7 @@ function mapZodIssueToErrorResponse(error: ZodIssueBase): ErrorResponseType {
  * @param error
  */
 export function defaultErrorResponseHandler(
-  error: any,
+  error: unknown,
 ): Observable<ErrorResponseType> {
   if (error instanceof ZodError) {
     const parsedErrors: ErrorResponseType[] = error.issues.map(

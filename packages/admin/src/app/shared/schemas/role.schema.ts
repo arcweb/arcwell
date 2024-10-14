@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { UserSchema } from './user.schema';
 import { RoleModel } from '../models';
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const RoleSchema: any = z
   .object({
     id: z.string().uuid().optional(),
@@ -35,7 +36,7 @@ export const deserializeRole = (data: RoleType): RoleModel => {
 export const serializeRole = (data: RoleModel): RoleType => {
   return {
     ...data,
-    createdAt: data.createdAt.toISO(),
-    updatedAt: data.updatedAt.toISO(),
+    createdAt: data.createdAt?.toISO() ?? undefined,
+    updatedAt: data.updatedAt?.toISO() ?? undefined,
   };
 };

@@ -55,8 +55,12 @@ router
           router
             .get('people/:id/cohorts', [PeopleController, 'showWithCohorts'])
             .as('people.showWithCohorts')
-          router.post('people/:id/attach', [PeopleController, 'attachCohort']).as('people.attachCohort')
-          router.delete('people/:id/detach', [PeopleController, 'detachCohort']).as('people.detachCohort')
+          router
+            .post('people/:id/attach', [PeopleController, 'attachCohort'])
+            .as('people.attachCohort')
+          router
+            .delete('people/:id/detach', [PeopleController, 'detachCohort'])
+            .as('people.detachCohort')
           router.resource('people/types', PersonTypesController).apiOnly()
           router
             .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
@@ -70,7 +74,9 @@ router
           router
             .get('cohorts/:id/people', [CohortsController, 'showWithPeople'])
             .as('cohorts.showWithPeople')
-          router.post('cohorts/:id/attach', [CohortsController, 'attachPeople']).as('cohorts.attachPeople')
+          router
+            .post('cohorts/:id/attach', [CohortsController, 'attachPeople'])
+            .as('cohorts.attachPeople')
           router
             .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
             .as('cohorts.detachPeople')
@@ -111,7 +117,9 @@ router
         // Tags Management
         router.group(() => {
           router.get('tags/simple', [TagsController, 'getStrings']).as('tags.simple')
-          router.get('tags/:id/:object_name', [TagsController, 'showRelated']).as('tags.showRelated')
+          router
+            .get('tags/:id/:object_name', [TagsController, 'showRelated'])
+            .as('tags.showRelated')
           router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
           router.get('tags/count', [TagsController, 'count']).as('tags.count')
           router.resource('tags', TagsController).apiOnly()
@@ -160,5 +168,6 @@ router
 // Healthcheck and non-API paths:
 router.get('/health', [HealthChecksController])
 router.get('/docs/swagger.yaml', async () => {
+  // @ts-ignore - AutoSwagger isn't exporting default correctly for ESM
   return AutoSwagger.default.docs(router.toJSON(), swagger)
 })
