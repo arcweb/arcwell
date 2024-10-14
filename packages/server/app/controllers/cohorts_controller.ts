@@ -13,7 +13,7 @@ import db from '@adonisjs/lucid/services/db'
 <<<<<<< HEAD
 =======
 export function getFullCohort(id: string, queryData?: Record<string, any>) {
-  console.log('this is to test linting4')
+  console.log('this is to test linting5')
   return Cohort.query()
     .where('id', id)
     .preload('tags')
