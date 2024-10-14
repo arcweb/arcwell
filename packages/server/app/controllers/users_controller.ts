@@ -115,7 +115,7 @@ export default class UsersController {
     console.log('\n\nREQUEST\n\n')
     console.log('\n\nAFTER AUTH\n\n')
     await request.validateUsing(paramsUUIDValidator)
-    const cleanRequest = request.only(['id'])
+    const cleanRequest = request.only(['id', 'host'])
 
     console.log('\n\nAFTER VALIDATE\n\n')
 
@@ -128,7 +128,10 @@ export default class UsersController {
     await user.save()
 
     mail.send((message) => {
-      message.to(user.email).subject('You are invited').htmlView('emails/invite', { user })
+      message
+        .to(user.email)
+        .subject('You are invited')
+        .htmlView('emails/invite', { user, host: cleanRequest.host })
     })
     return { data: user }
   }

@@ -178,7 +178,7 @@ export class UserComponent implements OnInit {
                 ? this.authStore.currentUser()?.id
                 : this.detailId;
               if (result === true && userId) {
-                this.userStore.invite(userId);
+                this.userStore.invite(userId, location.origin);
               }
             });
           } else {
@@ -253,7 +253,7 @@ export class UserComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.userStore.invite(this.detailId!);
+        this.userStore.invite(this.detailId!, location.origin);
       }
     });
   }

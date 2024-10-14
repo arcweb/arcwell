@@ -97,7 +97,11 @@
       <aw-error-container [errors]="userStore.errors()" />
     }
 
-    @if (!userStore.inCreateMode()) {
+    @if (
+      !userStore.inCreateMode() &&
+      detailId !== authStore.currentUser()?.id &&
+      !isProfile()
+    ) {
       <button
         mat-button
         type="button"

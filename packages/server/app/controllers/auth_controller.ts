@@ -142,7 +142,7 @@ export default class AuthController {
    */
   async sendForgotPasswordMessage({ request }: HttpContext) {
     await request.validateUsing(paramsEmailValidator)
-    const cleanrequest = request.only(['email'])
+    const cleanrequest = request.only(['email', 'host'])
 
     const user = await User.findBy('email', cleanrequest.email)
     if (user) {
@@ -152,7 +152,7 @@ export default class AuthController {
         message
           .to(user.email)
           .subject('Arcwell Password Reset')
-          .htmlView('emails/password_reset', { user })
+          .htmlView('emails/password_reset', { user, host: cleanrequest.host })
       })
     } else {
       return
