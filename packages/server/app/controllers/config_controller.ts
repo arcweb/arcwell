@@ -18,6 +18,7 @@ import PersonTypeService from '#services/person_type_service'
 import ResourceTypeService from '#services/resource_type_service'
 import RoleService from '#services/role_service'
 import TagService from '#services/tag_service'
+import UserService from '#services/user_service'
 
 export default class ConfigController {
   /**
@@ -160,6 +161,13 @@ export default class ConfigController {
         for (const tagData of payload.tags) {
           await TagService.createTag(trx, tagData);
           counts.tags++;
+        }
+      }
+
+      if (payload.users && payload.users.length > 0) {
+        for (const userData of payload.users) {
+          await UserService.createUserWithTags(trx, userData, userData.tags);
+          counts.users++;
         }
       }
 

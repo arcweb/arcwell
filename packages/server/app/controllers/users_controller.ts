@@ -5,20 +5,7 @@ import { paramsUUIDValidator } from '#validators/common'
 import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
-
-export function getFullUser(id: string) {
-  return User.query()
-    .where('id', id)
-    .preload('tags')
-    .preload('role')
-    .preload('person', (person) => {
-      person.preload('tags')
-      person.preload('personType', (personType) => {
-        personType.preload('tags')
-      })
-    })
-    .firstOrFail()
-}
+import UserService from '#services/user_service'
 
 export default class UsersController {
   /**
@@ -86,18 +73,11 @@ export default class UsersController {
     // TODO: Add create user functionality back in...
     await auth.authenticate()
     await request.validateUsing(createUserValidator)
-    let newUser = null
-    await db.transaction(async (trx) => {
-      newUser = new User().fill(request.body()).useTransaction(trx)
-      await newUser.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newUser.id, 'users', tags.tags, false)
-      }
+    return db.transaction(async (trx) => {
+      const newUser = await UserService.createUserWithTags(trx, request.body(), request.input('tags'))
+      return { data: await UserService.getFullUser(newUser.id, trx) }
     })
-
-    return { data: await getFullUser(newUser.id) }
   }
 
   /**
@@ -109,18 +89,13 @@ export default class UsersController {
     await auth.authenticate()
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['email', 'roleId'])
-    let updatedUser = null
-    await db.transaction(async (trx) => {
-      const user = await User.findOrFail(params.id)
-      user.useTransaction(trx)
-      updatedUser = await user.merge(cleanRequest).save()
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
-      }
+    const cleanRequest = request.only(['email', 'roleId'])
+
+    return db.transaction(async (trx) => {
+      const updatedUser = await UserService.updateUserWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await UserService.getFullUser(updatedUser.id, trx) }
     })
-    return { data: await getFullUser(updatedUser.id) }
   }
 
   /**
