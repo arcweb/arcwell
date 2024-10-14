@@ -12,6 +12,7 @@ import { map } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
 @Component({
   selector: 'aw-cohorts-list',
   standalone: true,
@@ -33,6 +34,7 @@ export class CohortsListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   pageSizes = [10, 20, 50];
 
   // TODO: Technically there wouldn't be route params here so should this be set up differently?
@@ -50,9 +52,19 @@ export class CohortsListComponent {
     effect(() => {
       this.dataSource.data = this.cohortsListStore.cohorts();
     });
+
     this.typeKey$.subscribe(() => {
       this.cohortsListStore.load(this.cohortsListStore.limit(), 0);
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.cohortsListStore.load(
+          this.cohortsListStore.limit(),
+          this.cohortsListStore.offset(),
+        );
+      });
   }
 
   rowClick(row: CohortModel) {

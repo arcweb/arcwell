@@ -4,6 +4,7 @@ import { DetailStore } from '@app/feature/project-management/detail/detail.store
 import { ToastLevel } from '@app/shared/models';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { UserType, UserUpdateType } from '@app/shared/schemas/user.schema';
+import { RefreshService } from '@app/shared/services/refresh.service';
 import { RoleService } from '@app/shared/services/role.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import { UserService } from '@app/shared/services/user.service';
@@ -43,6 +44,7 @@ export const UserStore = signalStore(
       roleService = inject(RoleService),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(userId: string) {
         patchState(store, setPending());
@@ -109,6 +111,11 @@ export const UserStore = signalStore(
             { user: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Updated user.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createUserFormData: UserType): Promise<UserType> {
@@ -127,7 +134,12 @@ export const UserStore = signalStore(
             },
             setFulfilled(),
           );
+
           toastService.sendMessage('Created user.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+
           // navigate the user to the newly created item
           detailStore.routeToNewDetailId(resp.data.id);
           return resp.data;

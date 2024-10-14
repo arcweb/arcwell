@@ -94,6 +94,7 @@
             max-height: 200px;
             overflow-y: auto;
             gap: $spacing;
+            word-break: break-word;
           }
 
           .subfeature-link {

@@ -25,6 +25,7 @@ import { ResourceTypeService } from '@app/shared/services/resource-type.service'
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface ResourceState {
   resource: ResourceType | null;
@@ -54,6 +55,7 @@ export const ResourceStore = signalStore(
       tagService = inject(TagService),
       detailStore = inject(DetailStore),
       toastService = inject(ToastService),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(resourceId: string) {
         patchState(store, setPending());
@@ -138,6 +140,9 @@ export const ResourceStore = signalStore(
           );
 
           toastService.sendMessage('Resource updated.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createResourceFormData: ResourceType) {
@@ -159,6 +164,8 @@ export const ResourceStore = signalStore(
 
           toastService.sendMessage('Resource created.', ToastLevel.SUCCESS);
 
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate to the new resource
           detailStore.routeToNewDetailId(resp.data.id);
         }
@@ -172,6 +179,13 @@ export const ResourceStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage('Resource deleted.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

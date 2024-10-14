@@ -184,11 +184,7 @@ export class EventTypeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.eventTypeStore.delete().then(() => {
-          if (this.eventTypeStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.eventTypeStore.delete();
       }
     });
   }

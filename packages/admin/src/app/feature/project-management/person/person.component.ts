@@ -220,11 +220,7 @@ export class PersonComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.personStore.deletePerson().then(() => {
-          if (this.personStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.personStore.deletePerson();
       }
     });
   }

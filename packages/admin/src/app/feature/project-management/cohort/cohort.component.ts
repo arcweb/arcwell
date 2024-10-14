@@ -194,11 +194,7 @@ export class CohortComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.cohortStore.deleteCohort().then(() => {
-          if (this.cohortStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.cohortStore.deleteCohort();
       }
     });
   }

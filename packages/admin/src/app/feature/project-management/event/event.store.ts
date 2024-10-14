@@ -26,6 +26,7 @@ import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface EventState {
   event: EventType | null;
@@ -61,6 +62,7 @@ export const EventStore = signalStore(
       tagService = inject(TagService),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(eventId: string) {
         patchState(store, setPending());
@@ -178,6 +180,9 @@ export const EventStore = signalStore(
             setFulfilled(),
           );
           toastService.sendMessage('Updated Event.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createEventFormData: EventType) {
@@ -202,6 +207,8 @@ export const EventStore = signalStore(
 
           toastService.sendMessage('Created event.', ToastLevel.SUCCESS);
 
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate to the new item
           detailStore.routeToNewDetailId(resp.data.id);
         }
@@ -215,6 +222,13 @@ export const EventStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage('Deleted event.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

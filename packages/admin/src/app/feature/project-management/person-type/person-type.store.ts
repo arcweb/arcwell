@@ -20,7 +20,8 @@ import { TagService } from '@shared/services/tag.service';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
-import { Router } from '@angular/router';
+import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface PersonTypeState {
   personType: PersonType | null;
@@ -46,8 +47,9 @@ export const PersonTypeStore = signalStore(
       personTypeService = inject(PersonTypeService),
       tagService = inject(TagService),
       featureStore = inject(FeatureStore),
-      router = inject(Router),
       toastService = inject(ToastService),
+      detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(personTypeId: string) {
         patchState(store, setPending());
@@ -97,16 +99,18 @@ export const PersonTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
-          toastService.sendMessage('Person Type updated.', ToastLevel.SUCCESS);
-
           patchState(
             store,
             { personType: resp.data, inEditMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Person Type updated.', ToastLevel.SUCCESS);
+
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createPersonTypeFormData: PersonType) {
@@ -117,9 +121,6 @@ export const PersonTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           patchState(
             store,
             { personType: resp.data, inEditMode: false, inCreateMode: false },
@@ -127,11 +128,13 @@ export const PersonTypeStore = signalStore(
           );
 
           toastService.sendMessage('Person Type created.', ToastLevel.SUCCESS);
-          console.log('resp', resp);
-          router.navigate([], {
-            relativeTo: router.routerState.root,
-            queryParams: { detail_id: resp.data.id },
-          });
+
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
+          // route to the new detail page
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async delete() {
@@ -142,10 +145,16 @@ export const PersonTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
+          patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage('Person Type deleted.', ToastLevel.SUCCESS);
+
           // load the feature list with the latest list of subfeatures
           featureStore.load();
-
-          patchState(store, { inEditMode: false }, setFulfilled());
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {

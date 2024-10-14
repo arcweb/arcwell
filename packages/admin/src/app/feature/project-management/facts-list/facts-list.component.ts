@@ -26,6 +26,7 @@ import { map } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 @Component({
   selector: 'aw-all-facts',
@@ -62,6 +63,7 @@ export class FactsListComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
+  readonly refreshService = inject(RefreshService);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -93,6 +95,16 @@ export class FactsListComponent {
         typeKey: typeKey,
       });
     });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.factsListStore.load({
+          limit: this.factsListStore.limit(),
+          offset: this.factsListStore.offset(),
+          typeKey: this.factsListStore.typeKey(),
+        });
+      });
   }
 
   rowClick(row: FactModel) {

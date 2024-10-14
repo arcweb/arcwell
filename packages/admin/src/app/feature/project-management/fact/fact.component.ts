@@ -237,11 +237,7 @@ export class FactComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.factStore.deleteFact().then(() => {
-          if (this.factStore.errors().length === 0) {
-            this.detailStore.clearDetailId();
-          }
-        });
+        this.factStore.deleteFact();
       }
     });
   }

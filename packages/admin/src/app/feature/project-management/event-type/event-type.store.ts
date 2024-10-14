@@ -21,6 +21,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { DetailStore } from '../detail/detail.store';
+import { RefreshService } from '@app/shared/services/refresh.service';
 
 interface EventTypeState {
   eventType: EventType | null;
@@ -48,6 +49,7 @@ export const EventTypeStore = signalStore(
       featureStore = inject(FeatureStore),
       toastService = inject(ToastService),
       detailStore = inject(DetailStore),
+      refreshService = inject(RefreshService),
     ) => ({
       async initialize(eventTypeId: string) {
         patchState(store, setPending());
@@ -93,16 +95,17 @@ export const EventTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           patchState(
             store,
             { eventType: resp.data, inEditMode: false },
             setFulfilled(),
           );
-
           toastService.sendMessage('Updated event type.', ToastLevel.SUCCESS);
+
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async create(createEventTypeFormData: EventType) {
@@ -113,17 +116,17 @@ export const EventTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           patchState(
             store,
             { eventType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
-
           toastService.sendMessage('Created event type.', ToastLevel.SUCCESS);
 
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
           // navigate the user to the newly created item
           detailStore.routeToNewDetailId(resp.data.id);
         }
@@ -136,14 +139,20 @@ export const EventTypeStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          // load the feature list with the latest list of subfeatures
-          featureStore.load();
-
           patchState(
             store,
             { inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
+
+          toastService.sendMessage('Deleted event type.', ToastLevel.SUCCESS);
+
+          // load the feature list with the latest list of subfeatures
+          featureStore.load();
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
         }
       },
       async setTags(tags: string[]) {
