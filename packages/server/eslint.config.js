@@ -9,5 +9,6 @@ export default configApp({
   rules: {
     // ESLint rules go here
     'prettier/prettier': 'error',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
 })

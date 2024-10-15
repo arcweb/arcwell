@@ -1,6 +1,5 @@
 import Resource from '#models/resource'
 import ResourceType from '#models/resource_type'
-import Tag from '#models/tag'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 

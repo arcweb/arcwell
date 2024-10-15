@@ -10,7 +10,6 @@ import Person from '#models/person'
 import Tag from '#models/tag'
 import AwBaseModel from '#models/aw_base_model'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
-import PersonType from './person_type'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
