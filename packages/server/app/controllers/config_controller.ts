@@ -103,9 +103,7 @@ export default class ConfigController {
    * @description Allows third-party developers to install seed data for various types into Arcwell.
    * This method handles fact_types, person_types, resource_types, event_types, tags, roles, users.
    */
-  async install({ auth, request }: HttpContext) {
-    await auth.authenticate()
-
+  async install({ request }: HttpContext) {
     const payload = request.body()
     await request.validateUsing(installConfigValidator)
 
