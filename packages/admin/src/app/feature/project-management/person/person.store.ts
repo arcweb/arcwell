@@ -221,6 +221,11 @@ export const PersonStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, setFulfilled());
+
+          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async loadCohortsPage(limit: number, offset: number, pageIndex: number) {

@@ -5,6 +5,7 @@ import {
   OnDestroy,
   Type,
   ViewContainerRef,
+  effect,
   inject,
   input,
 } from '@angular/core';
@@ -43,7 +44,7 @@ export type DetailComponentType =
   templateUrl: './detail.component.html',
   styleUrl: './detail.component.scss',
 })
-export class DetailComponent implements AfterViewInit, OnDestroy {
+export class DetailComponent implements OnDestroy {
   private viewContainer = inject(ViewContainerRef);
   faTimes = faTimes;
   detailId = input.required<string>();
@@ -51,23 +52,27 @@ export class DetailComponent implements AfterViewInit, OnDestroy {
   typeKey = input<string>();
   private componentRef!: ComponentRef<DetailComponentType>;
 
-  ngAfterViewInit() {
+  constructor() {
     // dynamically create the detail component and set inputs
-    const component = this.detailComponent();
-    if (component) {
-      this.viewContainer.clear();
-      this.componentRef = this.viewContainer.createComponent(component);
+    effect(() => {
+      if (this.detailComponent() !== null) {
+        const component = this.detailComponent();
+        if (component) {
+          this.viewContainer.clear();
+          this.componentRef = this.viewContainer.createComponent(component);
 
-      if (this.detailId() !== undefined) {
-        this.componentRef.instance.detailId = this.detailId();
+          if (this.detailId() !== undefined) {
+            this.componentRef.instance.detailId = this.detailId();
+          }
+          if (
+            this.typeKey() !== undefined &&
+            'typeKey' in this.componentRef.instance
+          ) {
+            this.componentRef.instance.typeKey = this.typeKey();
+          }
+        }
       }
-      if (
-        this.typeKey() !== undefined &&
-        'typeKey' in this.componentRef.instance
-      ) {
-        this.componentRef.instance.typeKey = this.typeKey();
-      }
-    }
+    });
   }
 
   ngOnDestroy() {

@@ -58,7 +58,7 @@ export class ProjectManagementComponent implements AfterViewInit {
       if (event instanceof NavigationEnd) {
         // get the detail_id queryparam from the url
         const { detail_id } = this.activatedRoute.snapshot.queryParams;
-        this.detailId.set(detail_id || '');
+        this.detailId.update(() => detail_id || '');
 
         // get the type_key from childs url params
         const urlParams = this.activatedRoute.firstChild?.snapshot?.params;
@@ -72,7 +72,8 @@ export class ProjectManagementComponent implements AfterViewInit {
           this.activatedRoute.snapshot.firstChild?.firstChild?.firstChild?.data[
             'detailComponent'
           ];
-        this.detailComponent.set(detailComponent || null);
+
+        this.detailComponent.update(() => detailComponent || null);
 
         // set the drawerOpen based on the presence of the detail_id queryparam
         this.detailStore.setDrawerOpen(
