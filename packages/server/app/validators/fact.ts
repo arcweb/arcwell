@@ -64,3 +64,5 @@ export const updateDataFactSchema = vine.object({
   event_id: vine.string().uuid().optional().nullable(),
   dimensions: dimensions.optional(),
 })
+
+export const updateDataFactValidator = vine.compile(updateDataFactSchema)
