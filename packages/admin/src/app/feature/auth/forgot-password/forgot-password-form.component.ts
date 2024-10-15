@@ -43,7 +43,7 @@ export class ForgotPasswordComponent implements OnInit {
     email: new FormControl('', [Validators.email, Validators.required]),
   });
 
-  async ngOnInit() {
+  ngOnInit() {
     this.forgotForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {

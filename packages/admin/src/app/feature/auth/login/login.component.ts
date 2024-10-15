@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Set title of the application
     this.configStore.setTitle(
       this.authStore.loginStatus() === 'set-password'
