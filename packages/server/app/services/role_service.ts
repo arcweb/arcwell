@@ -13,7 +13,7 @@ export default class RoleService {
   public static async getFullRole(id: string, trx?: TransactionClientContract): Promise<Role> {
     return Role.query(trx ? { client: trx } : {})
       .where('id', id)
-      .preload('users', (users) => users.preload('person').preload('tags'))
+      .withScopes((scopes) => scopes.fullRole())
       .firstOrFail();
   }
 

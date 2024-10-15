@@ -11,15 +11,11 @@ export default class EventService {
    * @returns A Promise that resolves to the Event with preloaded tags and related models.
    * @throws Will throw an error if the Event is not found.
    */
-  public static async getFullEvent(
-    id: string,
-    trx?: TransactionClientContract
-  ): Promise<Event> {
-    const eventQuery = Event.query(trx ? { client: trx } : {})
+  public static async getFullEvent(id: string, trx?: TransactionClientContract): Promise<Event> {
+    return Event.query(trx ? { client: trx } : {})
       .where('id', id)
       .withScopes((scopes) => scopes.fullEvent())
-
-    return eventQuery.firstOrFail();
+      .firstOrFail();
   }
 
   /**

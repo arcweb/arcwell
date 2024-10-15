@@ -20,8 +20,6 @@ import AwBaseModel from '#models/aw_base_model'
 import Dimension from '#models/dimension'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
-type Builder = ModelQueryBuilderContract<typeof Person>
-
 export default class Person extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
@@ -93,11 +91,11 @@ export default class Person extends AwBaseModel {
   static fullPerson = scope((query: ModelQueryBuilderContract<typeof Person>) => {
     query
       .preload('tags')
-      .preload('user', (user) => {
-        user.preload('tags')
+      .preload('user', userQuery => {
+        userQuery.preload('tags')
       })
-      .preload('personType', (personType) => {
-        personType.preload('tags')
+      .preload('personType', personTypeQuery => {
+        personTypeQuery.preload('tags')
       })
   })
 }

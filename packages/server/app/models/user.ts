@@ -102,10 +102,10 @@ export default class User extends compose(AwBaseModel, AuthFinder) {
     query
       .preload('tags')
       .preload('role')
-      .preload('person', (personQuery: ModelQueryBuilderContract<typeof Person>) => {
+      .preload('person', personQuery => {
         personQuery
           .preload('tags')
-          .preload('personType', (personTypeQuery: ModelQueryBuilderContract<typeof PersonType>) => {
+          .preload('personType', personTypeQuery => {
             personTypeQuery.preload('tags');
           });
       });
