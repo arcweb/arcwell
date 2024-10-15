@@ -2,23 +2,11 @@ import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import { paramsUUIDValidator } from '#validators/common'
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
-
-export function getFullUser(id: string) {
-  return User.query()
-    .where('id', id)
-    .preload('tags')
-    .preload('role')
-    .preload('person', (person) => {
-      person.preload('tags')
-      person.preload('personType', (personType) => {
-        personType.preload('tags')
-      })
-    })
-    .firstOrFail()
-}
+import UserService from '#services/user_service'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
 
 export default class UsersController {
   /**
@@ -34,14 +22,7 @@ export default class UsersController {
 
     query
       .orderBy('email', 'asc')
-      .preload('tags')
-      .preload('role')
-      .preload('person', (person: any) => {
-        person.preload('tags')
-        person.preload('personType', (personType: any) => {
-          personType.preload('tags')
-        })
-      })
+      .withScopes((scopes: ExtractScopes<typeof User>) => scopes.fullUser())
 
     const queryCount = await countQuery.count('*')
 
@@ -63,14 +44,7 @@ export default class UsersController {
     return {
       data: await User.query()
         .where('id', params.id)
-        .preload('tags')
-        .preload('role')
-        .preload('person', (person) => {
-          person.preload('tags')
-          person.preload('personType', (personType) => {
-            personType.preload('tags')
-          })
-        })
+        .withScopes((scopes) => scopes.fullUser())
         .firstOrFail(),
     }
   }
@@ -83,18 +57,11 @@ export default class UsersController {
   async store({ request }: HttpContext) {
     // TODO: Add create user functionality back in...
     await request.validateUsing(createUserValidator)
-    const responseUser = await db.transaction(async (trx) => {
-      const newUser = new User().fill(request.body()).useTransaction(trx)
-      await newUser.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newUser.id, 'users', tags.tags, false)
-      }
-      return newUser
+    return db.transaction(async (trx) => {
+      const newUser = await UserService.createUser(trx, request.body(), request.input('tags'))
+      return { data: await UserService.getFullUser(newUser.id, trx) }
     })
-
-    return { data: await getFullUser(responseUser.id) }
   }
 
   /**
@@ -105,18 +72,18 @@ export default class UsersController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateUserValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['email', 'roleId', 'tags'])
-    const responseUser = await db.transaction(async (trx) => {
-      const user = await User.findOrFail(params.id)
-      user.useTransaction(trx)
-      const updatedUser = await user.merge(cleanRequest).save()
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, user.id, 'users', cleanRequest.tags)
-      }
-      return updatedUser
+    const cleanRequest = request.only(['email', 'roleId'])
+
+    return db.transaction(async (trx) => {
+      const updatedUser = await UserService.updateUser(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await UserService.getFullUser(updatedUser.id, trx) }
     })
-    return { data: await getFullUser(responseUser.id) }
   }
 
   /**

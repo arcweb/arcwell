@@ -3,16 +3,20 @@ import vine from '@vinejs/vine'
 /**
  * Validates the person's create action
  */
-export const createTagValidator = vine.compile(
-  vine.object({
-    pathname: vine.string().trim(),
-  })
-)
+export const createTagSchema = vine.object({
+  pathname: vine.string().trim(),
+})
+
+export const createTagValidator = vine.compile(createTagSchema)
 
 /**
  * Validates the person's update action
  */
-export const updateTagValidator = vine.compile(vine.object({}))
+export const updateTagSchema = vine.object({
+  pathname: vine.string().trim().optional(),
+})
+
+export const updateTagValidator = vine.compile(updateTagSchema)
 
 /**
  * Validates the person's set tags action

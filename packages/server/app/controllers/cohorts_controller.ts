@@ -1,5 +1,6 @@
-import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import Cohort from '#models/cohort'
+import CohortService from '#services/cohort_service'
 import {
   createCohortValidator,
   peopleIdsValidator,
@@ -9,18 +10,6 @@ import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
-export function getFullCohort(id: string, queryData?: Record<string, any>) {
-  return Cohort.query()
-    .where('id', id)
-    .preload('tags')
-    .withCount('people')
-    .preload('people', (people) => {
-      let [peopleQuery] = buildApiQuery(people, queryData, 'people')
-      peopleQuery.preload('personType')
-      buildPeopleSort(peopleQuery, queryData)
-    })
-    .firstOrFail()
-}
 export default class CohortsController {
   /**
    * @index
@@ -70,22 +59,11 @@ export default class CohortsController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createCohortValidator)
-    const cleanRequest = request.only(['name', 'description', 'tags'])
-    // let newCohortId: string
 
-    const newCohort = await db.transaction(async (trx) => {
-      const cohort = new Cohort().fill(cleanRequest).useTransaction(trx)
-      await cohort.save()
-
-      if (cleanRequest.tags && cleanRequest.tags.length > 0) {
-        await setTagsForObject(trx, cohort.id, 'cohorts', cleanRequest.tags, false)
-      }
-      return cohort
+    return db.transaction(async (trx) => {
+      const newCohort = await CohortService.createCohort(trx, request.body(), request.input('tags'))
+      return { data: await CohortService.getFullCohort(newCohort.id, undefined, trx) }
     })
-
-    return {
-      data: await getFullCohort(newCohort.id),
-    }
   }
 
   /**
@@ -96,25 +74,20 @@ export default class CohortsController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await Cohort.query()
-        .orderBy('name', 'asc')
-        .preload('tags')
-        .where('id', params.id)
-        .firstOrFail(),
+      data: await Cohort.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
   /**
    * @showWithPeople
    * @summary Get Cohort with People List
-   * @description Retrieve the details of an individual Cohorot, but include a list of the member People records.
+   * @description Retrieve the details of an individual Cohort, but include a list of the member People records.
    */
   async showWithPeople({ params, request }: HttpContext) {
     await paramsUUIDValidator.validate(params)
 
-    const queryData = request.qs()
     return {
-      data: await getFullCohort(params.id, queryData),
+      data: await CohortService.getFullCohort(params.id, request.qs()),
     }
   }
 
@@ -126,20 +99,18 @@ export default class CohortsController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateCohortValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['name', 'description', 'tags'])
 
-    const updatedCohort = await db.transaction(async (trx) => {
-      const existingCohort = await Cohort.findOrFail(params.id)
-      existingCohort.useTransaction(trx)
-      const cohort = await existingCohort.merge(cleanRequest).save()
+    const cleanRequest = request.only(['name', 'description'])
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, updatedCohort.id, 'cohorts', cleanRequest.tags)
-      }
-      return cohort
+    return db.transaction(async (trx) => {
+      const cohort = await CohortService.updateCohort(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await CohortService.getFullCohort(cohort.id, undefined, trx) }
     })
-
-    return { data: await getFullCohort(updatedCohort.id) }
   }
 
   /**

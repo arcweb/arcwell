@@ -10,6 +10,15 @@ import PersonType from '#models/person_type'
 import ResourceType from '#models/resource_type'
 import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
+import db from '@adonisjs/lucid/services/db'
+import { installConfigValidator } from '#validators/config'
+import FactTypeService from '#services/fact_type_service'
+import EventTypeService from '#services/event_type_service'
+import PersonTypeService from '#services/person_type_service'
+import ResourceTypeService from '#services/resource_type_service'
+import RoleService from '#services/role_service'
+import TagService from '#services/tag_service'
+import UserService from '#services/user_service'
 
 export default class ConfigController {
   /**
@@ -86,6 +95,80 @@ export default class ConfigController {
     )
 
     return { data: featureMenuConfigWithTypes }
+  }
+
+  /**
+   * @installData
+   * @summary Install Seed Data
+   * @description Allows third-party developers to install seed data for various types into Arcwell.
+   * This method handles fact_types, person_types, resource_types, event_types, tags, roles, users.
+   */
+  async install({ request }: HttpContext) {
+    const payload = request.body()
+    await request.validateUsing(installConfigValidator)
+
+    let counts = {
+      fact_types: 0,
+      person_types: 0,
+      resource_types: 0,
+      event_types: 0,
+      tags: 0,
+      roles: 0,
+      users: 0,
+    }
+
+    return db.transaction(async (trx) => {
+      if (payload.event_types && payload.event_types.length > 0) {
+        for (const eventTypeData of payload.event_types) {
+          await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags)
+          counts.event_types++
+        }
+      }
+
+      if (payload.fact_types && payload.fact_types.length > 0) {
+        for (const factTypeData of payload.fact_types) {
+          await FactTypeService.createFactType(trx, factTypeData, factTypeData.tags)
+          counts.fact_types++
+        }
+      }
+
+      if (payload.person_types && payload.person_types.length > 0) {
+        for (const personTypeData of payload.person_types) {
+          await PersonTypeService.createPersonType(trx, personTypeData, personTypeData.tags)
+          counts.person_types++
+        }
+      }
+
+      if (payload.resource_types && payload.resource_types.length > 0) {
+        for (const resourceTypeData of payload.resource_types) {
+          await ResourceTypeService.createResourceType(trx, resourceTypeData, resourceTypeData.tags)
+          counts.resource_types++
+        }
+      }
+
+      if (payload.roles && payload.roles.length > 0) {
+        for (const roleData of payload.roles) {
+          await RoleService.createRole(trx, roleData)
+          counts.roles++
+        }
+      }
+
+      if (payload.tags && payload.tags.length > 0) {
+        for (const tagData of payload.tags) {
+          await TagService.createTag(trx, tagData)
+          counts.tags++
+        }
+      }
+
+      if (payload.users && payload.users.length > 0) {
+        for (const userData of payload.users) {
+          await UserService.createUser(trx, userData, userData.tags)
+          counts.users++
+        }
+      }
+
+      return { data: counts }
+    })
   }
 
   /**

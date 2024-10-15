@@ -3,13 +3,8 @@ import Role from '#models/role'
 import { createRoleValidator, updateRoleValidator } from '#validators/role'
 import { paramsUUIDValidator } from '#validators/common'
 import { buildApiQuery } from '#helpers/query_builder'
-
-export function getFullRole(id: string) {
-  return Role.query()
-    .where('id', id)
-    .preload('users', (users) => users.preload('person').preload('tags'))
-    .firstOrFail()
-}
+import db from '@adonisjs/lucid/services/db'
+import RoleService from '#services/role_service'
 
 export default class RolesController {
   /**
@@ -52,8 +47,11 @@ export default class RolesController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createRoleValidator)
-    const newRole = await Role.create(request.body())
-    return { data: await getFullRole(newRole.id) }
+
+    return await db.transaction(async (trx) => {
+      const newRole = await RoleService.createRole(trx, request.body())
+      return { data: await RoleService.getFullRole(newRole.id, trx) }
+    })
   }
 
   /**
@@ -64,10 +62,13 @@ export default class RolesController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateRoleValidator)
     await paramsUUIDValidator.validate(params)
-    const role = await Role.findOrFail(params.id)
+
     const cleanRequest = request.only(['name'])
-    const updateRole = await role.merge(cleanRequest).save()
-    return { data: await getFullRole(updateRole.id) }
+
+    return await db.transaction(async (trx) => {
+      const updatedRole = await RoleService.updateRole(trx, params.id, cleanRequest)
+      return { data: await RoleService.getFullRole(updatedRole.id, trx) }
+    })
   }
 
   /**

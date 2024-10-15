@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import { column, hasMany, manyToMany, scope } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Policy from '#models/policy'
 import AwBaseModel from '#models/aw_base_model'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
 export default class Role extends AwBaseModel {
   @column({ isPrimary: true })
@@ -26,4 +27,10 @@ export default class Role extends AwBaseModel {
     pivotTimestamps: true,
   })
   declare policies: ManyToMany<typeof Policy>
+
+  static fullRole = scope((query: ModelQueryBuilderContract<typeof Role>) => {
+    query.preload('users', (usersQuery) => {
+      usersQuery.preload('person').preload('tags')
+    })
+  })
 }

@@ -11,6 +11,8 @@ import {
   buildResourcesSort,
   setTagsForObject,
 } from '#helpers/query_builder'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import TagService from '#services/tag_service'
 
 export default class TagsController {
   // TODO: Same as in query_builder. Should these return the query object?
@@ -50,12 +52,16 @@ export default class TagsController {
     usersQuery.orderBy('email', 'asc')
   }
 
-  private tagQueryWithAllRelated(id: string, queryData: Record<string, any>) {
+  private tagQueryWithAllRelated(
+    id: string,
+    queryData: Record<string, any>,
+    trx?: TransactionClientContract
+  ) {
     // Get all the related types at once. This will usually be just for the first time
     // the View Tag screen is loaded or an update. Any subsequent pagination requests will just utilize
     // the single type options above. This will be the default if the value does not match
     // any of the types above, but using the conventional 'all' is recommended (ie, /tags/{tagId}/all)
-    return Tag.query()
+    return Tag.query(trx ? { client: trx } : {})
       .where('id', id)
       .withCount('events')
       .withCount('facts')
@@ -132,8 +138,11 @@ export default class TagsController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createTagValidator)
-    const newTag = await Tag.create(request.body())
-    return { data: newTag }
+
+    return db.transaction(async (trx) => {
+      const newTag = await TagService.createTag(trx, request.body())
+      return { data: newTag }
+    })
   }
 
   /**
@@ -200,15 +209,14 @@ export default class TagsController {
    */
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateTagValidator)
+    await paramsUUIDValidator.validate(params)
+
     const cleanRequest = request.only(['pathname'])
-    const tag = await Tag.findOrFail(params.id)
-    await tag.merge(cleanRequest).save()
-    return {
-      data: await this.tagQueryWithAllRelated(params.id, {
-        limit: 10,
-        offset: 0,
-      }),
-    }
+
+    return db.transaction(async (trx) => {
+      const updatedTag = await TagService.updateTag(trx, params.id, cleanRequest)
+      return { data: this.tagQueryWithAllRelated(updatedTag.id, { limit: 10, offset: 0 }, trx) }
+    })
   }
 
   /**

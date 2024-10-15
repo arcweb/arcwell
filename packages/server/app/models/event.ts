@@ -6,6 +6,7 @@ import {
   column,
   hasMany,
   manyToMany,
+  scope,
 } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import EventType from '#models/event_type'
@@ -15,6 +16,7 @@ import Person from '#models/person'
 import Resource from '#models/resource'
 import AwBaseModel from '#models/aw_base_model'
 import Dimension from '#models/dimension'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
 export default class Event extends AwBaseModel {
   @column({ isPrimary: true })
@@ -77,4 +79,21 @@ export default class Event extends AwBaseModel {
       event.dimensions = JSON.stringify(event.dimensions)
     }
   }
+
+  static fullEvent = scope((query: ModelQueryBuilderContract<typeof Event>) => {
+    query
+      .preload('tags')
+      .preload('person', (personQuery) => {
+        personQuery.preload('tags')
+        personQuery.preload('user', (userQuery) => {
+          userQuery.preload('tags')
+        })
+      })
+      .preload('resource', (resourceQuery) => {
+        resourceQuery.preload('tags')
+      })
+      .preload('eventType', (eventTypeQuery) => {
+        eventTypeQuery.preload('tags')
+      })
+  })
 }

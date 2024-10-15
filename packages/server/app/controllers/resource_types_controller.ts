@@ -1,14 +1,11 @@
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import ResourceType from '#models/resource_type'
+import ResourceTypeService from '#services/resource_type_service'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceTypeValidator, updateResourceTypeValidator } from '#validators/resource_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-
-export function getFullResourceType(id: string) {
-  return ResourceType.query().preload('tags').where('id', id).firstOrFail()
-}
 
 export default class ResourceTypesController {
   /**
@@ -50,18 +47,15 @@ export default class ResourceTypesController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createResourceTypeValidator)
-    const responseResourceType = await db.transaction(async (trx) => {
-      const newResourceType = new ResourceType().fill(request.body()).useTransaction(trx)
-      await newResourceType.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newResourceType.id, 'resource_types', tags.tags, false)
-      }
-      return newResourceType
+    return db.transaction(async (trx) => {
+      const newResourceType = await ResourceTypeService.createResourceType(
+        trx,
+        request.body(),
+        request.input('tags')
+      )
+      return { data: await ResourceTypeService.getFullResourceType(newResourceType.id, trx) }
     })
-
-    return { data: await getFullResourceType(responseResourceType.id) }
   }
 
   /**
@@ -72,7 +66,7 @@ export default class ResourceTypesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await ResourceType.query().preload('tags').where('id', params.id).firstOrFail(),
+      data: await ResourceType.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
@@ -99,19 +93,17 @@ export default class ResourceTypesController {
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    const responseResourceType = await db.transaction(async (trx) => {
-      const resourceType = await ResourceType.findOrFail(params.id)
-      resourceType.useTransaction(trx)
-      const updatedResourceType = await resourceType.merge(request.body()).save()
+    const cleanRequest = request.only(['name', 'key', 'description'])
 
-      const tags = request.only(['tags'])
-      if (tags.tags) {
-        await setTagsForObject(trx, resourceType.id, 'resource_types', tags.tags)
-      }
-      return updatedResourceType
+    return await db.transaction(async (trx) => {
+      const updatedResourceType = await ResourceTypeService.updateResourceType(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await ResourceTypeService.getFullResourceType(updatedResourceType.id, trx) }
     })
-
-    return { data: await getFullResourceType(responseResourceType.id) }
   }
 
   /**

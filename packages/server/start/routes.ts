@@ -173,6 +173,10 @@ router
               .get('features-menu', [ConfigController, 'featuresMenu'])
               .as('featuresMenu')
               .use(middleware.auth())
+            router
+              .post('install', [ConfigController, 'install'])
+              .as('install')
+              .use(middleware.auth())
           })
           .as('config')
           .prefix('config')

@@ -1,14 +1,11 @@
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import EventType from '#models/event_type'
+import EventTypeService from '#services/event_type_service'
 import { paramsUUIDValidator } from '#validators/common'
 import { createEventTypeValidator, updateEventTypeValidator } from '#validators/event_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-
-export function getFullEventType(id: string) {
-  return EventType.query().preload('tags').where('id', id).firstOrFail()
-}
 
 export default class EventTypesController {
   /**
@@ -51,17 +48,14 @@ export default class EventTypesController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createEventTypeValidator)
 
-    const eventType = await db.transaction(async (trx) => {
-      const newEventType = new EventType().fill(request.body()).useTransaction(trx)
-      await newEventType.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newEventType.id, 'event_types', tags.tags, false)
-      }
-      return newEventType
+    return db.transaction(async (trx) => {
+      const newEventType = await EventTypeService.createEventType(
+        trx,
+        request.body(),
+        request.input('tags')
+      )
+      return { data: await EventTypeService.getFullEventType(newEventType.id, trx) }
     })
-    return { data: await getFullEventType(eventType.id) }
   }
 
   /**
@@ -106,19 +100,17 @@ export default class EventTypesController {
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    const newEventType = await db.transaction(async (trx) => {
-      const eventType = await EventType.findOrFail(params.id)
-      eventType.useTransaction(trx)
-      const updatedEventType = await eventType.merge(request.body()).save()
+    const cleanRequest = request.only(['name', 'key', 'description'])
 
-      const tags = request.only(['tags'])
-      if (tags.tags) {
-        await setTagsForObject(trx, eventType.id, 'event_types', tags.tags)
-      }
-      return updatedEventType
+    return db.transaction(async (trx) => {
+      const updatedEventType = await EventTypeService.updateEventType(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await EventTypeService.getFullEventType(updatedEventType.id, trx) }
     })
-
-    return { data: await getFullEventType(newEventType.id) }
   }
 
   /**

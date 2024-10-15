@@ -6,6 +6,7 @@ import {
   column,
   hasMany,
   manyToMany,
+  scope,
 } from '@adonisjs/lucid/orm'
 import ResourceType from '#models/resource_type'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
@@ -14,6 +15,7 @@ import Tag from '#models/tag'
 import Event from '#models/event'
 import AwBaseModel from '#models/aw_base_model'
 import Dimension from '#models/dimension'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
 export default class Resource extends AwBaseModel {
   @column({ isPrimary: true })
@@ -64,4 +66,11 @@ export default class Resource extends AwBaseModel {
       resource.dimensions = JSON.stringify(resource.dimensions)
     }
   }
+
+  static fullResource = scope((query: ModelQueryBuilderContract<typeof Resource>) => {
+    query.preload('tags')
+    query.preload('resourceType', (resourceTypeQuery) => {
+      resourceTypeQuery.preload('tags')
+    })
+  })
 }

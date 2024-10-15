@@ -5,26 +5,8 @@ import { createFactValidator, updateFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import { buildApiQuery, buildFactsSort, setTagsForObject } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
-
-export async function getFullFact(id: string) {
-  return Fact.query()
-    .where('id', id)
-    .preload('factType')
-    .preload('tags')
-    .preload('person', (person) => {
-      person.preload('tags')
-      person.preload('user', (user) => {
-        user.preload('tags')
-      })
-    })
-    .preload('resource', (resource) => {
-      resource.preload('tags')
-    })
-    .preload('event', (event) => {
-      event.preload('tags')
-    })
-    .firstOrFail()
-}
+import FactService from '#services/fact_service'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
 
 export default class FactsController {
   /**
@@ -55,21 +37,7 @@ export default class FactsController {
 
     let [query, countQuery] = buildApiQuery(Fact.query(), queryData, 'facts')
 
-    query
-      .preload('factType')
-      .preload('tags')
-      .preload('person', (person: any) => {
-        person.preload('tags')
-        person.preload('user', (user: any) => {
-          user.preload('tags')
-        })
-      })
-      .preload('resource', (resource: any) => {
-        resource.preload('tags')
-      })
-      .preload('event', (event: any) => {
-        event.preload('tags')
-      })
+    query.apply((scopes: ExtractScopes<typeof Fact>) => scopes.fullFact())
 
     if (typeKey) {
       const factType = await FactType.findByOrFail('key', typeKey)
@@ -96,17 +64,11 @@ export default class FactsController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createFactValidator)
-    const responseFact = await db.transaction(async (trx) => {
-      const newFact = new Fact().fill(request.body()).useTransaction(trx)
-      await newFact.save()
 
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newFact.id, 'facts', tags.tags, false)
-      }
-      return newFact
+    return db.transaction(async (trx) => {
+      const newFact = await FactService.createFact(trx, request.body(), request.input('tags'))
+      return { data: await FactService.getFullFact(newFact.id, trx) }
     })
-    return { data: await getFullFact(responseFact.id) }
   }
 
   /**
@@ -118,7 +80,7 @@ export default class FactsController {
     await paramsUUIDValidator.validate(params)
 
     return {
-      data: await getFullFact(params.id),
+      data: await FactService.getFullFact(params.id),
     }
   }
 
@@ -129,21 +91,19 @@ export default class FactsController {
    */
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateFactValidator)
-
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions', 'tags'])
 
-    const responseFact = await db.transaction(async (trx) => {
-      const fact = await Fact.findOrFail(params.id)
-      fact.useTransaction(trx)
-      const updatedFact = await fact.merge(cleanRequest).save()
+    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions'])
 
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, fact.id, 'facts', cleanRequest.tags)
-      }
-      return updatedFact
+    return db.transaction(async (trx) => {
+      const updatedFact = await FactService.updateFact(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await FactService.getFullFact(updatedFact.id, trx) }
     })
-    return { data: await getFullFact(responseFact.id) }
   }
 
   /**

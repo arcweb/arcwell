@@ -1,19 +1,11 @@
-import { buildApiQuery, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery } from '#helpers/query_builder'
 import FactType from '#models/fact_type'
+import FactTypeService from '#services/fact_type_service'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fact_type'
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
-import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import db from '@adonisjs/lucid/services/db'
-
-export function getFullFactType(id: string, trx?: TransactionClientContract) {
-  if (trx) {
-    return FactType.query({ client: trx }).where('id', id).preload('tags').firstOrFail()
-  } else {
-    return FactType.query().where('id', id).preload('tags').firstOrFail()
-  }
-}
 
 export default class FactTypesController {
   /**
@@ -56,18 +48,14 @@ export default class FactTypesController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createFactTypeValidator)
 
-    const createdFactType = await db.transaction(async (trx) => {
-      const newFactType = new FactType().fill(request.body()).useTransaction(trx)
-      await newFactType.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newFactType.id, 'fact_types', tags.tags, false)
-      }
-      return newFactType
+    return db.transaction(async (trx) => {
+      const newFactType = await FactTypeService.createFactType(
+        trx,
+        request.body(),
+        request.input('tags')
+      )
+      return { data: await FactTypeService.getFullFactType(newFactType.id, trx) }
     })
-
-    return { data: await getFullFactType(createdFactType.id) }
   }
 
   /**
@@ -107,24 +95,21 @@ export default class FactTypesController {
    * @summary Update FactType
    * @description Update an existing type definition used by Fact records. Define schema, dimensions, and requirements for a class of Fact records within Arcwell.
    */
-  async update({ params, request }: HttpContext) {
+  async update({ request, params }: HttpContext) {
     await request.validateUsing(updateFactTypeValidator)
-
     await paramsUUIDValidator.validate(params)
+
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
 
-    const responseFactType = await db.transaction(async (trx) => {
-      const factType = await FactType.findOrFail(params.id)
-      factType.useTransaction(trx)
-      const updatedFactType = await factType.merge(cleanRequest).save()
-
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, factType.id, 'fact_types', cleanRequest.tags)
-      }
-      return updatedFactType
+    return await db.transaction(async (trx) => {
+      const updatedFactType = await FactTypeService.updateFactType(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
+      return { data: await FactTypeService.getFullFactType(updatedFactType.id, trx) }
     })
-
-    return { data: await getFullFactType(responseFactType.id) }
   }
 
   /**
