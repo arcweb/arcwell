@@ -1,9 +1,7 @@
-import Fact from '#models/fact'
-import { paramsTripleObjectUUIDValidator } from '#validators/common'
+import { paramsTripleObjectUUIDValidator, paramsUUIDValidator } from '#validators/common'
 import { insertDataFactValidator, updateDataFactValidator } from '#validators/fact'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import { getFullFact } from '#controllers/facts_controller'
 import string from '@adonisjs/core/helpers/string'
 import FactType from '#models/fact_type'
 
@@ -11,6 +9,7 @@ import Dimension from '#models/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import vine from '@vinejs/vine'
 import DimensionSchema from '#models/dimension_schema'
+import FactService from '#services/fact_service'
 
 interface DataFact {
   fact_id: string
@@ -236,8 +235,6 @@ export default class DataFactsController {
       'eventId',
     ])
 
-    let newFact = null as Fact | null
-
     const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
 
     const validationErrorMessage = await validateDimensions(
@@ -256,21 +253,12 @@ export default class DataFactsController {
       )
     }
 
-    await db.transaction(async (trx) => {
-      newFact = new Fact().fill(cleanRequest).useTransaction(trx)
-      await newFact.save()
-
+    return db.transaction(async (trx) => {
       // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i believe)
       // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
+      const newFact = await FactService.createFact(trx, cleanRequest)
+      return { data: await FactService.getFullFact(newFact.id, trx) }
     })
-
-    // Load the full object to return
-    let newCreatedFact = null
-    if (newFact) {
-      newCreatedFact = await getFullFact(newFact.id)
-    }
-
-    return { data: newCreatedFact }
   }
 
   /**
@@ -285,6 +273,8 @@ export default class DataFactsController {
    */
   async update({ request, params }: HttpContext): Promise<object> {
     await request.validateUsing(updateDataFactValidator)
+    await paramsUUIDValidator.validate(params)
+
     const cleanRequest = request.only([
       'typeKey',
       'observedAt',
@@ -293,8 +283,6 @@ export default class DataFactsController {
       'resourceId',
       'eventId',
     ])
-
-    let updatedFact = null as Fact | null
 
     const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
 
@@ -314,21 +302,12 @@ export default class DataFactsController {
       )
     }
 
-    await db.transaction(async (trx) => {
-      const currentFact = await Fact.findOrFail(params.id)
-      updatedFact = await currentFact.merge(cleanRequest).useTransaction(trx).save()
-
+    return db.transaction(async (trx) => {
       // TODO: Should tags be added?  If so should they delete any that aren't included or just add provided.  (should remove, i believe)
       // TODO: What if empty tags are added, do we delete, or is that considered a "just ignore tags"
+      const updatedFact = await FactService.updateFact(trx, params.id, cleanRequest)
+      return { data: await FactService.getFullFact(updatedFact.id, trx) }
     })
-
-    // Load the full object to return
-    let newUpdatedFact = null
-    if (updatedFact) {
-      newUpdatedFact = await getFullFact(updatedFact.id)
-    }
-
-    return { data: newUpdatedFact }
   }
 
   /**
