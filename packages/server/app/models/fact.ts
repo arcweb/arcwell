@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { afterDelete, beforeSave, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, beforeSave, belongsTo, column, manyToMany, scope } from '@adonisjs/lucid/orm'
 import FactType from '#models/fact_type'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
@@ -8,6 +8,7 @@ import Event from '#models/event'
 import Tag from '#models/tag'
 import Dimension from '#models/dimension'
 import AwBaseModel from '#models/aw_base_model'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
 export default class Fact extends AwBaseModel {
   @column({ isPrimary: true })
@@ -73,4 +74,22 @@ export default class Fact extends AwBaseModel {
       fact.dimensions = JSON.stringify(fact.dimensions)
     }
   }
+
+  static fullFact = scope((query: ModelQueryBuilderContract<typeof Fact>) => {
+    query
+      .preload('factType')
+      .preload('tags')
+      .preload('person', (person) => {
+        person.preload('tags')
+        person.preload('user', (user) => {
+          user.preload('tags')
+        })
+      })
+      .preload('resource', (resource) => {
+        resource.preload('tags')
+      })
+      .preload('event', (event) => {
+        event.preload('tags')
+      })
+  })
 }

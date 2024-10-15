@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { afterDelete, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, belongsTo, column, manyToMany, scope } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import Role from '#models/role'
@@ -9,6 +9,8 @@ import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Person from '#models/person'
 import Tag from '#models/tag'
 import AwBaseModel from '#models/aw_base_model'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import PersonType from './person_type'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -95,4 +97,17 @@ export default class User extends compose(AwBaseModel, AuthFinder) {
 
     return user.tempPassword
   }
+
+  static fullUser = scope((query: ModelQueryBuilderContract<typeof User>) => {
+    query
+      .preload('tags')
+      .preload('role')
+      .preload('person', (personQuery: ModelQueryBuilderContract<typeof Person>) => {
+        personQuery
+          .preload('tags')
+          .preload('personType', (personTypeQuery: ModelQueryBuilderContract<typeof PersonType>) => {
+            personTypeQuery.preload('tags');
+          });
+      });
+  });
 }

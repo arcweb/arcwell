@@ -7,6 +7,7 @@ import {
   hasMany,
   hasOne,
   manyToMany,
+  scope,
 } from '@adonisjs/lucid/orm'
 import User from '#models/user'
 import type { BelongsTo, HasMany, HasOne, ManyToMany } from '@adonisjs/lucid/types/relations'
@@ -17,6 +18,9 @@ import Tag from '#models/tag'
 import Event from '#models/event'
 import AwBaseModel from '#models/aw_base_model'
 import Dimension from '#models/dimension'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+
+type Builder = ModelQueryBuilderContract<typeof Person>
 
 export default class Person extends AwBaseModel {
   @column({ isPrimary: true })
@@ -85,4 +89,15 @@ export default class Person extends AwBaseModel {
       person.dimensions = JSON.stringify(person.dimensions)
     }
   }
+
+  static fullPerson = scope((query: ModelQueryBuilderContract<typeof Person>) => {
+    query
+      .preload('tags')
+      .preload('user', (user) => {
+        user.preload('tags')
+      })
+      .preload('personType', (personType) => {
+        personType.preload('tags')
+      })
+  })
 }

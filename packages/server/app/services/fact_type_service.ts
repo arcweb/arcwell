@@ -26,7 +26,11 @@ export default class FactTypeService {
    * @param tags - An array of tags to associate with the FactType.
    * @returns A Promise that resolves to the newly created FactType.
    */
-  public static async createFactTypeWithTags(trx: TransactionClientContract, createData: any, tags?: string[]): Promise<FactType> {
+  public static async createFactType(
+    trx: TransactionClientContract,
+    createData: any,
+    tags?: string[]
+  ): Promise<FactType> {
     const newFactType = new FactType().fill(createData).useTransaction(trx);
     await newFactType.save();
 
@@ -47,7 +51,12 @@ export default class FactTypeService {
    * @returns A Promise that resolves to the updated FactType.
    * @throws Will throw an error if the FactType is not found.
    */
-  public static async updateFactTypeWithTags(trx: TransactionClientContract, id: string, updateData: any, tags?: string[]): Promise<FactType> {
+  public static async updateFactType(
+    trx: TransactionClientContract,
+    id: string,
+    updateData: any,
+    tags?: string[]
+  ): Promise<FactType> {
     const factType = await FactType.findOrFail(id);
     factType.useTransaction(trx);
 

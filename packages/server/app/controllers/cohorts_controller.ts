@@ -61,7 +61,7 @@ export default class CohortsController {
     await request.validateUsing(createCohortValidator)
 
     return db.transaction(async (trx) => {
-      const newCohort = await CohortService.createCohortWithTags(trx, request.body(), request.input('tags'))
+      const newCohort = await CohortService.createCohort(trx, request.body(), request.input('tags'))
       return { data: await CohortService.getFullCohort(newCohort.id, undefined, trx) }
     })
   }
@@ -106,7 +106,7 @@ export default class CohortsController {
     const cleanRequest = request.only(['name', 'description'])
 
     return db.transaction(async (trx) => {
-      const cohort = await CohortService.updateCohortWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      const cohort = await CohortService.updateCohort(trx, params.id, cleanRequest, request.input('tags'))
       return { data: await CohortService.getFullCohort(cohort.id, undefined, trx) }
     })
   }

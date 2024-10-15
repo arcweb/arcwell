@@ -50,7 +50,7 @@ export default class PersonTypesController {
     await request.validateUsing(createPersonTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newPersonType = await PersonTypeService.createPersonTypeWithTags(trx, request.body(), request.input('tags'))
+      const newPersonType = await PersonTypeService.createPersonType(trx, request.body(), request.input('tags'))
       return { data: await PersonTypeService.getFullPersonType(newPersonType.id, trx) }
     })
   }
@@ -93,7 +93,7 @@ export default class PersonTypesController {
     const cleanRequest = request.only(['name', 'key', 'description'])
 
     return db.transaction(async (trx) => {
-      const updatedPersonType = await PersonTypeService.updatePersonTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedPersonType = await PersonTypeService.updatePersonType(trx, params.id, cleanRequest, request.input('tags'))
       return { data: await PersonTypeService.getFullPersonType(updatedPersonType.id, trx) }
     })
   }

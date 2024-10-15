@@ -8,27 +8,9 @@ import {
 } from '#validators/person'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
-import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder'
-
-export function getFullPerson(id: string, cohortLimit: number = 10, cohortOffset: number = 0) {
-  return Person.query()
-    .where('id', id)
-    .preload('tags')
-    .preload('user', (user) => {
-      user.preload('tags')
-    })
-    .preload('personType', (personType) => {
-      personType.preload('tags')
-    })
-    .withCount('cohorts')
-    .preload('cohorts', (cohorts) => {
-      cohorts.limit(cohortLimit)
-      cohorts.offset(cohortOffset)
-      cohorts.preload('tags')
-      cohorts.orderBy('name', 'asc')
-    })
-    .firstOrFail()
-}
+import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
+import PersonService from '#services/person_service'
 
 export default class PeopleController {
   /**
@@ -36,7 +18,7 @@ export default class PeopleController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({}: HttpContext) {
+  async count({ }: HttpContext) {
     const countQuery = db.from('people').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -53,7 +35,7 @@ export default class PeopleController {
    * @description Returns a list of People objects and their details. Sortable and filterable.
    * @paramUse(sortable, filterable)
    */
-  async index({ request, auth }: HttpContext) {
+  async index({ request }: HttpContext) {
     const queryData = request.qs()
 
     const typeKey = queryData['typeKey']
@@ -61,14 +43,7 @@ export default class PeopleController {
 
     let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people', 'familyName')
 
-    query
-      .preload('tags')
-      .preload('user', (user: any) => {
-        user.preload('tags')
-      })
-      .preload('personType', (personType: any) => {
-        personType.preload('tags')
-      })
+    query.apply((scopes: ExtractScopes<typeof Person>) => scopes.fullPerson())
 
     if (typeKey) {
       const personType = await PersonType.findByOrFail('key', typeKey)
@@ -106,18 +81,10 @@ export default class PeopleController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createPersonValidator)
 
-    const responsePerson = await db.transaction(async (trx) => {
-      const newPerson = new Person().fill(request.body()).useTransaction(trx)
-      await newPerson.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newPerson.id, 'people', tags.tags, false)
-      }
-      return newPerson
+    return db.transaction(async (trx) => {
+      const newPerson = await PersonService.createPerson(trx, request.body(), request.input('tags'))
+      return { data: await PersonService.getFullPerson(newPerson.id, 10, 0, trx) }
     })
-
-    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**
@@ -130,13 +97,7 @@ export default class PeopleController {
     return {
       data: await Person.query()
         .where('id', params.id)
-        .preload('tags')
-        .preload('user', (tags) => {
-          tags.preload('tags')
-        })
-        .preload('personType', (tags) => {
-          tags.preload('tags')
-        })
+        .withScopes((scopes) => scopes.fullPerson())
         .firstOrFail(),
     }
   }
@@ -154,7 +115,7 @@ export default class PeopleController {
     const cohortOffset = (queryData['cohortOffset'] ||= 0)
 
     return {
-      data: await getFullPerson(params.id, cohortLimit, cohortOffset),
+      data: await PersonService.getFullPerson(params.id, cohortLimit, cohortOffset),
     }
   }
 
@@ -166,21 +127,13 @@ export default class PeopleController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['givenName', 'familyName', 'typeKey', 'tags'])
+    const cleanRequest = request.only(['givenName', 'familyName', 'typeKey'])
 
-    const responsePerson = await db.transaction(async (trx) => {
-      const person = await Person.findOrFail(params.id)
-      person.useTransaction(trx)
-      const updatedPerson = await person.merge(cleanRequest).save()
-
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, person.id, 'people', cleanRequest.tags)
-      }
-
-      return updatedPerson
+    return db.transaction(async (trx) => {
+      const updatedPerson = await PersonService.updatePerson(trx, params.id, cleanRequest, request.input('tags'))
+      return { data: await PersonService.getFullPerson(updatedPerson.id, 10, 0, trx) }
     })
 
-    return { data: await getFullPerson(responsePerson.id) }
   }
 
   /**

@@ -6,6 +6,7 @@ import { buildApiQuery } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
 import UserService from '#services/user_service'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
 
 export default class UsersController {
   /**
@@ -21,14 +22,7 @@ export default class UsersController {
 
     query
       .orderBy('email', 'asc')
-      .preload('tags')
-      .preload('role')
-      .preload('person', (person: any) => {
-        person.preload('tags')
-        person.preload('personType', (personType: any) => {
-          personType.preload('tags')
-        })
-      })
+      .withScopes((scopes: ExtractScopes<typeof User>) => scopes.fullUser())
 
     const queryCount = await countQuery.count('*')
 
@@ -50,14 +44,7 @@ export default class UsersController {
     return {
       data: await User.query()
         .where('id', params.id)
-        .preload('tags')
-        .preload('role')
-        .preload('person', (person) => {
-          person.preload('tags')
-          person.preload('personType', (personType) => {
-            personType.preload('tags')
-          })
-        })
+        .withScopes((scopes) => scopes.fullUser())
         .firstOrFail(),
     }
   }
@@ -72,7 +59,7 @@ export default class UsersController {
     await request.validateUsing(createUserValidator)
 
     return db.transaction(async (trx) => {
-      const newUser = await UserService.createUserWithTags(trx, request.body(), request.input('tags'))
+      const newUser = await UserService.createUser(trx, request.body(), request.input('tags'))
       return { data: await UserService.getFullUser(newUser.id, trx) }
     })
   }
@@ -89,7 +76,7 @@ export default class UsersController {
     const cleanRequest = request.only(['email', 'roleId'])
 
     return db.transaction(async (trx) => {
-      const updatedUser = await UserService.updateUserWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedUser = await UserService.updateUser(trx, params.id, cleanRequest, request.input('tags'))
       return { data: await UserService.getFullUser(updatedUser.id, trx) }
     })
   }

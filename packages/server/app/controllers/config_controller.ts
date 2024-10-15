@@ -46,7 +46,7 @@ export default class ConfigController {
    * @summary Features Menu
    * @description Returns a nested list representing all current top-level features and sub-features/types active in Arcwell.
    */
-  async featuresMenu({}: HttpContext) {
+  async featuresMenu({ }: HttpContext) {
     // clone the featureMenuConfig so we don't modify the original
     // TODO: Find a better way to clone the featureMenuConfig
     const featuresBaseMenuConfig = JSON.parse(JSON.stringify(featureMenuConfig))
@@ -123,28 +123,28 @@ export default class ConfigController {
 
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
-          await EventTypeService.createEventTypeWithTags(trx, eventTypeData, eventTypeData.tags);
+          await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags);
           counts.event_types++;
         }
       }
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {
-          await FactTypeService.createFactTypeWithTags(trx, factTypeData, factTypeData.tags);
+          await FactTypeService.createFactType(trx, factTypeData, factTypeData.tags);
           counts.fact_types++;
         }
       }
 
       if (payload.person_types && payload.person_types.length > 0) {
         for (const personTypeData of payload.person_types) {
-          await PersonTypeService.createPersonTypeWithTags(trx, personTypeData, personTypeData.tags);
+          await PersonTypeService.createPersonType(trx, personTypeData, personTypeData.tags);
           counts.person_types++;
         }
       }
 
       if (payload.resource_types && payload.resource_types.length > 0) {
         for (const resourceTypeData of payload.resource_types) {
-          await ResourceTypeService.createResourceTypeWithTags(trx, resourceTypeData, resourceTypeData.tags);
+          await ResourceTypeService.createResourceType(trx, resourceTypeData, resourceTypeData.tags);
           counts.resource_types++;
         }
       }
@@ -165,7 +165,7 @@ export default class ConfigController {
 
       if (payload.users && payload.users.length > 0) {
         for (const userData of payload.users) {
-          await UserService.createUserWithTags(trx, userData, userData.tags);
+          await UserService.createUser(trx, userData, userData.tags);
           counts.users++;
         }
       }

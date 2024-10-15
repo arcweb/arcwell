@@ -50,7 +50,7 @@ export default class EventTypesController {
     await request.validateUsing(createEventTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newEventType = await EventTypeService.createEventTypeWithTags(trx, request.body(), request.input('tags'))
+      const newEventType = await EventTypeService.createEventType(trx, request.body(), request.input('tags'))
       return { data: await EventTypeService.getFullEventType(newEventType.id, trx) }
     })
   }
@@ -100,7 +100,7 @@ export default class EventTypesController {
     const cleanRequest = request.only(['name', 'key', 'description'])
 
     return db.transaction(async (trx) => {
-      const updatedEventType = await EventTypeService.updateEventTypeWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedEventType = await EventTypeService.updateEventType(trx, params.id, cleanRequest, request.input('tags'))
       return { data: await EventTypeService.getFullEventType(updatedEventType.id, trx) }
     })
   }

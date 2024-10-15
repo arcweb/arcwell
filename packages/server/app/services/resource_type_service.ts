@@ -26,7 +26,11 @@ export default class ResourceTypeService {
    * @param tags - An array of tags to associate with the ResourceType.
    * @returns A Promise that resolves to the newly created ResourceType.
    */
-  public static async createResourceTypeWithTags(trx: TransactionClientContract, createData: any, tags: string[]): Promise<ResourceType> {
+  public static async createResourceType(
+    trx: TransactionClientContract,
+    createData: any,
+    tags?: string[]
+  ): Promise<ResourceType> {
     const newResourceType = new ResourceType().fill(createData).useTransaction(trx);
     await newResourceType.save();
 
@@ -47,7 +51,12 @@ export default class ResourceTypeService {
    * @returns A Promise that resolves to the updated ResourceType.
    * @throws Will throw an error if the ResourceType is not found.
    */
-  public static async updateResourceTypeWithTags(trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<ResourceType> {
+  public static async updateResourceType(
+    trx: TransactionClientContract,
+    id: string,
+    updateData: any,
+    tags?: string[]
+  ): Promise<ResourceType> {
     const resourceType = await ResourceType.findOrFail(id);
     resourceType.useTransaction(trx);
 

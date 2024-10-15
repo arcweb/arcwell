@@ -49,7 +49,7 @@ export default class FactTypesController {
     await request.validateUsing(createFactTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newFactType = await FactTypeService.createFactTypeWithTags(trx, request.body(), request.input('tags'))
+      const newFactType = await FactTypeService.createFactType(trx, request.body(), request.input('tags'))
       return { data: await FactTypeService.getFullFactType(newFactType.id, trx) }
     })
   }
@@ -98,7 +98,7 @@ export default class FactTypesController {
     const cleanRequest = request.only(['key', 'name', 'description', 'dimensionSchemas', 'tags'])
 
     return await db.transaction(async (trx) => {
-      const updatedFactType = await FactTypeService.updateFactTypeWithTags(trx, params.id, cleanRequest, request.input('tags'));
+      const updatedFactType = await FactTypeService.updateFactType(trx, params.id, cleanRequest, request.input('tags'));
       return { data: await FactTypeService.getFullFactType(updatedFactType.id, trx) }
     })
   }

@@ -30,7 +30,7 @@ export default class EventService {
    * @param tags - An array of tags to associate with the Event.
    * @returns A Promise that resolves to the newly created Event.
    */
-  public static async createEventWithTags(
+  public static async createEvent(
     trx: TransactionClientContract,
     createData: any,
     tags?: string[]
@@ -55,7 +55,7 @@ export default class EventService {
    * @returns A Promise that resolves to the updated Event.
    * @throws Will throw an error if the Event is not found.
    */
-  public static async updateEventWithTags(
+  public static async updateEvent(
     trx: TransactionClientContract,
     id: string,
     updateData: any,

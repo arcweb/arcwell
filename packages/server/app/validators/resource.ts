@@ -5,6 +5,7 @@ import vine from '@vinejs/vine'
  */
 export const createResourceSchema = vine.object({
   name: vine.string().trim().minLength(3),
+  tags: vine.array(vine.string().trim()).optional(),
 })
 
 export const createResourceValidator = vine.compile(createResourceSchema)
@@ -14,6 +15,7 @@ export const createResourceValidator = vine.compile(createResourceSchema)
  */
 export const updateResourceSchema = vine.object({
   name: vine.string().trim().minLength(3).optional(),
+  tags: vine.array(vine.string().trim()).optional(),
 })
 
 export const updateResourceValidator = vine.compile(updateResourceSchema)

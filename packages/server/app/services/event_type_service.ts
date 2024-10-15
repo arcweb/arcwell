@@ -26,7 +26,11 @@ export default class EventTypeService {
    * @param tags - An array of tags to associate with the EventType.
    * @returns A Promise that resolves to the newly created EventType.
    */
-  static async createEventTypeWithTags(trx: TransactionClientContract, createData: any, tags: string[]): Promise<EventType> {
+  static async createEventType(
+    trx: TransactionClientContract,
+    createData: any,
+    tags?: string[]
+  ): Promise<EventType> {
     const newEventType = new EventType().fill(createData).useTransaction(trx);
     await newEventType.save();
 
@@ -47,7 +51,11 @@ export default class EventTypeService {
    * @returns A Promise that resolves to the updated EventType.
    * @throws Will throw an error if the EventType is not found.
    */
-  static async updateEventTypeWithTags(trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<EventType> {
+  static async updateEventType(
+    trx: TransactionClientContract,
+    id: string,
+    updateData: any,
+    tags?: string[]): Promise<EventType> {
     const eventType = await EventType.findOrFail(id);
     eventType.useTransaction(trx);
 

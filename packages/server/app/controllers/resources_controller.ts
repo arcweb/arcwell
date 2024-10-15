@@ -3,16 +3,10 @@ import ResourceType from '#models/resource_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createResourceValidator, updateResourceValidator } from '#validators/resource'
 import type { HttpContext } from '@adonisjs/core/http'
-import { buildApiQuery, buildResourcesSort, setTagsForObject } from '#helpers/query_builder'
+import { buildApiQuery, buildResourcesSort } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
-
-export function getFullResource(id: string) {
-  return Resource.query()
-    .where('id', id)
-    .preload('tags')
-    .preload('resourceType', (resourceType) => resourceType.preload('tags'))
-    .firstOrFail()
-}
+import ResourceService from '#services/resource_service'
+import { ExtractScopes } from '@adonisjs/lucid/types/model'
 
 export default class ResourcesController {
   /**
@@ -20,7 +14,7 @@ export default class ResourcesController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({}: HttpContext) {
+  async count({ }: HttpContext) {
     const countQuery = db.from('resources').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -43,11 +37,7 @@ export default class ResourcesController {
 
     let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resources', 'name')
 
-    query
-      .preload('resourceType', (resourceType: any) => {
-        resourceType.preload('tags')
-      })
-      .preload('tags')
+    query.apply((scopes: ExtractScopes<typeof Resource>) => scopes.fullResource())
 
     if (typeKey) {
       const resourceType = await ResourceType.findByOrFail('key', typeKey)
@@ -74,18 +64,10 @@ export default class ResourcesController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createResourceValidator)
 
-    const responseResource = await db.transaction(async (trx) => {
-      const newResource = new Resource().fill(request.body()).useTransaction(trx)
-      await newResource.save()
-
-      const tags = request.only(['tags'])
-      if (tags.tags && tags.tags.length > 0) {
-        await setTagsForObject(trx, newResource.id, 'resources', tags.tags, false)
-      }
-      return newResource
+    return db.transaction(async (trx) => {
+      const newResource = await ResourceService.createResource(trx, request.body())
+      return { data: await ResourceService.getFullResource(newResource.id) }
     })
-
-    return { data: await getFullResource(responseResource.id) }
   }
 
   /**
@@ -97,12 +79,8 @@ export default class ResourcesController {
     await paramsUUIDValidator.validate(params)
     return {
       data: await Resource.query()
-        .preload('resourceType', (resourceType) => {
-          resourceType.preload('tags')
-        })
-        .preload('tags')
         .where('id', params.id)
-        .preload('resourceType')
+        .withScopes((scopes) => scopes.fullResource())
         .firstOrFail(),
     }
   }
@@ -115,19 +93,13 @@ export default class ResourcesController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updateResourceValidator)
     await paramsUUIDValidator.validate(params)
+
     const cleanRequest = request.only(['name', 'typeKey', 'tags'])
 
-    const responseResource = await db.transaction(async (trx) => {
-      const resource = await Resource.findOrFail(params.id)
-      resource.useTransaction(trx)
-      const updatedResource = await resource.merge(cleanRequest).save()
-
-      if (cleanRequest.tags) {
-        await setTagsForObject(trx, resource.id, 'resources', cleanRequest.tags)
-      }
-      return updatedResource
+    return db.transaction(async (trx) => {
+      const updatedResource = await ResourceService.updateResource(trx, params.id, cleanRequest)
+      return { data: await ResourceService.getFullResource(updatedResource.id) }
     })
-    return { data: await getFullResource(responseResource.id) }
   }
 
   /**

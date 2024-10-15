@@ -26,7 +26,11 @@ export default class PersonTypeService {
    * @param tags - An array of tags to associate with the PersonType.
    * @returns A Promise that resolves to the newly created PersonType.
    */
-  public static async createPersonTypeWithTags(trx: TransactionClientContract, createData: any, tags: string[]): Promise<PersonType> {
+  public static async createPersonType(
+    trx: TransactionClientContract,
+    createData: any,
+    tags?: string[]
+  ): Promise<PersonType> {
     const newPersonType = new PersonType().fill(createData).useTransaction(trx);
     await newPersonType.save();
 
@@ -47,13 +51,18 @@ export default class PersonTypeService {
    * @returns A Promise that resolves to the updated PersonType.
    * @throws Will throw an error if the PersonType is not found.
    */
-  public static async updatePersonTypeWithTags(trx: TransactionClientContract, id: string, updateData: any, tags: string[]): Promise<PersonType> {
+  public static async updatePersonType(
+    trx: TransactionClientContract,
+    id: string,
+    updateData: any,
+    tags?: string[]
+  ): Promise<PersonType> {
     const personType = await PersonType.findOrFail(id);
     personType.useTransaction(trx);
 
     const updatedPersonType = await personType.merge(updateData).save();
 
-    if (tags) {
+    if (tags && tags.length > 0) {
       await setTagsForObject(trx, personType.id, 'person_types', tags);
     }
 

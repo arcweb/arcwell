@@ -13,14 +13,7 @@ export default class UserService {
   public static async getFullUser(id: string, trx?: TransactionClientContract): Promise<User> {
     return User.query(trx ? { client: trx } : {})
       .where('id', id)
-      .preload('tags')
-      .preload('role')
-      .preload('person', (person) => {
-        person.preload('tags');
-        person.preload('personType', (personType) => {
-          personType.preload('tags');
-        });
-      })
+      .withScopes((scopes) => scopes.fullUser())
       .firstOrFail();
   }
 
@@ -32,7 +25,11 @@ export default class UserService {
    * @param tags - An array of tags to associate with the User.
    * @returns A Promise that resolves to the newly created User.
    */
-  public static async createUserWithTags(trx: TransactionClientContract, createData: any, tags?: string[]): Promise<User> {
+  public static async createUser(
+    trx: TransactionClientContract,
+    createData: any,
+    tags?: string[]
+  ): Promise<User> {
     const newUser = new User().fill(createData).useTransaction(trx);
     await newUser.save();
 
@@ -53,7 +50,12 @@ export default class UserService {
    * @returns A Promise that resolves to the updated User.
    * @throws Will throw an error if the User is not found.
    */
-  public static async updateUserWithTags(trx: TransactionClientContract, id: string, updateData: any, tags?: string[]): Promise<User> {
+  public static async updateUser(
+    trx: TransactionClientContract,
+    id: string,
+    updateData: any,
+    tags?: string[]
+  ): Promise<User> {
     const user = await User.findOrFail(id);
     user.useTransaction(trx);
 

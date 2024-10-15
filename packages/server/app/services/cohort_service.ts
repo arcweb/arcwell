@@ -37,7 +37,7 @@ export default class CohortService {
    * @param tags - An array of tags to associate with the Cohort.
    * @returns A Promise that resolves to the newly created Cohort.
    */
-  public static async createCohortWithTags(
+  public static async createCohort(
     trx: TransactionClientContract,
     createData: any,
     tags?: string[]
@@ -62,7 +62,7 @@ export default class CohortService {
    * @returns A Promise that resolves to the updated Cohort.
    * @throws Will throw an error if the Cohort is not found.
    */
-  public static async updateCohortWithTags(
+  public static async updateCohort(
     trx: TransactionClientContract,
     id: string,
     updateData: any,

@@ -74,7 +74,7 @@ export default class EventsController {
     ])
 
     return db.transaction(async (trx) => {
-      const newEvent = await EventService.createEventWithTags(trx, cleanRequest, cleanRequest.tags)
+      const newEvent = await EventService.createEvent(trx, cleanRequest, cleanRequest.tags)
       return EventService.getFullEvent(newEvent.id, trx)
     })
   }
@@ -108,7 +108,7 @@ export default class EventsController {
     ])
 
     return db.transaction(async (trx) => {
-      const updatedEvent = await EventService.updateEventWithTags(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedEvent = await EventService.updateEvent(trx, params.id, cleanRequest, request.input('tags'))
       return { data: await EventService.getFullEvent(updatedEvent.id, trx) }
     })
   }

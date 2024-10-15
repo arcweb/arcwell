@@ -80,20 +80,20 @@ export default class Event extends AwBaseModel {
     }
   }
 
-  public static fullEvent = scope((query: ModelQueryBuilderContract<typeof Event>) => {
+  static fullEvent = scope((query: ModelQueryBuilderContract<typeof Event>) => {
     query
       .preload('tags')
       .preload('person', (personQuery) => {
-        personQuery.preload('tags');
+        personQuery.preload('tags')
         personQuery.preload('user', (userQuery) => {
-          userQuery.preload('tags');
+          userQuery.preload('tags')
         });
       })
       .preload('resource', (resourceQuery) => {
-        resourceQuery.preload('tags');
+        resourceQuery.preload('tags')
       })
       .preload('eventType', (eventTypeQuery) => {
-        eventTypeQuery.preload('tags');
+        eventTypeQuery.preload('tags')
       });
   });
 }
