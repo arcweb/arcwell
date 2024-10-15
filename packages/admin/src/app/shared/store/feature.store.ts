@@ -12,6 +12,7 @@ import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
 import { SubfeatureModel } from '../models/subfeature.model';
 import { cloneDeep } from 'lodash';
+import { ConfigStore } from './config.store';
 
 interface FeatureState {
   features: FeatureModel[];
@@ -37,6 +38,7 @@ export const FeatureStore = signalStore(
       store,
       featureService = inject(FeatureService),
       router = inject(Router),
+      configStore = inject(ConfigStore),
     ) => ({
       async load() {
         patchState(store, setPending());
@@ -85,6 +87,15 @@ export const FeatureStore = signalStore(
             activeSubfeature: activeSubfeature || null,
             hasSubfeatures: activeFeature.subfeatures.length > 0,
           });
+
+          // set the title of the page
+          let title = '';
+          if (activeSubfeature?.name) {
+            title = activeSubfeature.name;
+          } else if (activeFeature?.name) {
+            title = activeFeature.name;
+          }
+          configStore.setTitle(title);
         }
         if (fulfillRequest) {
           patchState(store, setFulfilled());
