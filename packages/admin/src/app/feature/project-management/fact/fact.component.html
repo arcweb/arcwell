@@ -69,7 +69,9 @@
       [objectSubTypes]="this.factStore.resourceTypes()"
     ></aw-object-selector-form-field>
 
-    <h6>Note: Currently, events can only be added via the api</h6>
+    <div class="body-large">
+      Note: Currently, events can only be added via the api
+    </div>
     <!--    <aw-object-selector-form-field-->
     <!--      formControlName="event"-->
     <!--      placeholder="Search for Event"-->
@@ -83,7 +85,7 @@
       <table
         mat-table
         [dataSource]="factStore.fact().dimensions"
-        class="mat-elevation-z8"
+        class="mat-elevation-z0"
       >
         <ng-container matColumnDef="key">
           <th mat-header-cell *matHeaderCellDef>Key</th>
@@ -114,11 +116,11 @@
           </mat-error>
         }
       </mat-form-field>
-      <h6>
+      <div class="body-large">
         Note: Dimensions will not be validated by the fact type's dimension
         schema. Use with extreme caution. Suggested fact creation is done via
         the data insert api.
-      </h6>
+      </div>
     }
 
     @if (factStore.inCreateMode()) {

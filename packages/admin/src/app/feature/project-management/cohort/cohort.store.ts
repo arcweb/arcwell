@@ -230,6 +230,11 @@ export const CohortStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, setFulfilled());
+
+          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
       async loadPeoplePage(props: {

@@ -1,9 +1,5 @@
 @use 'colors' as colors;
 
-h4 {
-  margin: 0;
-}
-
 .main-container-header {
   display: flex;
   flex-direction: row;
@@ -13,6 +9,7 @@ h4 {
   .icons-container {
     display: flex;
     gap: 30px;
+    margin-bottom: 15px;
   }
 
   .table-header-button {

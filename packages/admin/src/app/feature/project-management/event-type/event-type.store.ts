@@ -164,6 +164,11 @@ export const EventTypeStore = signalStore(
           patchState(store, setErrors(resp.errors));
         } else {
           patchState(store, setFulfilled());
+
+          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
     }),

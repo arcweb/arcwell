@@ -3,9 +3,10 @@
 @mixin config-theme($theme) {
   .config-bar-container {
     color: colors.$dark-blue;
+    margin-top: 5px;
 
     .config-bar-divider {
-      margin: 20px 0;
+      margin: 26px 0 20px;
       border-top: 2px solid colors.$primary-70;
     }
   }

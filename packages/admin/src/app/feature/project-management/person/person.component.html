@@ -113,17 +113,19 @@
     </form>
 
     @if (personStore.person().cohortsCount > 0) {
-      <aw-cohort-table
-        [dataSource]="cohortsDataSource"
-        [displayedColumns]="cohortColumns"
-        [length]="this.personStore.person().cohortsCount"
-        [pageSizes]="pageSizes"
-        [pageSize]="this.personStore.cohortsListOptions().limit"
-        [pageIndex]="this.personStore.cohortsListOptions().pageIndex"
-        (onDeleteClicked)="cohortsDeleteClick($event)"
-        (onPageChanged)="cohortsPageChange($event)"
-        (onRowClicked)="cohortsRowClick($event)"
-      ></aw-cohort-table>
+      <div class="table-form-container">
+        <aw-cohort-table
+          [dataSource]="cohortsDataSource"
+          [displayedColumns]="cohortColumns"
+          [length]="this.personStore.person().cohortsCount"
+          [pageSizes]="pageSizes"
+          [pageSize]="this.personStore.cohortsListOptions().limit"
+          [pageIndex]="this.personStore.cohortsListOptions().pageIndex"
+          (onDeleteClicked)="cohortsDeleteClick($event)"
+          (onPageChanged)="cohortsPageChange($event)"
+          (onRowClicked)="cohortsRowClick($event)"
+        ></aw-cohort-table>
+      </div>
     } @else {
       <div class="body-large">
         No cohorts currently associated with this person

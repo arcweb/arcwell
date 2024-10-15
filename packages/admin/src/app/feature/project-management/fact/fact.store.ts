@@ -232,10 +232,14 @@ export const FactStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
-          toastService.sendMessage('Error setting facts.', ToastLevel.ERROR);
+          toastService.sendMessage('Error setting tags.', ToastLevel.ERROR);
         } else {
           patchState(store, setFulfilled());
-          toastService.sendMessage('Set facts.', ToastLevel.SUCCESS);
+
+          toastService.sendMessage('Tags Set', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
     }),

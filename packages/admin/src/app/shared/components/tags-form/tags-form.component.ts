@@ -34,6 +34,7 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { DetailStore } from '@app/feature/project-management/detail/detail.store';
 
 @Component({
   selector: 'aw-tags-form',
@@ -60,6 +61,7 @@ export class TagsFormComponent implements OnInit {
   readonly tagStore = inject(TagStore);
   readonly dialog = inject(MatDialog);
   private destroyRef = inject(DestroyRef);
+  readonly detailStore = inject(DetailStore);
 
   tags = input.required<TagType[]>();
   inEditMode = input<boolean>(true);
@@ -132,5 +134,8 @@ export class TagsFormComponent implements OnInit {
 
   onCancel() {
     // TODO: This should reset the tags to their original?  Maybe store the original copy initially and rever to that?
+
+    // close the drawer
+    this.detailStore.clearDetailId();
   }
 }
