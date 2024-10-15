@@ -145,6 +145,22 @@ export const UserStore = signalStore(
           return resp.data;
         }
       },
+      async delete() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(userService.delete(store.user().id));
+        if (resp && resp.errors) {
+          patchState(store, setErrors(resp.errors));
+        } else {
+          patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage('Deleted user.', ToastLevel.SUCCESS);
+
+          // refresh the list
+          refreshService.triggerRefresh();
+          // clear the detail_id to close the drawer
+          detailStore.clearDetailId();
+        }
+      },
       async invite(userId: string, host: string) {
         patchState(store, setPending());
         const resp = await firstValueFrom(userService.invite(userId, host));

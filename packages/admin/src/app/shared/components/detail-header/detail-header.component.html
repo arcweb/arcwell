@@ -25,20 +25,22 @@
           ></fa-icon>
           Edit
         </button>
-        <button
-          mat-button
-          (click)="onDelete()"
-          class="detail-header-button"
-          matTooltip="Delete"
-        >
-          <fa-icon
-            aria-label="Delete icon"
-            [icon]="faTrashCan"
-            size="xl"
-            class="detail-header-button-icon"
-          ></fa-icon>
-          Delete
-        </button>
+        @if (enableDelete()) {
+          <button
+            mat-button
+            (click)="onDelete()"
+            class="detail-header-button"
+            matTooltip="Delete"
+          >
+            <fa-icon
+              aria-label="Delete icon"
+              [icon]="faTrashCan"
+              size="xl"
+              class="detail-header-button-icon"
+            ></fa-icon>
+            Delete
+          </button>
+        }
       }
     </div>
   </div>

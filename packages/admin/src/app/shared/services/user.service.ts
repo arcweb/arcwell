@@ -122,6 +122,14 @@ export class UserService {
       );
   }
 
+  delete(userId: string): Observable<void | ErrorResponseType> {
+    return this.http.delete<void>(`${environment.apiUrl}/users/${userId}`).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
   invite(id: string, host: string): Observable<UserModel | ErrorResponseType> {
     return this.http
       .post<UserResponseType>(`${environment.apiUrl}/users/invite`, {
