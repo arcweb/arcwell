@@ -3,7 +3,6 @@ import testUtils from '@adonisjs/core/services/test_utils'
 
 import Person from '#models/person'
 import PersonType from '#models/person_type'
-import Tag from '#models/tag'
 
 test.group('Model people', (group) => {
   group.each.setup(() => testUtils.db().withGlobalTransaction())
