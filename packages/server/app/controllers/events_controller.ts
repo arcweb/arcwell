@@ -7,6 +7,8 @@ import { buildApiQuery, buildEventsSort } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import EventService from '#services/event_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
+import { validateDimensions } from '#validators/dimension'
+import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class EventsController {
   /**
@@ -64,8 +66,10 @@ export default class EventsController {
    */
   async store({ request }: HttpContext) {
     await request.validateUsing(createEventValidator)
+
     const cleanRequest = request.only([
       'typeKey',
+      'dimensions',
       'startedAt',
       'endedAt',
       'personId',
@@ -73,9 +77,30 @@ export default class EventsController {
       'tags',
     ])
 
+    cleanRequest.dimensions ??= []
+
+    const eventType = await EventType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+    const validationErrorMessage = await validateDimensions(
+      cleanRequest.dimensions,
+      eventType.dimensionSchemas
+    )
+
+    if (validationErrorMessage) {
+      throwCustomHttpError(
+        {
+          title: 'Dimension validation failed',
+          code: 'E_VALIDATION_ERROR',
+          detail: validationErrorMessage,
+        },
+        400
+      )
+      return
+    }
+
     return db.transaction(async (trx) => {
       const newEvent = await EventService.createEvent(trx, cleanRequest, cleanRequest.tags)
-      return EventService.getFullEvent(newEvent.id, trx)
+      return { data: await EventService.getFullEvent(newEvent.id, trx) }
     })
   }
 
@@ -98,8 +123,36 @@ export default class EventsController {
     await request.validateUsing(updateEventValidator)
     await paramsUUIDValidator.validate(params)
 
-    // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
+    const cleanRequest = request.only([
+      'typeKey',
+      'dimensions',
+      'startedAt',
+      'endedAt',
+      'personId',
+      'resourceId',
+      'tags',
+    ])
+
+    if (cleanRequest.dimensions) {
+      const eventType = await EventType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+      const validationErrorMessage = await validateDimensions(
+        cleanRequest.dimensions,
+        eventType.dimensionSchemas
+      )
+
+      if (validationErrorMessage) {
+        throwCustomHttpError(
+          {
+            title: 'Dimension validation failed',
+            code: 'E_VALIDATION_ERROR',
+            detail: validationErrorMessage,
+          },
+          400
+        )
+        return
+      }
+    }
 
     return db.transaction(async (trx) => {
       const updatedEvent = await EventService.updateEvent(

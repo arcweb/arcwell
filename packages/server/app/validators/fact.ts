@@ -1,12 +1,6 @@
 import vine from '@vinejs/vine'
 import { DateTime } from 'luxon'
-
-export const dimensionSchema = vine.object({
-  key: vine.string(),
-  value: vine.any(),
-})
-
-export const dimensions = vine.array(dimensionSchema.optional())
+import { dimensions } from '#validators/dimension'
 
 /**
  * Validates the fact's create action
@@ -14,9 +8,8 @@ export const dimensions = vine.array(dimensionSchema.optional())
 export const createFactSchema = vine.object({
   typeKey: vine.string().trim(),
   observedAt: vine.date({ formats: { utc: true } }).optional(),
-  info: vine.object({}).allowUnknownProperties().optional(),
   tags: vine.array(vine.string().optional()).optional(),
-  dimensions: dimensions,
+  dimensions: dimensions.optional(),
 })
 
 export const createFactValidator = vine.compile(createFactSchema)
