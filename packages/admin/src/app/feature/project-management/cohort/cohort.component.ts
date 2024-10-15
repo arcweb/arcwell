@@ -232,7 +232,9 @@ export class CohortComponent implements OnInit {
   }
 
   peopleRowClick(row: PersonModel) {
-    this.router.navigate(['project-management', 'people', row.id]);
+    this.router.navigate(['project-management', 'people', 'list'], {
+      queryParams: { detail_id: row.id },
+    });
   }
 
   peopleSortChange(event: Sort) {
