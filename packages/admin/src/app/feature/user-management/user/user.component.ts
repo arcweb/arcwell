@@ -222,6 +222,22 @@ export class UserComponent implements OnInit {
     }
   }
 
+  onDelete() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm delete',
+        question: 'Are you sure you want to delete this user?',
+        okButtonText: 'Delete',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.userStore.delete();
+      }
+    });
+  }
+
   compareRoles(r1: RoleType, r2: RoleType): boolean {
     return r1 && r2 ? r1.id === r2.id : false;
   }

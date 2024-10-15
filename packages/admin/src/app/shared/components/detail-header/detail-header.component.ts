@@ -22,6 +22,7 @@ export class DetailHeaderComponent {
   detailName = input.required<string>();
   inEditMode = input.required<boolean>();
   inCreateMode = input.required<boolean>();
+  enableDelete = input<boolean>(true);
 
   toggleEditMode = output<void>();
   delete = output<void>();
