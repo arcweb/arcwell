@@ -26,11 +26,7 @@ export const createFactTypeValidator = vine.compile(createFactTypeSchema)
 /**
  * Validates an array of factTypes for the install action
  */
-export const createFactTypeArrayValidator = vine.compile(
-  vine.array(
-    createFactTypeSchema
-  )
-)
+export const createFactTypeArrayValidator = vine.compile(vine.array(createFactTypeSchema))
 
 /**
  * Validates the factType's update action

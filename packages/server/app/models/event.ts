@@ -83,17 +83,17 @@ export default class Event extends AwBaseModel {
   static fullEvent = scope((query: ModelQueryBuilderContract<typeof Event>) => {
     query
       .preload('tags')
-      .preload('person', personQuery => {
+      .preload('person', (personQuery) => {
         personQuery.preload('tags')
-        personQuery.preload('user', userQuery => {
+        personQuery.preload('user', (userQuery) => {
           userQuery.preload('tags')
-        });
+        })
       })
-      .preload('resource', resourceQuery => {
+      .preload('resource', (resourceQuery) => {
         resourceQuery.preload('tags')
       })
-      .preload('eventType', eventTypeQuery => {
+      .preload('eventType', (eventTypeQuery) => {
         eventTypeQuery.preload('tags')
-      });
-  });
+      })
+  })
 }

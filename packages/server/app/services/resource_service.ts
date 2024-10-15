@@ -1,6 +1,6 @@
-import { setTagsForObject } from "#helpers/query_builder"
-import Resource from "#models/resource"
-import { TransactionClientContract } from "@adonisjs/lucid/types/database"
+import { setTagsForObject } from '#helpers/query_builder'
+import Resource from '#models/resource'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class ResourceService {
   /**
@@ -11,7 +11,10 @@ export default class ResourceService {
    * @returns A Promise that resolves to the Resource with preloaded relationships.
    * @throws Will throw an error if the Resource is not found.
    */
-  public static async getFullResource(id: string, trx?: TransactionClientContract): Promise<Resource> {
+  public static async getFullResource(
+    id: string,
+    trx?: TransactionClientContract
+  ): Promise<Resource> {
     return Resource.query(trx ? { client: trx } : {})
       .where('id', id)
       .withScopes((scopes) => scopes.fullResource())
@@ -27,7 +30,7 @@ export default class ResourceService {
    */
   public static async createResource(
     trx: TransactionClientContract,
-    createData: any,
+    createData: any
   ): Promise<Resource> {
     const newResource = new Resource().fill(createData).useTransaction(trx)
     await newResource.save()

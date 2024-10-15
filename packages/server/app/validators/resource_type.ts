@@ -11,7 +11,6 @@ export const createResourceTypeSchema = vine.object({
   tags: vine.array(vine.string().trim()).optional(),
 })
 
-
 export const createResourceTypeValidator = vine.compile(createResourceTypeSchema)
 
 /**

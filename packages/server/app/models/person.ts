@@ -91,10 +91,10 @@ export default class Person extends AwBaseModel {
   static fullPerson = scope((query: ModelQueryBuilderContract<typeof Person>) => {
     query
       .preload('tags')
-      .preload('user', userQuery => {
+      .preload('user', (userQuery) => {
         userQuery.preload('tags')
       })
-      .preload('personType', personTypeQuery => {
+      .preload('personType', (personTypeQuery) => {
         personTypeQuery.preload('tags')
       })
   })

@@ -29,10 +29,8 @@ export default class Role extends AwBaseModel {
   declare policies: ManyToMany<typeof Policy>
 
   static fullRole = scope((query: ModelQueryBuilderContract<typeof Role>) => {
-    query.preload('users', usersQuery => {
-      usersQuery
-        .preload('person')
-        .preload('tags')
+    query.preload('users', (usersQuery) => {
+      usersQuery.preload('person').preload('tags')
     })
   })
 }

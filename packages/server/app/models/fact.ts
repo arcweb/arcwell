@@ -79,16 +79,16 @@ export default class Fact extends AwBaseModel {
     query
       .preload('factType')
       .preload('tags')
-      .preload('person', personQuery => {
+      .preload('person', (personQuery) => {
         personQuery.preload('tags')
-        personQuery.preload('user', userQuery => {
+        personQuery.preload('user', (userQuery) => {
           userQuery.preload('tags')
         })
       })
-      .preload('resource', resourceQuery => {
+      .preload('resource', (resourceQuery) => {
         resourceQuery.preload('tags')
       })
-      .preload('event', eventQuery => {
+      .preload('event', (eventQuery) => {
         eventQuery.preload('tags')
       })
   })

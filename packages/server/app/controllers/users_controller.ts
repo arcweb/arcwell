@@ -76,7 +76,12 @@ export default class UsersController {
     const cleanRequest = request.only(['email', 'roleId'])
 
     return db.transaction(async (trx) => {
-      const updatedUser = await UserService.updateUser(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedUser = await UserService.updateUser(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await UserService.getFullUser(updatedUser.id, trx) }
     })
   }

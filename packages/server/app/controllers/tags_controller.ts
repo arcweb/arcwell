@@ -52,7 +52,11 @@ export default class TagsController {
     usersQuery.orderBy('email', 'asc')
   }
 
-  private tagQueryWithAllRelated(id: string, queryData: Record<string, any>, trx?: TransactionClientContract) {
+  private tagQueryWithAllRelated(
+    id: string,
+    queryData: Record<string, any>,
+    trx?: TransactionClientContract
+  ) {
     // Get all the related types at once. This will usually be just for the first time
     // the View Tag screen is loaded or an update. Any subsequent pagination requests will just utilize
     // the single type options above. This will be the default if the value does not match
@@ -87,7 +91,7 @@ export default class TagsController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ }: HttpContext) {
+  async count({}: HttpContext) {
     const countQuery = db.from('tags').count('*')
     const queryCount = await countQuery.count('*')
 

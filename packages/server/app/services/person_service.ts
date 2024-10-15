@@ -1,6 +1,6 @@
-import { setTagsForObject } from "#helpers/query_builder"
-import Person from "#models/person"
-import { TransactionClientContract } from "@adonisjs/lucid/types/database"
+import { setTagsForObject } from '#helpers/query_builder'
+import Person from '#models/person'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class PersonService {
   /**
@@ -21,7 +21,7 @@ export default class PersonService {
   ): Promise<Person> {
     return Person.query(trx ? { client: trx } : {})
       .where('id', id)
-      .apply(scopes => scopes.fullPerson())
+      .apply((scopes) => scopes.fullPerson())
       .withCount('cohorts')
       .preload('cohorts', (cohorts) => {
         cohorts.limit(cohortLimit)

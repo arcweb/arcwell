@@ -46,7 +46,7 @@ export default class ConfigController {
    * @summary Features Menu
    * @description Returns a nested list representing all current top-level features and sub-features/types active in Arcwell.
    */
-  async featuresMenu({ }: HttpContext) {
+  async featuresMenu({}: HttpContext) {
     // clone the featureMenuConfig so we don't modify the original
     // TODO: Find a better way to clone the featureMenuConfig
     const featuresBaseMenuConfig = JSON.parse(JSON.stringify(featureMenuConfig))
@@ -120,53 +120,52 @@ export default class ConfigController {
     }
 
     return db.transaction(async (trx) => {
-
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
-          await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags);
-          counts.event_types++;
+          await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags)
+          counts.event_types++
         }
       }
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {
-          await FactTypeService.createFactType(trx, factTypeData, factTypeData.tags);
-          counts.fact_types++;
+          await FactTypeService.createFactType(trx, factTypeData, factTypeData.tags)
+          counts.fact_types++
         }
       }
 
       if (payload.person_types && payload.person_types.length > 0) {
         for (const personTypeData of payload.person_types) {
-          await PersonTypeService.createPersonType(trx, personTypeData, personTypeData.tags);
-          counts.person_types++;
+          await PersonTypeService.createPersonType(trx, personTypeData, personTypeData.tags)
+          counts.person_types++
         }
       }
 
       if (payload.resource_types && payload.resource_types.length > 0) {
         for (const resourceTypeData of payload.resource_types) {
-          await ResourceTypeService.createResourceType(trx, resourceTypeData, resourceTypeData.tags);
-          counts.resource_types++;
+          await ResourceTypeService.createResourceType(trx, resourceTypeData, resourceTypeData.tags)
+          counts.resource_types++
         }
       }
 
       if (payload.roles && payload.roles.length > 0) {
         for (const roleData of payload.roles) {
-          await RoleService.createRole(trx, roleData);
-          counts.roles++;
+          await RoleService.createRole(trx, roleData)
+          counts.roles++
         }
       }
 
       if (payload.tags && payload.tags.length > 0) {
         for (const tagData of payload.tags) {
-          await TagService.createTag(trx, tagData);
-          counts.tags++;
+          await TagService.createTag(trx, tagData)
+          counts.tags++
         }
       }
 
       if (payload.users && payload.users.length > 0) {
         for (const userData of payload.users) {
-          await UserService.createUser(trx, userData, userData.tags);
-          counts.users++;
+          await UserService.createUser(trx, userData, userData.tags)
+          counts.users++
         }
       }
 
@@ -177,20 +176,20 @@ export default class ConfigController {
   /**
    * Handle form submission for the create action
    */
-  async store({ }: HttpContext) { }
+  async store({}: HttpContext) {}
 
   /**
    * Show individual record
    */
-  async show({ }: HttpContext) { }
+  async show({}: HttpContext) {}
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ }: HttpContext) { }
+  async update({}: HttpContext) {}
 
   /**
    * Delete record
    */
-  async destroy({ }: HttpContext) { }
+  async destroy({}: HttpContext) {}
 }

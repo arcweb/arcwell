@@ -49,7 +49,11 @@ export default class ResourceTypesController {
     await request.validateUsing(createResourceTypeValidator)
 
     return db.transaction(async (trx) => {
-      const newResourceType = await ResourceTypeService.createResourceType(trx, request.body(), request.input('tags'))
+      const newResourceType = await ResourceTypeService.createResourceType(
+        trx,
+        request.body(),
+        request.input('tags')
+      )
       return { data: await ResourceTypeService.getFullResourceType(newResourceType.id, trx) }
     })
   }
@@ -62,10 +66,7 @@ export default class ResourceTypesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await ResourceType.query()
-        .where('id', params.id)
-        .preload('tags')
-        .firstOrFail(),
+      data: await ResourceType.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
@@ -95,7 +96,12 @@ export default class ResourceTypesController {
     const cleanRequest = request.only(['name', 'key', 'description'])
 
     return await db.transaction(async (trx) => {
-      const updatedResourceType = await ResourceTypeService.updateResourceType(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedResourceType = await ResourceTypeService.updateResourceType(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await ResourceTypeService.getFullResourceType(updatedResourceType.id, trx) }
     })
   }

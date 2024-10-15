@@ -16,5 +16,4 @@ export const updateRoleSchema = vine.object({
   name: vine.string().trim().minLength(3),
 })
 
-
 export const updateRoleValidator = vine.compile(updateRoleSchema)

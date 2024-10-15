@@ -18,7 +18,7 @@ export default class PeopleController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ }: HttpContext) {
+  async count({}: HttpContext) {
     const countQuery = db.from('people').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -130,10 +130,14 @@ export default class PeopleController {
     const cleanRequest = request.only(['givenName', 'familyName', 'typeKey'])
 
     return db.transaction(async (trx) => {
-      const updatedPerson = await PersonService.updatePerson(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedPerson = await PersonService.updatePerson(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await PersonService.getFullPerson(updatedPerson.id, 10, 0, trx) }
     })
-
   }
 
   /**

@@ -1,11 +1,11 @@
-import { setTagsForObject } from "#helpers/query_builder"
-import Fact from "#models/fact"
-import { TransactionClientContract } from "@adonisjs/lucid/types/database"
+import { setTagsForObject } from '#helpers/query_builder'
+import Fact from '#models/fact'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class FactService {
   /**
    * Retrieves a full Fact record by ID with its associated tags.
-   * 
+   *
    * @param id - The ID of the Fact to retrieve.
    * @param trx - Optional transaction object.
    * @returns A Promise that resolves to the Fact with preloaded tags.
@@ -20,7 +20,7 @@ export default class FactService {
 
   /**
    * Creates a new Fact and optionally associates tags with it.
-   * 
+   *
    * @param trx - The transaction object to run the database operations.
    * @param createData - The data to create the Fact.
    * @param tags - An array of tags to associate with the Fact.
@@ -43,7 +43,7 @@ export default class FactService {
 
   /**
    * Updates an existing Fact and optionally updates its associated tags.
-   * 
+   *
    * @param trx - The transaction object to run the database operations.
    * @param id - The ID of the Fact to update.
    * @param updateData - The data to update the Fact.

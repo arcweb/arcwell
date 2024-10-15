@@ -14,7 +14,7 @@ export default class EventsController {
    * @summary Count Events
    * @description Returns the count of total events
    */
-  async count({ }: HttpContext) {
+  async count({}: HttpContext) {
     const countQuery = db.from('events').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -99,16 +99,15 @@ export default class EventsController {
     await paramsUUIDValidator.validate(params)
 
     // TODO Add person/personId and resource/resourceId when implemented
-    const cleanRequest = request.only([
-      'typeKey',
-      'startedAt',
-      'endedAt',
-      'personId',
-      'resourceId',
-    ])
+    const cleanRequest = request.only(['typeKey', 'startedAt', 'endedAt', 'personId', 'resourceId'])
 
     return db.transaction(async (trx) => {
-      const updatedEvent = await EventService.updateEvent(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedEvent = await EventService.updateEvent(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await EventService.getFullEvent(updatedEvent.id, trx) }
     })
   }

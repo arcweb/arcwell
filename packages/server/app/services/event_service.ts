@@ -1,6 +1,6 @@
-import Event from '#models/event';
-import { setTagsForObject } from '#helpers/query_builder';
-import { TransactionClientContract } from '@adonisjs/lucid/types/database';
+import Event from '#models/event'
+import { setTagsForObject } from '#helpers/query_builder'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class EventService {
   /**
@@ -15,7 +15,7 @@ export default class EventService {
     return Event.query(trx ? { client: trx } : {})
       .where('id', id)
       .withScopes((scopes) => scopes.fullEvent())
-      .firstOrFail();
+      .firstOrFail()
   }
 
   /**
@@ -31,14 +31,14 @@ export default class EventService {
     createData: any,
     tags?: string[]
   ): Promise<Event> {
-    const event = new Event().fill(createData).useTransaction(trx);
-    await event.save();
+    const event = new Event().fill(createData).useTransaction(trx)
+    await event.save()
 
     if (tags && tags.length > 0) {
-      await setTagsForObject(trx, event.id, 'events', tags, false);
+      await setTagsForObject(trx, event.id, 'events', tags, false)
     }
 
-    return event;
+    return event
   }
 
   /**
@@ -57,14 +57,14 @@ export default class EventService {
     updateData: any,
     tags?: string[]
   ): Promise<Event> {
-    const event = await Event.findOrFail(id);
-    event.useTransaction(trx);
-    await event.merge(updateData).save();
+    const event = await Event.findOrFail(id)
+    event.useTransaction(trx)
+    await event.merge(updateData).save()
 
     if (tags) {
-      await setTagsForObject(trx, event.id, 'events', tags);
+      await setTagsForObject(trx, event.id, 'events', tags)
     }
 
-    return event;
+    return event
   }
 }

@@ -1,6 +1,6 @@
-import Cohort from '#models/cohort';
-import { TransactionClientContract } from '@adonisjs/lucid/types/database';
-import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder';
+import Cohort from '#models/cohort'
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import { buildApiQuery, buildPeopleSort, setTagsForObject } from '#helpers/query_builder'
 
 export default class CohortService {
   /**
@@ -22,11 +22,11 @@ export default class CohortService {
       .preload('tags')
       .withCount('people')
       .preload('people', (people) => {
-        let [peopleQuery] = buildApiQuery(people, queryData, 'people');
-        peopleQuery.preload('personType');
-        buildPeopleSort(peopleQuery, queryData);
+        let [peopleQuery] = buildApiQuery(people, queryData, 'people')
+        peopleQuery.preload('personType')
+        buildPeopleSort(peopleQuery, queryData)
       })
-      .firstOrFail();
+      .firstOrFail()
   }
 
   /**
@@ -42,14 +42,14 @@ export default class CohortService {
     createData: any,
     tags?: string[]
   ): Promise<Cohort> {
-    const newCohort = new Cohort().fill(createData).useTransaction(trx);
-    await newCohort.save();
+    const newCohort = new Cohort().fill(createData).useTransaction(trx)
+    await newCohort.save()
 
     if (tags && tags.length > 0) {
-      await setTagsForObject(trx, newCohort.id, 'cohorts', tags, false);
+      await setTagsForObject(trx, newCohort.id, 'cohorts', tags, false)
     }
 
-    return newCohort;
+    return newCohort
   }
 
   /**
@@ -68,14 +68,14 @@ export default class CohortService {
     updateData: any,
     tags?: string[]
   ): Promise<Cohort> {
-    const cohort = await Cohort.findOrFail(id);
-    cohort.useTransaction(trx);
-    await cohort.merge(updateData).save();
+    const cohort = await Cohort.findOrFail(id)
+    cohort.useTransaction(trx)
+    await cohort.merge(updateData).save()
 
     if (tags) {
-      await setTagsForObject(trx, cohort.id, 'cohorts', tags);
+      await setTagsForObject(trx, cohort.id, 'cohorts', tags)
     }
 
-    return cohort;
+    return cohort
   }
 }

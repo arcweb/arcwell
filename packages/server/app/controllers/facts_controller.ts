@@ -14,7 +14,7 @@ export default class FactsController {
    * @summary Count facts
    * @description Returns the count of total facts
    */
-  async count({ }: HttpContext) {
+  async count({}: HttpContext) {
     const countQuery = db.from('facts').count('*')
     const queryCount = await countQuery.count('*')
 
@@ -96,7 +96,12 @@ export default class FactsController {
     const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions'])
 
     return db.transaction(async (trx) => {
-      const updatedFact = await FactService.updateFact(trx, params.id, cleanRequest, request.input('tags'))
+      const updatedFact = await FactService.updateFact(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await FactService.getFullFact(updatedFact.id, trx) }
     })
   }

@@ -74,10 +74,7 @@ export default class CohortsController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await Cohort.query()
-        .where('id', params.id)
-        .preload('tags')
-        .firstOrFail(),
+      data: await Cohort.query().where('id', params.id).preload('tags').firstOrFail(),
     }
   }
 
@@ -106,7 +103,12 @@ export default class CohortsController {
     const cleanRequest = request.only(['name', 'description'])
 
     return db.transaction(async (trx) => {
-      const cohort = await CohortService.updateCohort(trx, params.id, cleanRequest, request.input('tags'))
+      const cohort = await CohortService.updateCohort(
+        trx,
+        params.id,
+        cleanRequest,
+        request.input('tags')
+      )
       return { data: await CohortService.getFullCohort(cohort.id, undefined, trx) }
     })
   }

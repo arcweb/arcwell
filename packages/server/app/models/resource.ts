@@ -69,7 +69,7 @@ export default class Resource extends AwBaseModel {
 
   static fullResource = scope((query: ModelQueryBuilderContract<typeof Resource>) => {
     query.preload('tags')
-    query.preload('resourceType', resourceTypeQuery => {
+    query.preload('resourceType', (resourceTypeQuery) => {
       resourceTypeQuery.preload('tags')
     })
   })

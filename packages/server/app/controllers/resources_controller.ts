@@ -14,7 +14,7 @@ export default class ResourcesController {
    * @summary Count People
    * @description Returns the count of total people
    */
-  async count({ }: HttpContext) {
+  async count({}: HttpContext) {
     const countQuery = db.from('resources').count('*')
     const queryCount = await countQuery.count('*')
 
