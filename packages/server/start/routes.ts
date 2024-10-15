@@ -42,10 +42,7 @@ router
             router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
             router.get('/me', [AuthController, 'me']).as('me').use(middleware.auth())
             router.post('/forgot', [AuthController, 'sendForgotPasswordMessage']).as('forgot')
-            router
-              .post('/reset', [AuthController, 'resetPassword'])
-              .as('reset')
-              .use(middleware.auth())
+            router.post('/reset', [AuthController, 'resetPassword']).as('reset')
             router
               .post('/change', [AuthController, 'changePassword'])
               .as('change')
