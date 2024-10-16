@@ -37,6 +37,7 @@ export default class PersonService {
    *
    * @param trx - The transaction object to run the database operations.
    * @param createData - The data to create the Person.
+   * @param tags - Array of tag strings
    * @returns A Promise that resolves to the newly created Person.
    */
   public static async createPerson(
@@ -60,6 +61,7 @@ export default class PersonService {
    * @param trx - The transaction object to run the database operations.
    * @param id - The ID of the Person to update.
    * @param updateData - The data to update the Person.
+   * @param tags - Array of tag strings
    * @returns A Promise that resolves to the updated Person.
    * @throws Will throw an error if the Person is not found.
    */

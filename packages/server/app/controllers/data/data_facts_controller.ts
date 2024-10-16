@@ -5,11 +5,9 @@ import db from '@adonisjs/lucid/services/db'
 import string from '@adonisjs/core/helpers/string'
 import FactType from '#models/fact_type'
 
-import Dimension from '#models/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
-import vine from '@vinejs/vine'
-import DimensionSchema from '#models/dimension_schema'
 import FactService from '#services/fact_service'
+import { validateDimensions } from '#validators/dimension'
 
 interface DataFact {
   fact_id: string
@@ -33,118 +31,6 @@ enum SqlOperatorEnum {
   lt = 'lt',
   lte = 'lte',
   ne = 'ne',
-}
-
-enum DimensionDataTypeEnum {
-  boolean = 'boolean',
-  number = 'number',
-  date = 'date',
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  string = 'string',
-}
-// Validations
-const vineDateUtcSchema = vine.compile(vine.date({ formats: { utc: true } }))
-// const vineDateSchema = vine.compile(vine.date())
-const vineNumberStringSchema = vine.compile(vine.number({ strict: true }))
-const vineBooleanSchema = vine.compile(vine.boolean())
-
-/**
- * Validates a dimension value against its expected data type.
- *
- * @async
- * @param {string} value - The dimension value to validate.
- * @param {string} dataType - The expected data type of the dimension (e.g., 'string', 'boolean', 'number', 'date'). See {DimensionDataTypeEnum}
- * @returns {Promise<string[]>} - Returns an array of error messages if validation fails, or an empty array if the value is valid.
- * @throws {Error} - Throws an error if the data type is unrecognized.
- */
-async function validateDimensionSchema(value: string, dataType: string): Promise<string[]> {
-  const errors: string[] = []
-
-  switch (dataType.toLowerCase()) {
-    case DimensionDataTypeEnum.string:
-      if (!vine.helpers.isString(value)) {
-        errors.push(`Expected string but got '${value}'`)
-      }
-      break
-    case DimensionDataTypeEnum.boolean:
-      try {
-        await vineBooleanSchema.validate(value)
-      } catch {
-        errors.push(`Expected boolean but got '${value}'`)
-      }
-      break
-    case DimensionDataTypeEnum.number:
-      try {
-        await vineNumberStringSchema.validate(value)
-      } catch {
-        errors.push(`Expected number but got '${value}'`)
-      }
-      break
-    case DimensionDataTypeEnum.date:
-      try {
-        await vineDateUtcSchema.validate(value)
-      } catch {
-        errors.push(`Expected date but got '${value}'`)
-      }
-      break
-    default:
-      errors.push(`Unknown data type: '${dataType}'`)
-  }
-
-  return errors
-}
-
-/**
- * Validates the schema of each dimension against the provided dimension schemas.
- * Ensures required keys are present and values match their expected data types.
- *
- * @private
- * @async
- * @param {Dimension[]} dimensions - Array of dimension objects to validate.
- * @param {DimensionSchema[]} dimensionSchemas - Array of schema objects describing valid dimensions.
- * @returns {Promise<string | null>} - Returns an error message string if validation fails, otherwise null.
- */
-async function validateDimensions(
-  dimensions: Dimension[],
-  dimensionSchemas: DimensionSchema[]
-): Promise<string | null> {
-  const errors: string[] = []
-
-  // Get all the valid keys from the dimensionSchemas
-  const validKeys = dimensionSchemas.map((item) => item.key)
-
-  // Check for missing required keys
-  const requiredKeys = dimensionSchemas.filter((item) => item.isRequired).map((item) => item.key)
-  const missingKeys = requiredKeys.filter((key) => !dimensions.some((data) => data.key === key))
-
-  if (missingKeys.length > 0) {
-    errors.push(`Missing required fields: ${missingKeys.join(', ')}`)
-  }
-
-  // Validate each dimension
-  for (const dimension of dimensions) {
-    // Check if the dimension key exists in the validKeys
-    if (!validKeys.includes(dimension.key)) {
-      errors.push(`Unexpected dimension key: '${dimension.key}'`)
-    } else {
-      // If the key is valid, validate its value against the schema
-      const dimensionSchema = dimensionSchemas.find((item) => item.key === dimension.key)
-      if (dimensionSchema) {
-        const validationErrors = await validateDimensionSchema(
-          dimension.value,
-          dimensionSchema.dataType
-        )
-        if (validationErrors && validationErrors.length > 0) {
-          errors.push(
-            `Validation failed for key '${dimension.key}': ${validationErrors.join(', ')}`
-          )
-        }
-      }
-    }
-  }
-
-  // Return the collected errors, or null if no errors were found
-  return errors.length > 0 ? errors.join('; ') : null
 }
 
 /**
@@ -271,7 +157,7 @@ export default class DataFactsController {
    * @param {HttpContext} context - The HTTP context containing authentication, request, and params information.
    * @returns {Promise<object>} - Returns the updated fact along with all related data.
    */
-  async update({ request, params }: HttpContext): Promise<object> {
+  async update({ request, params }: HttpContext) {
     await request.validateUsing(updateDataFactValidator)
     await paramsUUIDValidator.validate(params)
 
@@ -284,22 +170,25 @@ export default class DataFactsController {
       'eventId',
     ])
 
-    const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
+    if (cleanRequest.dimensions) {
+      const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
 
-    const validationErrorMessage = await validateDimensions(
-      cleanRequest.dimensions,
-      factType.dimensionSchemas
-    )
-
-    if (validationErrorMessage) {
-      throwCustomHttpError(
-        {
-          title: 'Dimension validation failed',
-          code: 'E_VALIDATION_ERROR',
-          detail: validationErrorMessage,
-        },
-        400
+      const validationErrorMessage = await validateDimensions(
+        cleanRequest.dimensions,
+        factType.dimensionSchemas
       )
+
+      if (validationErrorMessage) {
+        throwCustomHttpError(
+          {
+            title: 'Dimension validation failed',
+            code: 'E_VALIDATION_ERROR',
+            detail: validationErrorMessage,
+          },
+          400
+        )
+        return
+      }
     }
 
     return db.transaction(async (trx) => {

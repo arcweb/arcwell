@@ -11,6 +11,8 @@ import db from '@adonisjs/lucid/services/db'
 import { buildApiQuery, buildPeopleSort } from '#helpers/query_builder'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import PersonService from '#services/person_service'
+import { validateDimensions } from '#validators/dimension'
+import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class PeopleController {
   /**
@@ -81,6 +83,29 @@ export default class PeopleController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createPersonValidator)
 
+    const cleanRequest = request.only(['typeKey', 'familyName', 'givenName', 'dimensions', 'tags'])
+
+    cleanRequest.dimensions ??= []
+
+    const personType = await PersonType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+    const validationErrorMessage = await validateDimensions(
+      cleanRequest.dimensions,
+      personType.dimensionSchemas
+    )
+
+    if (validationErrorMessage) {
+      throwCustomHttpError(
+        {
+          title: 'Dimension validation failed',
+          code: 'E_VALIDATION_ERROR',
+          detail: validationErrorMessage,
+        },
+        400
+      )
+      return
+    }
+
     return db.transaction(async (trx) => {
       const newPerson = await PersonService.createPerson(trx, request.body(), request.input('tags'))
       return { data: await PersonService.getFullPerson(newPerson.id, 10, 0, trx) }
@@ -127,7 +152,28 @@ export default class PeopleController {
   async update({ params, request }: HttpContext) {
     await request.validateUsing(updatePersonValidator)
     await paramsUUIDValidator.validate(params)
-    const cleanRequest = request.only(['givenName', 'familyName', 'typeKey'])
+    const cleanRequest = request.only(['typeKey', 'familyName', 'givenName', 'dimensions'])
+
+    if (cleanRequest.dimensions) {
+      const personType = await PersonType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+      const validationErrorMessage = await validateDimensions(
+        cleanRequest.dimensions,
+        personType.dimensionSchemas
+      )
+
+      if (validationErrorMessage) {
+        throwCustomHttpError(
+          {
+            title: 'Dimension validation failed',
+            code: 'E_VALIDATION_ERROR',
+            detail: validationErrorMessage,
+          },
+          400
+        )
+        return
+      }
+    }
 
     return db.transaction(async (trx) => {
       const updatedPerson = await PersonService.updatePerson(

@@ -74,17 +74,6 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./support/postgres/init_test.sql:/docker-entrypoint-initdb.d/init_test.sql
 
-  redis:
-    image: redis:7-bookworm
-    restart: unless-stopped
-    #command: redis-server --requirepass arcwell
-    ports:
-      - '6379:6379'
-    networks:
-      - data
-    volumes:
-      - ./support/redis/redis.conf:/usr/local/etc/redis/redis.conf
-
   mailhog:
     image: mailhog/mailhog
     ports:

@@ -116,7 +116,6 @@ within Docker and a relationship is configured in the `/compose.yml`
 * **Arcwell Server** as server, defined in `packages/server/Dockerfile`
 * **Arcwell Admin** as admin, defined in `packages/admin/Dockerfile`
 * **PostgreSQL Database** as db, pulled from [postgres:16-bookworm](https://hub.docker.com/_/postgres/)
-* **Redis Cache** as redis, pulled from [redis:7-bookworm](https://hub.docker.com/_/redis)
 
 Arcwell software is designed to also be run on your local host
 machine (i.e., without Docker).

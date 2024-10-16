@@ -7,6 +7,8 @@ import { buildApiQuery, buildResourcesSort } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import ResourceService from '#services/resource_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
+import { validateDimensions } from '#validators/dimension'
+import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class ResourcesController {
   /**
@@ -64,9 +66,31 @@ export default class ResourcesController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createResourceValidator)
 
+    const cleanRequest = request.only(['typeKey', 'name', 'dimensions', 'tags'])
+
+    cleanRequest.dimensions ??= []
+
+    const resourceType = await ResourceType.query().where('key', cleanRequest.typeKey).firstOrFail()
+    const validationErrorMessage = await validateDimensions(
+      cleanRequest.dimensions,
+      resourceType.dimensionSchemas
+    )
+
+    if (validationErrorMessage) {
+      throwCustomHttpError(
+        {
+          title: 'Dimension validation failed',
+          code: 'E_VALIDATION_ERROR',
+          detail: validationErrorMessage,
+        },
+        400
+      )
+      return
+    }
+
     return db.transaction(async (trx) => {
-      const newResource = await ResourceService.createResource(trx, request.body())
-      return { data: await ResourceService.getFullResource(newResource.id) }
+      const newResource = await ResourceService.createResource(trx, cleanRequest)
+      return { data: await ResourceService.getFullResource(newResource.id, trx) }
     })
   }
 
@@ -94,7 +118,30 @@ export default class ResourcesController {
     await request.validateUsing(updateResourceValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['name', 'typeKey', 'tags'])
+    const cleanRequest = request.only(['typeKey', 'name', 'dimensions', 'tags'])
+
+    if (cleanRequest.dimensions) {
+      const resourceType = await ResourceType.query()
+        .where('key', cleanRequest.typeKey)
+        .firstOrFail()
+
+      const validationErrorMessage = await validateDimensions(
+        cleanRequest.dimensions,
+        resourceType.dimensionSchemas
+      )
+
+      if (validationErrorMessage) {
+        throwCustomHttpError(
+          {
+            title: 'Dimension validation failed',
+            code: 'E_VALIDATION_ERROR',
+            detail: validationErrorMessage,
+          },
+          400
+        )
+        return
+      }
+    }
 
     return db.transaction(async (trx) => {
       const updatedResource = await ResourceService.updateResource(trx, params.id, cleanRequest)
