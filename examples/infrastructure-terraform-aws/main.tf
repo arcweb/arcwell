@@ -188,29 +188,3 @@ module "email" {
   environment = var.environment
   domain_name = var.domain_name
 }
-
-module "cache" {
-  count = 1
-  source = "./modules/cache"
-
-  project = var.project
-  environment = var.environment
-  vpc_id = aws_vpc.vpc.id
-  cache_name = "cache"
-  private_subnet_ids = aws_subnet.private_subnet[*].id
-  domain_name = var.domain_name
-  allowed_security_groups = concat(
-    [
-      {
-        name = "bastion hosts"
-        security_group_id = aws_security_group.bastion_sg.id
-      }
-    ],
-    [
-      {
-        name = "server fargate"
-        security_group_id = module.server[0].fargate_sg_id
-      }
-    ]
-  )
-}
