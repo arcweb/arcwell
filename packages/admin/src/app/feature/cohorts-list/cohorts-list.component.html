@@ -1,12 +1,14 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Cohorts'"
+  [enableFilter]="cohortsListStore.cohorts().length > 0"
+  [enableSearch]="cohortsListStore.cohorts().length > 0"
 ></aw-table-header>
 
-<div class="table-form-container">
-  @if (cohortsListStore.isErrored()) {
-    <aw-error-container [errors]="cohortsListStore.errors()" />
-  }
-  @if (cohortsListStore.cohorts().length > 0) {
+@if (cohortsListStore.isErrored()) {
+  <aw-error-container [errors]="cohortsListStore.errors()" />
+}
+@if (cohortsListStore.cohorts().length > 0) {
+  <div class="table-form-container">
     <aw-cohort-table
       [dataSource]="dataSource"
       [displayedColumns]="displayedColumns"
@@ -17,5 +19,7 @@
       (onPageChanged)="this.cohortsListStore.loadPage($event)"
       (onRowClicked)="rowClick($event)"
     ></aw-cohort-table>
-  }
-</div>
+  </div>
+} @else {
+  <aw-no-records></aw-no-records>
+}

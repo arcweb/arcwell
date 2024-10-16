@@ -27,6 +27,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 
 @Component({
   selector: 'aw-resources-list',
@@ -52,6 +53,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
     MatSortModule,
     ResourcesTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [ResourcesListStore],
   templateUrl: './resources-list.component.html',

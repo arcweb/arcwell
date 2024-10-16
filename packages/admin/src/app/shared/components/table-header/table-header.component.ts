@@ -32,6 +32,8 @@ export class TableHeaderComponent {
   private activatedRoute = inject(ActivatedRoute);
   tableName = input.required<string>();
   createLinkQueryParams = input<QueryParams>();
+  enableFilter = input<boolean>(true);
+  enableSearch = input<boolean>(true);
 
   // hook these up when we have the functionality
   search = output<string>();
