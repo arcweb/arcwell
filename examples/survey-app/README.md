@@ -48,7 +48,7 @@ To seed data for the Survey App, use the following command:
 
 Refresh the DB and run migrations 
 ```bash
-docker compose exec server node ace migration:refresh
+docker compose exec server node ace migration:refresh --seed
 ```
 
 Run migrations only
