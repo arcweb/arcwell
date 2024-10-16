@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "seed": "ts-node src/seed-script.ts"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +34,8 @@
     "@capacitor/splash-screen": "^6.0.2",
     "@capacitor/status-bar": "6.0.1",
     "@ionic/angular": "^8.0.0",
+    "@types/yargs": "^17.0.33",
+    "axios": "^1.7.7",
     "capacitor-secure-storage-plugin": "^0.10.0",
     "echarts": "^5.5.1",
     "ionicons": "^7.2.1",
@@ -40,6 +43,7 @@
     "rxjs": "~7.8.0",
     "swiper": "^11.1.14",
     "tslib": "^2.3.0",
+    "yargs": "^17.7.2",
     "zone.js": "~0.14.2"
   },
   "devDependencies": {
@@ -71,6 +75,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.4.0"
   },
   "description": "An Ionic project"
