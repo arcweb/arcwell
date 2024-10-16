@@ -22,7 +22,7 @@ First, ensure that the Arcwell Server and Arcwell Admin are configured and ready
 
 #### Start the Docker Containers
 
-Navigate to the project root and start the Docker containers, which will run the server, admin, PostgreSQL, and Redis services:
+Navigate to the project root and start the Docker containers, which will run the server, admin, and PostgreSQL services:
 
 ```bash
 docker compose up --build
