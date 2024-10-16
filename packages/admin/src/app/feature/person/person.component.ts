@@ -39,7 +39,7 @@ import { CohortType } from '@app/shared/schemas/cohort.schema';
 import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { PersonNewType, PersonType } from '@app/shared/schemas/person.schema';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-person',

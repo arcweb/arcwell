@@ -34,7 +34,7 @@ import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirma
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
-import { DetailStore } from '@app/feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-tags-form',

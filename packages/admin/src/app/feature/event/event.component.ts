@@ -39,7 +39,7 @@ import { PersonType } from '@schemas/person.schema';
 import { ResourceType } from '@schemas/resource.schema';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 import { EventType } from '@app/shared/schemas/event.schema';
 
 @Component({

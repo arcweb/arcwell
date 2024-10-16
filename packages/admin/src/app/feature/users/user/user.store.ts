@@ -1,6 +1,6 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
-import { DetailStore } from '@app/feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 import { ToastLevel } from '@app/shared/models';
 import { RoleType } from '@app/shared/schemas/role.schema';
 import { UserType, UserUpdateType } from '@app/shared/schemas/user.schema';

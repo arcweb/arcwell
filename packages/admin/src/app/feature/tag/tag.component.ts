@@ -47,7 +47,7 @@ import { ResourceModel } from '@app/shared/models/resource.model';
 import { UserModel } from '@app/shared/models';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-tag',
