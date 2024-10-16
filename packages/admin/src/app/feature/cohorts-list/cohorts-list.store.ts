@@ -11,6 +11,8 @@ import { inject } from '@angular/core';
 import { CohortModel } from '@shared/models/cohort.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface CohortsListState {
   cohorts: CohortModel[];
@@ -32,49 +34,65 @@ export const CohortsListStore = signalStore(
   withDevtools('cohorts'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, cohortService = inject(CohortService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, { ...initialState }, setPending());
-      const resp = await firstValueFrom(
-        cohortService.getCohorts({ limit: limit, offset: offset }),
-      );
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
-        patchState(
-          store,
-          { cohorts: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+  withMethods(
+    (
+      store,
+      cohortService = inject(CohortService),
+      toastService = inject(ToastService),
+    ) => ({
+      async load(limit: number, offset: number) {
+        patchState(store, { ...initialState }, setPending());
+        const resp = await firstValueFrom(
+          cohortService.getCohorts({ limit: limit, offset: offset }),
         );
-      }
-    },
-    async loadPage(event: PageEvent) {
-      const newOffset = event.pageIndex * event.pageSize;
-      patchState(
-        store,
-        {
-          offset: newOffset,
-          pageIndex: event.pageIndex,
-          limit: event.pageSize,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        cohortService.getCohorts({
-          limit: store.limit(),
-          offset: store.offset(),
-        }),
-      );
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
 
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { cohorts: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async loadPage(event: PageEvent) {
+        const newOffset = event.pageIndex * event.pageSize;
         patchState(
           store,
-          { cohorts: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            offset: newOffset,
+            pageIndex: event.pageIndex,
+            limit: event.pageSize,
+          },
+          setPending(),
         );
-      }
-    },
-  })),
+        const resp = await firstValueFrom(
+          cohortService.getCohorts({
+            limit: store.limit(),
+            offset: store.offset(),
+          }),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { cohorts: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+    }),
+  ),
 );

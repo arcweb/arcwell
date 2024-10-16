@@ -100,11 +100,21 @@ export const CohortStore = signalStore(
         );
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -146,6 +156,11 @@ export const CohortStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -157,7 +172,10 @@ export const CohortStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated cohort.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -174,11 +192,21 @@ export const CohortStore = signalStore(
         );
         if (cohortResp.errors) {
           patchState(store, { isReady: true }, setErrors(cohortResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -193,7 +221,10 @@ export const CohortStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created cohort.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -206,6 +237,11 @@ export const CohortStore = signalStore(
         const resp = await firstValueFrom(cohortService.delete(store.id()));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -213,7 +249,10 @@ export const CohortStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Deleted cohort.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -228,10 +267,18 @@ export const CohortStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -266,6 +313,11 @@ export const CohortStore = signalStore(
 
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('People', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -284,6 +336,11 @@ export const CohortStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           this.loadPeoplePage({
             limit: store.peopleListOptions().limit,
@@ -292,8 +349,9 @@ export const CohortStore = signalStore(
             sort: store.peopleListOptions().sort,
             order: store.peopleListOptions().order,
           });
+
           toastService.sendMessage(
-            'Person added to cohort',
+            toastService.createCrudMessage('Person', 'Updated'),
             ToastLevel.SUCCESS,
           );
         }
@@ -305,6 +363,11 @@ export const CohortStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Removing', false),
+            ToastLevel.ERROR,
+          );
         } else {
           const isLastPersonOnPage = isRelationLastOnPage(
             store.peopleCount(),
@@ -327,8 +390,9 @@ export const CohortStore = signalStore(
             sort: store.peopleListOptions().sort,
             order: store.peopleListOptions().order,
           });
+
           toastService.sendMessage(
-            'Person removed from cohort',
+            toastService.createCrudMessage('Person', 'Removed'),
             ToastLevel.SUCCESS,
           );
         }

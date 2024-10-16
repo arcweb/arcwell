@@ -2,8 +2,10 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
+import { ToastLevel } from '@app/shared/models';
 import { EventModel } from '@app/shared/models/event.model';
 import { EventService } from '@app/shared/services/event.service';
+import { ToastService } from '@app/shared/services/toast.service';
 import {
   setErrors,
   setFulfilled,
@@ -39,73 +41,94 @@ export const EventsListStore = signalStore(
   withDevtools('events'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, eventService = inject(EventService)) => ({
-    async load(props: {
-      limit: number;
-      offset: number;
-      sort?: string;
-      order?: SortDirection;
-      pageIndex?: number;
-      typeKey?: string;
-    }) {
-      patchState(
-        store,
-        {
-          ...initialState,
-          ...props,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(eventService.getEvents(props));
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+  withMethods(
+    (
+      store,
+      eventService = inject(EventService),
+      toastService = inject(ToastService),
+    ) => ({
+      async load(props: {
+        limit: number;
+        offset: number;
+        sort?: string;
+        order?: SortDirection;
+        pageIndex?: number;
+        typeKey?: string;
+      }) {
         patchState(
           store,
-          { events: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            ...initialState,
+            ...props,
+          },
+          setPending(),
         );
-      }
-    },
-    async loadPage(event: PageEvent) {
-      const newOffset = event.pageIndex * event.pageSize;
-      patchState(
-        store,
-        {
-          offset: newOffset,
-          pageIndex: event.pageIndex,
-          limit: event.pageSize,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        eventService.getEvents({
-          limit: store.limit(),
-          offset: store.offset(),
-          sort: store.sort(),
-          order: store.order(),
-          typeKey: store.typeKey(),
-        }),
-      );
+        const resp = await firstValueFrom(eventService.getEvents(props));
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
 
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+          toastService.sendMessage(
+            toastService.createCrudMessage('Events', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { events: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async loadPage(event: PageEvent) {
+        const newOffset = event.pageIndex * event.pageSize;
         patchState(
           store,
-          { events: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            offset: newOffset,
+            pageIndex: event.pageIndex,
+            limit: event.pageSize,
+          },
+          setPending(),
         );
-      }
-    },
-    async count() {
-      patchState(store, setPending());
-      const resp = await firstValueFrom(eventService.count());
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
-        patchState(store, { totalData: resp.data.count }, setFulfilled());
-      }
-    },
-  })),
+        const resp = await firstValueFrom(
+          eventService.getEvents({
+            limit: store.limit(),
+            offset: store.offset(),
+            sort: store.sort(),
+            order: store.order(),
+            typeKey: store.typeKey(),
+          }),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Events', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { events: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async count() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(eventService.count());
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Events Count', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(store, { totalData: resp.data.count }, setFulfilled());
+        }
+      },
+    }),
+  ),
 );

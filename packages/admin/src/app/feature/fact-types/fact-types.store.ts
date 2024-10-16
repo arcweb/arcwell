@@ -19,6 +19,8 @@ import { firstValueFrom } from 'rxjs';
 import { FactTypeModel } from '@app/shared/models/fact-type.model';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models/toast-message.model';
 
 interface FactTypesState {
   factTypes: FactTypeModel[];
@@ -44,62 +46,78 @@ export const FactTypesStore = signalStore(
   withDevtools('factTypes'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, factTypesService = inject(FactTypeService)) => ({
-    async load(props: {
-      limit: number;
-      offset: number;
-      sort?: string;
-      order?: SortDirection;
-      pageIndex?: number;
-    }) {
-      patchState(
-        store,
-        {
-          ...initialState,
-          ...props,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(factTypesService.getFactTypes(props));
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+  withMethods(
+    (
+      store,
+      factTypesService = inject(FactTypeService),
+      toastService = inject(ToastService),
+    ) => ({
+      async load(props: {
+        limit: number;
+        offset: number;
+        sort?: string;
+        order?: SortDirection;
+        pageIndex?: number;
+      }) {
         patchState(
           store,
-          { factTypes: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            ...initialState,
+            ...props,
+          },
+          setPending(),
         );
-      }
-    },
-    async loadPage(event: PageEvent) {
-      const newOffset = event.pageIndex * event.pageSize;
-      patchState(
-        store,
-        {
-          offset: newOffset,
-          pageIndex: event.pageIndex,
-          limit: event.pageSize,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        factTypesService.getFactTypes({
-          limit: store.limit(),
-          offset: store.offset(),
-        }),
-      );
+        const resp = await firstValueFrom(factTypesService.getFactTypes(props));
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
 
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { factTypes: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async loadPage(event: PageEvent) {
+        const newOffset = event.pageIndex * event.pageSize;
         patchState(
           store,
-          { factTypes: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            offset: newOffset,
+            pageIndex: event.pageIndex,
+            limit: event.pageSize,
+          },
+          setPending(),
         );
-      }
-    },
-  })),
+        const resp = await firstValueFrom(
+          factTypesService.getFactTypes({
+            limit: store.limit(),
+            offset: store.offset(),
+          }),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { factTypes: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+    }),
+  ),
   withHooks({
     onInit(store) {
       store.load({ limit: store.limit(), offset: store.offset() });

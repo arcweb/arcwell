@@ -12,6 +12,8 @@ import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ResourceService } from '@shared/services/resource.service';
 import { SortDirection } from '@angular/material/sort';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface ResourceListState {
   resources: ResourceModel[];
@@ -39,73 +41,98 @@ export const ResourcesListStore = signalStore(
   withDevtools('resources'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, resourceService = inject(ResourceService)) => ({
-    async load(props: {
-      limit: number;
-      offset: number;
-      sort?: string;
-      order?: SortDirection;
-      pageIndex?: number;
-      typeKey?: string;
-    }) {
-      patchState(
-        store,
-        {
-          ...initialState,
-          ...props,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(resourceService.getResources(props));
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+  withMethods(
+    (
+      store,
+      resourceService = inject(ResourceService),
+      toastService = inject(ToastService),
+    ) => ({
+      async load(props: {
+        limit: number;
+        offset: number;
+        sort?: string;
+        order?: SortDirection;
+        pageIndex?: number;
+        typeKey?: string;
+      }) {
         patchState(
           store,
-          { resources: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            ...initialState,
+            ...props,
+          },
+          setPending(),
         );
-      }
-    },
-    async loadPage(event: PageEvent) {
-      const newOffset = event.pageIndex * event.pageSize;
-      patchState(
-        store,
-        {
-          offset: newOffset,
-          pageIndex: event.pageIndex,
-          limit: event.pageSize,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        resourceService.getResources({
-          limit: store.limit(),
-          offset: store.offset(),
-          sort: store.sort(),
-          order: store.order(),
-          typeKey: store.typeKey(),
-        }),
-      );
+        const resp = await firstValueFrom(resourceService.getResources(props));
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
 
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resources', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { resources: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async loadPage(event: PageEvent) {
+        const newOffset = event.pageIndex * event.pageSize;
         patchState(
           store,
-          { resources: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            offset: newOffset,
+            pageIndex: event.pageIndex,
+            limit: event.pageSize,
+          },
+          setPending(),
         );
-      }
-    },
-    async count() {
-      patchState(store, setPending());
-      const resp = await firstValueFrom(resourceService.count());
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
-        patchState(store, { totalData: resp.data.count }, setFulfilled());
-      }
-    },
-  })),
+        const resp = await firstValueFrom(
+          resourceService.getResources({
+            limit: store.limit(),
+            offset: store.offset(),
+            sort: store.sort(),
+            order: store.order(),
+            typeKey: store.typeKey(),
+          }),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resources', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { resources: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async count() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(resourceService.count());
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage(
+              'Resources Count',
+              'Fetching',
+              false,
+            ),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(store, { totalData: resp.data.count }, setFulfilled());
+        }
+      },
+    }),
+  ),
 );

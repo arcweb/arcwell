@@ -26,6 +26,27 @@ export class ToastService {
     this.messages.splice(idx, 1);
   }
 
+  createCrudMessage(
+    entityType: string,
+    eventType:
+      | 'Created'
+      | 'Creating'
+      | 'Updated'
+      | 'Updating'
+      | 'Deleted'
+      | 'Deleting'
+      | 'Fetching'
+      | 'Removing'
+      | 'Removed'
+      | 'Invited'
+      | 'Inviting',
+    success = true,
+  ) {
+    return success
+      ? `${entityType} Successfully ${eventType} `
+      : `Error ${eventType} ${entityType}`;
+  }
+
   // display a new message to the user
   sendMessage(
     msg: string,

@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use 'colors' as colors;
+@use 'layout';
 
 @mixin toast-theme($theme) {
   $primary: mat.get-theme-color($theme, primary);
@@ -24,10 +25,10 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 655px;
+    width: 50vw;
     padding: 12px 24px;
-    box-shadow: colors.$black;
     letter-spacing: 0.25px;
+    box-shadow: 0 4px 10px 0 rgb(0 0 0 / 35%);
 
     .message-info {
       display: flex;
@@ -40,10 +41,11 @@
   }
 
   .button-dismiss {
-    text-transform: uppercase;
-    font-weight: 500;
-    letter-spacing: 1.25px;
     margin-left: 20px;
+
+    .icon-dismiss {
+      color: colors.$text-icons-default;
+    }
   }
 
   .toast-info {
@@ -53,14 +55,14 @@
   }
 
   .toast-error {
-    background-color: $error;
-    color: $on-error;
+    background-color: colors.$status-red-subtle;
+    color: colors.$text-icons-default;
     border: 0;
   }
 
   .toast-success {
-    background-color: $primary;
-    color: $on-primary;
+    background-color: colors.$status-green-subtle;
+    color: colors.$text-icons-default;
     border: 0;
   }
 }

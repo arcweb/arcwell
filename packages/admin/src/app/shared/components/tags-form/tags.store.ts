@@ -24,6 +24,8 @@ import {
 import { TagService } from '@shared/services/tag.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface PersonState {
   tags: string[];
@@ -53,80 +55,95 @@ export const TagStore = signalStore(
       (searchTags() ?? []).sort((a, b) => a.localeCompare(b)),
     ),
   })),
-  withMethods((store, tagService = inject(TagService)) => ({
-    resetForm() {
-      patchState(store, { changesMade: false });
-    },
-    setObjectTags(tags: string[]) {
-      patchState(store, { tags, isReady: true });
-    },
-    removeTag(tag: string) {
-      const tags = store.tags();
-      const index = tags.indexOf(tag);
-      if (index >= 0) {
-        tags.splice(index, 1);
-        patchState(store, { tags: tags, changesMade: true });
-      }
-    },
-    addNewTag(tag: string) {
-      const tags = store.tags();
-      if (!tags.includes(tag)) {
-        tags.push(tag);
-        patchState(store, {
-          tags: tags,
-          searchText: '',
-          searchTags: [],
-          changesMade: true,
-        });
-      } else {
-        // Duplicate found, just ignore and reset the input
-        patchState(store, {
-          searchText: '',
-          searchTags: [],
-          changesMade: true,
-        });
-      }
-    },
-    searchTags: rxMethod<string>(
-      pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        tap(searchString =>
-          patchState(store, { searchText: searchString }, setPending()),
+  withMethods(
+    (
+      store,
+      tagService = inject(TagService),
+      toastService = inject(ToastService),
+    ) => ({
+      resetForm() {
+        patchState(store, { changesMade: false });
+      },
+      setObjectTags(tags: string[]) {
+        patchState(store, { tags, isReady: true });
+      },
+      removeTag(tag: string) {
+        const tags = store.tags();
+        const index = tags.indexOf(tag);
+        if (index >= 0) {
+          tags.splice(index, 1);
+          patchState(store, { tags: tags, changesMade: true });
+        }
+      },
+      addNewTag(tag: string) {
+        const tags = store.tags();
+        if (!tags.includes(tag)) {
+          tags.push(tag);
+          patchState(store, {
+            tags: tags,
+            searchText: '',
+            searchTags: [],
+            changesMade: true,
+          });
+        } else {
+          // Duplicate found, just ignore and reset the input
+          patchState(store, {
+            searchText: '',
+            searchTags: [],
+            changesMade: true,
+          });
+        }
+      },
+      searchTags: rxMethod<string>(
+        pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          tap(searchString =>
+            patchState(store, { searchText: searchString }, setPending()),
+          ),
+          switchMap(searchString => {
+            if (searchString == null || searchString === '') {
+              patchState(store, { searchText: '', searchTags: [] });
+              return of([]);
+            }
+            return tagService
+              .getTagsSimple({ search: searchString, limit: 50, offset: 0 })
+              .pipe(
+                tapResponse({
+                  next: tagsResp => {
+                    if (tagsResp.errors) {
+                      patchState(
+                        store,
+                        { isReady: true },
+                        setErrors(tagsResp.errors),
+                      );
+
+                      toastService.sendMessage(
+                        toastService.createCrudMessage(
+                          'Tags',
+                          'Fetching',
+                          false,
+                        ),
+                        ToastLevel.ERROR,
+                      );
+                    } else {
+                      patchState(
+                        store,
+                        {
+                          searchTags: tagsResp.data,
+                        },
+                        setFulfilled(),
+                      );
+                    }
+                  },
+                  error: err => {
+                    throw err;
+                  },
+                }),
+              );
+          }),
         ),
-        switchMap(searchString => {
-          if (searchString == null || searchString === '') {
-            patchState(store, { searchText: '', searchTags: [] });
-            return of([]);
-          }
-          return tagService
-            .getTagsSimple({ search: searchString, limit: 50, offset: 0 })
-            .pipe(
-              tapResponse({
-                next: tagsResp => {
-                  if (tagsResp.errors) {
-                    patchState(
-                      store,
-                      { isReady: true },
-                      setErrors(tagsResp.errors),
-                    );
-                  } else {
-                    patchState(
-                      store,
-                      {
-                        searchTags: tagsResp.data,
-                      },
-                      setFulfilled(),
-                    );
-                  }
-                },
-                error: err => {
-                  throw err;
-                },
-              }),
-            );
-        }),
       ),
-    ),
-  })),
+    }),
+  ),
 );
