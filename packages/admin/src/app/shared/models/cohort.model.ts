@@ -6,7 +6,7 @@ import { PersonType } from '@schemas/person.schema';
 export class CohortModel {
   public id?: string;
   public name: string;
-  public description?: string;
+  public description?: string | null | undefined;
   public tags?: string[] | undefined;
   public people?: PersonModel[] | undefined;
   public peopleCount?: number;
