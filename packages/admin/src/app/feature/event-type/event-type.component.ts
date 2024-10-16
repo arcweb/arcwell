@@ -37,7 +37,7 @@ import { TagsFormComponent } from '@shared/components/tags-form/tags-form.compon
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-event-type',

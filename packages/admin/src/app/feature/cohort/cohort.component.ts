@@ -39,7 +39,7 @@ import { PersonType } from '@schemas/person.schema';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { CohortNewType } from '@app/shared/schemas/cohort.schema';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-cohort',

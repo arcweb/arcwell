@@ -28,7 +28,7 @@ import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { RefreshService } from '@app/shared/services/refresh.service';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 interface CohortPeopleListState {
   limit: number;

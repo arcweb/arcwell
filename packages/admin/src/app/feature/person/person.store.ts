@@ -23,7 +23,7 @@ import { ToastService } from '@shared/services/toast.service';
 import { ToastLevel } from '@shared/models';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { RefreshService } from '@app/shared/services/refresh.service';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 interface PersonCohortsListState {
   limit: number;

@@ -26,7 +26,7 @@ import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { RefreshService } from '@app/shared/services/refresh.service';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 interface FactState {
   fact: FactType | null;
