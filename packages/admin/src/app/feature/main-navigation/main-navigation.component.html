@@ -1,0 +1,37 @@
+<mat-sidenav-container class="main-navigation-content-container">
+  <mat-sidenav mode="side" opened class="sidenav-container" disableClose>
+    <aw-features-menu></aw-features-menu>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="route-content-container">
+    <aw-config-bar></aw-config-bar>
+    <router-outlet />
+  </mat-sidenav-content>
+
+  <mat-sidenav
+    mode="over"
+    position="end"
+    [opened]="detailStore.isDrawerOpen()"
+    class="detail-container"
+    (closedStart)="closeDetail()"
+  >
+    <div class="close-container">
+      <button
+        mat-button
+        class="close-touch-area"
+        (click)="closeDetail()"
+        (keydown.enter)="closeDetail()"
+      >
+        Close
+        <fa-icon [icon]="faTimes" class="close-icon"></fa-icon>
+      </button>
+    </div>
+    @if (detailId() && detailComponent()) {
+      <aw-detail
+        [detailId]="detailId()"
+        [detailComponent]="detailComponent()"
+        [typeKey]="typeKey()"
+      ></aw-detail>
+    }
+  </mat-sidenav>
+</mat-sidenav-container>

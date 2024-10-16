@@ -1,4 +1,5 @@
 import vine from '@vinejs/vine'
+import { dimensions } from '#validators/dimension'
 
 /**
  * Validates the person's create action
@@ -7,6 +8,8 @@ export const createPersonSchema = vine.object({
   familyName: vine.string().trim(),
   givenName: vine.string().trim(),
   typeKey: vine.string().trim(),
+  dimensions: dimensions.optional(),
+  tags: vine.array(vine.string().trim()).optional(),
 })
 
 export const createPersonValidator = vine.compile(createPersonSchema)
@@ -18,6 +21,8 @@ export const updatePersonSchema = vine.object({
   familyName: vine.string().trim().optional(),
   givenName: vine.string().trim().optional(),
   typeKey: vine.string().trim().optional(),
+  dimensions: dimensions.optional(),
+  tags: vine.array(vine.string().trim()).optional(),
 })
 
 export const updatePersonValidator = vine.compile(updatePersonSchema)

@@ -18,17 +18,17 @@ export const routes: Routes = [
           import('./feature/auth/auth.routes').then(m => m.AUTH_ROUTES),
       },
       {
-        path: 'project-management',
+        path: '',
         canActivate: [isAuthenticatedGuard()],
         loadChildren: () =>
-          import('./feature/project-management/project-management.routes').then(
-            m => m.PROJECT_MANAGEMENT_ROUTES,
+          import('./feature/main-navigation/main-navigation.routes').then(
+            m => m.MAIN_NAVIGATION_ROUTES,
           ),
       },
       {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full',
+        // Invalid route - redirect to default home
+        path: '**',
+        redirectTo: '/',
       },
     ],
   },
