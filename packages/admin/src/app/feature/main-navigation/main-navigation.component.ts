@@ -20,8 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   DetailComponent,
   DetailComponentType,
-} from '@feature/project-management/detail/detail.component';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+} from '@feature/detail/detail.component';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-home',

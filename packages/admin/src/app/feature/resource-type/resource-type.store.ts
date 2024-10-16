@@ -25,7 +25,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { RefreshService } from '@app/shared/services/refresh.service';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 interface ResourceTypeState {
   resourceType: ResourceType | null;

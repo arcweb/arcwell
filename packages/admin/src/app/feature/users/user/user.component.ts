@@ -36,7 +36,7 @@ import { DetailHeaderComponent } from '@shared/components/detail-header/detail-h
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DetailStore } from '@app/feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-user',

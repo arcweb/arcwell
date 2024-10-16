@@ -50,7 +50,7 @@ import {
 import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactTypeNewType } from '@schemas/fact-type.schema';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-fact-type',

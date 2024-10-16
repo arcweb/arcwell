@@ -37,7 +37,7 @@ import { ResourceTypeStore } from './resource-type.store';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 @Component({
   selector: 'aw-resource-type',

@@ -25,7 +25,7 @@ import { FactType } from '@app/shared/schemas/fact.schema';
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { UserType } from '@app/shared/schemas/user.schema';
 import { RefreshService } from '@app/shared/services/refresh.service';
-import { DetailStore } from '@feature/project-management/detail/detail.store';
+import { DetailStore } from '@feature/detail/detail.store';
 
 interface RelatedListState {
   limit: number;
