@@ -15,6 +15,7 @@ import { MatInput } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import { AuthStore } from '@app/shared/store/auth.store';
+import { ConfigStore } from '@app/shared/store/config.store';
 
 @Component({
   selector: 'aw-forgot-password',
@@ -36,12 +37,13 @@ export class ForgotPasswordComponent implements OnInit {
   readonly authStore = inject(AuthStore);
   private router: Router = inject(Router);
   destroyRef = inject(DestroyRef);
+  private configStore = inject(ConfigStore);
 
   forgotForm = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required]),
   });
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.forgotForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
@@ -57,5 +59,7 @@ export class ForgotPasswordComponent implements OnInit {
           this.router.navigate(['/']);
         }
       });
+    // Set title of the application
+    this.configStore.setTitle('Forgot Password');
   }
 }
