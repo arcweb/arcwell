@@ -15,10 +15,12 @@ export default class ResourceService {
     id: string,
     trx?: TransactionClientContract
   ): Promise<Resource> {
-    return Resource.query(trx ? { client: trx } : {})
-      .where('id', id)
-      .withScopes((scopes) => scopes.fullResource())
-      .firstOrFail()
+    return (
+      Resource.query(trx ? { client: trx } : {})
+        .where('id', id)
+        // .withScopes((scopes) => scopes.fullResource())
+        .firstOrFail()
+    )
   }
 
   /**

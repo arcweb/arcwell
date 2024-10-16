@@ -1,15 +1,6 @@
 import { TYPE_KEY_PATTERN } from '#constants/validation_constants'
 import vine from '@vinejs/vine'
-
-const dimensionSchemas = vine.array(
-  vine.object({
-    key: vine.string().trim(),
-    name: vine.string(),
-    dataType: vine.string(),
-    dataUnit: vine.string().optional(),
-    isRequired: vine.boolean(),
-  })
-)
+import { dimensionSchemas } from '#validators/dimension'
 
 /**
  * Validates the factType's create action

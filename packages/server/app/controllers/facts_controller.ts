@@ -7,6 +7,8 @@ import { buildApiQuery, buildFactsSort } from '#helpers/query_builder'
 import db from '@adonisjs/lucid/services/db'
 import FactService from '#services/fact_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
+import { validateDimensions } from '#validators/dimension'
+import { throwCustomHttpError } from '#exceptions/handler_helper'
 
 export default class FactsController {
   /**
@@ -65,8 +67,38 @@ export default class FactsController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createFactValidator)
 
+    const cleanRequest = request.only([
+      'typeKey',
+      'observedAt',
+      'dimensions',
+      'personId',
+      'resourceId',
+      'eventId',
+    ])
+
+    cleanRequest.dimensions ??= []
+
+    const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+    const validationErrorMessage = await validateDimensions(
+      cleanRequest.dimensions,
+      factType.dimensionSchemas
+    )
+
+    if (validationErrorMessage) {
+      throwCustomHttpError(
+        {
+          title: 'Dimension validation failed',
+          code: 'E_VALIDATION_ERROR',
+          detail: validationErrorMessage,
+        },
+        400
+      )
+      return
+    }
+
     return db.transaction(async (trx) => {
-      const newFact = await FactService.createFact(trx, request.body(), request.input('tags'))
+      const newFact = await FactService.createFact(trx, cleanRequest, request.input('tags'))
       return { data: await FactService.getFullFact(newFact.id, trx) }
     })
   }
@@ -94,6 +126,27 @@ export default class FactsController {
     await paramsUUIDValidator.validate(params)
 
     const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions'])
+
+    if (cleanRequest.dimensions) {
+      const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
+
+      const validationErrorMessage = await validateDimensions(
+        cleanRequest.dimensions,
+        factType.dimensionSchemas
+      )
+
+      if (validationErrorMessage) {
+        throwCustomHttpError(
+          {
+            title: 'Dimension validation failed',
+            code: 'E_VALIDATION_ERROR',
+            detail: validationErrorMessage,
+          },
+          400
+        )
+        return
+      }
+    }
 
     return db.transaction(async (trx) => {
       const updatedFact = await FactService.updateFact(
