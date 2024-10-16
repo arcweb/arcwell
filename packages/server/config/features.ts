@@ -110,7 +110,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
       },
       {
         name: 'Users',
-        path: 'user-management/list',
+        path: 'users/list',
       },
       // TODO: fix path/active styling on this link on next pass
       {
