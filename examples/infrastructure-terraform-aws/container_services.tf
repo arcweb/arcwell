@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "ecs_cluster" {
-  count = var.include_server ? 1 : 0
+  count = 1
   name = local.resource_prefix
 
   setting {

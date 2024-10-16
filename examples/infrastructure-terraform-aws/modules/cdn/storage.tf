@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "content" {
-  bucket = "${local.resource_prefix}-content"
+  bucket = "${local.resource_prefix}-ex-content"
 }
 
 resource "aws_s3_bucket_public_access_block" "content" {

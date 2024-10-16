@@ -27,7 +27,7 @@ data "aws_caller_identity" "caller_identity" {}
 // module instances
 
 module "server" {
-  count = var.include_server ? 1 : 0
+  count = 1
   source = "./modules/container"
 
   project = var.project
@@ -140,7 +140,7 @@ module "server" {
 }
 
 module "database" {
-  count = var.include_db ? 1 : 0
+  count = 1
   source = "./modules/database"
   
   project = var.project
@@ -156,21 +156,19 @@ module "database" {
         security_group_id = aws_security_group.bastion_sg.id
       }
     ],
-    var.include_server ?
     [
       {
         name = "server fargate"
         security_group_id = module.server[0].fargate_sg_id
       }
     ]
-    : []
   )
 
   db = {}
 }
 
 module "admin" {
-  count = var.include_admin ? 1 : 0
+  count = 1
   source = "./modules/cdn"
 
   project = var.project
@@ -183,7 +181,7 @@ module "admin" {
 }
 
 module "email" {
-  count = var.include_email ? 1 : 0
+  count = 1
   source = "./modules/email"
 
   project = var.project
@@ -192,7 +190,7 @@ module "email" {
 }
 
 module "cache" {
-  count = var.include_cache ? 1 : 0
+  count = 1
   source = "./modules/cache"
 
   project = var.project
@@ -208,13 +206,11 @@ module "cache" {
         security_group_id = aws_security_group.bastion_sg.id
       }
     ],
-    var.include_server ?
     [
       {
         name = "server fargate"
         security_group_id = module.server[0].fargate_sg_id
       }
     ]
-    : []
   )
 }

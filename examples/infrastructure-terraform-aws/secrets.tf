@@ -1,7 +1,7 @@
 
 # initial secrets for server
 resource "aws_secretsmanager_secret_version" "server_secrets" {
-  count = var.include_server && var.include_db ? 1 : 0
+  count = 1
   secret_id = module.server[0].task_secret_id
   secret_string = jsonencode({
     ENVIRONMENT = var.environment,

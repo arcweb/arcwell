@@ -46,31 +46,6 @@ variable "bastion_key_name" {
   type = string
 }
 
-variable "include_server" {
-  description= "Boolean indicating if resources for a server should be included"
-  type = bool
-}
-
-variable "include_db" {
-  description= "Boolean indicating if resources for a db should be included"
-  type = bool
-}
-
-variable "include_admin" {
-  description = "Boolean indicating if resources for an admin should be included"
-  type = bool
-}
-
-variable "include_cache" {
-  description = "Boolean indicating if resources for a cache should be included"
-  type = bool
-}
-
-variable "include_email" {
-  description = "Boolean indicating if resources for simple email should be included"
-  type = bool
-}
-
 variable "include_flow_logs" {
   description = "Whether to include vpc flow logs"
   type = bool
