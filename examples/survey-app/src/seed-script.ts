@@ -1,9 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
-const yargs = require('yargs');
-const { hideBin } = require('yargs/helpers');
 const readline = require('readline');
-const { AxiosInstance } = require('axios');
 
 dotenv.config();
 
@@ -23,8 +20,8 @@ interface InstallResponse {
       fact_types: FactType[];
       people: Person[];
       person_types: PersonType[];
-      resource_types: any[];
-      event_types: any[];
+      resource_types: ResourceType[];
+      event_types: EventType[];
       tags: Tag[];
       roles: Role[];
       users: User[];
@@ -41,6 +38,24 @@ interface PersonType {
   id: string;
   name: string;
   key: string;
+}
+
+interface ResourceType {
+  id: string;
+  key: string;
+  name: string;
+  description?: string;
+  dimensionSchemas?: DimensionSchema[];
+  tags: string[];
+}
+
+interface EventType {
+  id: string;
+  key: string;
+  name: string;
+  description?: string;
+  tags: string[];
+  dimensionSchemas?: DimensionSchema[];
 }
 
 interface Tag {
@@ -81,38 +96,40 @@ interface DimensionSchema {
   isRequired: boolean;
 }
 
-// Define command-line arguments
-const argv = yargs.default(hideBin(process.argv))
-  .option('email', {
-    alias: 'e',
-    description: 'Email for the user',
-    type: 'string',
-    demandOption: true
-  })
-  .option('password', {
-    alias: 'p',
-    description: 'Password for the user',
-    type: 'string',
-    demandOption: false
-  })
-  .help()
-  .alias('help', 'h')
-  .parseSync();
+const backendUrl = process.env['DEVELOPMENT_API_URL'] || 'http://localhost:3333/api/v1';
 
-// Function to securely prompt for a password if not provided
-async function promptPassword(promptText: string): Promise<string> {
+// Function to login and get the auth token
+async function login(email: string, password: string): Promise<string> {
+  try {
+    const response = await axios.post(`${backendUrl}/auth/login`, {
+      email,
+      password,
+    });
+    const token = response.data.data.token.value;
+    return token;
+  } catch (error: any) {
+    console.error('Login failed:', error.response?.data || error.message);
+    process.exit(1);
+  }
+}
+
+// Function to securely prompt for user information
+async function promptUserInfo(): Promise<{ firstName: string; lastName: string; email: string; password: string }> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    terminal: true
   });
 
-  return new Promise((resolve) => {
-    rl.question(promptText, (password: any) => {
-      rl.close();
-      resolve(password);
-    });
-  });
+  const question = (query: string) =>
+    new Promise<string>((resolve) => rl.question(query, (answer: string) => resolve(answer.trim())));
+
+  const firstName = await question('Please supply the first name: ');
+  const lastName = await question('Please supply the last name: ');
+  const email = await question('Please supply the email: ');
+  const password = await question('Please supply the password: ');
+
+  rl.close();
+  return { firstName, lastName, email, password };
 }
 
 // Function to validate email format
@@ -121,47 +138,29 @@ function validateEmail(email: string): boolean {
   return re.test(email);
 }
 
-// Initialize Axios instance with base URL and headers
-const backendUrl = process.env['DEVELOPMENT_API_URL'];
-let authToken = process.env['AUTH_TOKEN'];
-
-if (!backendUrl) {
-  console.error('Error: BACKEND_URL is not defined in .env');
-  process.exit(1);
-}
-
-if (!authToken) {
-  console.error('Warning: AUTH_TOKEN is not defined in .env');
-  process.exit(1);
-}
-
-const api = axios.create({
-  baseURL: backendUrl,
-  headers: {
-    'Content-Type': 'application/json',
-    ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
-  },
-});
-
-// Utility function to make POST requests to /config/install
-async function installConfig(payload: any): Promise<InstallResponse> {
+async function installConfig(payload: any, authToken: string): Promise<InstallResponse> {
   try {
-    const response = await api.post('/config/install', payload, {
-      params: { returnObjects: 'true' },
-    });
+    const response = await axios.post(
+      `${process.env['DEVELOPMENT_API_URL']}/config/install`,
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: { returnObjects: 'true' }
+      }
+    );
     return response.data as InstallResponse;
   } catch (error: any) {
     if (error.response) {
-      // Server responded with a status other than 2xx
       console.error(`API Error [${error.response.status}]:`, error.response.data);
     } else if (error.request) {
-      // No response received
       console.error('API Error: No response received from the server.');
     } else {
-      // Other errors
       console.error('Error:', error.message);
     }
-    process.exit(1); // Exit immediately on any error
+    process.exit(1);
   }
 }
 
@@ -170,20 +169,16 @@ async function main() {
   try {
     console.log('=== Seed Data Installation ===\n');
 
+    const authToken = await login('dev-admin@example.com', 'password');
+
+    // Prompt user for new survey user information
+    console.log('Please supply New Survey User information.');
+    const { firstName, lastName, email, password } = await promptUserInfo();
+
     // Validate email format
-    if (!validateEmail(argv.email)) {
+    if (!validateEmail(email)) {
       console.error('Error: Invalid email format.');
       process.exit(1);
-    }
-
-    // Handle password input
-    let password = argv.password;
-    if (!password) {
-      password = await promptPassword('Enter password for the user: ');
-      if (!password) {
-        console.error('Error: Password is required to create a user.');
-        process.exit(1);
-      }
     }
 
     // Step 1: Create person_types, roles, and tags
@@ -200,7 +195,7 @@ async function main() {
       ]
     };
 
-    const initialResponse = await installConfig(initialPayload);
+    const initialResponse = await installConfig(initialPayload, authToken);
     const createdPersonTypes = initialResponse.data.createdObjects?.person_types || [];
     const createdRoles = initialResponse.data.createdObjects?.roles || [];
     const createdTags = initialResponse.data.createdObjects?.tags || [];
@@ -236,8 +231,8 @@ async function main() {
     const personPayload = {
       people: [
         {
-          familyName: 'Doe',
-          givenName: 'John',
+          familyName: lastName,
+          givenName: firstName,
           typeKey: typeKey,
           dimensions: [
             { key: 'age', value: '30' },
@@ -246,7 +241,7 @@ async function main() {
         }
       ]
     };
-    const personResponse = await installConfig(personPayload);
+    const personResponse = await installConfig(personPayload, authToken);
     const createdPeople = personResponse.data.createdObjects?.people || [];
     if (createdPeople.length === 0) {
       console.error('Error: Failed to create person.');
@@ -262,14 +257,14 @@ async function main() {
     const userPayload = {
       users: [
         {
-          email: argv.email,
+          email: email,
           password: password,
           roleId: roleId,
           personId: personId,
         }
       ]
     };
-    const userResponse = await installConfig(userPayload);
+    const userResponse = await installConfig(userPayload, authToken);
     const createdUsers = userResponse.data.createdObjects?.users || [];
     if (createdUsers.length === 0) {
       console.error('Error: Failed to create user.');
@@ -301,64 +296,11 @@ async function main() {
             { key: 'phq9_follow_up', name: 'If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
           ],
           tags: [surveyTag]
-        },
-        {
-          key: 'survey_gad7',
-          name: 'GAD-7',
-          description: 'General Anxiety Disorder 7 (GAD-7) for assessing anxiety severity.',
-          dimensionSchemas: [
-            { key: 'gad7_q1_response', name: 'Feeling nervous, anxious, or on edge', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q2_response', name: 'Not being able to stop or control worrying', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q3_response', name: 'Worrying too much about different things', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q4_response', name: 'Trouble relaxing', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q5_response', name: "Being so restless that it's hard to sit still", dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q6_response', name: 'Becoming easily annoyed or irritable', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_q7_response', name: 'Feeling afraid as if something awful might happen', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: true },
-            { key: 'gad7_follow_up', name: 'How difficult have these problems made it to do work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
-          ],
-          tags: [surveyTag]
-        },
-        {
-          key: 'survey_oks',
-          name: 'Oxford Knee Score (OKS)',
-          description: 'A survey for assessing knee function and pain severity.',
-          dimensionSchemas: [
-            { key: 'oks_left_q1_response', name: 'How would you describe the pain you usually have from your knee?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q2_response', name: 'Have you had any trouble with washing and drying yourself?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q3_response', name: 'Have you had any trouble getting in and out of a car?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q4_response', name: 'For how long have you been able to walk before the pain becomes severe?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q5_response', name: 'After a meal, how painful has it been to stand up from a chair?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q6_response', name: 'Have you been limping when walking?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q7_response', name: 'Could you kneel down and get up again afterwards?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q8_response', name: 'Have you been troubled by pain from your knee in bed at night?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q9_response', name: 'How much has pain from your knee interfered with your usual work?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q10_response', name: 'Have you felt that your knee might suddenly give way?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q11_response', name: 'Could you do the household shopping on your own?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_q12_response', name: 'Could you walk down a flight of stairs?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_left_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: false },
-            // Repeat for the right knee
-            { key: 'oks_right_q1_response', name: 'How would you describe the pain you usually have from your knee?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q2_response', name: 'Have you had any trouble with washing and drying yourself?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q3_response', name: 'Have you had any trouble getting in and out of a car?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q4_response', name: 'For how long have you been able to walk before the pain becomes severe?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q5_response', name: 'After a meal, how painful has it been to stand up from a chair?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q6_response', name: 'Have you been limping when walking?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q7_response', name: 'Could you kneel down and get up again afterwards?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q8_response', name: 'Have you been troubled by pain from your knee in bed at night?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q9_response', name: 'How much has pain from your knee interfered with your usual work?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q10_response', name: 'Have you felt that your knee might suddenly give way?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q11_response', name: 'Could you do the household shopping on your own?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_q12_response', name: 'Could you walk down a flight of stairs?', dataType: 'number', dataUnit: '', isRequired: false },
-            { key: 'oks_right_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: false }
-          ],
-          tags: [surveyTag]
         }
-        // Add more fact_types as needed
       ]
     };
 
-    const factTypesResponse = await installConfig(factTypesPayload);
+    const factTypesResponse = await installConfig(factTypesPayload, authToken);
     const createdFactTypes = factTypesResponse.data.createdObjects?.fact_types || [];
     console.log('Created Fact Types:', createdFactTypes.length);
     console.log('-----------------------------------\n');
