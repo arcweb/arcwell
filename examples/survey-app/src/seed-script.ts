@@ -96,7 +96,10 @@ interface DimensionSchema {
   isRequired: boolean;
 }
 
-const backendUrl = process.env['DEVELOPMENT_API_URL'] || 'http://localhost:3333/api/v1';
+// Change these values to match your environment
+const backendUrl = 'http://localhost:3333/api/v1';
+const authUserEmail = 'dev-admin@example.com';
+const authUserPassword = 'password';
 
 // Function to login and get the auth token
 async function login(email: string, password: string): Promise<string> {
@@ -141,7 +144,7 @@ function validateEmail(email: string): boolean {
 async function installConfig(payload: any, authToken: string): Promise<InstallResponse> {
   try {
     const response = await axios.post(
-      `${process.env['DEVELOPMENT_API_URL']}/config/install`,
+      `${backendUrl}/config/install`,
       payload,
       {
         headers: {
@@ -294,6 +297,57 @@ async function main() {
             { key: 'phq9_q9_response', name: 'Thoughts that you would be better off dead or of hurting yourself in some way', dataType: 'number', dataUnit: '', isRequired: true },
             { key: 'phq9_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: true },
             { key: 'phq9_follow_up', name: 'If you checked off any problems, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
+          ],
+          tags: [surveyTag]
+        },
+        {
+          key: 'survey_gad7',
+          name: 'GAD-7',
+          description: 'General Anxiety Disorder 7 (GAD-7) for assessing anxiety severity.',
+          dimensionSchemas: [
+            { key: 'gad7_q1_response', name: 'Feeling nervous, anxious, or on edge', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q2_response', name: 'Not being able to stop or control worrying', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q3_response', name: 'Worrying too much about different things', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q4_response', name: 'Trouble relaxing', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q5_response', name: "Being so restless that it's hard to sit still", dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q6_response', name: 'Becoming easily annoyed or irritable', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_q7_response', name: 'Feeling afraid as if something awful might happen', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: true },
+            { key: 'gad7_follow_up', name: 'How difficult have these problems made it to do work, take care of things at home, or get along with other people?', dataType: 'number', dataUnit: '', isRequired: false }
+          ],
+          tags: [surveyTag]
+        },
+        {
+          key: 'survey_oks',
+          name: 'Oxford Knee Score (OKS)',
+          description: 'A survey for assessing knee function and pain severity.',
+          dimensionSchemas: [
+            { key: 'oks_left_q1_response', name: 'How would you describe the pain you usually have from your knee?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q2_response', name: 'Have you had any trouble with washing and drying yourself?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q3_response', name: 'Have you had any trouble getting in and out of a car?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q4_response', name: 'For how long have you been able to walk before the pain becomes severe?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q5_response', name: 'After a meal, how painful has it been to stand up from a chair?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q6_response', name: 'Have you been limping when walking?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q7_response', name: 'Could you kneel down and get up again afterwards?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q8_response', name: 'Have you been troubled by pain from your knee in bed at night?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q9_response', name: 'How much has pain from your knee interfered with your usual work?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q10_response', name: 'Have you felt that your knee might suddenly give way?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q11_response', name: 'Could you do the household shopping on your own?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_q12_response', name: 'Could you walk down a flight of stairs?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_left_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q1_response', name: 'How would you describe the pain you usually have from your knee?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q2_response', name: 'Have you had any trouble with washing and drying yourself?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q3_response', name: 'Have you had any trouble getting in and out of a car?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q4_response', name: 'For how long have you been able to walk before the pain becomes severe?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q5_response', name: 'After a meal, how painful has it been to stand up from a chair?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q6_response', name: 'Have you been limping when walking?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q7_response', name: 'Could you kneel down and get up again afterwards?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q8_response', name: 'Have you been troubled by pain from your knee in bed at night?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q9_response', name: 'How much has pain from your knee interfered with your usual work?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q10_response', name: 'Have you felt that your knee might suddenly give way?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q11_response', name: 'Could you do the household shopping on your own?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_q12_response', name: 'Could you walk down a flight of stairs?', dataType: 'number', dataUnit: '', isRequired: false },
+            { key: 'oks_right_assessment_score', name: 'Sum of responses', dataType: 'number', dataUnit: '', isRequired: false }
           ],
           tags: [surveyTag]
         }

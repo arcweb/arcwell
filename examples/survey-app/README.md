@@ -65,9 +65,17 @@ Once the Arcwell services are up and running, in a separate terminal, navigate t
 npm run start
 ```
 
-Seed the database with survey fact types and a survey user. The seed script will use development seeded user and password to authenticate it's calls, so you must seed the arcwell db first. Script will prompt for user information.
+Seed the database with survey fact types and a survey user. The seed script will use development seeded user and password to authenticate it's calls, so you must seed the arcwell db first. Script will prompt for user information to seed an additional user for testing forgot password functionality etc.
 ```bash
 npm run seed
+```
+  
+Update these values to change the url for seeding or user being authenticated for the calls.
+```bash
+// Change these values to match your environment
+const backendUrl = 'http://localhost:3333/api/v1';
+const authUserEmail = 'dev-admin@example.com';
+const authUserPassword = 'password';
 ```
 
 The example app will communicate with the running Arcwell server to handle questionnaire submissions and data retrieval.
