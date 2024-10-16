@@ -15,11 +15,9 @@ Document support assets, below.
 | Path | Product | Notes |
 |------|---------|-------|
 | postgres | [PostgreSQL database][psql] | Initializer scripts, configuration |
-| redis    | [Redis cache][redis] | Configuration for Redis in local dev |
 | medplum  | [Medplum FHIR service][medplum] | Custom Docker configuration for local dev |
 
 
 
 [psql]: https://www.postgresql.org/
-[redis]: https://redis.io/
 [medplum]: https://www.medplum.com/
