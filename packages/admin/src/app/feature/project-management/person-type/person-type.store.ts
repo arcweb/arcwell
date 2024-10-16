@@ -58,6 +58,11 @@ export const PersonTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, { isReady: true }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -98,6 +103,11 @@ export const PersonTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -105,7 +115,10 @@ export const PersonTypeStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Person Type updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -120,6 +133,11 @@ export const PersonTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -127,7 +145,10 @@ export const PersonTypeStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Person Type created.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -144,10 +165,18 @@ export const PersonTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Person Type deleted.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -164,10 +193,18 @@ export const PersonTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

@@ -56,8 +56,18 @@ export const UserStore = signalStore(
         );
         if (userResp.errors) {
           patchState(store, { isReady: true }, setErrors(userResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (rolesResp.errors) {
           patchState(store, { isReady: true }, setErrors(rolesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Roles', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -75,6 +85,11 @@ export const UserStore = signalStore(
         const rolesResp = await firstValueFrom(roleService.getAllRoles({}));
         if (rolesResp.errors) {
           patchState(store, { isReady: true }, setErrors(rolesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Roles', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -105,6 +120,11 @@ export const UserStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -112,7 +132,10 @@ export const UserStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated user.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -125,6 +148,11 @@ export const UserStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -135,7 +163,10 @@ export const UserStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created user.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -150,10 +181,18 @@ export const UserStore = signalStore(
         const resp = await firstValueFrom(userService.delete(store.user().id));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Deleted user.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -166,8 +205,18 @@ export const UserStore = signalStore(
         const resp = await firstValueFrom(userService.invite(userId, host));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Inviting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { user: resp.data }, setFulfilled());
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('User', 'Invited'),
+            ToastLevel.SUCCESS,
+          );
         }
       },
     }),

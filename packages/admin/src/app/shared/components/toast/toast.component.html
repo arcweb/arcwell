@@ -9,7 +9,7 @@
           'toast-success': m.level === 'success',
         }"
       >
-        <div class="message-info">
+        <div class="message-info body-regular font-weight-light">
           @if (m.heading) {
             <div>
               <strong>{{ m.heading }}</strong>
@@ -21,9 +21,17 @@
             </div>
           }
         </div>
-        <div class="button-dismiss" (click)="deleteMsg(m.timeStamp)">
-          Dismiss
-        </div>
+        <button
+          mat-button
+          class="button-dismiss body-regular font-weight-light"
+          (click)="deleteMsg(m.timeStamp)"
+          (keydown.enter)="deleteMsg(m.timeStamp)"
+          tabindex="0"
+          role="button"
+          aria-label="Dismiss"
+        >
+          <fa-icon class="icon-dismiss" [icon]="faTimes"></fa-icon>
+        </button>
       </div>
     }
   }

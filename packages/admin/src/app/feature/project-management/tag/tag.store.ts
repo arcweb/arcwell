@@ -143,6 +143,11 @@ export const TagStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, {
             tag: resp,
@@ -214,6 +219,11 @@ export const TagStore = signalStore(
         const resp = await firstValueFrom(tagService.update(updateTagFormData));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, {
             tag: resp,
@@ -241,7 +251,10 @@ export const TagStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated tag.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
           // refresh the list
           refreshService.triggerRefresh();
         }
@@ -253,6 +266,11 @@ export const TagStore = signalStore(
         const resp = await firstValueFrom(tagService.create(createTagFormData));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -279,7 +297,10 @@ export const TagStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created tag.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -293,6 +314,11 @@ export const TagStore = signalStore(
         const resp = await firstValueFrom(tagService.delete(store.tag().id));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -317,7 +343,10 @@ export const TagStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Deleted tag.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -333,8 +362,18 @@ export const TagStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
         }
       },
 
@@ -411,6 +450,11 @@ export const TagStore = signalStore(
 
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tag Relations', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, {
             tag: resp,

@@ -77,19 +77,39 @@ export const FactStore = signalStore(
           );
         if (factResp.errors) {
           patchState(store, { isReady: true }, setErrors(factResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (factTypesResp.errors) {
           patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (resourceTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(resourceTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -117,17 +137,32 @@ export const FactStore = signalStore(
           );
         if (factTypesResp.errors) {
           patchState(store, { isReady: true }, setErrors(factTypesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (resourceTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(resourceTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -167,7 +202,11 @@ export const FactStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
-          toastService.sendMessage('Error uploading facts.', ToastLevel.ERROR);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -175,7 +214,10 @@ export const FactStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated fact.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -192,7 +234,11 @@ export const FactStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
-          toastService.sendMessage('Error creating facts.', ToastLevel.ERROR);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -200,7 +246,10 @@ export const FactStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created fact.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -213,11 +262,18 @@ export const FactStore = signalStore(
         const resp = await firstValueFrom(factService.delete(store.fact().id));
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
-          toastService.sendMessage('Error deleting fact.', ToastLevel.ERROR);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Deleted fact.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -232,11 +288,18 @@ export const FactStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
-          toastService.sendMessage('Error setting tags.', ToastLevel.ERROR);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags Set', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

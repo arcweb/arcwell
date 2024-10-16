@@ -72,11 +72,21 @@ export const ResourceStore = signalStore(
             { isReady: true },
             setErrors(resourceResponse.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (resourceTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(resourceTypesResponse.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -100,6 +110,11 @@ export const ResourceStore = signalStore(
             store,
             { isReady: true },
             setErrors(resourceTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -132,6 +147,11 @@ export const ResourceStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -139,7 +159,10 @@ export const ResourceStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Resource updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -155,6 +178,11 @@ export const ResourceStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -162,7 +190,10 @@ export const ResourceStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Resource created.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -177,10 +208,18 @@ export const ResourceStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Resource deleted.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -195,10 +234,18 @@ export const ResourceStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

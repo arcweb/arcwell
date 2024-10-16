@@ -62,6 +62,11 @@ export const ResourceTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, { isReady: true }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Type', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -102,6 +107,11 @@ export const ResourceTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Type', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -110,7 +120,7 @@ export const ResourceTypeStore = signalStore(
           );
 
           toastService.sendMessage(
-            'Updated resource type.',
+            toastService.createCrudMessage('Resource Type', 'Updated'),
             ToastLevel.SUCCESS,
           );
 
@@ -127,6 +137,11 @@ export const ResourceTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Type', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -135,7 +150,7 @@ export const ResourceTypeStore = signalStore(
           );
 
           toastService.sendMessage(
-            'Created resource type.',
+            toastService.createCrudMessage('Resource Type', 'Created'),
             ToastLevel.SUCCESS,
           );
 
@@ -154,12 +169,18 @@ export const ResourceTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
-        } else {
+
           toastService.sendMessage(
-            'Deleted resource type.',
+            toastService.createCrudMessage('Resource Type', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(store, { inEditMode: false }, setFulfilled());
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Type', 'Deleted'),
             ToastLevel.SUCCESS,
           );
-          patchState(store, { inEditMode: false }, setFulfilled());
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -176,10 +197,18 @@ export const ResourceTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

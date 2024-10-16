@@ -58,6 +58,11 @@ export const FactTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, { isReady: true }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -91,6 +96,11 @@ export const FactTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -98,7 +108,10 @@ export const FactTypeStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated Fact Type.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -114,7 +127,10 @@ export const FactTypeStore = signalStore(
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
         } else {
-          toastService.sendMessage('Created Fact Type.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Created'),
+            ToastLevel.SUCCESS,
+          );
           patchState(
             store,
             { factType: resp.data, inEditMode: false, inCreateMode: false },
@@ -136,10 +152,18 @@ export const FactTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Deleted Fact Type.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -156,10 +180,18 @@ export const FactTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

@@ -81,11 +81,21 @@ export const EventStore = signalStore(
         );
         if (eventResponse.errors) {
           patchState(store, { isReady: true }, setErrors(eventResponse.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (eventTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(eventTypesResponse.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else if (personTypesResponse.errors) {
           patchState(
@@ -93,11 +103,21 @@ export const EventStore = signalStore(
             { isReady: true },
             setErrors(personTypesResponse.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (resourceTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(resourceTypesResponse.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -132,17 +152,32 @@ export const EventStore = signalStore(
             { isReady: true },
             setErrors(eventTypesResponse.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResponse.errors),
           );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (resourceTypesResponse.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(resourceTypesResponse.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -173,13 +208,22 @@ export const EventStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
             { event: resp.data, inEditMode: false },
             setFulfilled(),
           );
-          toastService.sendMessage('Updated Event.', ToastLevel.SUCCESS);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -194,6 +238,11 @@ export const EventStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -205,7 +254,10 @@ export const EventStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created event.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -220,10 +272,18 @@ export const EventStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, { inEditMode: false }, setFulfilled());
 
-          toastService.sendMessage('Deleted event.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -238,10 +298,18 @@ export const EventStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();

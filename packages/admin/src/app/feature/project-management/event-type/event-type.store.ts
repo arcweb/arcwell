@@ -58,6 +58,11 @@ export const EventTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, { isReady: true }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -94,13 +99,22 @@ export const EventTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
             { eventType: resp.data, inEditMode: false },
             setFulfilled(),
           );
-          toastService.sendMessage('Updated event type.', ToastLevel.SUCCESS);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -115,13 +129,22 @@ export const EventTypeStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
             { eventType: resp.data, inEditMode: false, inCreateMode: false },
             setFulfilled(),
           );
-          toastService.sendMessage('Created event type.', ToastLevel.SUCCESS);
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -138,6 +161,11 @@ export const EventTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -145,7 +173,10 @@ export const EventTypeStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Deleted event type.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Type', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // load the feature list with the latest list of subfeatures
           featureStore.load();
@@ -162,10 +193,18 @@ export const EventTypeStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
