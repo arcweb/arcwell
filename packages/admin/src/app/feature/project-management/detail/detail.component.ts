@@ -10,18 +10,17 @@ import {
 } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { PersonComponent } from '../person/person.component';
-import { CohortComponent } from '../cohort/cohort.component';
-import { EventComponent } from '../event/event.component';
-import { EventTypeComponent } from '../event-type/event-type.component';
-import { FactComponent } from '../fact/fact.component';
-import { FactTypeComponent } from '../fact-type/fact-type.component';
-import { PersonTypeComponent } from '../person-type/person-type.component';
-import { ResourceComponent } from '../resource/resource.component';
-import { ResourceTypeComponent } from '../resource-type/resource-type.component';
-import { TagComponent } from '../tag/tag.component';
-import { UserComponent } from '@app/feature/user-management/user/user.component';
-
+import { CohortComponent } from '@feature/cohort/cohort.component';
+import { EventComponent } from '@feature/event/event.component';
+import { EventTypeComponent } from '@feature/event-type/event-type.component';
+import { FactComponent } from '@feature/fact/fact.component';
+import { FactTypeComponent } from '@feature/fact-type/fact-type.component';
+import { PersonComponent } from '@feature/person/person.component';
+import { PersonTypeComponent } from '@feature/person-type/person-type.component';
+import { ResourceComponent } from '@feature/resource/resource.component';
+import { ResourceTypeComponent } from '@feature/resource-type/resource-type.component';
+import { TagComponent } from '@feature/tag/tag.component';
+import { UserComponent } from '@feature/users/user/user.component';
 // create compound type of all detail components
 export type DetailComponentType =
   | CohortComponent

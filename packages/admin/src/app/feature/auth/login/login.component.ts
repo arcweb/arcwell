@@ -26,7 +26,7 @@ export class LoginComponent {
           `auth/set/${this.authStore.currentUser()?.email}`,
         );
       } else if (this.authStore.currentUser()) {
-        this.router.navigate(['project-management']);
+        this.router.navigate(['/']);
       }
     });
   }

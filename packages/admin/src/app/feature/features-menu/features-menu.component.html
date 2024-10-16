@@ -1,0 +1,118 @@
+<div class="info-container">
+  <mat-icon
+    class="logo"
+    svgIcon="arcwell-logo-white"
+    (click)="goHome()"
+  ></mat-icon>
+</div>
+<mat-divider class="features-menu-divider"></mat-divider>
+<mat-accordion [multi]="false" class="feature-accordion">
+  <div>
+    @for (
+      feature of featuresSansSettings();
+      track feature.name;
+      let idx = $index
+    ) {
+      <mat-expansion-panel
+        hideToggle="true"
+        [expanded]="featureStore.activeFeature()?.path === feature.path"
+        [disabled]="featureStore.activeFeature()?.path === feature.path"
+        [ngClass]="{
+          settings: feature.name.toLowerCase() === 'settings',
+          'hide-content': feature.subfeatures.length === 0,
+        }"
+      >
+        <mat-expansion-panel-header
+          [routerLink]="feature.path"
+          routerLinkActive="feature-active"
+        >
+          <mat-panel-title
+            [attr.aria-label]="feature.name"
+            class="feature-title body-large"
+          >
+            <fa-icon
+              class="feature-icon"
+              [icon]="icons[feature.icon]"
+            ></fa-icon>
+            {{ feature.name }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        @if (feature.subfeatures.length > 0) {
+          <!-- ng-template to lazy load panel contents -->
+          <ng-template matExpansionPanelContent>
+            <!-- additional div is needed to hide scroll on expand -->
+            <div class="panel-content">
+              @for (subfeature of feature.subfeatures; track subfeature.name) {
+                <a
+                  [routerLink]="
+                    featureStore.activeFeature()?.path + '/' + subfeature.path
+                  "
+                  routerLinkActive="subfeature-active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  class="body-large subfeature-link"
+                >
+                  {{ subfeature.name }}
+                </a>
+              }
+            </div>
+          </ng-template>
+        }
+      </mat-expansion-panel>
+    }
+  </div>
+  @if (settingsFeature()) {
+    <mat-expansion-panel
+      hideToggle="true"
+      [expanded]="
+        featureStore.activeFeature()?.path === settingsFeature()!.path
+      "
+      [disabled]="
+        featureStore.activeFeature()?.path === settingsFeature()!.path
+      "
+      class="settings"
+    >
+      <mat-expansion-panel-header
+        [routerLink]="settingsFeature()!.path"
+        routerLinkActive="feature-active"
+      >
+        <mat-panel-title
+          [attr.aria-label]="settingsFeature()!.name"
+          class="feature-title body-large"
+        >
+          <fa-icon [icon]="icons[settingsFeature()!.icon]"></fa-icon>
+          {{ settingsFeature()!.name }}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      @if (settingsFeature()!.subfeatures.length > 0) {
+        <!-- ng-template to lazy load panel contents -->
+        <ng-template matExpansionPanelContent>
+          <!-- additional div is needed to hide scroll on expand -->
+          <div class="panel-content">
+            @for (
+              subfeature of settingsFeature()!.subfeatures;
+              track subfeature.name
+            ) {
+              <a
+                [routerLink]="
+                  subfeature.path !== 'logout'
+                    ? featureStore.activeFeature()?.path + '/' + subfeature.path
+                    : null
+                "
+                routerLinkActive="subfeature-active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="body-large subfeature-link"
+                (click)="
+                  subfeature.name.toLowerCase() === 'log out'
+                    ? onSettingsClick(subfeature)
+                    : null
+                "
+              >
+                {{ subfeature.name }}
+              </a>
+            }
+          </div>
+        </ng-template>
+      }
+    </mat-expansion-panel>
+  }
+</mat-accordion>

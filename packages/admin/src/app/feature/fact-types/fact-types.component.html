@@ -1,0 +1,57 @@
+<aw-table-header tableName="Fact Types"></aw-table-header>
+
+@if (factTypesStore.isErrored()) {
+  <aw-error-container [errors]="factTypesStore.errors()" />
+}
+<div class="table-form-container">
+  <table
+    mat-table
+    matSort
+    [dataSource]="dataSource"
+    class="mat-elevation-z0"
+    (matSortChange)="sortChange($event)"
+    [matSortActive]="this.factTypesStore.sort()"
+    [matSortDirection]="this.factTypesStore.order()"
+  >
+    <ng-container matColumnDef="key">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Key</th>
+      <td mat-cell *matCellDef="let element">{{ element.key }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="tags">
+      <th mat-header-cell *matHeaderCellDef>Tags</th>
+      <td mat-cell *matCellDef="let element">
+        @if (element.tags && element.tags.length > 0) {
+          @for (tag of element.tags; track $index) {
+            <div>
+              {{ tag }}
+            </div>
+          }
+        } @else {
+          <div>--</div>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="handleClick(row)"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="factTypesStore.totalData()"
+    [pageSizeOptions]="pageSizes"
+    [pageSize]="factTypesStore.limit()"
+    [pageIndex]="factTypesStore.pageIndex()"
+    (page)="this.factTypesStore.loadPage($event)"
+    showFirstLastButtons="true"
+  ></mat-paginator>
+</div>
