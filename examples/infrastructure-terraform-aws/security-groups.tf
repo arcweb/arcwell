@@ -36,17 +36,6 @@ resource "aws_vpc_security_group_egress_rule" "bastion_postgres_egress_to_privat
   to_port = 5432
 }
 
-resource "aws_vpc_security_group_egress_rule" "bastion_redis_egress_to_private_subnet" {
-  count = length(aws_subnet.private_subnet)
-  security_group_id = aws_security_group.bastion_sg.id
-  description="redis egress to private subnet ${aws_subnet.private_subnet[count.index].id}"
-
-  cidr_ipv4 = aws_subnet.private_subnet[count.index].cidr_block
-  ip_protocol = "tcp"
-  from_port = 6379
-  to_port = 6379
-}
-
 resource "aws_vpc_security_group_egress_rule" "bastion_ssl_egress_to_all" {
   security_group_id = aws_security_group.bastion_sg.id
   description = "ssl egress to all"

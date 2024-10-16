@@ -49,16 +49,6 @@ resource "aws_vpc_security_group_egress_rule" "fargate_postgres_egress_to_privat
   to_port = 5432
 }
 
-resource "aws_vpc_security_group_egress_rule" "fargate_redis_egress_to_private_subnet" {
-  count = length(data.aws_subnet.private_subnets)
-  security_group_id = aws_security_group.fargate_sg.id
-
-  cidr_ipv4 = data.aws_subnet.private_subnets[count.index].cidr_block
-  ip_protocol = "tcp"
-  from_port = 6379
-  to_port = 6379
-}
-
 resource "aws_vpc_security_group_egress_rule" "fargate_ssl_egress_to_all" {
   security_group_id = aws_security_group.fargate_sg.id
 
