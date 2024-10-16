@@ -22,6 +22,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
@@ -173,6 +174,21 @@ export const FactTypeStore = signalStore(
           detailStore.clearDetailId();
         }
       },
+      async setDimension(index: number, dimension: DimensionSchemaType) {
+        const updatedDimensionSchemas = store.factType().dimensionSchemas;
+
+        updatedDimensionSchemas[index] = dimension;
+        console.log(
+          'updatedDimensionSchemas-=========',
+          updatedDimensionSchemas,
+        );
+        patchState(store, {
+          factType: {
+            ...store.factType(),
+            dimensionSchemas: updatedDimensionSchemas,
+          },
+        });
+      },
       async setTags(tags: string[]) {
         patchState(store, setPending());
         const resp = await firstValueFrom(
@@ -203,5 +219,6 @@ export const FactTypeStore = signalStore(
     tagStrings: computed(
       () => factType()?.tags?.map((tag: string) => tag) ?? [],
     ),
+    dimensionSchemas: computed(() => factType().dimensionSchemas ?? []),
   })),
 );

@@ -50,7 +50,12 @@ import {
 import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactTypeNewType } from '@schemas/fact-type.schema';
+import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
+import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatTooltip } from '@angular/material/tooltip';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 @Component({
   selector: 'aw-fact-type',
@@ -82,6 +87,8 @@ import { DetailStore } from '@feature/detail/detail.store';
     JsonPipe,
     MatHeaderCellDef,
     DetailHeaderComponent,
+    FaIconComponent,
+    MatTooltip,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -96,6 +103,8 @@ export class FactTypeComponent implements OnInit {
   @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
+
+  editingRow = -1;
 
   factTypeForm = new FormGroup({
     name: new FormControl(
@@ -128,6 +137,7 @@ export class FactTypeComponent implements OnInit {
     'dataType',
     'dataUnit',
     'isRequired',
+    'actions',
   ];
 
   constructor() {
@@ -161,9 +171,9 @@ export class FactTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factTypeForm.value;
-          const dimensionsSquemaJson = formValue.dimensionSchemas
-            ? JSON.parse(formValue.dimensionSchemas)
-            : [];
+          const dimensionsSquemaJson = formValue.dimensionSchemas ?? [];
+          // ? JSON.parse(formValue.dimensionSchemas)
+          // : [];
 
           const factTypeFormPayload: FactTypeNewType = {
             name: this.factTypeForm.value['name'] ?? '',
@@ -220,7 +230,6 @@ export class FactTypeComponent implements OnInit {
   }
 
   onDelete() {
-    // TODO: show confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm delete',
@@ -244,4 +253,30 @@ export class FactTypeComponent implements OnInit {
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
   }
+
+  onEditDimensionSchema(index: number, element: DimensionSchemaType) {
+    this.editingRow = index;
+    console.log('Edit row ', index, ', ', element);
+
+    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
+      minHeight: '480px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension Schema',
+        dimensionSchema: element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('result=', result);
+        this.factTypeStore.setDimension(this.editingRow, result);
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  protected readonly faPenToSquare = faPenToSquare;
+  protected readonly faTrashCan = faTrashCan;
 }

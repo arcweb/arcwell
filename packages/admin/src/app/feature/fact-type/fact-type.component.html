@@ -71,6 +71,42 @@
           <td mat-cell *matCellDef="let element">{{ element.isRequired }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <div class="actions-icon-container">
+              <button
+                mat-button
+                type="button"
+                (click)="onEditDimensionSchema(i, element)"
+                class="detail-header-button"
+                matTooltip="Edit"
+              >
+                <fa-icon
+                  aria-label="Edit icon"
+                  [icon]="faPenToSquare"
+                  size="xl"
+                  class="detail-header-button-icon"
+                ></fa-icon>
+              </button>
+              <button
+                mat-button
+                type="button"
+                (click)="onEditDimensionSchema(i, element)"
+                class="detail-header-button"
+                matTooltip="Delete"
+              >
+                <fa-icon
+                  aria-label="Delete icon"
+                  [icon]="faTrashCan"
+                  size="xl"
+                  class="detail-header-button-icon"
+                ></fa-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
