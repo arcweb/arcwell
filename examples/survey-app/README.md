@@ -56,11 +56,6 @@ Run migrations only
 docker compose exec server node ace migration:run
 ```
 
-This command will run the seeds for the example-survey-app environment, ensuring that the roles, users, and other necessary data for surveys are populated in the database.
-```bash
-docker compose exec server node ace db:seed -f "./database/seeders/examples_survey_app_seeder.ts"
-```
-
 ---
 
 ### 3. Running the Health Questionnaire Example App
@@ -68,6 +63,19 @@ Once the Arcwell services are up and running, in a separate terminal, navigate t
 
 ```bash
 npm run start
+```
+
+Seed the database with survey fact types and a survey user. The seed script will use development seeded user and password to authenticate it's calls, so you must seed the arcwell db first. Script will prompt for user information to seed an additional user for testing forgot password functionality etc.
+```bash
+npm run seed
+```
+  
+Update these values in seed-script.ts to change the url for seeding or user being authenticated for the calls.
+```bash
+// Change these values to match your environment
+const backendUrl = 'http://localhost:3333/api/v1';
+const authUserEmail = 'dev-admin@example.com';
+const authUserPassword = 'password';
 ```
 
 The example app will communicate with the running Arcwell server to handle questionnaire submissions and data retrieval.

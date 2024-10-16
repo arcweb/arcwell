@@ -1,16 +1,19 @@
-import env from '#start/env'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
+import env from '#start/env'
 import {
   featureMenuConfig,
   FeatureMenuItem,
   SubfeatureMenuItem,
   FeatureMenuItemNames,
 } from '#config/features'
-import PersonType from '#models/person_type'
-import ResourceType from '#models/resource_type'
 import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
-import db from '@adonisjs/lucid/services/db'
+import PersonType from '#models/person_type'
+import ResourceType from '#models/resource_type'
+import Role from '#models/role'
+import Tag from '#models/tag'
+import User from '#models/user'
 import { installConfigValidator } from '#validators/config'
 import FactTypeService from '#services/fact_type_service'
 import EventTypeService from '#services/event_type_service'
@@ -19,6 +22,8 @@ import ResourceTypeService from '#services/resource_type_service'
 import RoleService from '#services/role_service'
 import TagService from '#services/tag_service'
 import UserService from '#services/user_service'
+import Person from '#models/person'
+import PersonService from '#services/person_service'
 
 export default class ConfigController {
   /**
@@ -107,8 +112,12 @@ export default class ConfigController {
     const payload = request.body()
     await request.validateUsing(installConfigValidator)
 
+    const { returnObjects } = request.qs()
+    const shouldReturnObjects = returnObjects === 'true'
+
     let counts = {
       fact_types: 0,
+      people: 0,
       person_types: 0,
       resource_types: 0,
       event_types: 0,
@@ -117,57 +126,126 @@ export default class ConfigController {
       users: 0,
     }
 
+    let createdObjects = {
+      fact_types: [] as FactType[],
+      people: [] as Person[],
+      person_types: [] as PersonType[],
+      resource_types: [] as ResourceType[],
+      event_types: [] as EventType[],
+      tags: [] as Tag[],
+      roles: [] as Role[],
+      users: [] as User[],
+    }
+
     return db.transaction(async (trx) => {
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
-          await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags)
+          const createdEventType = await EventTypeService.createEventType(
+            trx,
+            eventTypeData,
+            eventTypeData.tags
+          )
           counts.event_types++
+
+          if (shouldReturnObjects) {
+            createdObjects.event_types.push(createdEventType)
+          }
         }
       }
 
       if (payload.fact_types && payload.fact_types.length > 0) {
         for (const factTypeData of payload.fact_types) {
-          await FactTypeService.createFactType(trx, factTypeData, factTypeData.tags)
+          const createdFactType = await FactTypeService.findOrCreateFactTypeByKey(trx, factTypeData)
           counts.fact_types++
+
+          if (shouldReturnObjects) {
+            createdObjects.fact_types.push(createdFactType)
+          }
+        }
+      }
+
+      if (payload.people && payload.people.length > 0) {
+        for (const personData of payload.people) {
+          const createdPerson = await PersonService.findOrCreatePerson(trx, personData)
+          counts.people++
+
+          if (shouldReturnObjects) {
+            const fullPerson = await PersonService.getFullPerson(createdPerson.id, 10, 0, trx)
+            createdObjects.people.push(fullPerson)
+          }
         }
       }
 
       if (payload.person_types && payload.person_types.length > 0) {
         for (const personTypeData of payload.person_types) {
-          await PersonTypeService.createPersonType(trx, personTypeData, personTypeData.tags)
+          const personType = await PersonTypeService.findOrCreatePersonTypeByKey(
+            trx,
+            personTypeData
+          )
+
           counts.person_types++
+
+          if (shouldReturnObjects) {
+            const fullPersonType = await PersonTypeService.getFullPersonType(personType.id, trx)
+            createdObjects.person_types.push(fullPersonType)
+          }
         }
       }
 
       if (payload.resource_types && payload.resource_types.length > 0) {
         for (const resourceTypeData of payload.resource_types) {
-          await ResourceTypeService.createResourceType(trx, resourceTypeData, resourceTypeData.tags)
+          const createdResourceType = await ResourceTypeService.findOrCreateResourceTypeByKey(
+            trx,
+            resourceTypeData
+          )
           counts.resource_types++
+
+          if (shouldReturnObjects) {
+            const fullResourceType = await ResourceTypeService.getFullResourceType(
+              createdResourceType.id,
+              trx
+            )
+            createdObjects.resource_types.push(fullResourceType)
+          }
         }
       }
 
       if (payload.roles && payload.roles.length > 0) {
         for (const roleData of payload.roles) {
-          await RoleService.createRole(trx, roleData)
+          const createdRole = await RoleService.findOrCreateRoleByName(trx, roleData)
           counts.roles++
+
+          if (shouldReturnObjects) {
+            const fullRole = await RoleService.getFullRole(createdRole.id, trx)
+            createdObjects.roles.push(fullRole)
+          }
         }
       }
 
       if (payload.tags && payload.tags.length > 0) {
         for (const tagData of payload.tags) {
-          await TagService.createTag(trx, tagData)
+          const createdTag = await TagService.findOrCreateTag(trx, tagData)
           counts.tags++
+
+          if (shouldReturnObjects) {
+            createdObjects.tags.push(createdTag)
+          }
         }
       }
 
       if (payload.users && payload.users.length > 0) {
         for (const userData of payload.users) {
-          await UserService.createUser(trx, userData, userData.tags)
+          const createdUser = await UserService.findOrCreateUserByEmail(trx, userData)
           counts.users++
+
+          if (shouldReturnObjects) {
+            const fullUser = await UserService.getFullUser(createdUser.id, trx)
+            createdObjects.users.push(fullUser)
+          }
         }
       }
 
-      return { data: counts }
+      return { data: { counts, createdObjects } }
     })
   }
 
