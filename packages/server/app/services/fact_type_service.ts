@@ -4,6 +4,23 @@ import { setTagsForObject } from '#helpers/query_builder'
 
 export default class FactTypeService {
   /**
+ * Finds or creates a FactType by key.
+ *
+ * @param trx - The transaction object to run the database operations.
+ * @param factTypeData - The data to find or create the FactType.
+ * @returns A Promise that resolves to the found or newly created FactType.
+ */
+  public static async findOrCreateFactTypeByKey(trx: TransactionClientContract, factTypeData: any): Promise<FactType> {
+    let factType = await FactType.findBy('key', factTypeData.key)
+
+    if (!factType) {
+      factType = await this.createFactType(trx, factTypeData, factTypeData.tags)
+    }
+
+    return factType
+  }
+
+  /**
    * Retrieves a full FactType record by ID with its associated tags.
    *
    * @param id - The ID of the FactType to retrieve.

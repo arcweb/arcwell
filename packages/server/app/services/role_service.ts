@@ -3,6 +3,24 @@ import Role from '#models/role'
 
 export default class RoleService {
   /**
+   * Finds or creates a Role by name.
+   *
+   * @param trx - The transaction object to run the database operations.
+   * @param roleName - The name of the Role to find or create.
+   * @param roleData - Optional data to create the role if it does not exist.
+   * @returns A Promise that resolves to the found or newly created Role.
+   */
+  public static async findOrCreateRoleByName(trx: TransactionClientContract, roleData: any): Promise<Role> {
+    let role = await Role.findBy('name', roleData.name)
+
+    if (!role) {
+      role = await this.createRole(trx, roleData)
+    }
+
+    return role
+  }
+
+  /**
    * Retrieves a full Role record by ID with its associated users and their person and tags data.
    *
    * @param id - The ID of the Role to retrieve.

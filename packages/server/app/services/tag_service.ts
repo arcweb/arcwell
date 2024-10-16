@@ -3,6 +3,22 @@ import Tag from '#models/tag'
 
 export default class TagService {
   /**
+   * Finds a Tag by its pathname.
+   * 
+   * @param pathname - The pathname of the Tag to find.
+   * @returns A Promise that resolves to the found Tag or null if not found.
+   */
+  public static async findOrCreateTag(trx: TransactionClientContract, tagData: any): Promise<Tag> {
+    let tag = await Tag.findBy('pathname', tagData.pathname)
+
+    if (!tag) {
+      tag = await this.createTag(trx, tagData)
+    }
+
+    return tag
+  }
+
+  /**
    * Creates a new Tag in the database.
    *
    * @param trx - The transaction object to run the database operations.

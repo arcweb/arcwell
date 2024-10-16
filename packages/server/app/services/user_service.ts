@@ -4,6 +4,23 @@ import { setTagsForObject } from '#helpers/query_builder'
 
 export default class UserService {
   /**
+   * Finds or creates a User by email.
+   *
+   * @param trx - The transaction object to run the database operations.
+   * @param userData - The data to find or create the User.
+   * @returns A Promise that resolves to the found or newly created User.
+   */
+  public static async findOrCreateUserByEmail(trx: TransactionClientContract, userData: any): Promise<User> {
+    let user = await User.findBy('email', userData.email)
+
+    if (!user) {
+      user = await this.createUser(trx, userData, userData.tags)
+    }
+
+    return user
+  }
+
+  /**
    * Retrieves a full User record by ID with its associated tags, role, and person.
    *
    * @param id - The ID of the User to retrieve.
