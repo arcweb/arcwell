@@ -5,6 +5,7 @@ environment=$2
 
 if [ -z $project ] || [ -z $environment ]; then
   echo project and environment arguments are required
+  exit 1
 fi
 
 bucket="${project}-${environment}-terraform-ex"
