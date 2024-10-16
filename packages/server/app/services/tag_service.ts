@@ -4,7 +4,7 @@ import Tag from '#models/tag'
 export default class TagService {
   /**
    * Finds a Tag by its pathname.
-   * 
+   *
    * @param pathname - The pathname of the Tag to find.
    * @returns A Promise that resolves to the found Tag or null if not found.
    */

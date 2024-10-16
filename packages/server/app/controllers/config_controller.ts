@@ -51,7 +51,7 @@ export default class ConfigController {
    * @summary Features Menu
    * @description Returns a nested list representing all current top-level features and sub-features/types active in Arcwell.
    */
-  async featuresMenu({ }: HttpContext) {
+  async featuresMenu({}: HttpContext) {
     // clone the featureMenuConfig so we don't modify the original
     // TODO: Find a better way to clone the featureMenuConfig
     const featuresBaseMenuConfig = JSON.parse(JSON.stringify(featureMenuConfig))
@@ -140,7 +140,11 @@ export default class ConfigController {
     return db.transaction(async (trx) => {
       if (payload.event_types && payload.event_types.length > 0) {
         for (const eventTypeData of payload.event_types) {
-          const createdEventType = await EventTypeService.createEventType(trx, eventTypeData, eventTypeData.tags)
+          const createdEventType = await EventTypeService.createEventType(
+            trx,
+            eventTypeData,
+            eventTypeData.tags
+          )
           counts.event_types++
 
           if (shouldReturnObjects) {
@@ -174,7 +178,10 @@ export default class ConfigController {
 
       if (payload.person_types && payload.person_types.length > 0) {
         for (const personTypeData of payload.person_types) {
-          const personType = await PersonTypeService.findOrCreatePersonTypeByKey(trx, personTypeData)
+          const personType = await PersonTypeService.findOrCreatePersonTypeByKey(
+            trx,
+            personTypeData
+          )
 
           counts.person_types++
 
@@ -187,11 +194,17 @@ export default class ConfigController {
 
       if (payload.resource_types && payload.resource_types.length > 0) {
         for (const resourceTypeData of payload.resource_types) {
-          const createdResourceType = await ResourceTypeService.findOrCreateResourceTypeByKey(trx, resourceTypeData)
+          const createdResourceType = await ResourceTypeService.findOrCreateResourceTypeByKey(
+            trx,
+            resourceTypeData
+          )
           counts.resource_types++
 
           if (shouldReturnObjects) {
-            const fullResourceType = await ResourceTypeService.getFullResourceType(createdResourceType.id, trx)
+            const fullResourceType = await ResourceTypeService.getFullResourceType(
+              createdResourceType.id,
+              trx
+            )
             createdObjects.resource_types.push(fullResourceType)
           }
         }
@@ -239,20 +252,20 @@ export default class ConfigController {
   /**
    * Handle form submission for the create action
    */
-  async store({ }: HttpContext) { }
+  async store({}: HttpContext) {}
 
   /**
    * Show individual record
    */
-  async show({ }: HttpContext) { }
+  async show({}: HttpContext) {}
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ }: HttpContext) { }
+  async update({}: HttpContext) {}
 
   /**
    * Delete record
    */
-  async destroy({ }: HttpContext) { }
+  async destroy({}: HttpContext) {}
 }

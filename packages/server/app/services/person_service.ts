@@ -4,24 +4,27 @@ import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class PersonService {
   /**
- * Find or create a person based on their family name, given name, and typeKey.
- * 
- * @param trx - Transaction client
- * @param personData - Data for creating or finding the person
- * @returns - The found or created Person
- */
-  public static async findOrCreatePerson(trx: TransactionClientContract, personData: any): Promise<Person> {
+   * Find or create a person based on their family name, given name, and typeKey.
+   *
+   * @param trx - Transaction client
+   * @param personData - Data for creating or finding the person
+   * @returns - The found or created Person
+   */
+  public static async findOrCreatePerson(
+    trx: TransactionClientContract,
+    personData: any
+  ): Promise<Person> {
     let person = await Person.query()
       .where('familyName', personData.familyName)
       .andWhere('givenName', personData.givenName)
       .andWhere('typeKey', personData.typeKey)
-      .first();
+      .first()
 
     if (!person) {
-      person = await this.createPerson(trx, personData, personData.tags);
+      person = await this.createPerson(trx, personData, personData.tags)
     }
 
-    return person;
+    return person
   }
 
   /**

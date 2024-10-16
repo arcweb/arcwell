@@ -10,7 +10,10 @@ export default class UserService {
    * @param userData - The data to find or create the User.
    * @returns A Promise that resolves to the found or newly created User.
    */
-  public static async findOrCreateUserByEmail(trx: TransactionClientContract, userData: any): Promise<User> {
+  public static async findOrCreateUserByEmail(
+    trx: TransactionClientContract,
+    userData: any
+  ): Promise<User> {
     let user = await User.findBy('email', userData.email)
 
     if (!user) {

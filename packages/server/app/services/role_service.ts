@@ -10,7 +10,10 @@ export default class RoleService {
    * @param roleData - Optional data to create the role if it does not exist.
    * @returns A Promise that resolves to the found or newly created Role.
    */
-  public static async findOrCreateRoleByName(trx: TransactionClientContract, roleData: any): Promise<Role> {
+  public static async findOrCreateRoleByName(
+    trx: TransactionClientContract,
+    roleData: any
+  ): Promise<Role> {
     let role = await Role.findBy('name', roleData.name)
 
     if (!role) {

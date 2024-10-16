@@ -4,20 +4,23 @@ import { setTagsForObject } from '#helpers/query_builder'
 
 export default class PersonTypeService {
   /**
- * Find or create a PersonType by its key
- * 
- * @param trx - Transaction client
- * @param personTypeData - Data to find or create the person type
- * @returns - The found or created PersonType
- */
-  public static async findOrCreatePersonTypeByKey(trx: TransactionClientContract, personTypeData: any): Promise<PersonType> {
-    let personType = await PersonType.findBy('key', personTypeData.key);
+   * Find or create a PersonType by its key
+   *
+   * @param trx - Transaction client
+   * @param personTypeData - Data to find or create the person type
+   * @returns - The found or created PersonType
+   */
+  public static async findOrCreatePersonTypeByKey(
+    trx: TransactionClientContract,
+    personTypeData: any
+  ): Promise<PersonType> {
+    let personType = await PersonType.findBy('key', personTypeData.key)
 
     if (!personType) {
-      personType = await this.createPersonType(trx, personTypeData, personTypeData.tags);
+      personType = await this.createPersonType(trx, personTypeData, personTypeData.tags)
     }
 
-    return personType;
+    return personType
   }
 
   /**

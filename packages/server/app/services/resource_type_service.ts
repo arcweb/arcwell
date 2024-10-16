@@ -4,13 +4,16 @@ import { setTagsForObject } from '#helpers/query_builder'
 
 export default class ResourceTypeService {
   /**
- * Finds or creates a ResourceType by key.
- *
- * @param trx - The transaction object to run the database operations.
- * @param resourceTypeData - The data to find or create the ResourceType.
- * @returns A Promise that resolves to the found or newly created ResourceType.
- */
-  public static async findOrCreateResourceTypeByKey(trx: TransactionClientContract, resourceTypeData: any): Promise<ResourceType> {
+   * Finds or creates a ResourceType by key.
+   *
+   * @param trx - The transaction object to run the database operations.
+   * @param resourceTypeData - The data to find or create the ResourceType.
+   * @returns A Promise that resolves to the found or newly created ResourceType.
+   */
+  public static async findOrCreateResourceTypeByKey(
+    trx: TransactionClientContract,
+    resourceTypeData: any
+  ): Promise<ResourceType> {
     let resourceType = await ResourceType.findBy('key', resourceTypeData.key)
 
     if (!resourceType) {
