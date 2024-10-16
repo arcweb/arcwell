@@ -6,7 +6,7 @@ export const CohortSchema = z
   .object({
     id: z.string().uuid(),
     name: z.string(),
-    description: z.string().optional(),
+    description: z.string().optional().nullable(),
     tags: z.array(z.string()).optional(),
     people: z.lazy(() => z.array(PersonSchema).optional()),
     peopleCount: z.number().optional().nullable(),
