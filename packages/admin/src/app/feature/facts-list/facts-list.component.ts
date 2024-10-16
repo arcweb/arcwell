@@ -27,6 +27,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 
 @Component({
   selector: 'aw-all-facts',
@@ -53,6 +54,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
     MatSortModule,
     FactsTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [FactsListStore],
   templateUrl: './facts-list.component.html',

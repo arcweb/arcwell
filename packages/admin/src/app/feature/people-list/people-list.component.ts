@@ -15,6 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 
 @Component({
   selector: 'aw-people-list',
@@ -28,6 +29,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
     MatIconButton,
     PeopleTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [PeopleListStore],
   templateUrl: './people-list.component.html',

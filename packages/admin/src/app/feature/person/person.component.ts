@@ -115,7 +115,7 @@ export class PersonComponent implements OnInit {
     ),
   });
 
-  cohortColumns: string[] = ['id', 'name', 'description', 'delete'];
+  cohortColumns: string[] = ['name', 'description', 'delete'];
   cohortsDataSource = new MatTableDataSource<CohortModel>();
   pageSizes = [10, 20, 50];
 

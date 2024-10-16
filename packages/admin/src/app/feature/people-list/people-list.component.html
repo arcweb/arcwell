@@ -1,6 +1,8 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'People'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  [enableFilter]="peopleListStore.people().length > 0"
+  [enableSearch]="peopleListStore.people().length > 0"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {
@@ -21,4 +23,8 @@
     (onSortChanged)="sortChange($event)"
     (onViewAccountClicked)="viewAccount($event)"
   ></aw-people-table>
+} @else {
+  <aw-no-records
+    [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  ></aw-no-records>
 }
