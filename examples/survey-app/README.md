@@ -70,7 +70,7 @@ Seed the database with survey fact types and a survey user. The seed script will
 npm run seed
 ```
   
-Update these values to change the url for seeding or user being authenticated for the calls.
+Update these values in seed-script.ts to change the url for seeding or user being authenticated for the calls.
 ```bash
 // Change these values to match your environment
 const backendUrl = 'http://localhost:3333/api/v1';
