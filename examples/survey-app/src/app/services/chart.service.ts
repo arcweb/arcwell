@@ -67,7 +67,6 @@ export class ChartService {
       }
     } else if (config.scoreKey) {
       const scores = facts.map((fact: any) => fact[config.scoreKey!] ?? 0);
-
       series = [
         {
           data: scores,

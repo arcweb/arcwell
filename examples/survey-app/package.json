@@ -36,6 +36,7 @@
     "@ionic/angular": "^8.0.0",
     "axios": "^1.7.7",
     "capacitor-secure-storage-plugin": "^0.10.0",
+    "dotenv": "^16.4.5",
     "echarts": "^5.5.1",
     "ionicons": "^7.2.1",
     "ngx-echarts": "^18.0.0",

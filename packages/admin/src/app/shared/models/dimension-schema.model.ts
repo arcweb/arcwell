@@ -4,7 +4,7 @@ export class DimensionSchemaModel {
   public key: string;
   public name: string;
   public dataType: string;
-  public dataUnit: string;
+  public dataUnit: string | null;
   public isRequired: boolean;
 
   constructor(data: DimensionSchemaType) {

@@ -152,7 +152,7 @@ export class GenericSurveyComponent {
     this.answers[dimensionKey] = Number(value);
     this.calculateScore();
     this.checkAllQuestionsAnswered();
-    this.goToNext();
+    // this.goToNext();
   }
 
   setFollowUpResponse(value: number) {

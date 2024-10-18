@@ -58,7 +58,8 @@ export class ResultsPage implements OnInit {
     this.loading = true;
     this.factTypeService.getFactTypes().subscribe({
       next: (response) => {
-        this.factTypes = response.data;
+        const surveyFactTypes = response.data.filter((factType) => factType.tags.some((tag) => tag === 'survey'));
+        this.factTypes = surveyFactTypes;
       },
       error: (error) => {
         this.toastService.presentToast(

@@ -161,7 +161,7 @@ export class OksSurveyComponent {
     this.answers[dimensionKey] = value;
     this.calculateScore(dimensionKey.includes('left') ? 'left' : 'right');
     this.checkAllQuestionsAnswered();
-    this.goToNext();
+    // this.goToNext();
   }
 
   startSurvey(): void {
