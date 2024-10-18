@@ -80,7 +80,13 @@ export class ChartService {
       title: {
         text: `Your previous ${factType.name} results`,
         left: 'center',
+        width: '90%',
+        textStyle: {
+          overflow: 'break',
+          lineHeight: 20,
+        },
       },
+
       legend: factType.key === 'survey_oks' ? {
         data: series.map((s) => s.name),
         bottom: '0%',
