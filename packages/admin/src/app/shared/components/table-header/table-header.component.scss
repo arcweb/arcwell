@@ -18,5 +18,9 @@
     .table-header-button-icon {
       margin-right: 8px;
     }
+
+    &.disabled {
+      color: colors.$gray-60;
+    }
   }
 }
