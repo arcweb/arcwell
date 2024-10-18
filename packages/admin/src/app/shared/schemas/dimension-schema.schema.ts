@@ -6,7 +6,7 @@ export const DimensionSchemaSchema: any = z.object({
   key: z.string(),
   name: z.string(),
   dataType: z.string(),
-  dataUnit: z.string().optional(),
+  dataUnit: z.string().optional().nullable(),
   isRequired: z.boolean(),
 });
 
@@ -15,7 +15,7 @@ export const DimensionSchemaUpdateSchema = DimensionSchemaSchema.extend({
   key: z.string().optional(),
   name: z.string().optional(),
   dataType: z.string(),
-  dataUnit: z.string().optional(),
+  dataUnit: z.string().optional().nullable(),
   isRequired: z.boolean(),
 });
 
