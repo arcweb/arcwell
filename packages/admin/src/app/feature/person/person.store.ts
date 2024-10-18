@@ -83,11 +83,21 @@ export const PersonStore = signalStore(
         );
         if (personResp.errors) {
           patchState(store, { isReady: true }, setErrors(personResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else if (personTypesResp.errors) {
           patchState(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -112,6 +122,11 @@ export const PersonStore = signalStore(
             store,
             { isReady: true },
             setErrors(personTypesResp.errors),
+          );
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Type', 'Fetching', false),
+            ToastLevel.ERROR,
           );
         } else {
           patchState(
@@ -144,6 +159,11 @@ export const PersonStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -155,7 +175,10 @@ export const PersonStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Updated person.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -170,6 +193,11 @@ export const PersonStore = signalStore(
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Creating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -182,7 +210,10 @@ export const PersonStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Created person.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Created'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -197,6 +228,11 @@ export const PersonStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Deleting', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -204,7 +240,10 @@ export const PersonStore = signalStore(
             setFulfilled(),
           );
 
-          toastService.sendMessage('Deleted person.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person', 'Deleted'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -219,10 +258,18 @@ export const PersonStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(store, setFulfilled());
 
-          toastService.sendMessage('Tags updated.', ToastLevel.SUCCESS);
+          toastService.sendMessage(
+            toastService.createCrudMessage('Tags', 'Updated'),
+            ToastLevel.SUCCESS,
+          );
 
           // refresh the list
           refreshService.triggerRefresh();
@@ -251,6 +298,11 @@ export const PersonStore = signalStore(
 
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohorts', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
@@ -269,6 +321,11 @@ export const PersonStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Updating', false),
+            ToastLevel.ERROR,
+          );
         } else {
           await this.loadCohortsPage(
             store.cohortsListOptions().limit,
@@ -276,7 +333,7 @@ export const PersonStore = signalStore(
             store.cohortsListOptions().pageIndex,
           );
           toastService.sendMessage(
-            'Cohort added to person',
+            toastService.createCrudMessage('Cohort', 'Updated'),
             ToastLevel.SUCCESS,
           );
         }
@@ -288,6 +345,11 @@ export const PersonStore = signalStore(
         );
         if (resp && resp.errors) {
           patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort', 'Removing', false),
+            ToastLevel.ERROR,
+          );
         } else {
           const isLastCohortOnPage = isRelationLastOnPage(
             store.person().cohortsCount,
@@ -309,8 +371,9 @@ export const PersonStore = signalStore(
             offset,
             pageIndex,
           );
+
           toastService.sendMessage(
-            'Cohort removed from person',
+            toastService.createCrudMessage('Cohort', 'Removed'),
             ToastLevel.SUCCESS,
           );
         }

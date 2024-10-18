@@ -17,31 +17,35 @@
       ></fa-icon>
       Add New
     </button>
-    <button
-      mat-button
-      matTooltip="Filter"
-      class="table-header-button label-medium font-weight-regular"
-    >
-      <fa-icon
-        aria-label="Filter icon button"
-        class="table-header-button-icon"
-        [icon]="faBars"
-        size="xl"
-      ></fa-icon>
-      Filter
-    </button>
-    <button
-      mat-button
-      matTooltip="Search"
-      class="table-header-button label-medium font-weight-regular"
-    >
-      <fa-icon
-        aria-label="Search icon button"
-        class="table-header-button-icon"
-        [icon]="faMagnifyingGlass"
-        size="xl"
-      ></fa-icon>
-      Search
-    </button>
+    @if (enableFilter()) {
+      <button
+        mat-button
+        matTooltip="Filter"
+        class="table-header-button label-medium font-weight-regular"
+      >
+        <fa-icon
+          aria-label="Filter icon button"
+          class="table-header-button-icon"
+          [icon]="faBars"
+          size="xl"
+        ></fa-icon>
+        Filter
+      </button>
+    }
+    @if (enableSearch()) {
+      <button
+        mat-button
+        matTooltip="Search"
+        class="table-header-button label-medium font-weight-regular"
+      >
+        <fa-icon
+          aria-label="Search icon button"
+          class="table-header-button-icon"
+          [icon]="faMagnifyingGlass"
+          size="xl"
+        ></fa-icon>
+        Search
+      </button>
+    }
   </div>
 </div>

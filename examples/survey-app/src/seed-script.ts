@@ -1,8 +1,10 @@
 const axios = require('axios');
-const dotenv = require('dotenv');
 const readline = require('readline');
 
-dotenv.config();
+// Change these values to match your environment
+const backendUrl = 'http://localhost:3333/api/v1';
+const authUserEmail = 'dev-admin@example.com';
+const authUserPassword = 'password';
 
 interface InstallResponse {
   data: {
@@ -95,11 +97,6 @@ interface DimensionSchema {
   dataUnit: string;
   isRequired: boolean;
 }
-
-// Change these values to match your environment
-const backendUrl = 'http://localhost:3333/api/v1';
-const authUserEmail = 'dev-admin@example.com';
-const authUserPassword = 'password';
 
 // Function to login and get the auth token
 async function login(email: string, password: string): Promise<string> {

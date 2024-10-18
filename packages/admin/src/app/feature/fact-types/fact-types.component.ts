@@ -24,6 +24,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 @Component({
   selector: 'aw-fact-types',
   standalone: true,
@@ -46,6 +47,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     RouterLink,
     MatSortModule,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [FactTypesStore],
   templateUrl: './fact-types.component.html',

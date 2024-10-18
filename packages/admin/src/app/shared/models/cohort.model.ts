@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { CohortNewType, CohortType } from '@schemas/cohort.schema';
 import { PersonModel } from './person.model';
-import { PersonType } from '@schemas/person.schema';
+import { PersonNewType, PersonType } from '@schemas/person.schema';
 
 export class CohortModel {
   public id?: string;
@@ -22,8 +22,7 @@ export class CohortModel {
     this.tags = data.tags;
     this.people = data.people
       ? data.people.map(
-          (person: PersonType /* TODO Add PersonNewType */) =>
-            new PersonModel(person),
+          (person: PersonType | PersonNewType) => new PersonModel(person),
         )
       : undefined;
     this.peopleCount = data.peopleCount ||= 0;

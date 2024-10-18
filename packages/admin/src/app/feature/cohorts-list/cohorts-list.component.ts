@@ -13,6 +13,7 @@ import { FeatureStore } from '@app/shared/store/feature.store';
 import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 @Component({
   selector: 'aw-cohorts-list',
   standalone: true,
@@ -24,6 +25,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
     MatIconButton,
     CohortTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [CohortsListStore],
   templateUrl: './cohorts-list.component.html',

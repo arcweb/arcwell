@@ -27,6 +27,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 
 @Component({
   selector: 'aw-events-list',
@@ -53,6 +54,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
     MatButton,
     EventsTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [EventsListStore],
   templateUrl: './events-list.component.html',

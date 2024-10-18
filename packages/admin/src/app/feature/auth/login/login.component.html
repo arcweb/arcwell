@@ -6,15 +6,6 @@
         [loginStatus]="authStore.loginStatus()"
         (login)="loginNow($event)"
       ></aw-login-form>
-      <button
-        mat-button
-        type="button"
-        color="primary"
-        class="default-button create-account body-small"
-        routerLink="/auth/register"
-      >
-        Create Account
-      </button>
     } @else {
       <mat-spinner diameter="50" />
     }

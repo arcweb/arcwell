@@ -19,6 +19,8 @@ import { firstValueFrom } from 'rxjs';
 import { EventTypeModel } from '@app/shared/models/event-type.model';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '@app/shared/models';
 
 interface EventTypesState {
   eventTypes: EventTypeModel[];
@@ -44,62 +46,80 @@ export const EventTypesStore = signalStore(
   withDevtools('eventTypes'),
   withState(initialState),
   withRequestStatus(),
-  withMethods((store, eventTypesService = inject(EventTypeService)) => ({
-    async load(props: {
-      limit: number;
-      offset: number;
-      sort?: string;
-      order?: SortDirection;
-      pageIndex?: number;
-    }) {
-      patchState(
-        store,
-        {
-          ...initialState,
-          ...props,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(eventTypesService.getEventTypes(props));
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+  withMethods(
+    (
+      store,
+      eventTypesService = inject(EventTypeService),
+      toastService = inject(ToastService),
+    ) => ({
+      async load(props: {
+        limit: number;
+        offset: number;
+        sort?: string;
+        order?: SortDirection;
+        pageIndex?: number;
+      }) {
         patchState(
           store,
-          { eventTypes: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            ...initialState,
+            ...props,
+          },
+          setPending(),
         );
-      }
-    },
-    async loadPage(event: PageEvent) {
-      const newOffset = event.pageIndex * event.pageSize;
-      patchState(
-        store,
-        {
-          offset: newOffset,
-          pageIndex: event.pageIndex,
-          limit: event.pageSize,
-        },
-        setPending(),
-      );
-      const resp = await firstValueFrom(
-        eventTypesService.getEventTypes({
-          limit: store.limit(),
-          offset: store.offset(),
-        }),
-      );
+        const resp = await firstValueFrom(
+          eventTypesService.getEventTypes(props),
+        );
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
 
-      if (resp.errors) {
-        patchState(store, setErrors(resp.errors));
-      } else {
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { eventTypes: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+      async loadPage(event: PageEvent) {
+        const newOffset = event.pageIndex * event.pageSize;
         patchState(
           store,
-          { eventTypes: resp.data, totalData: resp.meta.count },
-          setFulfilled(),
+          {
+            offset: newOffset,
+            pageIndex: event.pageIndex,
+            limit: event.pageSize,
+          },
+          setPending(),
         );
-      }
-    },
-  })),
+        const resp = await firstValueFrom(
+          eventTypesService.getEventTypes({
+            limit: store.limit(),
+            offset: store.offset(),
+          }),
+        );
+
+        if (resp.errors) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          patchState(
+            store,
+            { eventTypes: resp.data, totalData: resp.meta.count },
+            setFulfilled(),
+          );
+        }
+      },
+    }),
+  ),
   withHooks({
     onInit(store) {
       store.load({ limit: store.limit(), offset: store.offset() });
