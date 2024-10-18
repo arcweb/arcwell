@@ -29,10 +29,7 @@ export class AppComponent implements OnInit {
 
   ngAfterViewInit() {
     this.platform.ready().then(async () => {
-      setTimeout(() => {
-        SplashScreen.hide();
-      }, 3000);
-      // SplashScreen.hide();
+      SplashScreen.hide();
     });
   }
 }
