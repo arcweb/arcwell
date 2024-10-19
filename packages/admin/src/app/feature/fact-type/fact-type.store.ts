@@ -185,7 +185,11 @@ export const FactTypeStore = signalStore(
       ) {
         const newDimensionSchemas = store.dimensionSchemasCopy().slice();
 
-        newDimensionSchemas[index] = dimensionSchema;
+        if (index === -1) {
+          newDimensionSchemas.push(dimensionSchema);
+        } else {
+          newDimensionSchemas[index] = dimensionSchema;
+        }
         patchState(store, {
           dimensionSchemasCopy: newDimensionSchemas,
         });

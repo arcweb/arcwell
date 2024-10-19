@@ -51,11 +51,17 @@ import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactTypeNewType } from '@schemas/fact-type.schema';
 import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
-import { faPenToSquare, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCirclePlus,
+  faPenToSquare,
+  faTrashCan,
+} from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DetailStore } from '@feature/detail/detail.store';
 import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
+import { NoRecordsGenericComponent } from '@shared/components/no-records-generic/no-records-generic.component';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'aw-fact-type',
@@ -89,6 +95,8 @@ import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
     DetailHeaderComponent,
     FaIconComponent,
     MatTooltip,
+    NoRecordsGenericComponent,
+    MatCheckbox,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -132,8 +140,8 @@ export class FactTypeComponent implements OnInit {
   });
 
   displayedColumns: string[] = [
-    'key',
     'name',
+    'key',
     'dataType',
     'dataUnit',
     'isRequired',
@@ -255,12 +263,33 @@ export class FactTypeComponent implements OnInit {
     this.tagsForCreate = tags;
   }
 
+  onCreateDimensionSchema() {
+    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
+      minHeight: '520px',
+      width: '800px',
+      data: {
+        title: 'Create Dimension Schema',
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.factTypeStore.setDimensionSchemas(-1, result);
+        this.factTypeForm.controls.dimensionSchemasCopy.setValue(
+          this.factTypeStore.dimensionSchemasCopy(),
+        );
+        this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+      }
+    });
+  }
+
   onEditDimensionSchema(index: number, element: DimensionSchemaType) {
     this.editingRow = index;
     console.log('Edit row ', index, ', ', element);
 
     const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
-      minHeight: '480px',
+      minHeight: '520px',
       width: '800px',
       data: {
         title: 'Edit Dimension Schema',
@@ -291,4 +320,5 @@ export class FactTypeComponent implements OnInit {
 
   protected readonly faPenToSquare = faPenToSquare;
   protected readonly faTrashCan = faTrashCan;
+  protected readonly faCirclePlus = faCirclePlus;
 }

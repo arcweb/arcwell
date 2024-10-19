@@ -1,27 +1,23 @@
 <h5 mat-dialog-title>{{ data.title ?? 'Confirmation' }}</h5>
 <mat-dialog-content>
+  <div class="top-spacer"></div>
   <form [formGroup]="dimensionSchemaForm">
-    <!--    @if (factTypeStore.isErrored()) {-->
-    <!--      <aw-error-container [errors]="factTypeStore.errors()" />-->
-    <!--    }-->
-
-    <mat-form-field appearance="outline">
-      <mat-label>Key</mat-label>
-      <input matInput placeholder="Key" formControlName="key" />
-      @if (dimensionSchemaForm.controls.key.hasError('required')) {
-        <mat-error>
-          Key is
-          <strong>required</strong>
-        </mat-error>
-      }
-    </mat-form-field>
-
     <mat-form-field appearance="outline">
       <mat-label>Name</mat-label>
       <input matInput placeholder="Name" formControlName="name" />
       @if (dimensionSchemaForm.controls.name.hasError('required')) {
         <mat-error>
           Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="Key" formControlName="key" />
+      @if (dimensionSchemaForm.controls.key.hasError('required')) {
+        <mat-error>
+          Key is
           <strong>required</strong>
         </mat-error>
       }

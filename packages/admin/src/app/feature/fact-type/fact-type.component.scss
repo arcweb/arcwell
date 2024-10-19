@@ -4,8 +4,19 @@
   align-items: center;
 
   button {
-    margin: 0;
+    margin-right: 15px;
     padding: 0;
     gap: 0;
+    min-width: 0;
   }
+}
+
+.dimension-schema-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.table-container {
+  margin-bottom: 50px;
 }
