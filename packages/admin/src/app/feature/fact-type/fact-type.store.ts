@@ -26,7 +26,7 @@ import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
-  // dimensionSchemas: DimensionSchemaType[] | null;
+  dimensionSchemasCopy: DimensionSchemaType[] | [];
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
@@ -34,7 +34,7 @@ interface FactTypeState {
 
 const initialState: FactTypeState = {
   factType: null,
-  // dimensionSchemas: null,
+  dimensionSchemasCopy: [],
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
@@ -67,11 +67,13 @@ export const FactTypeStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionSchemasCopy =
+            resp.data.dimensionSchemas?.slice() ?? [];
           patchState(
             store,
             {
               factType: resp.data,
-              // dimensionSchemas: resp.data.dimensionSchemas,
+              dimensionSchemasCopy: dimensionSchemasCopy,
               isReady: true,
             },
             setFulfilled(),
@@ -181,28 +183,28 @@ export const FactTypeStore = signalStore(
         index: number,
         dimensionSchema: DimensionSchemaType,
       ) {
-        const newDimensionSchemas = store.factType().dimensionSchemas.slice();
+        const newDimensionSchemas = store.dimensionSchemasCopy().slice();
 
         newDimensionSchemas[index] = dimensionSchema;
         patchState(store, {
-          factType: {
-            ...store.factType(),
-            dimensionSchemas: newDimensionSchemas,
-          },
+          dimensionSchemasCopy: newDimensionSchemas,
+        });
+      },
+      async resetDimensionSchemas() {
+        const newDimensionSchemas = store.factType().dimensionSchemas.slice();
+        patchState(store, {
+          dimensionSchemasCopy: newDimensionSchemas,
         });
       },
       async deleteDimensionSchema(indexToRemove: number) {
-        const dimensionSchemas = store.factType().dimensionSchemas.slice();
+        const dimensionSchemas = store.dimensionSchemasCopy().slice();
 
         const newDimensionSchemas = dimensionSchemas.filter(
           (_: DimensionSchemaType, i: number) => i !== indexToRemove,
         );
 
         patchState(store, {
-          factType: {
-            ...store.factType(),
-            dimensionSchemas: newDimensionSchemas,
-          },
+          dimensionSchemasCopy: newDimensionSchemas,
         });
       },
       async setTags(tags: string[]) {
@@ -235,6 +237,5 @@ export const FactTypeStore = signalStore(
     tagStrings: computed(
       () => factType()?.tags?.map((tag: string) => tag) ?? [],
     ),
-    dimensionSchemas: computed(() => factType().dimensionSchemas ?? []),
   })),
 );

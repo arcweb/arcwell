@@ -39,11 +39,11 @@
       <input matInput placeholder="Name" formControlName="description" />
     </mat-form-field>
 
-    @if (factTypeStore.dimensionSchemas()) {
+    @if (factTypeStore.dimensionSchemasCopy()) {
       <h5>Dimension Schemas</h5>
       <table
         mat-table
-        [dataSource]="factTypeStore.dimensionSchemas() ?? []"
+        [dataSource]="factTypeStore.dimensionSchemasCopy() ?? []"
         class="mat-elevation-z0"
       >
         <ng-container matColumnDef="key">
@@ -121,7 +121,7 @@
           formControlName="dimensionSchemas"
           rows="10"
         ></textarea>
-        @if (factTypeForm.controls.dimensionSchemas.hasError('required')) {
+        @if (factTypeForm.controls.dimensionSchemasCopy.hasError('required')) {
           <mat-error>
             Dimension Schemas are
             <strong>required</strong>
