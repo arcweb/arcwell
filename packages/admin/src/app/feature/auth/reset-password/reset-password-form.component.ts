@@ -45,6 +45,8 @@ export class ResetPasswordComponent implements OnInit {
       code: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
       confirmPassword: new FormControl('', [Validators.required]),
+      // Honey pot trap
+      credential: new FormControl(null),
     },
     { validators: InputMatch('password', 'confirmPassword') },
   );
@@ -60,11 +62,19 @@ export class ResetPasswordComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          this.authStore.resetPassword(this.resetForm.value).then(() => {
-            if (this.authStore.loginStatus() !== 'error') {
-              this.router.navigate(['auth', 'login']);
-            }
-          });
+          // Do not submit form and call back end if honey pot field filled out
+          if (
+            !this.resetForm.controls.credential.value &&
+            this.resetForm.controls.credential.value !== ''
+          ) {
+            this.authStore.resetPassword(this.resetForm.value).then(() => {
+              if (this.authStore.loginStatus() !== 'error') {
+                this.router.navigate(['auth', 'login']);
+              }
+            });
+          } else {
+            this.router.navigate(['/']);
+          }
         }
       });
   }

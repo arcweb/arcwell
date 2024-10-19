@@ -41,6 +41,8 @@ export class ForgotPasswordComponent implements OnInit {
 
   forgotForm = new FormGroup({
     email: new FormControl('', [Validators.email, Validators.required]),
+    // Honey pot trap
+    credential: new FormControl(null),
   });
 
   ngOnInit() {
@@ -51,11 +53,16 @@ export class ForgotPasswordComponent implements OnInit {
           (event as ControlEvent) instanceof FormSubmittedEvent &&
           this.forgotForm.controls.email.value
         ) {
-          this.authStore.forgotPassword(
-            this.forgotForm.controls.email.value,
-            location.origin,
-          );
-
+          // Do not submit form and call back end if honey pot field filled out
+          if (
+            !this.forgotForm.controls.credential.value &&
+            this.forgotForm.controls.credential.value !== ''
+          ) {
+            this.authStore.forgotPassword(
+              this.forgotForm.controls.email.value,
+              location.origin,
+            );
+          }
           this.router.navigate(['/']);
         }
       });
