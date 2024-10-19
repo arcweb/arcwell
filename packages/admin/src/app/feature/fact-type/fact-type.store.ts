@@ -26,6 +26,7 @@ import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
+  // dimensionSchemas: DimensionSchemaType[] | null;
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
@@ -33,6 +34,7 @@ interface FactTypeState {
 
 const initialState: FactTypeState = {
   factType: null,
+  // dimensionSchemas: null,
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
@@ -69,6 +71,7 @@ export const FactTypeStore = signalStore(
             store,
             {
               factType: resp.data,
+              // dimensionSchemas: resp.data.dimensionSchemas,
               isReady: true,
             },
             setFulfilled(),
@@ -174,18 +177,31 @@ export const FactTypeStore = signalStore(
           detailStore.clearDetailId();
         }
       },
-      async setDimension(index: number, dimension: DimensionSchemaType) {
-        const updatedDimensionSchemas = store.factType().dimensionSchemas;
+      async setDimensionSchemas(
+        index: number,
+        dimensionSchema: DimensionSchemaType,
+      ) {
+        const newDimensionSchemas = store.factType().dimensionSchemas.slice();
 
-        updatedDimensionSchemas[index] = dimension;
-        console.log(
-          'updatedDimensionSchemas-=========',
-          updatedDimensionSchemas,
-        );
+        newDimensionSchemas[index] = dimensionSchema;
         patchState(store, {
           factType: {
             ...store.factType(),
-            dimensionSchemas: updatedDimensionSchemas,
+            dimensionSchemas: newDimensionSchemas,
+          },
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensionSchemas = store.factType().dimensionSchemas.slice();
+
+        const newDimensionSchemas = dimensionSchemas.filter(
+          (_: DimensionSchemaType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          factType: {
+            ...store.factType(),
+            dimensionSchemas: newDimensionSchemas,
           },
         });
       },

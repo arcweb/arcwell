@@ -171,9 +171,12 @@ export class FactTypeComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.factTypeForm.value;
-          const dimensionsSquemaJson = formValue.dimensionSchemas ?? [];
-          // ? JSON.parse(formValue.dimensionSchemas)
-          // : [];
+
+          // const dimensionsSchemaJson = formValue.dimensionSchemas ?? [];
+          // // ? JSON.parse(formValue.dimensionSchemas)
+          // // : [];
+          const dimensionsSquemaJson =
+            this.factTypeStore.factType()?.dimensionSchemas ?? [];
 
           const factTypeFormPayload: FactTypeNewType = {
             name: this.factTypeForm.value['name'] ?? '',
@@ -223,6 +226,7 @@ export class FactTypeComponent implements OnInit {
           key: this.factTypeStore.factType()?.key,
           name: this.factTypeStore.factType()?.name,
           description: this.factTypeStore.factType()?.description,
+          // TODO add dimensionSchema here
         });
       }
       this.factTypeStore.toggleEditMode();
@@ -271,10 +275,16 @@ export class FactTypeComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log('result=', result);
-        this.factTypeStore.setDimension(this.editingRow, result);
+        this.factTypeForm.controls.dimensionSchemas.markAsDirty();
+        this.factTypeStore.setDimensionSchemas(this.editingRow, result);
       }
       this.editingRow = -1;
     });
+  }
+
+  onDeleteDimensionSchema(index: number) {
+    this.factTypeForm.controls.dimensionSchemas.markAsDirty();
+    this.factTypeStore.deleteDimensionSchema(index);
   }
 
   protected readonly faPenToSquare = faPenToSquare;

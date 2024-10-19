@@ -39,11 +39,11 @@
       <input matInput placeholder="Name" formControlName="description" />
     </mat-form-field>
 
-    @if (factTypeStore.factType()?.dimensionSchemas?.length > 0) {
-      <h5>Dimensions Types</h5>
+    @if (factTypeStore.dimensionSchemas()) {
+      <h5>Dimension Schemas</h5>
       <table
         mat-table
-        [dataSource]="factTypeStore.factType().dimensionSchemas"
+        [dataSource]="factTypeStore.dimensionSchemas() ?? []"
         class="mat-elevation-z0"
       >
         <ng-container matColumnDef="key">
@@ -81,6 +81,7 @@
                 (click)="onEditDimensionSchema(i, element)"
                 class="detail-header-button"
                 matTooltip="Edit"
+                [disabled]="!factTypeStore.inEditMode()"
               >
                 <fa-icon
                   aria-label="Edit icon"
@@ -92,9 +93,10 @@
               <button
                 mat-button
                 type="button"
-                (click)="onEditDimensionSchema(i, element)"
+                (click)="onDeleteDimensionSchema(i)"
                 class="detail-header-button"
                 matTooltip="Delete"
+                [disabled]="!factTypeStore.inEditMode()"
               >
                 <fa-icon
                   aria-label="Delete icon"
