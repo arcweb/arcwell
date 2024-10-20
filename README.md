@@ -282,25 +282,62 @@ The latest news and information about Arcwell is often available on
 > Arcwell is developed by Arcweb Technologies, a digital product development company dedicated to advancing healthcare through technology.
 
 **Why is it free?**
-> Arcweb Technologies is on a mission to democratize health and wellness. That’s why we’ve built Arcwell to reduce barriers to healthcare innovation, such as high development costs, complex technical requirements, strict security compliance, and lengthy timeframes for deployment. Some future modules may require paid subscriptions.
+> Arcweb Technologies is on a mission to democratize health and
+> wellness. That’s why we’ve built Arcwell to reduce barriers to 
+> healthcare innovation, such as high development costs, complex 
+> technical requirements, strict security compliance, and lengthy 
+> timeframes for deployment. Some future modules may require paid 
+> subscriptions.
 
 **How do you make money?**
-> Arcweb aims to generate revenue through partnerships, consulting, and support services related to the Arcwell platform.
+> Arcweb aims to generate revenue through partnerships, consulting, and
+> support services related to the Arcwell platform. 
+> [Reach out to us](https://arcwebtech.com) for more information.
 
 **Can I use this in a product I hope to commercialize?**
-> Absolutely! You can utilize Arcwell in commercial products, provided you adhere to the licensing terms.
+> Absolutely! You can utilize Arcwell in commercial products, provided 
+> you adhere to the licensing terms.
 
 **Can I use this in my highly compliant environment?**
-> Yes, Arcwell is designed to meet compliance requirements, making it suitable for use in regulated environments. Note: certain compliance environments may require our forthcoming Compliance module (a paid product).
+> Yes, Arcwell is designed to meet compliance requirements, making it 
+> suitable for use in regulated environments. Note: certain compliance 
+> environments may require our forthcoming Compliance module (a paid 
+> product).
 
 **What license is Arcwell distributed under?**
-> Arcwell is distributed under the Apache 2.0 license, allowing you to freely use, modify, and distribute the software, even in commercial applications, as long as you comply with the license terms. All packages and dependencies used in Arcwell are open source. Check out our Software Bill of Materials for more detailed information.
+> Arcwell is distributed under the Apache 2.0 license, allowing you to
+> freely use, modify, and distribute the software, even in commercial 
+> applications, as long as you comply with the license terms. All 
+> packages and dependencies used in Arcwell are open source. Check out 
+> our Software Bill of Materials for more detailed information.
 
 **Can I contribute to Arcwell?**
-> We welcome community involvement through custom code, documentation, and feature suggestions, but community-developed features cannot be incorporated into the codebase just yet, as we are working on a streamlined review process to ensure quality standards are maintained.
+> We welcome community involvement through custom code, documentation, 
+> and feature suggestions, but community-developed features cannot be 
+> incorporated into the codebase just yet, as we are working on a 
+> streamlined review process to ensure quality standards are maintained.
 
 
+## Arcwell Team
 
-Licensed under the [Apache 2.0 License](./LICENSE)
+Arcwell was built with ❤️ in and around the Philadelphia region by 
+members of the Arcweb Technologies team.
 
-(C) Copyright 2024 [Arcweb Technologies](https://arcwebtech.com)
+<a href="https://github.com/timgetz"><img src="https://github.com/timgetz.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/mccolin"><img src="https://github.com/mccolin.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/mberlin-arcweb"><img src="https://github.com/mberlin-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/tmolumby"><img src="https://github.com/tmolumby.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/gregvuzit"><img src="https://github.com/gregvuzit.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/alex-smith-arcweb"><img src="https://github.com/alex-smith-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/hswope-arcweb"><img src="https://github.com/hswope-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/maudiakent"><img src="https://github.com/maudiakent.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/lendamico"><img src="https://github.com/lendamico.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/cera"><img src="https://github.com/cera.png?size=50" style="border-radius:50%"/></a>
+
+---
+
+Licensed under the [Apache 2.0 License](./LICENSE)  
+Copyright 2024 [Arcweb Technologies](https://arcwebtech.com)
+
+<img src="doc/arcweb-logo.png" height="75" alt="Arcweb Technologies"/>
+
