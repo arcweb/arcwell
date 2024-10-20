@@ -40,6 +40,9 @@ import { CohortModel } from '@app/shared/models/cohort.model';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { PersonNewType, PersonType } from '@app/shared/schemas/person.schema';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionComponent } from '@shared/components/dimension/dimension.component';
+import { DimensionType } from '@schemas/dimension.schema';
+import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
 
 @Component({
   selector: 'aw-person',
@@ -63,6 +66,7 @@ import { DetailStore } from '@feature/detail/detail.store';
     ObjectSelectorFormFieldComponent,
     CohortTableComponent,
     DetailHeaderComponent,
+    DimensionComponent,
   ],
   providers: [PersonStore, DetailStore],
   templateUrl: './person.component.html',
@@ -80,6 +84,8 @@ export class PersonComponent implements OnInit {
   @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
+
+  editingRow = -1;
 
   personForm = new FormGroup({
     familyName: new FormControl(
@@ -103,6 +109,10 @@ export class PersonComponent implements OnInit {
       },
       Validators.required,
     ),
+    dimensionsCopy: new FormControl<DimensionType[]>({
+      value: [],
+      disabled: true,
+    }),
   });
 
   cohortForm = new FormGroup({
@@ -152,6 +162,7 @@ export class PersonComponent implements OnInit {
             familyName: this.personStore.person()?.familyName,
             givenName: this.personStore.person()?.givenName,
             personType: this.personStore.person()?.personType,
+            dimensionsCopy: this.personStore.dimensionsCopy() ?? [],
           });
         });
       }
@@ -161,17 +172,20 @@ export class PersonComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          if (this.personStore.inCreateMode()) {
-            const personFormPayload: PersonType | PersonNewType = {
-              ...this.personForm.value,
-            };
+          const personFormPayload: PersonType | PersonNewType = {
+            familyName: this.personForm.value['familyName'],
+            givenName: this.personForm.value['givenName'],
+            personType: this.personForm.value['personType'],
+            dimensions: this.personForm.value['dimensionsCopy'] ?? [],
+          };
 
+          if (this.personStore.inCreateMode()) {
             if (this.tagsForCreate.length > 0) {
               personFormPayload['tags'] = this.tagsForCreate;
             }
             this.personStore.createPerson(personFormPayload);
           } else {
-            this.personStore.updatePerson(this.personForm.value);
+            this.personStore.updatePerson(personFormPayload);
           }
           this.detailStore.setDrawerOpen(false);
         }
@@ -199,11 +213,14 @@ export class PersonComponent implements OnInit {
     } else {
       // reset the form
       if (this.personStore.inEditMode()) {
+        this.personStore.resetDimensions();
         this.personForm.patchValue({
           familyName: this.personStore.person()?.familyName,
           givenName: this.personStore.person()?.givenName,
           personType: this.personStore.person()?.personType,
+          dimensionsCopy: this.personStore.dimensionsCopy(),
         });
+        this.personForm.markAsPristine();
       }
       this.personStore.toggleEditMode();
     }
@@ -268,5 +285,47 @@ export class PersonComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+
+  onCreateDimension(event: { schema: DimensionType }) {
+    this.personStore.setDimensions(-1, event.schema);
+    this.personForm.controls.dimensionsCopy.setValue(
+      this.personStore.dimensionsCopy(),
+    );
+    this.personForm.controls.dimensionsCopy.markAsDirty();
+  }
+
+  onEditDimension(event: { index: number; element: DimensionType }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionDialogComponent, {
+      minHeight: '320px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension',
+        dimension: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.personStore.setDimensions(this.editingRow, result);
+        this.personForm.controls.dimensionsCopy.setValue(
+          this.personStore.dimensionsCopy(),
+        );
+        this.personForm.controls.dimensionsCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimension(event: { index: number }) {
+    this.personStore.deleteDimensionSchema(event.index);
+    this.personForm.controls.dimensionsCopy.setValue(
+      this.personStore.dimensionsCopy(),
+    );
+    this.personForm.controls.dimensionsCopy.markAsDirty();
   }
 }

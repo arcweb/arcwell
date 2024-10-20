@@ -22,9 +22,11 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 interface FactTypeState {
   factType: FactType | null;
+  dimensionSchemasCopy: DimensionSchemaType[] | [];
   inEditMode: boolean;
   inCreateMode: boolean;
   isReady: boolean;
@@ -32,6 +34,7 @@ interface FactTypeState {
 
 const initialState: FactTypeState = {
   factType: null,
+  dimensionSchemasCopy: [],
   inEditMode: false,
   inCreateMode: false,
   isReady: false,
@@ -64,10 +67,13 @@ export const FactTypeStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionSchemasCopy =
+            resp.data.dimensionSchemas?.slice() ?? [];
           patchState(
             store,
             {
               factType: resp.data,
+              dimensionSchemasCopy: dimensionSchemasCopy,
               isReady: true,
             },
             setFulfilled(),
@@ -172,6 +178,38 @@ export const FactTypeStore = signalStore(
           // clear the detail_id to close the drawer
           detailStore.clearDetailId();
         }
+      },
+      async setDimensionSchemas(
+        index: number,
+        dimensionSchema: DimensionSchemaType,
+      ) {
+        const newDimensionSchemas = store.dimensionSchemasCopy().slice();
+
+        if (index === -1) {
+          newDimensionSchemas.push(dimensionSchema);
+        } else {
+          newDimensionSchemas[index] = dimensionSchema;
+        }
+        patchState(store, {
+          dimensionSchemasCopy: newDimensionSchemas,
+        });
+      },
+      async resetDimensionSchemas() {
+        const newDimensionSchemas = store.factType().dimensionSchemas.slice();
+        patchState(store, {
+          dimensionSchemasCopy: newDimensionSchemas,
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensionSchemas = store.dimensionSchemasCopy().slice();
+
+        const newDimensionSchemas = dimensionSchemas.filter(
+          (_: DimensionSchemaType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          dimensionSchemasCopy: newDimensionSchemas,
+        });
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());

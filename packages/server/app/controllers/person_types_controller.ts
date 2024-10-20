@@ -94,7 +94,9 @@ export default class PersonTypesController {
     await request.validateUsing(updatePersonTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['name', 'key', 'description'])
+    const cleanRequest = request.only(['name', 'key', 'description', 'dimensionSchemas'])
+
+    console.log('$%%%%%%%%%%%%%cleanRequest=', cleanRequest)
 
     return db.transaction(async (trx) => {
       const updatedPersonType = await PersonTypeService.updatePersonType(

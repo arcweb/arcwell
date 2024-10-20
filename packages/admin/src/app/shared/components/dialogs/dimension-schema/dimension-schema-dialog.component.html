@@ -1,0 +1,61 @@
+<h5 mat-dialog-title>{{ data.title ?? 'Confirmation' }}</h5>
+<mat-dialog-content>
+  <div class="top-spacer"></div>
+  <form [formGroup]="dimensionSchemaForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (dimensionSchemaForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="Key" formControlName="key" />
+      @if (dimensionSchemaForm.controls.key.hasError('required')) {
+        <mat-error>
+          Key is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Data Type</mat-label>
+      <select matNativeControl required formControlName="dataType">
+        <option value="string">String</option>
+        <option value="number">Number</option>
+
+        <option value="date">Date</option>
+      </select>
+      @if (dimensionSchemaForm.controls.name.hasError('required')) {
+        <mat-error>
+          Data Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Data Unit</mat-label>
+      <input matInput placeholder="Data Unit" formControlName="dataUnit" />
+      @if (dimensionSchemaForm.controls.name.hasError('required')) {
+        <mat-error>
+          Data Unit is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isRequired">Required?</mat-checkbox>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false" autoFocus>
+    {{ data.cancelButtonText ?? 'Cancel' }}
+  </button>
+  <button mat-button [mat-dialog-close]="dimensionSchemaForm.value">
+    {{ data.okButtonText ?? 'Ok' }}
+  </button>
+</mat-dialog-actions>

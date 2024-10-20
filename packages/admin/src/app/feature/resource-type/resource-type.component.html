@@ -39,6 +39,16 @@
       <input matInput placeholder="Description" formControlName="description" />
     </mat-form-field>
 
+    @if (resourceTypeStore.dimensionSchemasCopy()) {
+      <aw-dimension-schemas
+        [inEditMode]="resourceTypeStore.inEditMode()"
+        [dimensionSchemasCopy]="resourceTypeStore.dimensionSchemasCopy()"
+        (onEditDimensionSchema)="onEditDimensionSchema($event)"
+        (onDeleteDimensionSchema)="onDeleteDimensionSchema($event)"
+        (onCreateDimensionSchema)="onCreateDimensionSchema($event)"
+      ></aw-dimension-schemas>
+    }
+
     @if (resourceTypeStore.inCreateMode()) {
       <aw-tags-form
         [tags]="resourceTypeStore.tagStrings()"

@@ -26,9 +26,12 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionType } from '@schemas/dimension.schema';
+import { convertDimensionDataTypeValues } from '@shared/helpers/dimension.helper';
 
 interface ResourceState {
   resource: ResourceType | null;
+  dimensionsCopy: DimensionType[] | [];
   resourceTypes: ResourceTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -37,6 +40,7 @@ interface ResourceState {
 
 const initialState: ResourceState = {
   resource: null,
+  dimensionsCopy: [],
   resourceTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -89,10 +93,13 @@ export const ResourceStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionsCopy =
+            resourceResponse.data.dimensions?.slice() ?? [];
           patchState(
             store,
             {
               resource: resourceResponse.data,
+              dimensionsCopy: dimensionsCopy,
               resourceTypes: resourceTypesResponse.data,
               isReady: true,
             },
@@ -142,9 +149,13 @@ export const ResourceStore = signalStore(
           updateResourceFormData.typeKey =
             updateResourceFormData.resourceType.key;
         }
-        const resp = await firstValueFrom(
-          resourceService.update(updateResourceFormData),
+
+        const newResource = convertDimensionDataTypeValues(
+          updateResourceFormData,
+          'resourceType',
         );
+
+        const resp = await firstValueFrom(resourceService.update(newResource));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -173,9 +184,12 @@ export const ResourceStore = signalStore(
         createResourceFormData.typeKey =
           createResourceFormData.resourceType.key;
 
-        const resp = await firstValueFrom(
-          resourceService.create(createResourceFormData),
+        const newResource = convertDimensionDataTypeValues(
+          createResourceFormData,
+          'resourceType',
         );
+
+        const resp = await firstValueFrom(resourceService.create(newResource));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -226,6 +240,35 @@ export const ResourceStore = signalStore(
           // clear the detail_id to close the drawer
           detailStore.clearDetailId();
         }
+      },
+      async setDimensions(index: number, dimension: DimensionType) {
+        const newDimensions = store.dimensionsCopy().slice();
+
+        if (index === -1) {
+          newDimensions.push(dimension);
+        } else {
+          newDimensions[index] = dimension;
+        }
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async resetDimensions() {
+        const newDimensions = store.resource().dimensions.slice();
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensions = store.dimensionsCopy().slice();
+
+        const newDimensions = dimensions.filter(
+          (_: DimensionType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());

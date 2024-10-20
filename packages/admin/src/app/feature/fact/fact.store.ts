@@ -27,9 +27,12 @@ import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionType } from '@schemas/dimension.schema';
+import { convertDimensionDataTypeValues } from '@shared/helpers/dimension.helper';
 
 interface FactState {
   fact: FactType | null;
+  dimensionsCopy: DimensionType[] | [];
   factTypes: FactTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -40,6 +43,7 @@ interface FactState {
 
 const initialState: FactState = {
   fact: null,
+  dimensionsCopy: [],
   factTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -112,10 +116,12 @@ export const FactStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionsCopy = factResp.data.dimensions?.slice() ?? [];
           patchState(
             store,
             {
               fact: factResp.data,
+              dimensionsCopy: dimensionsCopy,
               factTypes: factTypesResp.data,
               personTypes: personTypesResp.data,
               resourceTypes: resourceTypesResp.data,
@@ -188,18 +194,13 @@ export const FactStore = signalStore(
         if (updateFactFormData.factType && updateFactFormData.factType.id) {
           updateFactFormData.typeKey = updateFactFormData.factType.key;
         }
-        if (
-          updateFactFormData.dimensions &&
-          typeof updateFactFormData.dimensions === 'string'
-        ) {
-          updateFactFormData.dimensions = JSON.parse(
-            updateFactFormData.dimensions,
-          );
-        }
 
-        const resp = await firstValueFrom(
-          factService.update(updateFactFormData),
+        const newFact = convertDimensionDataTypeValues(
+          updateFactFormData,
+          'factType',
         );
+
+        const resp = await firstValueFrom(factService.update(newFact));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -224,15 +225,15 @@ export const FactStore = signalStore(
         }
       },
       async createFact(createFactFormData: FactType) {
-        createFactFormData.dimensions = JSON.parse(
-          createFactFormData.dimensions,
-        );
         patchState(store, setPending());
         createFactFormData.typeKey = createFactFormData.factType.key;
 
-        const resp = await firstValueFrom(
-          factService.create(createFactFormData),
+        const newFact = convertDimensionDataTypeValues(
+          createFactFormData,
+          'facttType',
         );
+
+        const resp = await firstValueFrom(factService.create(newFact));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -281,6 +282,35 @@ export const FactStore = signalStore(
           // clear the detail_id to close the drawer
           detailStore.clearDetailId();
         }
+      },
+      async setDimensions(index: number, dimension: DimensionType) {
+        const newDimensions = store.dimensionsCopy().slice();
+
+        if (index === -1) {
+          newDimensions.push(dimension);
+        } else {
+          newDimensions[index] = dimension;
+        }
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async resetDimensions() {
+        const newDimensions = store.fact().dimensions.slice();
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensions = store.dimensionsCopy().slice();
+
+        const newDimensions = dimensions.filter(
+          (_: DimensionType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());

@@ -38,6 +38,9 @@ import { autoSlugify } from '@shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemasComponent } from '@shared/components/dimension-schemas/dimension-schemas.component';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
+import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
 
 @Component({
   selector: 'aw-person-type',
@@ -58,6 +61,7 @@ import { DetailStore } from '@feature/detail/detail.store';
     TagsFormComponent,
     BackButtonComponent,
     DetailHeaderComponent,
+    DimensionSchemasComponent,
   ],
   providers: [PersonTypeStore],
   templateUrl: './person-type.component.html',
@@ -72,6 +76,8 @@ export class PersonTypeComponent implements OnInit {
   @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
+
+  editingRow = -1;
 
   personTypeForm = new FormGroup({
     name: new FormControl(
@@ -93,6 +99,10 @@ export class PersonTypeComponent implements OnInit {
     ),
     description: new FormControl({
       value: '',
+      disabled: true,
+    }),
+    dimensionSchemasCopy: new FormControl<DimensionSchemaType[]>({
+      value: [],
       disabled: true,
     }),
   });
@@ -117,6 +127,8 @@ export class PersonTypeComponent implements OnInit {
             key: this.personTypeStore.personType()?.key,
             name: this.personTypeStore.personType()?.name,
             description: this.personTypeStore.personType()?.description,
+            dimensionSchemasCopy:
+              this.personTypeStore.dimensionSchemasCopy() ?? [],
           });
         });
       }
@@ -126,19 +138,20 @@ export class PersonTypeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const personTypeFormPayload: PersonTypeNewType = {
+            name: this.personTypeForm.value['name'] ?? '',
+            key: this.personTypeForm.value['key'] ?? '',
+            description: this.personTypeForm.value['description'] ?? '',
+            dimensionSchemas:
+              this.personTypeForm.value['dimensionSchemasCopy'] ?? [],
+          };
           if (this.personTypeStore.inCreateMode()) {
-            const personTypeFormPayload: PersonTypeNewType = {
-              name: this.personTypeForm.value['name'] ?? '',
-              key: this.personTypeForm.value['key'] ?? '',
-              description: this.personTypeForm.value['description'] ?? '',
-            };
-
             if (this.tagsForCreate.length > 0) {
               personTypeFormPayload['tags'] = this.tagsForCreate;
             }
             this.personTypeStore.create(personTypeFormPayload);
           } else {
-            this.personTypeStore.update(this.personTypeForm.value);
+            this.personTypeStore.update(personTypeFormPayload);
           }
         } else if (event instanceof ValueChangeEvent) {
           // auto-generate key from the user provided name
@@ -165,6 +178,7 @@ export class PersonTypeComponent implements OnInit {
 
   onCancel() {
     if (this.personTypeStore.inCreateMode()) {
+      this.personTypeStore.resetDimensionSchemas();
       this.detailStore.clearDetailId();
     } else {
       // reset the form
@@ -173,6 +187,7 @@ export class PersonTypeComponent implements OnInit {
           key: this.personTypeStore.personType()?.key,
           name: this.personTypeStore.personType()?.name,
           description: this.personTypeStore.personType()?.description,
+          dimensionSchemasCopy: this.personTypeStore.dimensionSchemasCopy(),
         });
       }
       this.personTypeStore.toggleEditMode();
@@ -207,5 +222,50 @@ export class PersonTypeComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+  onCreateDimensionSchema(event: { schema: DimensionSchemaType }) {
+    console.log('event=', event);
+    this.personTypeStore.setDimensionSchemas(-1, event.schema);
+    this.personTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.personTypeStore.dimensionSchemasCopy(),
+    );
+    this.personTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+  }
+
+  onEditDimensionSchema(event: {
+    index: number;
+    element: DimensionSchemaType;
+  }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
+      minHeight: '520px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension Schema',
+        dimensionSchema: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.personTypeStore.setDimensionSchemas(this.editingRow, result);
+        this.personTypeForm.controls.dimensionSchemasCopy.setValue(
+          this.personTypeStore.dimensionSchemasCopy(),
+        );
+        this.personTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimensionSchema(event: { index: number }) {
+    this.personTypeStore.deleteDimensionSchema(event.index);
+    this.personTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.personTypeStore.dimensionSchemasCopy(),
+    );
+    this.personTypeForm.controls.dimensionSchemasCopy.markAsDirty();
   }
 }

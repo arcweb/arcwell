@@ -16,72 +16,39 @@ import {
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
 import {
   CREATE_PARTIAL_URL,
   TYPE_KEY_PATTERN,
 } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { FactTypeStore } from '@feature/fact-type/fact-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
-import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from '@angular/material/table';
-import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactTypeNewType } from '@schemas/fact-type.schema';
+import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
+import { DimensionSchemasComponent } from '@shared/components/dimension-schemas/dimension-schemas.component';
 
 @Component({
   selector: 'aw-fact-type',
   standalone: true,
   imports: [
-    BackButtonComponent,
-    ReactiveFormsModule,
+    DimensionSchemasComponent,
+    MatFormFieldModule,
     MatInput,
-    MatLabel,
-    MatFormField,
-    MatButton,
-    MatError,
+    ReactiveFormsModule,
     ErrorContainerComponent,
-    MatOption,
-    MatSelect,
-    MatIcon,
-    RouterLink,
-    MatIconButton,
-    TagsFormComponent,
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatTable,
-    JsonPipe,
-    MatHeaderCellDef,
     DetailHeaderComponent,
+    TagsFormComponent,
+    MatButton,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -96,6 +63,8 @@ export class FactTypeComponent implements OnInit {
   @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
+
+  editingRow = -1;
 
   factTypeForm = new FormGroup({
     name: new FormControl(
@@ -116,19 +85,11 @@ export class FactTypeComponent implements OnInit {
       value: '',
       disabled: true,
     }),
-    dimensionSchemas: new FormControl({
-      value: null,
+    dimensionSchemasCopy: new FormControl<DimensionSchemaType[]>({
+      value: [],
       disabled: true,
     }),
   });
-
-  displayedColumns: string[] = [
-    'key',
-    'name',
-    'dataType',
-    'dataUnit',
-    'isRequired',
-  ];
 
   constructor() {
     effect(() => {
@@ -150,7 +111,8 @@ export class FactTypeComponent implements OnInit {
             key: this.factTypeStore.factType()?.key,
             name: this.factTypeStore.factType()?.name,
             description: this.factTypeStore.factType()?.description,
-            dimensionSchemas: this.factTypeStore.factType()?.dimensionSchemas,
+            dimensionSchemasCopy:
+              this.factTypeStore.dimensionSchemasCopy() ?? [],
           });
         });
       }
@@ -160,16 +122,12 @@ export class FactTypeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          const formValue = this.factTypeForm.value;
-          const dimensionsSquemaJson = formValue.dimensionSchemas
-            ? JSON.parse(formValue.dimensionSchemas)
-            : [];
-
           const factTypeFormPayload: FactTypeNewType = {
             name: this.factTypeForm.value['name'] ?? '',
             key: this.factTypeForm.value['key'] ?? '',
             description: this.factTypeForm.value['description'] ?? '',
-            dimensionSchemas: dimensionsSquemaJson,
+            dimensionSchemas:
+              this.factTypeForm.value['dimensionSchemasCopy'] ?? [],
           };
 
           if (this.factTypeStore.inCreateMode()) {
@@ -208,19 +166,22 @@ export class FactTypeComponent implements OnInit {
       this.detailStore.clearDetailId();
     } else {
       // reset the form
+
       if (this.factTypeStore.inEditMode()) {
+        this.factTypeStore.resetDimensionSchemas();
         this.factTypeForm.patchValue({
           key: this.factTypeStore.factType()?.key,
           name: this.factTypeStore.factType()?.name,
           description: this.factTypeStore.factType()?.description,
+          dimensionSchemasCopy: this.factTypeStore.dimensionSchemasCopy(),
         });
+        this.factTypeForm.markAsPristine();
       }
       this.factTypeStore.toggleEditMode();
     }
   }
 
   onDelete() {
-    // TODO: show confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm delete',
@@ -243,5 +204,51 @@ export class FactTypeComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+
+  onCreateDimensionSchema(event: { schema: DimensionSchemaType }) {
+    console.log('event=', event);
+    this.factTypeStore.setDimensionSchemas(-1, event.schema);
+    this.factTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.factTypeStore.dimensionSchemasCopy(),
+    );
+    this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+  }
+
+  onEditDimensionSchema(event: {
+    index: number;
+    element: DimensionSchemaType;
+  }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
+      minHeight: '520px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension Schema',
+        dimensionSchema: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.factTypeStore.setDimensionSchemas(this.editingRow, result);
+        this.factTypeForm.controls.dimensionSchemasCopy.setValue(
+          this.factTypeStore.dimensionSchemasCopy(),
+        );
+        this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimensionSchema(event: { index: number }) {
+    this.factTypeStore.deleteDimensionSchema(event.index);
+    this.factTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.factTypeStore.dimensionSchemasCopy(),
+    );
+    this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
   }
 }
