@@ -17,8 +17,8 @@ The development of this system builds upon over a decade of experience
 collected by [Arcweb Technologies](https://arcwebtech.com/) team members in
 building digital products focused on healthcare and adjacent industries.
 
-Arcwell is an extensible platform for modeling digitial solutions to 
-healthcare needs including clinical pathways, captured data including patient
+Arcwell lowers the effort required to model digitial solutions to healthcare 
+needs including clinical pathways, captured data including patient
 observations, and powering the delivery and management of clinical trials,
 surveys, assessments, questionnaires, clinical decision support systems, and
 more.
@@ -59,6 +59,9 @@ up and running within a container is relatively easy once you install
 Docker-compatible containerization software. We recommend
 [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 and have adapted our instructions and guides based on it.
+
+Read the instructions below if you prefer to develop directly on your host
+machine.
 
 ### 1. Expand local dev environment files
 
