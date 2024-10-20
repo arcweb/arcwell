@@ -16,11 +16,8 @@ export function convertDimensionDataTypeValues<
     typeof typeField !== 'object' ||
     !('dimensionSchemas' in typeField)
   ) {
-    throw new Error(
-      `The provided type field '${String(
-        typeFieldName,
-      )}' does not contain dimensionSchemas`,
-    );
+    // Since provided object does not contain a dimensionSchema, just return obj unmodified
+    return obj;
   }
 
   const { dimensionSchemas } = typeField as {
