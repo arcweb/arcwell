@@ -32,7 +32,7 @@ const initialState: EventsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sort: 'name',
+  sort: 'startedAt',
   order: 'asc',
   typeKey: '',
 };

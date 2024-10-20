@@ -100,7 +100,7 @@ export default class EventTypesController {
     await request.validateUsing(updateEventTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['name', 'key', 'description'])
+    const cleanRequest = request.only(['name', 'key', 'description', 'dimensionSchemas'])
 
     return db.transaction(async (trx) => {
       const updatedEventType = await EventTypeService.updateEventType(

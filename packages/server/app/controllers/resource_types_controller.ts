@@ -93,7 +93,7 @@ export default class ResourceTypesController {
     await request.validateUsing(updateResourceTypeValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['name', 'key', 'description'])
+    const cleanRequest = request.only(['name', 'key', 'description', 'dimensionSchemas'])
 
     return await db.transaction(async (trx) => {
       const updatedResourceType = await ResourceTypeService.updateResourceType(

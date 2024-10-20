@@ -38,6 +38,10 @@ import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
 import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionSchemasComponent } from '@shared/components/dimension-schemas/dimension-schemas.component';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
+import { PersonTypeNewType } from '@schemas/person-type.schema';
+import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
 
 @Component({
   selector: 'aw-event-type',
@@ -58,6 +62,7 @@ import { DetailStore } from '@feature/detail/detail.store';
     MatIconButton,
     TagsFormComponent,
     DetailHeaderComponent,
+    DimensionSchemasComponent,
   ],
   providers: [EventTypeStore],
   templateUrl: './event-type.component.html',
@@ -72,6 +77,7 @@ export class EventTypeComponent implements OnInit {
   @Input() detailId!: string;
 
   tagsForCreate: string[] = [];
+  editingRow = -1;
 
   eventTypeForm = new FormGroup({
     name: new FormControl(
@@ -90,6 +96,10 @@ export class EventTypeComponent implements OnInit {
     ),
     description: new FormControl({
       value: '',
+      disabled: true,
+    }),
+    dimensionSchemasCopy: new FormControl<DimensionSchemaType[]>({
+      value: [],
       disabled: true,
     }),
   });
@@ -114,6 +124,8 @@ export class EventTypeComponent implements OnInit {
             key: this.eventTypeStore.eventType()?.key,
             name: this.eventTypeStore.eventType()?.name,
             description: this.eventTypeStore.eventType()?.description,
+            dimensionSchemasCopy:
+              this.eventTypeStore.dimensionSchemasCopy() ?? [],
           });
         });
       }
@@ -123,19 +135,26 @@ export class EventTypeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
+          const eventTypeFormPayload: PersonTypeNewType = {
+            name: this.eventTypeForm.value['name'] ?? '',
+            key: this.eventTypeForm.value['key'] ?? '',
+            description: this.eventTypeForm.value['description'] ?? '',
+            dimensionSchemas:
+              this.eventTypeForm.value['dimensionSchemasCopy'] ?? [],
+          };
           if (this.eventTypeStore.inCreateMode()) {
-            const formValue = this.eventTypeForm.value;
-
-            const eventTypeFormPayload: EventTypeType = {
-              ...formValue,
-            };
+            // const formValue = this.eventTypeForm.value;
+            //
+            // const eventTypeFormPayload: EventTypeType = {
+            //   ...formValue,
+            // };
 
             if (this.tagsForCreate.length > 0) {
               eventTypeFormPayload['tags'] = this.tagsForCreate;
             }
             this.eventTypeStore.create(eventTypeFormPayload);
           } else {
-            this.eventTypeStore.update(this.eventTypeForm.value);
+            this.eventTypeStore.update(eventTypeFormPayload);
           }
         } else if (event instanceof ValueChangeEvent) {
           // auto-generate key from the user provided name
@@ -163,10 +182,12 @@ export class EventTypeComponent implements OnInit {
   onCancel() {
     // reset the form
     if (this.eventTypeStore.inEditMode()) {
+      this.eventTypeStore.resetDimensionSchemas();
       this.eventTypeForm.patchValue({
         key: this.eventTypeStore.eventType()?.key,
         name: this.eventTypeStore.eventType()?.name,
         description: this.eventTypeStore.eventType()?.description,
+        dimensionSchemasCopy: this.eventTypeStore.dimensionSchemasCopy(),
       });
     }
     this.eventTypeStore.toggleEditMode();
@@ -200,5 +221,50 @@ export class EventTypeComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+  onCreateDimensionSchema(event: { schema: DimensionSchemaType }) {
+    console.log('event=', event);
+    this.eventTypeStore.setDimensionSchemas(-1, event.schema);
+    this.eventTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.eventTypeStore.dimensionSchemasCopy(),
+    );
+    this.eventTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+  }
+
+  onEditDimensionSchema(event: {
+    index: number;
+    element: DimensionSchemaType;
+  }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
+      minHeight: '520px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension Schema',
+        dimensionSchema: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.eventTypeStore.setDimensionSchemas(this.editingRow, result);
+        this.eventTypeForm.controls.dimensionSchemasCopy.setValue(
+          this.eventTypeStore.dimensionSchemasCopy(),
+        );
+        this.eventTypeForm.controls.dimensionSchemasCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimensionSchema(event: { index: number }) {
+    this.eventTypeStore.deleteDimensionSchema(event.index);
+    this.eventTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.eventTypeStore.dimensionSchemasCopy(),
+    );
+    this.eventTypeForm.controls.dimensionSchemasCopy.markAsDirty();
   }
 }
