@@ -16,16 +16,16 @@ import {
 } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { ErrorContainerComponent } from '@feature/error-container/error-container.component';
+import { DimensionType } from '@schemas/dimension.schema';
 
-export interface DimensionSchemaDialogData {
+export interface DimensionDialogData {
   title?: string;
   question?: string;
   cancelButtonText?: string;
   okButtonText?: string;
-  dimensionSchema: DimensionSchemaType;
+  dimension: DimensionType;
 }
 
 @Component({
@@ -46,25 +46,16 @@ export interface DimensionSchemaDialogData {
     ReactiveFormsModule,
     MatCheckbox,
   ],
-  templateUrl: './dimension-schema-dialog.component.html',
-  styleUrl: './dimension-schema-dialog.component.scss',
+  templateUrl: './dimension-dialog.component.html',
+  styleUrl: './dimension-dialog.component.scss',
 })
-export class DimensionSchemaDialogComponent {
-  readonly data = inject<DimensionSchemaDialogData>(MAT_DIALOG_DATA);
+export class DimensionDialogComponent {
+  readonly data = inject<DimensionDialogData>(MAT_DIALOG_DATA);
   destroyRef = inject(DestroyRef);
 
-  dimensionSchemaForm = new FormGroup({
-    name: new FormControl(this.data.dimensionSchema?.name ?? '', [
-      Validators.required,
-    ]),
-    key: new FormControl(this.data.dimensionSchema?.key ?? '', [
-      Validators.required,
-    ]),
-    dataType: new FormControl(this.data.dimensionSchema?.dataType ?? 'number', [
-      Validators.required,
-    ]),
-    dataUnit: new FormControl(this.data.dimensionSchema?.dataUnit ?? ''),
-    isRequired: new FormControl(this.data.dimensionSchema?.isRequired ?? true, [
+  dimensionForm = new FormGroup({
+    key: new FormControl(this.data.dimension?.key ?? '', [Validators.required]),
+    value: new FormControl(this.data.dimension?.value ?? '', [
       Validators.required,
     ]),
   });

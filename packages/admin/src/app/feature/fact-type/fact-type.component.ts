@@ -110,6 +110,10 @@ export class FactTypeComponent implements OnInit {
 
   @Input() detailId!: string;
 
+  protected readonly faPenToSquare = faPenToSquare;
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly faCirclePlus = faCirclePlus;
+
   tagsForCreate: string[] = [];
 
   editingRow = -1;
@@ -317,8 +321,4 @@ export class FactTypeComponent implements OnInit {
     );
     this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
   }
-
-  protected readonly faPenToSquare = faPenToSquare;
-  protected readonly faTrashCan = faTrashCan;
-  protected readonly faCirclePlus = faCirclePlus;
 }

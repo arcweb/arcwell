@@ -54,6 +54,17 @@ import { BackButtonComponent } from '@app/shared/components/back-button/back-but
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactType } from '@app/shared/schemas/fact.schema';
 import { DetailStore } from '@feature/detail/detail.store';
+import { NoRecordsGenericComponent } from '@shared/components/no-records-generic/no-records-generic.component';
+import {
+  faCirclePlus,
+  faPenToSquare,
+  faTrashCan,
+} from '@fortawesome/free-solid-svg-icons';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { MatTooltip } from '@angular/material/tooltip';
+import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
+import { DimensionType } from '@schemas/dimension.schema';
+import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 
 @Component({
   selector: 'aw-fact',
@@ -88,6 +99,9 @@ import { DetailStore } from '@feature/detail/detail.store';
     OwlNativeDateTimeModule,
     ObjectSelectorFormFieldComponent,
     DetailHeaderComponent,
+    NoRecordsGenericComponent,
+    FaIconComponent,
+    MatTooltip,
   ],
   providers: [FactStore],
   templateUrl: './fact.component.html',
@@ -102,7 +116,13 @@ export class FactComponent implements OnInit {
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
 
+  protected readonly faPenToSquare = faPenToSquare;
+  protected readonly faTrashCan = faTrashCan;
+  protected readonly faCirclePlus = faCirclePlus;
+
   tagsForCreate: string[] = [];
+
+  editingRow = -1;
 
   factForm = new FormGroup({
     factType: new FormControl<FactTypeType | null>(
@@ -119,13 +139,13 @@ export class FactComponent implements OnInit {
       disabled: true,
     }),
     event: new FormControl<EventType | null>({ value: null, disabled: true }),
-    dimensions: new FormControl({
-      value: '[]',
+    dimensionsCopy: new FormControl<DimensionType[]>({
+      value: [],
       disabled: true,
     }),
   });
 
-  displayedColumns: string[] = ['key', 'value'];
+  displayedColumns: string[] = ['key', 'value', 'actions'];
 
   constructor() {
     effect(() => {
@@ -153,13 +173,14 @@ export class FactComponent implements OnInit {
         this.factStore.initializeForCreate();
       } else {
         this.factStore.initialize(this.detailId).then(() => {
+          console.log('factStore.fact()=', this.factStore.fact());
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
             observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
             person: this.factStore.fact()?.person,
             resource: this.factStore.fact()?.resource,
             event: this.factStore.fact()?.event,
-            dimensions: this.factStore.fact()?.dimensions,
+            dimensionsCopy: this.factStore.dimensionsCopy() ?? [],
           });
         });
       }
@@ -172,7 +193,8 @@ export class FactComponent implements OnInit {
           const formValue = this.factForm.value;
 
           const factFormPayload: FactType = {
-            ...formValue,
+            factType: this.factForm.value['factType'],
+            observedAt: this.factForm.value['observedAt'],
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
               : null,
@@ -182,6 +204,7 @@ export class FactComponent implements OnInit {
             eventId: this.isObjectModel(formValue.event)
               ? formValue.event.id
               : null,
+            dimensions: this.factForm.value['dimensionsCopy'] ?? [],
           };
 
           if (this.factStore.inCreateMode()) {
@@ -193,9 +216,6 @@ export class FactComponent implements OnInit {
             this.factStore.updateFact(factFormPayload);
           }
         }
-        // else if (event instanceof ValueChangeEvent) {
-        // }
-        // This is here for an example.  Also, there are other events that can be caught
       });
   }
 
@@ -214,13 +234,16 @@ export class FactComponent implements OnInit {
     } else {
       // reset the form
       if (this.factStore.inEditMode()) {
+        this.factStore.resetDimensions();
         this.factForm.patchValue({
           factType: this.factStore.fact()?.factType,
           observedAt: this.factStore.fact()?.observedAt?.toJSDate(),
           person: this.factStore.fact()?.person,
           resource: this.factStore.fact()?.resource,
           event: this.factStore.fact()?.event,
+          dimensionsCopy: this.factStore.dimensionsCopy(),
         });
+        this.factForm.markAsPristine();
       }
       this.factStore.toggleEditMode();
     }
@@ -253,5 +276,61 @@ export class FactComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+
+  onCreateDimension() {
+    const dialogRef = this.dialog.open(DimensionDialogComponent, {
+      minHeight: '320px',
+      width: '800px',
+      data: {
+        title: 'Create Dimension',
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('result', result);
+      if (result) {
+        this.factStore.setDimensions(-1, result);
+        this.factForm.controls.dimensionsCopy.setValue(
+          this.factStore.dimensionsCopy(),
+        );
+        this.factForm.controls.dimensionsCopy.markAsDirty();
+      }
+    });
+  }
+
+  onEditDimension(index: number, element: DimensionSchemaType) {
+    this.editingRow = index;
+    console.log('Edit row ', index, ', ', element);
+
+    const dialogRef = this.dialog.open(DimensionDialogComponent, {
+      minHeight: '320px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension',
+        dimension: element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.factStore.setDimensions(this.editingRow, result);
+        this.factForm.controls.dimensionsCopy.setValue(
+          this.factStore.dimensionsCopy(),
+        );
+        this.factForm.controls.dimensionsCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimension(index: number) {
+    this.factStore.deleteDimensionSchema(index);
+    this.factForm.controls.dimensionsCopy.setValue(
+      this.factStore.dimensionsCopy(),
+    );
+    this.factForm.controls.dimensionsCopy.markAsDirty();
   }
 }
