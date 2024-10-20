@@ -81,92 +81,13 @@
     <!--    ></aw-object-selector-form-field>-->
 
     @if (factStore.dimensionsCopy()) {
-      <div class="dimension-header-container">
-        <h5 class="card-title">Dimensions</h5>
-        <div class="icons-container">
-          <button
-            mat-button
-            type="button"
-            (click)="onCreateDimension()"
-            matTooltip="Add new"
-            class="table-header-button label-medium font-weight-regular"
-            [disabled]="!factStore.inEditMode()"
-          >
-            <fa-icon
-              aria-label="Add new icon button"
-              class="table-header-button-icon"
-              [icon]="faCirclePlus"
-              size="xl"
-            ></fa-icon>
-            Add Dimension
-          </button>
-        </div>
-      </div>
-
-      <div class="table-container">
-        @if (factStore.dimensionsCopy().length > 0) {
-          <table
-            mat-table
-            [dataSource]="factStore.dimensionsCopy()"
-            class="mat-elevation-z0"
-          >
-            <ng-container matColumnDef="key">
-              <th mat-header-cell *matHeaderCellDef>Key</th>
-              <td mat-cell *matCellDef="let element">{{ element.key }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="value">
-              <th mat-header-cell *matHeaderCellDef>Value</th>
-              <td mat-cell *matCellDef="let element">{{ element.value }}</td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
-              <td mat-cell *matCellDef="let element; let i = index">
-                <div class="actions-icon-container">
-                  <button
-                    mat-button
-                    type="button"
-                    (click)="onEditDimension(i, element)"
-                    class="detail-header-button"
-                    matTooltip="Edit"
-                    [disabled]="!factStore.inEditMode()"
-                  >
-                    <fa-icon
-                      aria-label="Edit icon"
-                      [icon]="faPenToSquare"
-                      size="xl"
-                      class="detail-header-button-icon"
-                    ></fa-icon>
-                  </button>
-                  <button
-                    mat-button
-                    type="button"
-                    (click)="onDeleteDimension(i)"
-                    class="detail-header-button"
-                    matTooltip="Delete"
-                    [disabled]="!factStore.inEditMode()"
-                  >
-                    <fa-icon
-                      aria-label="Delete icon"
-                      [icon]="faTrashCan"
-                      size="xl"
-                      class="detail-header-button-icon"
-                    ></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-        } @else {
-          <aw-no-records-generic
-            message="Click Add Dimension button above to add a dimension."
-          ></aw-no-records-generic>
-        }
-      </div>
+      <aw-dimension
+        [inEditMode]="factStore.inEditMode()"
+        [dimensionsCopy]="factStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
     }
     @if (factStore.inCreateMode()) {
       <br />

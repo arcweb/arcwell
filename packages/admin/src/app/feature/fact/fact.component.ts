@@ -64,7 +64,8 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
 import { DimensionType } from '@schemas/dimension.schema';
-import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
+import { DimensionComponent } from '@shared/components/dimension/dimension.component';
+import { DimensionSchemasComponent } from '@shared/components/dimension-schemas/dimension-schemas.component';
 
 @Component({
   selector: 'aw-fact',
@@ -102,6 +103,8 @@ import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
     NoRecordsGenericComponent,
     FaIconComponent,
     MatTooltip,
+    DimensionComponent,
+    DimensionSchemasComponent,
   ],
   providers: [FactStore],
   templateUrl: './fact.component.html',
@@ -278,38 +281,24 @@ export class FactComponent implements OnInit {
     this.tagsForCreate = tags;
   }
 
-  onCreateDimension() {
-    const dialogRef = this.dialog.open(DimensionDialogComponent, {
-      minHeight: '320px',
-      width: '800px',
-      data: {
-        title: 'Create Dimension',
-        okButtonText: 'Save',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('result', result);
-      if (result) {
-        this.factStore.setDimensions(-1, result);
-        this.factForm.controls.dimensionsCopy.setValue(
-          this.factStore.dimensionsCopy(),
-        );
-        this.factForm.controls.dimensionsCopy.markAsDirty();
-      }
-    });
+  onCreateDimension(event: { schema: DimensionType }) {
+    this.factStore.setDimensions(-1, event.schema);
+    this.factForm.controls.dimensionsCopy.setValue(
+      this.factStore.dimensionsCopy(),
+    );
+    this.factForm.controls.dimensionsCopy.markAsDirty();
   }
 
-  onEditDimension(index: number, element: DimensionSchemaType) {
-    this.editingRow = index;
-    console.log('Edit row ', index, ', ', element);
+  onEditDimension(event: { index: number; element: DimensionType }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
 
     const dialogRef = this.dialog.open(DimensionDialogComponent, {
       minHeight: '320px',
       width: '800px',
       data: {
         title: 'Edit Dimension',
-        dimension: element,
+        dimension: event.element,
         okButtonText: 'Save',
       },
     });
@@ -326,8 +315,8 @@ export class FactComponent implements OnInit {
     });
   }
 
-  onDeleteDimension(index: number) {
-    this.factStore.deleteDimensionSchema(index);
+  onDeleteDimension(event: { index: number }) {
+    this.factStore.deleteDimensionSchema(event.index);
     this.factForm.controls.dimensionsCopy.setValue(
       this.factStore.dimensionsCopy(),
     );
