@@ -323,17 +323,16 @@ The latest news and information about Arcwell is often available on
 Arcwell was built with ❤️ in and around the Philadelphia region by 
 members of the Arcweb Technologies team.
 
-<a href="https://github.com/timgetz"><img class="arcwell-contrib-icon" src="https://github.com/timgetz.png?size=50"/></a>
-<a href="https://github.com/mccolin"><img class="arcwell-contrib-icon" src="https://github.com/mccolin.png?size=50"/></a>
-<a href="https://github.com/mberlin-arcweb"><img class="arcwell-contrib-icon" src="https://github.com/mberlin-arcweb.png?size=50"/></a>
-<a href="https://github.com/tmolumby"><img class="arcwell-contrib-icon" src="https://github.com/tmolumby.png?size=50"/></a>
-<a href="https://github.com/gregvuzit"><img class="arcwell-contrib-icon" src="https://github.com/gregvuzit.png?size=50"/></a>
-<a href="https://github.com/alex-smith-arcweb"><img class="arcwell-contrib-icon" src="https://github.com/alex-smith-arcweb.png?size=50"/></a>
-<a href="https://github.com/hswope-arcweb"><img class="arcwell-contrib-icon" src="https://github.com/hswope-arcweb.png?size=50"/></a>
-<a href="https://github.com/maudiakent"><img class="arcwell-contrib-icon" src="https://github.com/maudiakent.png?size=50"/></a>
-<a href="https://github.com/lendamico"><img class="arcwell-contrib-icon" src="https://github.com/lendamico.png?size=50"/></a>
-<a href="https://github.com/cera"><img class="arcwell-contrib-icon" src="https://github.com/cera.png?size=50"/></a>
-
+<a href="https://github.com/timgetz"><img src="https://github.com/timgetz.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/mccolin"><img src="https://github.com/mccolin.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/mberlin-arcweb"><img src="https://github.com/mberlin-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/tmolumby"><img src="https://github.com/tmolumby.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/gregvuzit"><img src="https://github.com/gregvuzit.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/alex-smith-arcweb"><img src="https://github.com/alex-smith-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/hswope-arcweb"><img src="https://github.com/hswope-arcweb.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/maudiakent"><img src="https://github.com/maudiakent.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/lendamico"><img src="https://github.com/lendamico.png?size=50" style="border-radius:50%"/></a>
+<a href="https://github.com/cera"><img src="https://github.com/cera.png?size=50" style="border-radius:50%"/></a>
 
 ---
 
@@ -342,4 +341,3 @@ Copyright 2024 [Arcweb Technologies](https://arcwebtech.com)
 
 <img src="doc/arcweb-logo.png" height="75" alt="Arcweb Technologies"/>
 
-<style>.arcwell-contrib-icon{height:50px; border-radius:50%;}</style>
