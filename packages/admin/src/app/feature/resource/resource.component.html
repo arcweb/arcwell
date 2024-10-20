@@ -46,6 +46,16 @@
       }
     </mat-form-field>
 
+    @if (resourceStore.dimensionsCopy()) {
+      <aw-dimension
+        [inEditMode]="resourceStore.inEditMode()"
+        [dimensionsCopy]="resourceStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
+    }
+
     @if (resourceStore.inCreateMode()) {
       <aw-tags-form
         [tags]="resourceStore.tagStrings()"

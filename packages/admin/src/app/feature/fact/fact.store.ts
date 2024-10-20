@@ -195,7 +195,10 @@ export const FactStore = signalStore(
           updateFactFormData.typeKey = updateFactFormData.factType.key;
         }
 
-        const newFact = convertDimensionDataTypeValues(updateFactFormData);
+        const newFact = convertDimensionDataTypeValues(
+          updateFactFormData,
+          'factType',
+        );
 
         const resp = await firstValueFrom(factService.update(newFact));
         if (resp.errors) {
@@ -225,7 +228,10 @@ export const FactStore = signalStore(
         patchState(store, setPending());
         createFactFormData.typeKey = createFactFormData.factType.key;
 
-        const newFact = convertDimensionDataTypeValues(createFactFormData);
+        const newFact = convertDimensionDataTypeValues(
+          createFactFormData,
+          'facttType',
+        );
 
         const resp = await firstValueFrom(factService.create(newFact));
         if (resp.errors) {

@@ -54,6 +54,16 @@
       }
     </mat-form-field>
 
+    @if (personStore.dimensionsCopy()) {
+      <aw-dimension
+        [inEditMode]="personStore.inEditMode()"
+        [dimensionsCopy]="personStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
+    }
+
     @if (personStore.inCreateMode()) {
       <aw-tags-form
         [tags]="personStore.tagStrings()"

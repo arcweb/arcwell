@@ -27,9 +27,12 @@ import { PersonTypeService } from '@app/shared/services/person-type.service';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionType } from '@schemas/dimension.schema';
+import { convertDimensionDataTypeValues } from '@shared/helpers/dimension.helper';
 
 interface EventState {
   event: EventType | null;
+  dimensionsCopy: DimensionType[] | [];
   eventTypes: EventTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -40,6 +43,7 @@ interface EventState {
 
 const initialState: EventState = {
   event: null,
+  dimensionsCopy: [],
   eventTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -120,10 +124,12 @@ export const EventStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionsCopy = eventResponse.data.dimensions?.slice() ?? [];
           patchState(
             store,
             {
               event: eventResponse.data,
+              dimensionsCopy: dimensionsCopy,
               eventTypes: eventTypesResponse.data,
               personTypes: personTypesResponse.data,
               resourceTypes: resourceTypesResponse.data,
@@ -203,9 +209,13 @@ export const EventStore = signalStore(
         if (updateEventFormData.eventType && updateEventFormData.eventType.id) {
           updateEventFormData.typeKey = updateEventFormData.eventType.key;
         }
-        const resp = await firstValueFrom(
-          eventService.update(updateEventFormData),
+
+        const newEvent = convertDimensionDataTypeValues(
+          updateEventFormData,
+          'eventType',
         );
+
+        const resp = await firstValueFrom(eventService.update(newEvent));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -233,9 +243,12 @@ export const EventStore = signalStore(
         patchState(store, setPending());
         createEventFormData.typeKey = createEventFormData.eventType.key;
 
-        const resp = await firstValueFrom(
-          eventService.create(createEventFormData),
+        const newEvent = convertDimensionDataTypeValues(
+          createEventFormData,
+          'eventType',
         );
+
+        const resp = await firstValueFrom(eventService.create(newEvent));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -290,6 +303,35 @@ export const EventStore = signalStore(
           // clear the detail_id to close the drawer
           detailStore.clearDetailId();
         }
+      },
+      async setDimensions(index: number, dimension: DimensionType) {
+        const newDimensions = store.dimensionsCopy().slice();
+
+        if (index === -1) {
+          newDimensions.push(dimension);
+        } else {
+          newDimensions[index] = dimension;
+        }
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async resetDimensions() {
+        const newDimensions = store.event().dimensions.slice();
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensions = store.dimensionsCopy().slice();
+
+        const newDimensions = dimensions.filter(
+          (_: DimensionType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());

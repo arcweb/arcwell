@@ -55,11 +55,6 @@ import { DetailHeaderComponent } from '@shared/components/detail-header/detail-h
 import { FactType } from '@app/shared/schemas/fact.schema';
 import { DetailStore } from '@feature/detail/detail.store';
 import { NoRecordsGenericComponent } from '@shared/components/no-records-generic/no-records-generic.component';
-import {
-  faCirclePlus,
-  faPenToSquare,
-  faTrashCan,
-} from '@fortawesome/free-solid-svg-icons';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { MatTooltip } from '@angular/material/tooltip';
 import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
@@ -119,10 +114,6 @@ export class FactComponent implements OnInit {
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
 
-  protected readonly faPenToSquare = faPenToSquare;
-  protected readonly faTrashCan = faTrashCan;
-  protected readonly faCirclePlus = faCirclePlus;
-
   tagsForCreate: string[] = [];
 
   editingRow = -1;
@@ -147,8 +138,6 @@ export class FactComponent implements OnInit {
       disabled: true,
     }),
   });
-
-  displayedColumns: string[] = ['key', 'value', 'actions'];
 
   constructor() {
     effect(() => {
@@ -176,7 +165,6 @@ export class FactComponent implements OnInit {
         this.factStore.initializeForCreate();
       } else {
         this.factStore.initialize(this.detailId).then(() => {
-          console.log('factStore.fact()=', this.factStore.fact());
           this.factForm.patchValue({
             factType: this.factStore.fact()?.factType,
             observedAt: this.factStore.fact()?.observedAt?.toJSDate(),

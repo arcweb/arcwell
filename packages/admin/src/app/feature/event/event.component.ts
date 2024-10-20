@@ -41,6 +41,9 @@ import { BackButtonComponent } from '@app/shared/components/back-button/back-but
 import { DetailHeaderComponent } from '@app/shared/components/detail-header/detail-header.component';
 import { DetailStore } from '@feature/detail/detail.store';
 import { EventType } from '@app/shared/schemas/event.schema';
+import { DimensionComponent } from '@shared/components/dimension/dimension.component';
+import { DimensionType } from '@schemas/dimension.schema';
+import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
 
 @Component({
   selector: 'aw-event',
@@ -64,6 +67,7 @@ import { EventType } from '@app/shared/schemas/event.schema';
     OwlNativeDateTimeModule,
     ObjectSelectorFormFieldComponent,
     DetailHeaderComponent,
+    DimensionComponent,
   ],
   providers: [EventStore],
   templateUrl: './event.component.html',
@@ -80,6 +84,8 @@ export class EventComponent implements OnInit {
 
   tagsForCreate: string[] = [];
 
+  editingRow = -1;
+
   eventForm = new FormGroup({
     eventType: new FormControl<EventTypeType | null>(
       { value: '', disabled: true },
@@ -93,6 +99,10 @@ export class EventComponent implements OnInit {
     person: new FormControl<PersonType | null>({ value: null, disabled: true }),
     resource: new FormControl<ResourceType | null>({
       value: null,
+      disabled: true,
+    }),
+    dimensionsCopy: new FormControl<DimensionType[]>({
+      value: [],
       disabled: true,
     }),
   });
@@ -131,9 +141,9 @@ export class EventComponent implements OnInit {
             endedAt: this.eventStore.event()?.endedAt
               ? this.eventStore.event()?.endedAt.toJSDate()
               : null,
-            // info: this.eventStore.event()?.info,
             person: this.eventStore.event()?.person,
             resource: this.eventStore.event()?.resource,
+            dimensionsCopy: this.eventStore.dimensionsCopy() ?? [],
           });
         });
       }
@@ -146,7 +156,8 @@ export class EventComponent implements OnInit {
           const formValue = this.eventForm.value;
 
           const eventFormPayload: EventType = {
-            ...formValue,
+            eventType: formValue.eventType,
+            dimensions: formValue.dimensionsCopy ?? [],
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id
               : null,
@@ -184,6 +195,7 @@ export class EventComponent implements OnInit {
     } else {
       // reset the form
       if (this.eventStore.inEditMode()) {
+        this.eventStore.resetDimensions();
         this.eventForm.patchValue({
           eventType: this.eventStore.event()?.eventType,
           startedAt: this.eventStore.event()?.startedAt
@@ -194,7 +206,9 @@ export class EventComponent implements OnInit {
             : null,
           person: this.eventStore.event()?.person,
           resource: this.eventStore.event()?.resource,
+          dimensionsCopy: this.eventStore.dimensionsCopy(),
         });
+        this.eventForm.markAsPristine();
       }
       this.eventStore.toggleEditMode();
     }
@@ -227,5 +241,47 @@ export class EventComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+
+  onCreateDimension(event: { schema: DimensionType }) {
+    this.eventStore.setDimensions(-1, event.schema);
+    this.eventForm.controls.dimensionsCopy.setValue(
+      this.eventStore.dimensionsCopy(),
+    );
+    this.eventForm.controls.dimensionsCopy.markAsDirty();
+  }
+
+  onEditDimension(event: { index: number; element: DimensionType }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionDialogComponent, {
+      minHeight: '320px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension',
+        dimension: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.eventStore.setDimensions(this.editingRow, result);
+        this.eventForm.controls.dimensionsCopy.setValue(
+          this.eventStore.dimensionsCopy(),
+        );
+        this.eventForm.controls.dimensionsCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimension(event: { index: number }) {
+    this.eventStore.deleteDimensionSchema(event.index);
+    this.eventForm.controls.dimensionsCopy.setValue(
+      this.eventStore.dimensionsCopy(),
+    );
+    this.eventForm.controls.dimensionsCopy.markAsDirty();
   }
 }

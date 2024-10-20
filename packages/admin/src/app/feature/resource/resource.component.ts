@@ -37,6 +37,9 @@ import {
   ResourceNewType,
   ResourceType,
 } from '@app/shared/schemas/resource.schema';
+import { DimensionComponent } from '@shared/components/dimension/dimension.component';
+import { DimensionType } from '@schemas/dimension.schema';
+import { DimensionDialogComponent } from '@shared/components/dialogs/dimension/dimension-dialog.component';
 
 @Component({
   selector: 'aw-resource',
@@ -57,6 +60,7 @@ import {
     MatIconButton,
     TagsFormComponent,
     DetailHeaderComponent,
+    DimensionComponent,
   ],
   providers: [ResourceStore],
   templateUrl: './resource.component.html',
@@ -73,12 +77,18 @@ export class ResourceComponent implements OnInit {
 
   tagsForCreate: string[] = [];
 
+  editingRow = -1;
+
   resourceForm = new FormGroup({
     name: new FormControl({ value: '', disabled: true }, Validators.required),
     resourceType: new FormControl<ResourceTypeType | null>(
       { value: '', disabled: true },
       Validators.required,
     ),
+    dimensionsCopy: new FormControl<DimensionType[]>({
+      value: [],
+      disabled: true,
+    }),
   });
 
   constructor() {
@@ -109,6 +119,7 @@ export class ResourceComponent implements OnInit {
           this.resourceForm.patchValue({
             name: this.resourceStore.resource()?.name,
             resourceType: this.resourceStore.resource()?.resourceType,
+            dimensionsCopy: this.resourceStore.dimensionsCopy() ?? [],
           });
         });
       }
@@ -118,17 +129,17 @@ export class ResourceComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(resource => {
         if ((resource as ControlEvent) instanceof FormSubmittedEvent) {
+          const resourceFormPayload: ResourceType | ResourceNewType = {
+            ...this.resourceForm.value,
+            dimensions: this.resourceForm.value['dimensionsCopy'] ?? [],
+          };
           if (this.resourceStore.inCreateMode()) {
-            const resourceFormPayload: ResourceType | ResourceNewType = {
-              ...this.resourceForm.value,
-            };
-
             if (this.tagsForCreate.length > 0) {
               resourceFormPayload['tags'] = this.tagsForCreate;
             }
             this.resourceStore.create(resourceFormPayload);
           } else {
-            this.resourceStore.update(this.resourceForm.value);
+            this.resourceStore.update(resourceFormPayload);
           }
         } else if (resource instanceof ValueChangeEvent) {
           // This is here for an example.  Also, there are other resources that can be caught
@@ -138,6 +149,7 @@ export class ResourceComponent implements OnInit {
 
   onCancel() {
     if (this.resourceStore.inCreateMode()) {
+      this.resourceStore.resetDimensions();
       this.detailStore.clearDetailId();
     } else {
       // reset the form
@@ -145,7 +157,9 @@ export class ResourceComponent implements OnInit {
         this.resourceForm.patchValue({
           name: this.resourceStore.resource()?.name,
           resourceType: this.resourceStore.resource()?.resourceType,
+          dimensionsCopy: this.resourceStore.dimensionsCopy(),
         });
+        this.resourceForm.markAsPristine();
       }
       this.resourceStore.toggleEditMode();
     }
@@ -179,5 +193,47 @@ export class ResourceComponent implements OnInit {
   // This should only be used during object creation
   updateTagsForCreate(tags: string[]) {
     this.tagsForCreate = tags;
+  }
+
+  onCreateDimension(event: { schema: DimensionType }) {
+    this.resourceStore.setDimensions(-1, event.schema);
+    this.resourceForm.controls.dimensionsCopy.setValue(
+      this.resourceStore.dimensionsCopy(),
+    );
+    this.resourceForm.controls.dimensionsCopy.markAsDirty();
+  }
+
+  onEditDimension(event: { index: number; element: DimensionType }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
+
+    const dialogRef = this.dialog.open(DimensionDialogComponent, {
+      minHeight: '320px',
+      width: '800px',
+      data: {
+        title: 'Edit Dimension',
+        dimension: event.element,
+        okButtonText: 'Save',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.resourceStore.setDimensions(this.editingRow, result);
+        this.resourceForm.controls.dimensionsCopy.setValue(
+          this.resourceStore.dimensionsCopy(),
+        );
+        this.resourceForm.controls.dimensionsCopy.markAsDirty();
+      }
+      this.editingRow = -1;
+    });
+  }
+
+  onDeleteDimension(event: { index: number }) {
+    this.resourceStore.deleteDimensionSchema(event.index);
+    this.resourceForm.controls.dimensionsCopy.setValue(
+      this.resourceStore.dimensionsCopy(),
+    );
+    this.resourceForm.controls.dimensionsCopy.markAsDirty();
   }
 }

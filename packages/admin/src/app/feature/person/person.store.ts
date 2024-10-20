@@ -24,6 +24,8 @@ import { ToastLevel } from '@shared/models';
 import { isRelationLastOnPage } from '@app/shared/helpers/store.helper';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
+import { DimensionType } from '@schemas/dimension.schema';
+import { convertDimensionDataTypeValues } from '@shared/helpers/dimension.helper';
 
 interface PersonCohortsListState {
   limit: number;
@@ -33,6 +35,7 @@ interface PersonCohortsListState {
 
 interface PersonState {
   person: PersonType | null;
+  dimensionsCopy: DimensionType[] | [];
   personTypes: PersonTypeType[];
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -48,6 +51,7 @@ const initialCohortsListState: PersonCohortsListState = {
 
 const initialState: PersonState = {
   person: null,
+  dimensionsCopy: [],
   personTypes: [],
   inEditMode: false,
   inCreateMode: false,
@@ -100,10 +104,12 @@ export const PersonStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
+          const dimensionsCopy = personResp.data.dimensions?.slice() ?? [];
           patchState(
             store,
             {
               person: personResp.data,
+              dimensionsCopy: dimensionsCopy,
               personTypes: personTypesResp.data,
               isReady: true,
               cohortsListOptions: initialCohortsListState,
@@ -154,9 +160,13 @@ export const PersonStore = signalStore(
         ) {
           updatePersonFormData.typeKey = updatePersonFormData.personType.key;
         }
-        const resp = await firstValueFrom(
-          personService.update(updatePersonFormData),
+
+        const newPerson = convertDimensionDataTypeValues(
+          updatePersonFormData,
+          'personType',
         );
+
+        const resp = await firstValueFrom(personService.update(newPerson));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -188,9 +198,12 @@ export const PersonStore = signalStore(
         patchState(store, setPending());
         createPersonFormData.typeKey = createPersonFormData.personType.key;
 
-        const resp = await firstValueFrom(
-          personService.create(createPersonFormData),
+        const newPerson = convertDimensionDataTypeValues(
+          createPersonFormData,
+          'personType',
         );
+
+        const resp = await firstValueFrom(personService.create(newPerson));
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
 
@@ -250,6 +263,35 @@ export const PersonStore = signalStore(
           // clear the detail_id to close the drawer
           detailStore.clearDetailId();
         }
+      },
+      async setDimensions(index: number, dimension: DimensionType) {
+        const newDimensions = store.dimensionsCopy().slice();
+
+        if (index === -1) {
+          newDimensions.push(dimension);
+        } else {
+          newDimensions[index] = dimension;
+        }
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async resetDimensions() {
+        const newDimensions = store.person().dimensions.slice();
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
+      },
+      async deleteDimensionSchema(indexToRemove: number) {
+        const dimensions = store.dimensionsCopy().slice();
+
+        const newDimensions = dimensions.filter(
+          (_: DimensionType, i: number) => i !== indexToRemove,
+        );
+
+        patchState(store, {
+          dimensionsCopy: newDimensions,
+        });
       },
       async setTags(tags: string[]) {
         patchState(store, setPending());

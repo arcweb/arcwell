@@ -84,6 +84,16 @@
       [objectSubTypes]="this.eventStore.resourceTypes()"
     ></aw-object-selector-form-field>
 
+    @if (eventStore.dimensionsCopy()) {
+      <aw-dimension
+        [inEditMode]="eventStore.inEditMode()"
+        [dimensionsCopy]="eventStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
+    }
+
     @if (eventStore.inCreateMode()) {
       <aw-tags-form
         [tags]="eventStore.tagStrings()"
