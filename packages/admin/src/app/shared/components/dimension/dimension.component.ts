@@ -63,7 +63,7 @@ export class DimensionComponent {
 
   createDimension() {
     const dialogRef = this.dialog.open(DimensionDialogComponent, {
-      minHeight: '520px',
+      minHeight: '320px',
       width: '800px',
       data: {
         title: 'Create Dimension',

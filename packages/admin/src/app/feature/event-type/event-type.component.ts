@@ -143,12 +143,6 @@ export class EventTypeComponent implements OnInit {
               this.eventTypeForm.value['dimensionSchemasCopy'] ?? [],
           };
           if (this.eventTypeStore.inCreateMode()) {
-            // const formValue = this.eventTypeForm.value;
-            //
-            // const eventTypeFormPayload: EventTypeType = {
-            //   ...formValue,
-            // };
-
             if (this.tagsForCreate.length > 0) {
               eventTypeFormPayload['tags'] = this.tagsForCreate;
             }
