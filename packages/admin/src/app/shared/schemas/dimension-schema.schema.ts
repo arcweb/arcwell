@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { DimensionSchemaModel } from '@shared/models/dimension-schema.model';
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const DimensionSchemaSchema: any = z.object({
+export const DimensionSchemaSchema = z.object({
   key: z.string(),
   name: z.string(),
   dataType: z.string(),

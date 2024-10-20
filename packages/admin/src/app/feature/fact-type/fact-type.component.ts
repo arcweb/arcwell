@@ -16,87 +16,39 @@ import {
   Validators,
   ValueChangeEvent,
 } from '@angular/forms';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
-import { MatOption } from '@angular/material/core';
-import { MatSelect } from '@angular/material/select';
-import { RouterLink } from '@angular/router';
 import {
   CREATE_PARTIAL_URL,
   TYPE_KEY_PATTERN,
 } from '@shared/constants/admin.constants';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
 import { ConfirmationDialogComponent } from '@shared/components/dialogs/confirmation/confirmation-dialog.component';
 import { FactTypeStore } from '@feature/fact-type/fact-type.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagsFormComponent } from '@shared/components/tags-form/tags-form.component';
 import { autoSlugify } from '@app/shared/helpers/auto-slug.helper';
-import { BackButtonComponent } from '@app/shared/components/back-button/back-button.component';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from '@angular/material/table';
-import { JsonPipe } from '@angular/common';
 import { DetailHeaderComponent } from '@shared/components/detail-header/detail-header.component';
 import { FactTypeNewType } from '@schemas/fact-type.schema';
 import { DimensionSchemaDialogComponent } from '@shared/components/dialogs/dimension-schema/dimension-schema-dialog.component';
-import {
-  faCirclePlus,
-  faPenToSquare,
-  faTrashCan,
-} from '@fortawesome/free-solid-svg-icons';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
-import { MatTooltip } from '@angular/material/tooltip';
 import { DetailStore } from '@feature/detail/detail.store';
 import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
-import { NoRecordsGenericComponent } from '@shared/components/no-records-generic/no-records-generic.component';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { DimensionSchemasComponent } from '@shared/components/dimension-schemas/dimension-schemas.component';
 
 @Component({
   selector: 'aw-fact-type',
   standalone: true,
   imports: [
-    BackButtonComponent,
-    ReactiveFormsModule,
+    DimensionSchemasComponent,
+    MatFormFieldModule,
     MatInput,
-    MatLabel,
-    MatFormField,
-    MatButton,
-    MatError,
+    ReactiveFormsModule,
     ErrorContainerComponent,
-    MatOption,
-    MatSelect,
-    MatIcon,
-    RouterLink,
-    MatIconButton,
-    TagsFormComponent,
-    MatCell,
-    MatCellDef,
-    MatColumnDef,
-    MatHeaderCell,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatTable,
-    JsonPipe,
-    MatHeaderCellDef,
     DetailHeaderComponent,
-    FaIconComponent,
-    MatTooltip,
-    NoRecordsGenericComponent,
-    MatCheckbox,
+    TagsFormComponent,
+    MatButton,
   ],
   providers: [FactTypeStore],
   templateUrl: './fact-type.component.html',
@@ -109,10 +61,6 @@ export class FactTypeComponent implements OnInit {
   readonly detailStore = inject(DetailStore);
 
   @Input() detailId!: string;
-
-  protected readonly faPenToSquare = faPenToSquare;
-  protected readonly faTrashCan = faTrashCan;
-  protected readonly faCirclePlus = faCirclePlus;
 
   tagsForCreate: string[] = [];
 
@@ -142,15 +90,6 @@ export class FactTypeComponent implements OnInit {
       disabled: true,
     }),
   });
-
-  displayedColumns: string[] = [
-    'name',
-    'key',
-    'dataType',
-    'dataUnit',
-    'isRequired',
-    'actions',
-  ];
 
   constructor() {
     effect(() => {
@@ -267,37 +206,28 @@ export class FactTypeComponent implements OnInit {
     this.tagsForCreate = tags;
   }
 
-  onCreateDimensionSchema() {
-    const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
-      minHeight: '520px',
-      width: '800px',
-      data: {
-        title: 'Create Dimension Schema',
-        okButtonText: 'Save',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.factTypeStore.setDimensionSchemas(-1, result);
-        this.factTypeForm.controls.dimensionSchemasCopy.setValue(
-          this.factTypeStore.dimensionSchemasCopy(),
-        );
-        this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
-      }
-    });
+  onCreateDimensionSchema(event: { schema: DimensionSchemaType }) {
+    console.log('event=', event);
+    this.factTypeStore.setDimensionSchemas(-1, event.schema);
+    this.factTypeForm.controls.dimensionSchemasCopy.setValue(
+      this.factTypeStore.dimensionSchemasCopy(),
+    );
+    this.factTypeForm.controls.dimensionSchemasCopy.markAsDirty();
   }
 
-  onEditDimensionSchema(index: number, element: DimensionSchemaType) {
-    this.editingRow = index;
-    console.log('Edit row ', index, ', ', element);
+  onEditDimensionSchema(event: {
+    index: number;
+    element: DimensionSchemaType;
+  }) {
+    this.editingRow = event.index;
+    console.log('Edit row ', event.index, ', ', event.element);
 
     const dialogRef = this.dialog.open(DimensionSchemaDialogComponent, {
       minHeight: '520px',
       width: '800px',
       data: {
         title: 'Edit Dimension Schema',
-        dimensionSchema: element,
+        dimensionSchema: event.element,
         okButtonText: 'Save',
       },
     });
@@ -314,8 +244,8 @@ export class FactTypeComponent implements OnInit {
     });
   }
 
-  onDeleteDimensionSchema(index: number) {
-    this.factTypeStore.deleteDimensionSchema(index);
+  onDeleteDimensionSchema(event: { index: number }) {
+    this.factTypeStore.deleteDimensionSchema(event.index);
     this.factTypeForm.controls.dimensionSchemasCopy.setValue(
       this.factTypeStore.dimensionSchemasCopy(),
     );

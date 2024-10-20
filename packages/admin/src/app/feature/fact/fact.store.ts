@@ -28,7 +28,6 @@ import { ResourceTypeService } from '@app/shared/services/resource-type.service'
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { DetailStore } from '@feature/detail/detail.store';
 import { DimensionType } from '@schemas/dimension.schema';
-import { DimensionSchemaType } from '@schemas/dimension-schema.schema';
 import { convertDimensionDataTypeValues } from '@shared/helpers/dimension.helper';
 
 interface FactState {
@@ -278,13 +277,13 @@ export const FactStore = signalStore(
           detailStore.clearDetailId();
         }
       },
-      async setDimensions(index: number, dimensionSchema: DimensionSchemaType) {
+      async setDimensions(index: number, dimension: DimensionType) {
         const newDimensions = store.dimensionsCopy().slice();
 
         if (index === -1) {
-          newDimensions.push(dimensionSchema);
+          newDimensions.push(dimension);
         } else {
-          newDimensions[index] = dimensionSchema;
+          newDimensions[index] = dimension;
         }
         patchState(store, {
           dimensionsCopy: newDimensions,
