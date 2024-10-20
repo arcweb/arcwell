@@ -125,7 +125,14 @@ export default class FactsController {
     await request.validateUsing(updateFactValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['typeKey', 'observedAt', 'dimensions'])
+    const cleanRequest = request.only([
+      'typeKey',
+      'observedAt',
+      'dimensions',
+      'personId',
+      'resourceId',
+      'eventId',
+    ])
 
     if (cleanRequest.dimensions) {
       const factType = await FactType.query().where('key', cleanRequest.typeKey).firstOrFail()
