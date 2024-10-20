@@ -215,7 +215,9 @@ export default class TagsController {
 
     return db.transaction(async (trx) => {
       const updatedTag = await TagService.updateTag(trx, params.id, cleanRequest)
-      return { data: this.tagQueryWithAllRelated(updatedTag.id, { limit: 10, offset: 0 }, trx) }
+      return {
+        data: await this.tagQueryWithAllRelated(updatedTag.id, { limit: 10, offset: 0 }, trx),
+      }
     })
   }
 
