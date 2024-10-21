@@ -210,24 +210,34 @@ Example Insert:
 #### Querying
 
 * The dimensions can be queried with the api/v1/data/query endpoint
+* The query parameter format is `dim[key][operator]=value` or `filter[field_name]=value`
 
 
 * *Example: return all facts with a heart_rate greater than 80
 
-    ```{{base_url}}/api/v1/data/query?dim[heart_rate][gt]=80```
+
+```
+{{base_url}}/api/v1/data/query?dim[heart_rate][gt]=80
+```
+
 
 * Filter can be used to query any object on the base object.  Filters always assume "equals"* 
 
 
 * Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72
 
-  ```{{base_url}}/api/v1/data/query?filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72```
+
+  ```
+  {{base_url}}/api/v1/data/query?filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
+  ```
 
 * You can combine and chain multiple filters and dim tags
 
 * Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72 AND heart_rate > 80 AND provider equal to "Dr. Simon Reed"
 
-  ```{{base_url}}/api/v1/data/query?dim[provider][eq]=Dr. Simon Reed&dim[heart_rate][gt]=80&filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72```
+```
+{{base_url}}/api/v1/data/query?dim[provider][eq]=Dr. Simon Reed&dim[heart_rate][gt]=80&filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
+```
 
 
 * The valid sql operators are:
