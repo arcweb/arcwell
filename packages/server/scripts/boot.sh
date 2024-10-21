@@ -4,4 +4,4 @@
 # Use this script for a shorthand to load environment when developing
 # "on metal"
 
-node --env-file=".env.example" ace serve --watch
+node --env-file=".env.development" ace serve --watch

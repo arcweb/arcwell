@@ -1,0 +1,11 @@
+@use 'layout.scss' as layout;
+@use 'colors' as colors;
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
+
+.link-cell {
+  text-decoration: underline;
+  text-decoration-color: colors.$link-color;
+}

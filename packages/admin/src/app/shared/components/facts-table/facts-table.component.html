@@ -1,0 +1,101 @@
+<table
+  mat-table
+  matSort
+  [dataSource]="dataSource()"
+  class="mat-elevation-z0"
+  (matSortChange)="sortChange($event)"
+  [matSortActive]="matSortActive()"
+  [matSortDirection]="matSortDirection()"
+>
+  <ng-container matColumnDef="factType">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Fact Type</th>
+    <td mat-cell *matCellDef="let element">{{ element.factType.name }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="person">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Person</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.person) {
+        <button
+          mat-button
+          type="button"
+          (click)="viewPersonClick(element.person.id); $event.stopPropagation()"
+        >
+          <div>
+            {{ element.person.familyName }}, {{ element.person.givenName }}
+          </div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="resource">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Resource</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.resource) {
+        <button
+          mat-button
+          type="button"
+          (click)="
+            viewResourceClick(element.resource.id); $event.stopPropagation()
+          "
+        >
+          <div>{{ element.resource.name }}</div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="event">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Event</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.event) {
+        <button
+          mat-button
+          type="button"
+          (click)="viewEventClick(element.event.id); $event.stopPropagation()"
+        >
+          <div>{{ element.event.typeKey }}</div>
+        </button>
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="observedAt">
+    <th mat-header-cell mat-sort-header *matHeaderCellDef>Observed At</th>
+    <td mat-cell *matCellDef="let element">
+      {{ convertDateTimeToLocal(element.observedAt) }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <th mat-header-cell *matHeaderCellDef>Tags</th>
+    <td mat-cell *matCellDef="let element">
+      @if (element.tags && element.tags.length > 0) {
+        @for (tag of element.tags; track $index) {
+          <div>
+            {{ tag }}
+          </div>
+        }
+      } @else {
+        <div>--</div>
+      }
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns()"
+    (click)="rowClick(row)"
+  ></tr>
+</table>
+
+<mat-paginator
+  [length]="length()"
+  [pageSizeOptions]="pageSizes()"
+  [pageSize]="pageSize()"
+  [pageIndex]="pageIndex()"
+  (page)="pageChange($event)"
+  showFirstLastButtons="true"
+></mat-paginator>

@@ -1,0 +1,36 @@
+<app-home-header (mainAction)="resetSurveys()" />
+
+<ion-content>
+
+  <ng-container *ngIf="loading">
+    <div class="spinner-wrapper">
+      <ion-spinner color="primary" name="bubbles" />
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!loading">
+    <ng-container *ngIf="!selectedFactType">
+      <div class="ion-padding">
+        <h1 class="surveys-header">Please select a survey</h1>
+      </div>
+      <ion-list>
+        <ion-item *ngFor="let factType of factTypes" button (click)="selectedFactType = factType">
+          <ion-label>
+            <h2>{{ factType.name }}</h2>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-container>
+
+    <ng-container *ngIf="selectedFactType">
+
+      <app-generic-survey *ngIf="selectedFactType.key === 'survey_gad7' || selectedFactType.key === 'survey_phq9'"
+        [factType]="selectedFactType" [surveyConfig]="getSurveyConfig()" (resetAction)="resetSurveys()" />
+
+      <app-oks-survey *ngIf="selectedFactType.key === 'survey_oks'" [factType]="selectedFactType"
+        [surveyConfig]="getSurveyConfig()" (resetAction)="resetSurveys()" />
+
+    </ng-container>
+
+  </ng-container>
+</ion-content>

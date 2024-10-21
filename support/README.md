@@ -1,25 +1,23 @@
-# Project Support Scripts
+# Project Support
 
-Place in this directory scripts useful for supporting local development
-or indirect project assets.
+Place in this directory scripts and configuration useful for supporting
+local development, service build, or indirect project assets.
 
 Examples include:
 * Database initializers
-* Non-standard dependent containers configuration
+* Non-standard configuration for dependent containers
 * Custom Dockerfile for third-party sources
+* Non-public, custom forks or fixes of third-party packages
 
-Document support assets, below.
+Document included support assets in the table below and create a 
+corresponding subfolder here under `/support`
 
 ## Support Assets
 
 | Path | Product | Notes |
 |------|---------|-------|
 | postgres | [PostgreSQL database][psql] | Initializer scripts, configuration |
-| redis    | [Redis cache][redis] | Configuration for Redis in local dev |
-| medplum  | [Medplum FHIR service][medplum] | Custom Docker configuration for local dev |
 
 
 
 [psql]: https://www.postgresql.org/
-[redis]: https://redis.io/
-[medplum]: https://www.medplum.com/

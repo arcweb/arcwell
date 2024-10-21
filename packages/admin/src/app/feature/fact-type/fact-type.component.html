@@ -1,0 +1,92 @@
+@if (factTypeStore.isReady()) {
+  <aw-detail-header
+    detailName="Fact Type"
+    [inEditMode]="factTypeStore.inEditMode()"
+    [inCreateMode]="factTypeStore.inCreateMode()"
+    (toggleEditMode)="factTypeStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="factTypeForm">
+    @if (factTypeStore.isErrored()) {
+      <aw-error-container [errors]="factTypeStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (factTypeForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="Key" formControlName="key" />
+      @if (factTypeForm.controls.key.hasError('pattern')) {
+        <mat-error>
+          Lowercase alpha-numeric characters, underscores and hyphens
+          <strong>only</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Name" formControlName="description" />
+    </mat-form-field>
+
+    @if (factTypeStore.dimensionSchemasCopy()) {
+      <aw-dimension-schemas
+        [inEditMode]="factTypeStore.inEditMode()"
+        [dimensionSchemasCopy]="factTypeStore.dimensionSchemasCopy()"
+        (onEditDimensionSchema)="onEditDimensionSchema($event)"
+        (onDeleteDimensionSchema)="onDeleteDimensionSchema($event)"
+        (onCreateDimensionSchema)="onCreateDimensionSchema($event)"
+      ></aw-dimension-schemas>
+    }
+
+    @if (factTypeStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="factTypeStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!factTypeStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !factTypeStore.inEditMode() ||
+          !factTypeForm.valid ||
+          !factTypeForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  <!--  Tags Section-->
+  @if (!factTypeStore.inCreateMode()) {
+    <aw-tags-form
+      [tags]="factTypeStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
+}

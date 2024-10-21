@@ -4,9 +4,10 @@
 name: "arcwell"
 
 volumes:
-  server-exclude:
-  admin-exclude:
+  excluded_server:
+  excluded_admin:
   pgdata:
+
 
 networks:
   application:
@@ -18,38 +19,49 @@ services:
     image: arcwell_server
     build:
       context: ./packages/server
-      dockerfile: Dockerfile
+      target: develop
+      args:
+        NODE_ENV: development
+        PORT: '3333'
     env_file:
-      - ./arcwell.dev.env
-    volumes:
-      - ./packages/server:/home/node/app/
-      - server-exclude:/home/node/app/node_modules/
+      - ./packages/server/.env.development
     depends_on:
       - db
+      - mailhog
     networks:
       - application
       - data
     ports:
       - '3333:3333'
+      - '5173:5173'
+    volumes:
+      - ./packages/server:/home/node/app
+      # Exclude host node_modules from mounting within container; host-installed
+      # packages will not conflict with in-container /opt/node/node_modules:
+      - excluded_server:/home/node/app/node_modules
 
   admin:
     image: arcwell_admin
     build:
       context: ./packages/admin
-      dockerfile: Dockerfile
+      target: develop
+      args:
+        NODE_ENV: development
+        PORT: '4200'
     env_file:
-      - ./arcwell.dev.env
+      - ./packages/admin/.env.development
     networks:
       - application
     ports:
+      - '4200:4200'
       - '80:4200'
     volumes:
-      - ./packages/admin:/usr/src/app
-      - admin-exclude:/usr/src/app/node_modules
+      - ./packages/admin:/home/node/app
+      - excluded_admin:/home/node/app/node_modules
 
   db:
     image: postgres:16-bookworm
-    restart: always
+    restart: unless-stopped
     ports:
       - '5432:5432'
     environment:
@@ -62,13 +74,10 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./support/postgres/init_test.sql:/docker-entrypoint-initdb.d/init_test.sql
 
-  redis:
-    image: redis:7-bookworm
-    restart: always
-    #command: redis-server --requirepass arcwell
+  mailhog:
+    image: mailhog/mailhog
     ports:
-      - '6379:6379'
+      - "1025:1025" # smtp server
+      - "8025:8025" # web server
     networks:
-      - data
-    volumes:
-      - ./support/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - application

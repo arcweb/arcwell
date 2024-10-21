@@ -1,8 +1,8 @@
 {
   "name": "arcwell-root",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
-  "description": "Arcwell Digital Medicine Platform",
+  "description": "Arcwell Open Source Clinical Research Platform, umbrella repository",
   "homepage": "https://github.com/arcweb/arcwell#readme",
   "bugs": {
     "url": "https://github.com/arcweb/arcwell/issues"
@@ -20,10 +20,12 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=packages/server\" \"npm run start --workspace=packages/admin\"",
     "sort-package-json": "sort-package-json package.json \"packages/*/package.json\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test --workspaces --if-present"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "sort-package-json": "^2.10.0"
   },
   "engines": {

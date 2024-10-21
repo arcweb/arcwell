@@ -1,15 +1,24 @@
 {
   "name": "@arcweb/arcwell-admin",
-  "version": "0.0.0",
+  "description": "Administrative UI application for managing Arcwell servers and stored data",
+  "version": "0.1.0",
   "private": true,
+  "license": "Apache-2.0",
   "scripts": {
     "build": "ng build",
     "ng": "ng",
     "start": "ng serve",
+    "dev": "ng serve --host 0.0.0.0 --proxy-config proxy-config-docker.json --disable-host-check",
     "test": "ng test",
-    "watch": "ng build --watch --configuration development"
+    "test-headless": "ng test --browsers=ChromeHeadless",
+    "watch": "ng build --watch --configuration development",
+    "lint": "eslint --config eslint.config.js 'src/**/*.ts' && stylelint 'src/**/*.scss'",
+    "lint-fix": "eslint --config eslint.config.js 'src/**/*.ts' --fix && stylelint --fix 'src/**/*.scss'",
+    "lint-styles": "stylelint 'src/**/*.scss'",
+    "styles-fix": "stylelint --fix 'src/**/*.scss'"
   },
   "dependencies": {
+    "@angular-architects/ngrx-toolkit": "^18.0.2",
     "@angular/animations": "^18.1.0",
     "@angular/cdk": "^18.1.0",
     "@angular/common": "^18.1.0",
@@ -20,8 +29,17 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
+    "@danielmoncada/angular-datetime-picker": "^18.1.0",
+    "@fortawesome/angular-fontawesome": "^0.15.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@ngrx/operators": "^18.0.2",
+    "@ngrx/signals": "^18.0.2",
+    "@ngrx/store-devtools": "^18.0.2",
+    "lodash": "^4.17.21",
+    "luxon": "^3.4.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "zod": "^3.23.8",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {
@@ -29,12 +47,23 @@
     "@angular/cli": "^18.1.0",
     "@angular/compiler-cli": "^18.1.0",
     "@types/jasmine": "~5.1.0",
+    "@types/lodash": "^4.17.7",
+    "@types/luxon": "^3.4.2",
+    "angular-eslint": "18.2.0",
+    "eslint": "^9.8.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.4.2"
+    "prettier": "3.3.3",
+    "stylelint": "^16.8.1",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-prettier": "^5.0.2",
+    "typescript": "~5.4.2",
+    "typescript-eslint": "8.0.0"
   }
 }

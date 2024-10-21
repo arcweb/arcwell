@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar color="primary" class="header-toolbar" [class]="getPlatformClass()">
+
+    <ion-buttons slot="start">
+      <ion-menu-toggle menu-id="user-menu" auto-hide="false">
+        <ion-button class="menu-button-container">
+          <ion-icon src="../../../assets/icon/menu.svg" />
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+
+    <ion-title (click)="mainAction.emit()">
+      <div class="logo-wrapper">
+        <ion-img src="../../../assets/arcwell-logo.svg" class="logo" />
+      </div>
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>

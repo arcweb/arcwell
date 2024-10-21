@@ -1,0 +1,32 @@
+@use 'colors' as colors;
+
+.detail-header-container {
+  .detail-title-button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .icons-container {
+      display: flex;
+      gap: 30px;
+    }
+
+    .detail-header-button {
+      color: colors.$black;
+
+      .detail-header-button-icon {
+        margin-right: 8px;
+      }
+
+      &.mat-mdc-button-disabled {
+        color: colors.$text-icons-disabled;
+      }
+    }
+  }
+
+  .detail-divider {
+    border-top: 2px solid colors.$primary-70;
+    margin-bottom: 16px;
+  }
+}

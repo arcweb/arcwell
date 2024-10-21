@@ -10,7 +10,12 @@ export default defineConfig({
   | will be scanned automatically from the "./commands" directory.
   |
   */
-  commands: [() => import('@adonisjs/core/commands'), () => import('@adonisjs/lucid/commands')],
+  commands: [
+    () => import('@adonisjs/core/commands'),
+    () => import('@adonisjs/lucid/commands'),
+    () => import('@adonisjs/bouncer/commands'),
+    () => import('@adonisjs/mail/commands'),
+  ],
 
   /*
   |--------------------------------------------------------------------------
@@ -31,7 +36,11 @@ export default defineConfig({
     () => import('@adonisjs/core/providers/vinejs_provider'),
     () => import('@adonisjs/cors/cors_provider'),
     () => import('@adonisjs/lucid/database_provider'),
-    () => import('@adonisjs/auth/auth_provider')
+    () => import('@adonisjs/auth/auth_provider'),
+    () => import('@adonisjs/bouncer/bouncer_provider'),
+    () => import('@adonisjs/mail/mail_provider'),
+    () => import('@adonisjs/core/providers/edge_provider'),
+    () => import('@adonisjs/static/static_provider'),
   ],
 
   /*
@@ -67,5 +76,42 @@ export default defineConfig({
       },
     ],
     forceExit: false,
+  },
+  metaFiles: [
+    {
+      pattern: 'resources/emails/*.edge',
+      reloadServer: false,
+    },
+    {
+      pattern: 'public/**',
+      reloadServer: false,
+    },
+  ],
+
+  directories: {
+    config: 'config',
+    commands: 'commands',
+    contracts: 'contracts',
+    public: 'public',
+    providers: 'providers',
+    languageFiles: 'resources/lang',
+    migrations: 'database/migrations',
+    seeders: 'database/seeders',
+    factories: 'database/factories',
+    views: 'resources',
+    start: 'start',
+    tmp: 'tmp',
+    tests: 'tests',
+    httpControllers: 'app/controllers',
+    models: 'app/models',
+    services: 'app/services',
+    exceptions: 'app/exceptions',
+    mails: 'app/mails',
+    middleware: 'app/middleware',
+    policies: 'app/policies',
+    validators: 'app/validators',
+    events: 'app/events',
+    listeners: 'app/listeners',
+    stubs: 'stubs',
   },
 })

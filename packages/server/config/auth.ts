@@ -8,7 +8,7 @@ const authConfig = defineConfig({
     api: tokensGuard({
       provider: tokensUserProvider({
         tokens: 'accessTokens',
-        model: () => import('#models/user')
+        model: () => import('#models/user'),
       }),
     }),
   },
@@ -21,6 +21,7 @@ export default authConfig
  * guards.
  */
 declare module '@adonisjs/auth/types' {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   interface Authenticators extends InferAuthenticators<typeof authConfig> {}
 }
 declare module '@adonisjs/core/types' {

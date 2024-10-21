@@ -1,0 +1,35 @@
+// TODO: Move any of this to a mix-in when complete;
+
+$padding: 2em;
+
+.account-management-card {
+  margin-bottom: $padding;
+  padding: $padding;
+  gap: $padding;
+
+  .account-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .account-info-container {
+    display: flex;
+    flex-direction: row;
+    gap: $padding;
+
+    .account-icon {
+      transform: scale(2);
+    }
+  }
+
+  .change-password-link {
+    cursor: pointer;
+  }
+}
+
+.reinvite-button {
+  margin: 2em;
+  align-self: flex-end;
+}

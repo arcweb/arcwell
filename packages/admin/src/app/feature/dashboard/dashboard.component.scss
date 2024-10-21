@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+.dashboad-card-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 24px;
+}
+
+mat-card {
+  width: 238px;
+  height: 136px;
+  justify-content: center;
+  cursor: pointer;
+
+  @include mat.elevation(0);
+
+  &:hover {
+    @include mat.elevation(1);
+  }
+}
+
+mat-card-footer {
+  padding: 0 16px;
+}

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <p>
+      Hello {{ user.email }},
+    </p>
+    <h2>
+      {{ user.tempPassword }}
+    </h2>
+    <p>
+      Click this link to set your password and start using the system. <a
+        href="{{ host }}/auth/set/{{ user.email }}"
+        style="color: blue; text-decoration: underline; cursor: pointer;"
+      >Link</a>
+    </p>
+  </body>
+</html>

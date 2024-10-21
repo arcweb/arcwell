@@ -1,2 +1,8 @@
-$toolbar-height: 60px;
-$content-height: calc(100% - (#{$toolbar-height} * 2));
+$sidenav-border-radius: 0 0 24px 24px;
+$card-border-radius: 24px 0 24px 24px;
+$active-card-border-radius: 0;
+$sidenav-width: 320px;
+$arcwell-logo-width: 160px;
+$breakpoint-width: 1279px;
+$breakpoint-width-login: 700px;
+$full-card-border-radius: 16px 0 16px 16px;

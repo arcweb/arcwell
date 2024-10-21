@@ -1,0 +1,66 @@
+@if (tagStore.isReady()) {
+  @if (inEditMode()) {
+    <h5 class="card-title">Tags</h5>
+  }
+
+  <form [formGroup]="tagForm">
+    @if (tagStore.isErrored()) {
+      <aw-error-container [errors]="tagStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline" class="tags-chip-list">
+      <mat-label>Tags</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Tag selection">
+        @for (tag of tagStore.sortedTags(); track $index) {
+          <mat-chip-row (removed)="remove(tag)">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input
+        placeholder="Enter new tag and/or search..."
+        type="text"
+        formControlName="searchTag"
+        [value]="tagStore.searchText()"
+        [matChipInputFor]="chipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event)"
+      >
+        @for (tag of tagStore.filteredSortedTags(); track tag) {
+          <mat-option [value]="tag">{{ tag }}</mat-option>
+        } @empty {
+          <mat-option [disabled]="true">Nothing found.</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    @if (inEditMode()) {
+      <div class="form-button-container">
+        <button
+          mat-button
+          type="button"
+          (click)="onCancel()"
+          class="default-button"
+        >
+          Cancel
+        </button>
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="!tagStore.changesMade()"
+        >
+          Attach Tags
+        </button>
+      </div>
+    }
+  </form>
+}

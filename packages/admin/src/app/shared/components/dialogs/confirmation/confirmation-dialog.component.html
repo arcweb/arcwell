@@ -1,0 +1,12 @@
+<h5 mat-dialog-title>{{ data.title ?? 'Confirmation' }}</h5>
+<mat-dialog-content>
+  <p>{{ data.question ?? 'Are you sure?' }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false" autoFocus>
+    {{ data.cancelButtonText ?? 'Cancel' }}
+  </button>
+  <button mat-button [mat-dialog-close]="true">
+    {{ data.okButtonText ?? 'Ok' }}
+  </button>
+</mat-dialog-actions>

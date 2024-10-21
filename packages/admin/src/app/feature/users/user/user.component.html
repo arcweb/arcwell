@@ -1,0 +1,183 @@
+@if (userStore.isReady()) {
+  <aw-detail-header
+    detailName="{{ isProfile() ? 'Profile' : 'User' }}"
+    [inEditMode]="userStore.inEditMode()"
+    (toggleEditMode)="userStore.toggleEditMode()"
+    [inCreateMode]="userStore.inCreateMode()"
+    [enableDelete]="detailId !== authStore.currentUser()?.id && !isProfile()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  @if (detailId === authStore.currentUser()?.id || isProfile()) {
+    <mat-card class="account-management-card">
+      <div class="account-card-header">
+        <div class="account-info-container">
+          @if (userAvatar) {
+            <img [src]="userAvatar" alt="avatar" class="account-avatar" />
+          } @else {
+            <mat-icon class="account-icon">account_circle</mat-icon>
+          }
+          <div>{{ authStore.currentUser()?.email }}</div>
+        </div>
+        <div class="profile-actions-container">
+          <button
+            mat-button
+            class="change-password-link"
+            (click)="toggleChangePassword()"
+          >
+            @if (viewChangePassword) {
+              Cancel
+            } @else {
+              Change Password
+            }
+          </button>
+        </div>
+      </div>
+      @if (viewChangePassword) {
+        <mat-card-content>
+          <div class="change-password-container">
+            <form [formGroup]="changeForm">
+              @if (authStore.loginStatus() === 'error') {
+                <mat-error>
+                  There has been an Error changing your password
+                </mat-error>
+              }
+              <div class="title">
+                <p>Please enter your current password and new password.</p>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Current Password</mat-label>
+                <input
+                  matNativeControl
+                  formControlName="password"
+                  type="password"
+                  placeholder="Current Password"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>New Password</mat-label>
+                <input
+                  matNativeControl
+                  formControlName="newPassword"
+                  type="password"
+                  placeholder="New Password"
+                />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Confirm Password</mat-label>
+                <input
+                  matNativeControl
+                  formControlName="confirmPassword"
+                  type="password"
+                  placeholder="Confirm Password"
+                />
+              </mat-form-field>
+              @if (changeForm.controls.confirmPassword.hasError('mustMatch')) {
+                <mat-error>The two passwords must match.</mat-error>
+              }
+
+              <button
+                mat-stroked-button
+                color="primary"
+                type="submit"
+                [disabled]="!changeForm.valid"
+              >
+                Change
+              </button>
+            </form>
+          </div>
+        </mat-card-content>
+      }
+    </mat-card>
+  }
+
+  <form [formGroup]="userForm">
+    @if (userStore.isErrored()) {
+      <aw-error-container [errors]="userStore.errors()" />
+    }
+
+    @if (
+      !userStore.inCreateMode() &&
+      detailId !== authStore.currentUser()?.id &&
+      !isProfile()
+    ) {
+      <button
+        mat-button
+        type="button"
+        (click)="reinvite()"
+        class="reinvite-button"
+      >
+        Re-Invite Person
+      </button>
+    }
+
+    <mat-form-field appearance="outline">
+      <input matInput placeholder="Email" formControlName="email" />
+      @if (userForm.controls.email.hasError('required')) {
+        <mat-error>
+          Email is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role" [compareWith]="compareRoles">
+        @for (role of userStore.roles(); track role.id) {
+          <mat-option [value]="role">
+            {{ role.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (userForm.controls.role.hasError('required')) {
+        <mat-error>
+          Role is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    @if (userStore.inCreateMode()) {
+      <mat-form-field appearance="outline">
+        <input
+          matInput
+          placeholder="Password"
+          formControlName="password"
+          type="password"
+        />
+        @if (userForm.controls.password.hasError('required')) {
+          <mat-error>
+            Password is
+            <strong>required</strong>
+          </mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!userStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !userStore.inEditMode() || !userForm.valid || !userForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+}

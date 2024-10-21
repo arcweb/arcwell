@@ -1,0 +1,21 @@
+// TODO: Move any of this to a mix-in when complete
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accordion-area {
+  margin-top: 50px;
+}
+
+.tag-panel-title {
+  flex-grow: 5;
+}
+
+.tag-panel-description {
+  flex-grow: 0;
+  margin-right: 30px;
+}

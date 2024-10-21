@@ -1,0 +1,31 @@
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Resources'"
+  [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  [enableFilter]="resourcesListStore.resources().length > 0"
+  [enableSearch]="resourcesListStore.resources().length > 0"
+></aw-table-header>
+
+@if (resourcesListStore.isErrored()) {
+  <aw-error-container [errors]="resourcesListStore.errors()" />
+}
+@if (resourcesListStore.resources().length > 0) {
+  <div class="table-form-container">
+    <aw-resources-table
+      [dataSource]="dataSource"
+      [displayedColumns]="displayedColumns"
+      [matSortActive]="this.resourcesListStore.sort()"
+      [matSortDirection]="this.resourcesListStore.order()"
+      [length]="this.resourcesListStore.totalData()"
+      [pageSizes]="pageSizes"
+      [pageSize]="this.resourcesListStore.limit()"
+      [pageIndex]="this.resourcesListStore.pageIndex()"
+      (onPageChanged)="this.resourcesListStore.loadPage($event)"
+      (onRowClicked)="rowClick($event)"
+      (onSortChanged)="sortChange($event)"
+    ></aw-resources-table>
+  </div>
+} @else {
+  <aw-no-records
+    [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  ></aw-no-records>
+}

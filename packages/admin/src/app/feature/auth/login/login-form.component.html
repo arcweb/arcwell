@@ -1,0 +1,61 @@
+<form
+  [formGroup]="loginForm"
+  (ngSubmit)="$event.preventDefault(); login.emit(loginForm.getRawValue())"
+  class="login-form"
+>
+  <mat-icon class="logo" svgIcon="arcwell-logo-blue"></mat-icon>
+
+  <div class="header-text">
+    <h4>Welcome</h4>
+    <p class="body-medium">
+      Log into your existing account or create a new one
+    </p>
+  </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      matNativeControl
+      formControlName="email"
+      type="email"
+      placeholder="email"
+    />
+    <mat-icon matPrefix>mail</mat-icon>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input
+      matNativeControl
+      formControlName="password"
+      type="password"
+      placeholder="password"
+    />
+    <mat-icon matPrefix>lock</mat-icon>
+  </mat-form-field>
+
+  @if (loginStatus() === 'error') {
+    <mat-error>Could not log you in with those credentials.</mat-error>
+  } @else if (loginStatus() === 'authenticating') {
+    <mat-spinner diameter="50"></mat-spinner>
+  }
+
+  <button
+    mat-button
+    type="button"
+    color="primary"
+    class="default-button forgot-button form-button body-small"
+    [disabled]="loginStatus() === 'authenticating'"
+    (click)="forgotPassword(); $event.stopPropagation()"
+  >
+    Forgot Password?
+  </button>
+
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    class="submit-button form-button body-small"
+    [disabled]="loginStatus() === 'authenticating'"
+  >
+    Log In
+  </button>
+</form>

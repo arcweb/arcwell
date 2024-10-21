@@ -1,9 +1,25 @@
+// use shortened path names configured in the angular.json file for imports
 @use '@angular/material' as mat;
+@use 'colors' as colors;
 
 @mixin button-theme($theme) {
   $primary: mat.get-theme-color($theme, primary);
   $secondary: mat.get-theme-color($theme, secondary);
   $error: mat.get-theme-color($theme, error);
-  // add button styles here
 
+  .default-button {
+    width: auto;
+    min-width: 200px;
+    border-radius: 0;
+  }
+
+  .top-menu-nav-link-active {
+    border-bottom: 2px solid colors.$gray-94;
+  }
+
+  .submit-button {
+    margin-top: 50px;
+    border-radius: 4px;
+    align-self: stretch;
+  }
 }

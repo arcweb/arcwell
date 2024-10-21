@@ -1,0 +1,119 @@
+@if (cohortStore.isReady()) {
+  <aw-detail-header
+    detailName="Cohort"
+    [inEditMode]="cohortStore.inEditMode()"
+    [inCreateMode]="cohortStore.inCreateMode()"
+    (toggleEditMode)="cohortStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="cohortForm">
+    @if (cohortStore.isErrored()) {
+      <aw-error-container [errors]="cohortStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (cohortForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Description" formControlName="description" />
+    </mat-form-field>
+
+    @if (cohortStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="cohortStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!cohortStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !cohortStore.inEditMode() || !cohortForm.valid || !cohortForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!cohortStore.inCreateMode()) {
+    <!-- People Section -->
+    <h5 class="card-title">People</h5>
+    <form [formGroup]="peopleForm">
+      <aw-object-selector-form-field
+        formControlName="person"
+        placeholder="Search for Person"
+        label="Person"
+        objectType="cohortPeople"
+        displayProperty="familyName"
+        [objectIdForFiltering]="this.cohortStore.id()"
+        [objectSubTypes]="this.cohortStore.personTypes()"
+      ></aw-object-selector-form-field>
+
+      <div class="icons-container">
+        <button
+          mat-flat-button
+          type="submit"
+          class="default-button"
+          [disabled]="
+            cohortStore.inEditMode() || !peopleForm.valid || !peopleForm.dirty
+          "
+        >
+          Add Person to Cohort
+        </button>
+      </div>
+    </form>
+
+    @if (cohortStore.peopleCount() > 0) {
+      <aw-people-table
+        [dataSource]="peopleDataSource"
+        [displayedColumns]="peopleColumns"
+        [matSortActive]="this.cohortStore.peopleListOptions().sort"
+        [matSortDirection]="this.cohortStore.peopleListOptions().order"
+        [length]="this.cohortStore.peopleCount()"
+        [pageSizes]="pageSizes"
+        [pageSize]="this.cohortStore.peopleListOptions().limit"
+        [pageIndex]="this.cohortStore.peopleListOptions().pageIndex"
+        (onDeleteClicked)="peopleDeleteClick($event)"
+        (onPageChanged)="peoplePageChange($event)"
+        (onRowClicked)="peopleRowClick($event)"
+        (onSortChanged)="peopleSortChange($event)"
+      ></aw-people-table>
+    } @else {
+      <h5 class="no-people card-title">
+        No persons currently associated with this cohort
+      </h5>
+    }
+
+    @if (!cohortStore.inCreateMode()) {
+      <!--  Tags Section-->
+      <aw-tags-form
+        [tags]="cohortStore.tagStrings()"
+        (saveTags)="onSetTags($event)"
+      ></aw-tags-form>
+    }
+  }
+}

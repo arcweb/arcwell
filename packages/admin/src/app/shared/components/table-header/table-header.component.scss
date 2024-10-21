@@ -1,0 +1,26 @@
+@use 'colors' as colors;
+
+.main-container-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .icons-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 15px;
+  }
+
+  .table-header-button {
+    color: colors.$black;
+
+    .table-header-button-icon {
+      margin-right: 8px;
+    }
+
+    &.disabled {
+      color: colors.$gray-60;
+    }
+  }
+}

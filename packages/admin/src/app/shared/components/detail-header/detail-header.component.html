@@ -1,0 +1,48 @@
+<div class="detail-header-container">
+  <div
+    class="detail-title-button-container font-weight-regular-bolder card-title"
+  >
+    @if (inCreateMode()) {
+      <h5>Create {{ detailName() }}</h5>
+    } @else {
+      <h5>{{ detailName() }} Detail</h5>
+    }
+
+    <div class="icons-container">
+      @if (!inCreateMode()) {
+        <button
+          mat-button
+          [disabled]="inEditMode()"
+          (click)="onToggleEditMode()"
+          class="detail-header-button"
+          matTooltip="Edit"
+        >
+          <fa-icon
+            aria-label="Edit icon"
+            [icon]="faPenToSquare"
+            size="xl"
+            class="detail-header-button-icon"
+          ></fa-icon>
+          Edit
+        </button>
+        @if (enableDelete()) {
+          <button
+            mat-button
+            (click)="onDelete()"
+            class="detail-header-button"
+            matTooltip="Delete"
+          >
+            <fa-icon
+              aria-label="Delete icon"
+              [icon]="faTrashCan"
+              size="xl"
+              class="detail-header-button-icon"
+            ></fa-icon>
+            Delete
+          </button>
+        }
+      }
+    </div>
+  </div>
+  <mat-divider class="detail-divider"></mat-divider>
+</div>

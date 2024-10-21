@@ -1,0 +1,146 @@
+@use '@angular/material' as mat;
+@use 'layout' as layout;
+@use 'typography-base';
+
+// TODO: revisit this when angular material typography is updated
+// material v3 spec doesn't have a granular typography config like v2
+
+/*
+Typescale names:
+  display-large,
+  display-medium,
+  display-small,
+  headline-large,
+  headline-medium,
+  headline-small,
+  title-large,
+  title-medium,
+  title-small,
+  body-large,
+  body-medium,
+  body-small,
+  label-large,
+  label-medium,
+  label-small,
+*/
+
+@mixin typography-theme($theme) {
+  $primary: mat.get-theme-color($theme, primary);
+  $on-primary: mat.get-theme-color($theme, on-primary);
+  $secondary: mat.get-theme-color($theme, secondary);
+  $on-secondary: mat.get-theme-color($theme, on-secondary);
+  $error: mat.get-theme-color($theme, error);
+
+  %no-margin {
+    margin: 0;
+  }
+
+  .font-weight-light {
+    @extend %font-weight-light;
+  }
+
+  .font-weight-regular {
+    @extend %font-weight-regular;
+  }
+
+  .font-weight-regular-bolder {
+    @extend %font-weight-regular-bolder;
+  }
+
+  .font-weight-semi-bold {
+    @extend %font-weight-semi-bold;
+  }
+
+  .font-weight-bold {
+    @extend %font-weight-bold;
+  }
+
+  // h1
+  .display-large,
+  h1 {
+    @extend %display-large;
+  }
+
+  // h2
+  .display-medium,
+  h2 {
+    @extend %display-medium;
+  }
+
+  // h3
+  .display-small,
+  h3 {
+    @extend %display-small;
+  }
+
+  // h4
+  .headline-large,
+  h4 {
+    @extend %headline-large;
+  }
+
+  // h5
+  .headline-medium,
+  h5 {
+    @extend %headline-medium;
+  }
+
+  // h6
+  .headline-small,
+  h6 {
+    @extend %headline-small;
+  }
+
+  .title-large {
+    @extend %title-large;
+  }
+
+  .title-medium {
+    @extend %title-medium;
+  }
+
+  .title-small {
+    @extend %title-small;
+  }
+
+  .body-large {
+    @extend %body-large;
+  }
+
+  .body-medium {
+    @extend %body-medium;
+  }
+
+  .body-small {
+    @extend %body-small;
+  }
+
+  .label-large {
+    @extend %label-large;
+  }
+
+  .label-medium {
+    @extend %label-medium;
+  }
+
+  .label-small {
+    @extend %label-small;
+  }
+
+  .display-large,
+  .display-medium,
+  .display-small,
+  .headline-large,
+  .headline-medium,
+  .headline-small,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0 0 16px;
+
+    @extend %font-weight-regular-bolder;
+  }
+}

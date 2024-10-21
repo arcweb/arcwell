@@ -1,0 +1,131 @@
+@if (factStore.isReady()) {
+  <aw-detail-header
+    detailName="Fact"
+    [inCreateMode]="factStore.inCreateMode()"
+    [inEditMode]="factStore.inEditMode()"
+    (toggleEditMode)="factStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="factForm">
+    @if (factStore.isErrored()) {
+      <aw-error-container [errors]="factStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fact Type</mat-label>
+      <mat-select formControlName="factType" [compareWith]="compareFactTypes">
+        @for (factType of factStore.factTypes(); track factType.id) {
+          <mat-option [value]="factType">
+            {{ factType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (factForm.controls.factType.hasError('required')) {
+        <mat-error>
+          Fact Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Observed At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <input
+        matInput
+        type="datetime"
+        formControlName="observedAt"
+        [owlDateTime]="dt1"
+        [owlDateTimeTrigger]="dt1"
+        data-lpignore="true"
+      />
+      <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
+      <owl-date-time #dt1></owl-date-time>
+    </mat-form-field>
+    @if (
+      factForm.controls.observedAt.invalid &&
+      !factForm.controls.observedAt.pristine
+    ) {
+      <mat-error>
+        Observed At format must be DD/MM/YYYY HH:MM AM or PM
+      </mat-error>
+    }
+
+    <aw-object-selector-form-field
+      formControlName="person"
+      placeholder="Search for Person"
+      label="Person"
+      objectType="people"
+      displayProperty="familyName"
+      [objectSubTypes]="this.factStore.personTypes()"
+    ></aw-object-selector-form-field>
+
+    <aw-object-selector-form-field
+      formControlName="resource"
+      placeholder="Search for Resource"
+      label="Resource"
+      objectType="resources"
+      displayProperty="name"
+      [objectSubTypes]="this.factStore.resourceTypes()"
+    ></aw-object-selector-form-field>
+
+    <div class="body-large">
+      Note: Currently, events can only be added via the api
+    </div>
+    <!--    <aw-object-selector-form-field-->
+    <!--      formControlName="event"-->
+    <!--      placeholder="Search for Event"-->
+    <!--      label="Event"-->
+    <!--      serviceType="events"-->
+    <!--      displayProperty="id"-->
+    <!--    ></aw-object-selector-form-field>-->
+
+    @if (factStore.dimensionsCopy()) {
+      <aw-dimension
+        [inEditMode]="factStore.inEditMode()"
+        [dimensionsCopy]="factStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
+    }
+    @if (factStore.inCreateMode()) {
+      <br />
+      <aw-tags-form
+        [tags]="factStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!factStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !factStore.inEditMode() || !factForm.valid || !factForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!factStore.inCreateMode()) {
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="factStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
+}

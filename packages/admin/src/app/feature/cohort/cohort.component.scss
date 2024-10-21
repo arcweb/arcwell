@@ -1,0 +1,20 @@
+// TODO: Move any of this to a mix-in when complete
+
+form {
+  .icons-container {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .main-container-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .no-people {
+    text-align: center;
+  }
+}

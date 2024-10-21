@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar class="header-toolbar" [class]="getPlatformClass()">
+
+    <ion-title>
+      <div class="logo-wrapper">
+        <img src="../../../assets/arcwell-logo-large.svg" class="logo" />
+      </div>
+    </ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-background" [scrollY]="false">
+  <form (ngSubmit)="login()" class="login-form">
+    <ion-input mode="md" label-placement="floating" label="Email" name="email" fill="outline" [(ngModel)]="email"
+      type="email" (keyup.enter)="focusPasswordInput()" inputmode="email" />
+    <ion-input #passwordInput mode="md" label-placement="floating" name="email" label="Password" fill="outline"
+      [(ngModel)]="password" (keyup.enter)="login()" type="password" />
+    <ion-button expand="block" type="submit">Login</ion-button>
+  </form>
+  <p *ngIf="errorMessage">{{ errorMessage }}</p>
+</ion-content>

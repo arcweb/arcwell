@@ -1,0 +1,37 @@
+@use '@angular/material' as mat;
+@use 'theme' as theme;
+
+/* Easy Reference to theme colors */
+
+$primary: mat.get-theme-color(theme.$light-theme, primary);
+$on-primary: mat.get-theme-color(theme.$light-theme, on-primary);
+$secondary: mat.get-theme-color(theme.$light-theme, secondary);
+$on-secondary: mat.get-theme-color(theme.$light-theme, on-secondary);
+$error: mat.get-theme-color(theme.$light-theme, error);
+$on-error: mat.get-theme-color(theme.$light-theme, on-error);
+$tertiary: mat.get-theme-color(theme.$light-theme, tertiary);
+$on-tertiary: mat.get-theme-color(theme.$light-theme, on-tertiary);
+$black: mat.get-theme-color(theme.$light-theme, neutral, 0);
+$white: mat.get-theme-color(theme.$light-theme, neutral, 100);
+$gray-30: mat.get-theme-color(theme.$light-theme, neutral, 30);
+$gray-40: mat.get-theme-color(theme.$light-theme, neutral, 40);
+$gray-50: mat.get-theme-color(theme.$light-theme, neutral, 50);
+$gray-60: mat.get-theme-color(theme.$light-theme, neutral, 60);
+$gray-70: mat.get-theme-color(theme.$light-theme, neutral, 70);
+$gray-80: mat.get-theme-color(theme.$light-theme, neutral, 80);
+$gray-90: mat.get-theme-color(theme.$light-theme, neutral, 90);
+$gray-94: mat.get-theme-color(theme.$light-theme, neutral, 94);
+$blue-50: mat.get-theme-color(theme.$light-theme, primary, 50);
+$blue-70: mat.get-theme-color(theme.$light-theme, primary, 70);
+$primary-70: mat.get-theme-color(theme.$light-theme, primary, 70);
+$primary-80: mat.get-theme-color(theme.$light-theme, primary, 80);
+$primary-90: mat.get-theme-color(theme.$light-theme, primary, 90);
+$secondary-70: mat.get-theme-color(theme.$light-theme, secondary, 70);
+$link-color: #005398;
+$dark-blue: #004487;
+$content-background: #f3f3f3;
+$row-background: #e9f2ff;
+$text-icons-disabled: rgb(0 0 0 / 25%);
+$status-green-subtle: #d8ffd8;
+$status-red-subtle: #fde8ec;
+$text-icons-default: #2f3033;

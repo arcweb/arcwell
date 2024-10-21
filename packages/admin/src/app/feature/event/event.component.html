@@ -1,0 +1,135 @@
+@if (eventStore.isReady()) {
+  <aw-detail-header
+    detailName="Event"
+    [inEditMode]="eventStore.inEditMode()"
+    [inCreateMode]="eventStore.inCreateMode()"
+    (toggleEditMode)="eventStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="eventForm">
+    @if (eventStore.isErrored()) {
+      <aw-error-container [errors]="eventStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Event Type</mat-label>
+      <mat-select formControlName="eventType" [compareWith]="compareEventTypes">
+        @for (eventType of eventStore.eventTypes(); track eventType.id) {
+          <mat-option [value]="eventType">
+            {{ eventType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (eventForm.controls.eventType.hasError('required')) {
+        <mat-error>
+          Event Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Started At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <input
+        matInput
+        type="datetime"
+        formControlName="startedAt"
+        [owlDateTime]="dt1"
+        data-lpignore="true"
+      />
+      <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
+      <owl-date-time #dt1></owl-date-time>
+    </mat-form-field>
+    @if (
+      eventForm.controls.startedAt.invalid &&
+      !eventForm.controls.startedAt.pristine
+    ) {
+      <mat-error>Started At format must be MM/DD/YYYY HH:MM AM or PM</mat-error>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ended At (MM/DD/YYYY HH:MM AM or PM)</mat-label>
+      <input
+        matInput
+        type="datetime"
+        formControlName="endedAt"
+        [owlDateTime]="dt2"
+        data-lpignore="true"
+      />
+      <mat-icon class="event-icon" [owlDateTimeTrigger]="dt2">event</mat-icon>
+      <owl-date-time #dt2></owl-date-time>
+    </mat-form-field>
+    @if (
+      eventForm.controls.endedAt.invalid && !eventForm.controls.endedAt.pristine
+    ) {
+      <mat-error>Ended At format must be MM/DD/YYYY HH:MM AM or PM</mat-error>
+    }
+
+    <aw-object-selector-form-field
+      formControlName="person"
+      placeholder="Search for Person"
+      label="Person"
+      objectType="people"
+      displayProperty="familyName"
+      [objectSubTypes]="this.eventStore.personTypes()"
+    ></aw-object-selector-form-field>
+
+    <aw-object-selector-form-field
+      formControlName="resource"
+      placeholder="Search for Resource"
+      label="Resource"
+      objectType="resources"
+      displayProperty="name"
+      [objectSubTypes]="this.eventStore.resourceTypes()"
+    ></aw-object-selector-form-field>
+
+    @if (eventStore.dimensionsCopy()) {
+      <aw-dimension
+        [inEditMode]="eventStore.inEditMode()"
+        [dimensionsCopy]="eventStore.dimensionsCopy()"
+        (onEditDimension)="onEditDimension($event)"
+        (onDeleteDimension)="onDeleteDimension($event)"
+        (onCreateDimension)="onCreateDimension($event)"
+      ></aw-dimension>
+    }
+
+    @if (eventStore.inCreateMode()) {
+      <aw-tags-form
+        [tags]="eventStore.tagStrings()"
+        (updateTagsForCreate)="updateTagsForCreate($event)"
+        [inEditMode]="false"
+      ></aw-tags-form>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!eventStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !eventStore.inEditMode() || !eventForm.valid || !eventForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!eventStore.inCreateMode()) {
+    <!--  Tags Section-->
+    <aw-tags-form
+      [tags]="eventStore.tagStrings()"
+      (saveTags)="onSetTags($event)"
+    ></aw-tags-form>
+  }
+}

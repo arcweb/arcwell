@@ -1,23 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-@use './app/styles/mixins/index.scss' as mixins;
-@use './app/styles/fonts' as fonts;
-@use './app/styles/theme' as theme;
-
-@include mat.core();
-
+@use 'mixins/index.scss' as mixins;
+@use 'fonts' as fonts;
+@use 'theme' as theme;
+@use 'layout' as layout;
+@use 'colors' as colors;
+@import '@danielmoncada/angular-datetime-picker/assets/style/picker.min.css';
+@include mat.core;
 
 html {
   @include mat.core-theme(theme.$light-theme);
   @include mat.all-component-themes(theme.$light-theme);
-  @include mat.system-level-colors(theme.$light-theme);  // required for references to system leve colors such as on-primary
   @include mat.system-level-typography(theme.$light-theme);
-  @include mat.strong-focus-indicators(theme.$light-theme); // accessibility
 
-  //custom, component level mixins
+  // required for references to system level colors such as on-primary
+  @include mat.system-level-colors(theme.$light-theme);
+
+  // custom, component level mixins
+  @include mixins.auth-theme(theme.$light-theme);
   @include mixins.button-theme(theme.$light-theme);
+  @include mixins.card-theme(theme.$light-theme);
+  @include mixins.config-theme(theme.$light-theme);
+  @include mixins.dashboard-theme(theme.$light-theme);
+  @include mixins.form-theme(theme.$light-theme);
+  @include mixins.settings-theme(theme.$light-theme);
+  @include mixins.sidenav-theme(theme.$light-theme);
+  @include mixins.table-theme(theme.$light-theme);
+  @include mixins.toast-theme(theme.$light-theme);
   @include mixins.toolbar-theme(theme.$light-theme);
+  @include mixins.typography-theme(theme.$light-theme);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: fonts.$body-font; }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: fonts.$body-font;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.table-form-container {
+  border-radius: layout.$card-border-radius;
+  padding: 16px;
+  background-color: colors.$white;
+}

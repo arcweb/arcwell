@@ -1,0 +1,68 @@
+@use '@angular/material' as mat;
+@use 'colors' as colors;
+@use 'layout';
+
+@mixin toast-theme($theme) {
+  $primary: mat.get-theme-color($theme, primary);
+  $on-primary: mat.get-theme-color($theme, on-primary);
+  $secondary: mat.get-theme-color($theme, secondary);
+  $error: mat.get-theme-color($theme, error);
+  $on-error: mat.get-theme-color($theme, on-error);
+
+  .toast-container {
+    z-index: 99999999;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    bottom: 10px;
+    width: 100%;
+    row-gap: 10px;
+  }
+
+  .toast-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 50vw;
+    padding: 12px 24px;
+    letter-spacing: 0.25px;
+    box-shadow: 0 4px 10px 0 rgb(0 0 0 / 35%);
+
+    .message-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 1;
+      margin: auto;
+    }
+  }
+
+  .button-dismiss {
+    margin-left: 20px;
+
+    .icon-dismiss {
+      color: colors.$text-icons-default;
+    }
+  }
+
+  .toast-info {
+    background-color: colors.$blue-70;
+    color: $on-primary;
+    border: 0;
+  }
+
+  .toast-error {
+    background-color: colors.$status-red-subtle;
+    color: colors.$text-icons-default;
+    border: 0;
+  }
+
+  .toast-success {
+    background-color: colors.$status-green-subtle;
+    color: colors.$text-icons-default;
+    border: 0;
+  }
+}

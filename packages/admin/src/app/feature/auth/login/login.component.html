@@ -1,0 +1,13 @@
+<div class="login-container">
+  <div class="logo-container"></div>
+  <div class="form-container">
+    @if (authStore.currentUser() === null) {
+      <aw-login-form
+        [loginStatus]="authStore.loginStatus()"
+        (login)="loginNow($event)"
+      ></aw-login-form>
+    } @else {
+      <mat-spinner diameter="50" />
+    }
+  </div>
+</div>
