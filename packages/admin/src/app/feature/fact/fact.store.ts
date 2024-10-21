@@ -230,7 +230,7 @@ export const FactStore = signalStore(
 
         const newFact = convertDimensionDataTypeValues(
           createFactFormData,
-          'facttType',
+          'factType',
         );
 
         const resp = await firstValueFrom(factService.create(newFact));

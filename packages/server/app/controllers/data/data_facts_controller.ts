@@ -228,79 +228,31 @@ export default class DataFactsController {
     const params = request.qs()
     await paramsTripleObjectUUIDValidator.validate(params)
 
-    console.log('params=', params)
-
     const filter = params['filter']
     const dim = params['dim']
 
-    // TODO: The following is the raw query I used, because LATERAL is not supported in knex/lucid. Would prefer query builder support.  See GROUP BY example below
-    // SELECT
-    //    facts.id AS fact_id,
-    //    facts.type_key,
-    //    facts.observed_at,
-    //    dimension_element ->> 'key' AS key,
-    //    dimension_element ->> 'value' AS value
-    // FROM facts
-    // JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
-    // WHERE
-    //     facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b'
-    //     AND EXISTS (
-    //         SELECT 1
-    //         FROM jsonb_array_elements(facts.dimensions) AS inner_element
-    //         WHERE
-    //             inner_element ->> 'key' = 'diastolic'
-    //             AND (inner_element -> 'value')::numeric > 70.1
-
-    // You can do the same with group but not sure if the selects will work with json commands, e.g. dimension_element ->> 'key' AS key
-    // and query building this seems complicated.
-    // Here is the equivalent non-literal SQL
-    // SELECT
-    //    facts.id AS fact_id,
-    //    facts.type_key,
-    //    facts.observed_at,
-    //    dimension_element ->> 'key' AS key,
-    //    dimension_element ->> 'value' AS value
-    // FROM facts,
-    //    jsonb_array_elements(facts.dimensions) AS dimension_element
-    // WHERE
-    //     facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b'
-    //     AND facts.id IN (
-    //         SELECT facts.id
-    //         FROM facts,
-    //             jsonb_array_elements(facts.dimensions) AS inner_element
-    //         WHERE
-    //             facts.person_id = 'd81fb1c5-3d24-45a2-83e2-13e0b08a6a2b' -- Repeat condition to filter on person_id
-    //             AND inner_element ->> 'key' = 'diastolic'
-    //             AND (inner_element -> 'value')::numeric > 70.1
-    //     )
-    // GROUP BY
-    //     facts.id,
-    //     facts.type_key,
-    //     facts.observed_at,
-    //     key,
-    //     value;
+    const parsedFilters = filter ? parseFilters(filter) : []
+    const parsedDims = dim ? parseFilters(dim) : []
 
     let rawQueryString = `
-                          SELECT
-                            facts.id AS fact_id,
-                            facts.type_key,
-                            facts.observed_at,
-                            dimension_element ->> 'key' AS key,
-                            dimension_element ->> 'value' AS value
-                          FROM facts
-                          JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
-                        `
+    SELECT
+      facts.id AS fact_id,
+      facts.type_key,
+      facts.observed_at,
+      dimension_element ->> 'key' AS key,
+      dimension_element ->> 'value' AS value
+    FROM facts
+    JOIN LATERAL jsonb_array_elements(facts.dimensions) AS dimension_element ON true
+  `
 
     let whereClause = ''
     let bindings: Record<string, any> = {}
-    let paramIndex = 1 // Counter to generate unique binding names
+    let paramIndex = 1
 
     // Handle standard filters
-    const parsedFilters = filter ? parseFilters(filter) : []
-
     for (let filterItem of parsedFilters) {
       const fieldName = string.snakeCase(filterItem.field)
-      const paramName = `fieldValue${paramIndex}` // Generate a unique parameter name
+      const paramName = `fieldValue${paramIndex}`
 
       whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
       whereClause += `facts.${fieldName} = :${paramName}`
@@ -310,11 +262,35 @@ export default class DataFactsController {
     }
 
     // Handle dimension filters
-    const parsedDims = dim ? parseFilters(dim) : []
-
     for (let dimItem of parsedDims) {
-      let sqlOperator: string = '='
+      const fieldParam = `fieldKey${paramIndex}`
+      const valueParam = `fieldValue${paramIndex}`
 
+      // Fetch all possible data types for the dimension key
+      const dataTypesResult = await db.rawQuery(
+        `
+        SELECT DISTINCT schema_element ->> 'dataType' AS data_type
+        FROM fact_types,
+             jsonb_array_elements(fact_types.dimension_schemas) AS schema_element
+        WHERE schema_element ->> 'key' = :dimensionKey
+      `,
+        { dimensionKey: dimItem.field }
+      )
+
+      const dataTypes = dataTypesResult.rows.map((row: { data_type: any }) => row.data_type)
+
+      if (dataTypes.length === 0) {
+        throwCustomHttpError(
+          {
+            title: 'Bad Request',
+            code: 'E_BAD_REQUEST',
+            detail: `Unknown dimension key: ${dimItem.field}`,
+          },
+          400
+        )
+      }
+
+      let sqlOperator: string
       switch (dimItem.operator) {
         case SqlOperatorEnum.eq:
           sqlOperator = '='
@@ -339,28 +315,77 @@ export default class DataFactsController {
             {
               title: 'Bad Request',
               code: 'E_BAD_REQUEST',
-              detail: 'Unimplemented operator type:' + dimItem.operator,
+              detail: 'Unimplemented operator type: ' + dimItem.operator,
             },
             400
           )
       }
 
-      const fieldParam = `fieldKey${paramIndex}`
-      const valueParam = `fieldValue${paramIndex}`
+      let dataTypeConditions = dataTypes.map((dataType: string) => {
+        let valueExpression: string
+        const currentValueParam = `${valueParam}_${dataType}` // Unique parameter name per data type
+
+        if (dataType === 'number') {
+          const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+          bindings[regexPatternParam] = '^\\d+(\\.\\d+)?$'
+
+          valueExpression = `
+          CASE
+            WHEN (inner_element ->> 'value') ~ :${regexPatternParam} THEN
+              (inner_element ->> 'value')::numeric ${sqlOperator} :${currentValueParam}
+            ELSE FALSE
+          END
+        `
+          bindings[currentValueParam] = Number(dimItem.value)
+        } else if (dataType === 'boolean') {
+          const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+          bindings[regexPatternParam] = '^(true|false)$'
+
+          valueExpression = `
+                              CASE
+                                WHEN lower(inner_element ->> 'value') ~ :${regexPatternParam} THEN
+                                  (inner_element ->> 'value')::boolean ${sqlOperator} :${currentValueParam}
+                                ELSE FALSE
+                              END
+                            `
+          // Bind the value as a boolean
+          bindings[currentValueParam] = dimItem.value.toLowerCase() === 'true'
+        } else if (dataType === 'date') {
+          const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+          bindings[regexPatternParam] =
+            '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?)?$'
+
+          valueExpression = `
+                              CASE
+                                WHEN (inner_element ->> 'value') ~ :${regexPatternParam} THEN
+                                  (inner_element ->> 'value')::timestamp ${sqlOperator} :${currentValueParam}
+                                ELSE FALSE
+                              END
+                            `
+          bindings[currentValueParam] = dimItem.value
+        } else {
+          // For strings, no change needed
+          valueExpression = `(inner_element ->> 'value') ${sqlOperator} :${currentValueParam}`
+          bindings[currentValueParam] = dimItem.value
+        }
+
+        return valueExpression
+      })
+
+      const combinedDataTypeConditions = dataTypeConditions.join(' OR ')
 
       whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
       whereClause += `
-                      EXISTS (
-                        SELECT 1
-                        FROM jsonb_array_elements(facts.dimensions) AS inner_element
-                        WHERE
-                          inner_element ->> 'key' = :${fieldParam}
-                          AND inner_element -> 'value' ${sqlOperator} :${valueParam}
-                      )
-                    `
+      EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(facts.dimensions) AS inner_element
+        WHERE
+          inner_element ->> 'key' = :${fieldParam}
+          AND (${combinedDataTypeConditions})
+      )
+    `
 
       bindings[fieldParam] = dimItem.field
-      bindings[valueParam] = dimItem.value
       paramIndex++
     }
 
