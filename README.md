@@ -37,9 +37,9 @@ The Arcweb team, as stewards of Arcwell, have outlined a roadmap that will
 soon expand this core offering to include:
 
 - **Client Libraries** – SDKs in multiple languages for developers to leverage when integrating Arcwell in their applications
-- **Embedded EHR and FHIR Bridge** – FHIR-compliant electronic health record system for caching and synchronizing cache, local record, and integration with health systems
-- **Feature Libraries** – A library of Arcwell types and models that users can easily install in their instances to implement common conditions and behaviors.
-- **Component Libary** – Interface elements in common frontend frameworks to facilitate quick construction of Arcwell-backed application UIs
+- **Embedded EHR and FHIR Bridge** – FHIR-compliant electronic health record system for caching and synchronizing medical data, local records, and integration with health systems
+- **Feature Libraries** – A library of Arcwell types and models that users can easily install in their own instances to implement common conditions and behaviors.
+- **Component Libary** – Interface elements written in popular frontend frameworks to facilitate the quick construction of Arcwell-backed application UIs
 - **New Features** – Additional features that expand Arcwell's built-in capabilities, including native support for assigned tasks, surveys, server forms, mobile patient navigation tools, and implementation of healthcare standards including eCOA, ePRO, and others
 
 This repository includes the code for _Arcwell Server_ and _Arcwell Admin_, both nested under the `/packages` path, and example uses of Arcwell under 
