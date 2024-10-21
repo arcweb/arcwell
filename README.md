@@ -27,7 +27,7 @@ more.
 
 ## Features
 
-Architecurally, Arcwell is composed of:
+Architecturally, Arcwell is composed of:
 
 - **Arcwell Server** – REST APIs and data models for app integration
 - **Arcwell Admin** – An administrative dashboard for management and configuration
