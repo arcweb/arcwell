@@ -151,7 +151,25 @@ Environment seed data will create a user for you:
 | admin@example.com          | example-healthy-pass | Admin   |
 
 
-### 5. Explore!
+# Explore!
+
+### What are People, Cohorts, Resources, & Events?
+
+* ...
+
+### What are Facts?
+
+* ...
+
+### How Types Work
+
+* ...
+
+### Inserting and Querying Data
+
+* ...
+
+
 
 Now, you can poke around the Admin experience or Server code and documentation.
 
