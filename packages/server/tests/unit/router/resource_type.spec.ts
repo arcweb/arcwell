@@ -42,7 +42,7 @@ test.group('Router resource type', () => {
   })
 
   test('resource type update test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.first()
 
     const newData = {
@@ -62,7 +62,7 @@ test.group('Router resource type', () => {
   })
 
   test('resource type store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
 
     const newRType = {
       key: 'test',
@@ -81,7 +81,7 @@ test.group('Router resource type', () => {
   })
 
   test('resource type delete type', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.findBy('key', 'newtest')
 
     const response = await client

@@ -5,25 +5,10 @@ export default class extends BaseSeeder {
   static environment = ['development', 'test', 'production']
 
   async run() {
-    await RoleFactory.merge({ name: 'Super Admin' })
-      .with('policies', 3, (builder) =>
-        builder.merge([
-          { name: 'Policy 1', capabilities: '{ "rule": "whatever"}' },
-          { name: 'Policy 2', capabilities: '{}' },
-          { name: 'Policy 3', capabilities: '{}' },
-        ])
+    await RoleFactory.merge({ name: 'Admin' })
+      .with('policies', 1, (builder) =>
+        builder.merge([{ name: 'DefaultAdmin', capabilities: '{}' }])
       )
       .create()
-
-    await RoleFactory.merge({ name: 'Limited Admin' })
-      .with('policies', 2, (builder) =>
-        builder.merge([
-          { name: 'Policy 4', capabilities: '{}' },
-          { name: 'Policy 5', capabilities: '{}' },
-        ])
-      )
-      .create()
-
-    await RoleFactory.merge({ name: 'Guest' }).create()
   }
 }

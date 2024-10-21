@@ -7,7 +7,7 @@ const PEOPLE_URL = '/people'
 
 test.group('Router people', () => {
   test('people index test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client.get(PEOPLE_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
@@ -18,7 +18,7 @@ test.group('Router people', () => {
   })
 
   test('people index filtered test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const pType = await PersonType.findBy('key', 'Staff')
     const response = await client.get(`${PEOPLE_URL}?personTypeId=${pType?.id}`).loginAs(adminUser!)
 
@@ -31,7 +31,7 @@ test.group('Router people', () => {
 
   test('people show test', async ({ assert, client }) => {
     // get a valid person for id for request
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const person = await Person.first()
 
     const response = await client.get(`${PEOPLE_URL}/${person?.id}`).loginAs(adminUser!)
@@ -45,7 +45,7 @@ test.group('Router people', () => {
   })
 
   test('people update test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     // get a valid person for id for request
     const person = await Person.first()
 
@@ -65,7 +65,7 @@ test.group('Router people', () => {
   })
 
   test('people store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const type = await PersonType.findBy('key', 'tester')
 
     const newPerson = {
@@ -100,7 +100,7 @@ test.group('Router people', () => {
     })
 
   test('people destroy test', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const person = await Person.findBy('familyName', 'Newman')
 
     const response = await client.delete(`${PEOPLE_URL}/${person!.id}`).loginAs(adminUser!)
