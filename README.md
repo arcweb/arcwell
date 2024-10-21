@@ -287,10 +287,10 @@ When defining dimensions, there is a wealth of configuration available:
 It is possible to define detailed and complex parameters for facts using this set of
 configuration options.
 
-### Data API: Inserting and Querying Data
+### Data API: Inserting Data
 
-#### Inserting
-* When adding dimensions to an object, you must supply all "isRequired" fields
+When adding dimensions to an object, you must supply all "isRequired" fields
+
 Example Insert:
  
 `POST /api/v1/data/insert`
@@ -313,60 +313,56 @@ Example Insert:
 ```
 
 
-#### Querying
+### Data API: Querying Data
 
-* The dimensions can be queried with the api/v1/data/query endpoint
-* The query parameter format is `dim[key][operator]=value` or `filter[field_name]=value`
+There are many ways you can leverage the Server's Data API to slice and investigate
+the data living within your Arcwell instance. The `/api/v1/data/query` endpoint is very
+powerful.
 
+**Dimension Querying** allows you to return only facts that match your paramters and
+queries of their embedded dimensions.
 
-* *Example: return all facts with a heart_rate greater than 80
+The query parameter format is `dim[key][operator]=value` or `filter[field_name]=value`
 
-
+Example: Return all facts with a heart_rate greater than 80
 ```
 /api/v1/data/query?dim[heart_rate][gt]=80
 ```
 
 
-* Filter can be used to query any object on the base object.  Filters always assume "equals"* 
+**Filtering** can be used to query any object on the base object. Filters always assume
+"equals"
 
-
-* Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72
-
-
+Example: Return all facts with person_id of 4073aecb-6c8a-4161-b15c-270f44367f72
 ```
 /api/v1/data/query?filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
 ```
 
-* You can combine and chain multiple filters and dim tags
+It is allowable to combine and chain multiple filters and dimension queries.
 
-* Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72 AND heart_rate > 80 AND provider equal to "Dr. Simon Reed"
-
+Example: Return all facts where...
+* The person had ID 4073aecb-6c8a-4161-b15c-270f44367f72
+* AND where the heart_rate > 80 
+* AND where the provider was "Dr. Simon Reed"
 ```
 /api/v1/data/query?dim[provider][eq]=Dr. Simon Reed&dim[heart_rate][gt]=80&filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
 ```
 
+The valid query operators are:
+* eq = equals
+* gt = greater than
+* gte = greater than or equal
+* lt = less than
+* lte = less than or equal
+* ne = not equal
 
-* The valid sql operators are:
-  * eq = equals
-  * gt = greater than
-  * gte = greater than or equal
-  * lt = less than
-  * lte = less than or equal
-  * ne = not equal
+If you really want to explore and get your hands into it, we have provided a Postman 
+definition for use with the [Postman API Platform](https://www.postman.com/) and
+compatible services. This can be useful for development to learn the API contracts, 
+formats, and endpoints:
 
-
-
-
-
-
-We have provided a Postman definition for use with the 
-[Postman API Platform](https://www.postman.com/)
-and compatible services. This can be useful for development to learn the
-API contracts, formats, and endpoints:
-
-- Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
-- Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
-
+* Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
+* Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
 
 
 
