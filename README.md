@@ -356,10 +356,18 @@ The valid query operators are:
 * lte = less than or equal
 * ne = not equal
 
-If you really want to explore and get your hands into it, we have provided a Postman 
-definition for use with the [Postman API Platform](https://www.postman.com/) and
-compatible services. This can be useful for development to learn the API contracts, 
-formats, and endpoints:
+### Hands On
+
+Arcwell Server automatically generates a fairly robust OpenAPI specification document.
+You can review this within your running local development server in two ways:
+
+* Navigate to http://localhost:3333/docs to review API spec visually
+* Download the OpenAPI formatted spec form http://localhost:3333/docs/swagger.yaml
+
+
+We have also provided a Postman definition for use with the 
+[Postman API Platform](https://www.postman.com/) and compatible services. This can be
+useful for development to learn the API contracts, formats, and endpoints:
 
 * Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
 * Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
