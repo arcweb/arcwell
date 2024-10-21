@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +29,8 @@ export class LoginPage implements OnInit {
   password: string = '';
   errorMessage: string = '';
 
+  @ViewChild('passwordInput', { static: false }) passwordInput!: IonInput;
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -38,6 +40,9 @@ export class LoginPage implements OnInit {
   ngOnInit() {
   }
 
+  focusPasswordInput() {
+    this.passwordInput.setFocus();
+  }
 
   getPlatformClass(): string {
     return Capacitor.getPlatform();
