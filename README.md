@@ -197,11 +197,11 @@ model could be constructed as follows:
 
 You can see this system coordinates:
 
-* Patients – a `PersonType` representing patients
-* Medical Monitors – a `ResourceType` describing configuration for monitors
-* App Sessions – an `EventType` for earmarking sources from which data flows into the system
-* Blood Pressure Readings - a `FactType` to define the schema and parameters of reading information produced by the monitors
-* "diagnosis/diabetes" - a `Tag` to make patients and their associated BP readings easily searchable by data queries
+* **Patients** – a `PersonType` representing patients
+* **Medical Monitors** – a `ResourceType` describing configuration for monitors
+* **App Sessions** – an `EventType` for earmarking sources from which data flows into the system
+* **Blood Pressure Readings** - a `FactType` to define the schema and parameters of reading information produced by the monitors
+* **"diagnosis/diabetes"** - a `Tag` to make patients and their associated BP readings easily searchable by data queries
 
 How you organize your own data system is completely up to you.
 
