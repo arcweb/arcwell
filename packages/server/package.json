@@ -1,7 +1,7 @@
 {
   "name": "@arcweb/arcwell-server",
   "description": "Server, data model, and API backend for Arcwell software platform",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
