@@ -163,11 +163,81 @@ Environment seed data will create a user for you:
 
 ### How Types Work
 
-* ...
+* Each of the major objects (Facts, People, Resources & Events) have a type.  
+* The purpose of the types is to group and define the schema definition of the dimensions
+
+Below is an example schema for the blood pressure fact type that is located in the object's `dimensionSchemas` jsonb field
+```json
+[
+  { "name": "Diastolic Pressure", "key": "diastolic", "dataType": "number", "isRequired": true },
+  { "name": "Systolic Pressure", "key": "systolic", "dataType": "number", "isRequired": true },
+  { "name": "Heart Rate", "key": "heart_rate", "dataType": "number", "dataUnit": "beat/min", "isRequired": false }
+]
+```
+* `name` - is for display purposes
+* `key` - should be a unique name within each object and is used for querying (see below)
+* `dataType` - defines the data type and will be used to validate during creation of new objects.  Currently `string` and `number` are supported, but `date` and `boolean` will be added soon
+* `dataUnit` <OPTIONAL> is just for display
+* `isRequired` <OPTIONAL> <DEFAULT=true> - if true, the field will be required to create/update dimensions on the child object
+* A data schema is not required for types, but the child objects of that type will not be able to add any dimensions.
 
 ### Inserting and Querying Data
 
-* ...
+#### Inserting
+* When adding dimensions to an object, you must supply all "isRequired" fields
+Example Insert:
+ 
+`POST {{base_url}}/api/v1/data/insert`
+```json
+{
+    "observedAt": "2025-11-15T23:11:00.000-05:00",
+    "typeKey": "blood_pressure",
+    "personId": "522291d6-2c91-4801-aacf-ac0759f7b175",
+    "dimensions": [
+        {
+            "key": "diastolic",
+            "value": 85
+        },
+        {
+            "key": "systolic",
+            "value": 135
+        }
+    ]
+}
+```
+
+
+#### Querying
+
+* The dimensions can be queried with the api/v1/data/query endpoint
+
+
+* *Example: return all facts with a heart_rate greater than 80
+
+    ```{{base_url}}/api/v1/data/query?dim[heart_rate][gt]=80```
+
+* Filter can be used to query any object on the base object.  Filters always assume "equals"* 
+
+
+* Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72
+
+  ```{{base_url}}/api/v1/data/query?filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72```
+
+* You can combine and chain multiple filters and dim tags
+
+* Example: return all facts with person_id equal to 4073aecb-6c8a-4161-b15c-270f44367f72 AND heart_rate > 80 AND provider equal to "Dr. Simon Reed"
+
+  ```{{base_url}}/api/v1/data/query?dim[provider][eq]=Dr. Simon Reed&dim[heart_rate][gt]=80&filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72```
+
+
+* The valid sql operators are:
+  * eq = equals
+  * gt = greater than
+  * gte = greater than or equal
+  * lt = less than
+  * lte = less than or equal
+  * ne = not equal
+
 
 
 

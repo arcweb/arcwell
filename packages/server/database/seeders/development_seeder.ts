@@ -118,12 +118,24 @@ export default class extends BaseSeeder {
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.merge({
-      key: 'blood-pressure',
+      key: 'blood_pressure',
       name: 'Blood Pressure',
       description: 'A reading from your BP monitor',
       dimensionSchemas: [
-        { name: 'Diastolic', key: 'diastolic', dataType: 'number', dataUnit: '', isRequired: true },
-        { name: 'Systolic', key: 'systolic', dataType: 'number', dataUnit: '', isRequired: true },
+        {
+          name: 'Diastolic Pressure',
+          key: 'diastolic',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: true,
+        },
+        {
+          name: 'Systolic Pressure',
+          key: 'systolic',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: true,
+        },
         {
           name: 'Heart Rate',
           key: 'heart_rate',
