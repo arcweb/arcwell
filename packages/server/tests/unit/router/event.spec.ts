@@ -41,7 +41,7 @@ test.group('Router event', () => {
   // Test no longer valid
   // TODO: rewrite update tests for events
   // test('event udate test', async ({ assert, client }) => {
-  //   const adminUser = await User.findBy('email', 'dev-admin@example.com')
+  //   const adminUser = await User.findBy('email', 'admin@example.com')
   //   const event = await Event.first()
 
   //   const newData = {
@@ -60,7 +60,7 @@ test.group('Router event', () => {
   // })
 
   test('event store test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const type = await EventType.findBy('key', 'tester')
 
     const newEvent = {
@@ -92,7 +92,7 @@ test.group('Router event', () => {
     })
 
   test('event destroy test', async ({ client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const event = await Event.findBy('typeKey', 'appointment')
 
     const response = await client.delete(`${EVENT_URL}/${event?.id}`).loginAs(adminUser!)

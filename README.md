@@ -144,13 +144,11 @@ Arcwell Admin:
 * Browse to the admin root at http://localhost:4200
 * Login with seeded dev credentials (see below)
 
-Environment seed data will create user credentials for you:
+Environment seed data will create a user for you:
 
-| Email                         | Password      | Role          |
-|-------------------------------|---------------|---------------|
-| dev-admin@example.com         | password      | Super Admin   |
-| dev-limited-admin@example.com | password      | Limited Admin |
-| dev-guest@example.com         | password      | Guest         |
+| Email                      | Password             | Role    |
+|----------------------------|----------------------|---------|
+| admin@example.com          | example-healthy-pass | Admin   |
 
 
 ### 5. Explore!
