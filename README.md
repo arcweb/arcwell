@@ -205,14 +205,58 @@ You can see this system coordinates:
 
 How you organize your own data system is completely up to you.
 
+
 ### Data System: What are Facts?
 
-**Facts**
+The core building blocks of Arcwell's data system are **Facts** and **FactTypes**.
+Naturally, you can create and insert different people, resources, and events in your
+system, but it's the information you will collect about them, attach to them, and query
+about them that will power your research, analysis, and calculations.
+
+Within Arcwell, you define a FactType for each variety of information you want to store.
+Examples might include:
+
+* Readings from a device
+* Patient-reported outcomes from an app interface
+* Survey responses
+* Journal entries from a daily logs app
+* HealthKit or tracker values such as steps, hydration habits, calories eaten
+* Lab results
+* and more
+
+Each of these different types will require different pieces of information for every
+time they are logged. A blood pressure reading is wholly different from an entry in a
+daily emotion log, but both can be represented within Arcwell cleanly.
+
+In the next section, you'll learn [how types are defined](#data-model-how-types-work),
+but consider those two examples. The fields for a blood pressure reading and an emotion
+journal are definitely different:
+
+Consider blood pressure:
+
+| Dimensions         | Data Type | Units | Example |
+|--------------------|-----------|-------|---------|
+| Systolic Pressure  | number    | hg/mm | 120     |
+| Diastolic Pressure | number    | hg/mm | 80      |
+
+And now think about an emotion journal:
+
+| Dimensions | Data Type                  | Example                       |
+|------------|----------------------------|-------------------------------|
+| Log Day    | date                       | *today*                       |
+| Emotion    | enum (happy, neutral, sad) | happy                         |
+| Notes      | string                     | *Feeling really good about..* |
+
+Both of these can be desribed within Arcwell Facts. Read on to learn how they are
+defined.
+
 
 ### Data Model: How Types Work
 
-* Each of the major objects (Facts, People, Resources & Events) have a type.  
-* The purpose of the types is to group and define the schema definition of the dimensions
+Each of the major objects (Facts, People, Resources & Events) are typed. Types allow
+users of Arcwell to group objects more granularly and define the parameters, schema,
+and shape of information that will be collected about those objects. That depth of
+information is achieved by defining **dimensions**.
 
 Below is an example schema for the blood pressure fact type that is located in the object's `dimensionSchemas` jsonb field
 ```json
@@ -222,12 +266,26 @@ Below is an example schema for the blood pressure fact type that is located in t
   { "name": "Heart Rate", "key": "heart_rate", "dataType": "number", "dataUnit": "beat/min", "isRequired": false }
 ]
 ```
-* `name` - is for display purposes
-* `key` - should be a unique name within each object and is used for querying (see below)
-* `dataType` - defines the data type and will be used to validate during creation of new objects.  Currently `string` and `number` are supported, but `date` and `boolean` will be added soon
-* `dataUnit` <OPTIONAL> is just for display
-* `isRequired` <OPTIONAL> <DEFAULT=true> - if true, the field will be required to create/update dimensions on the child object
-* A data schema is not required for types, but the child objects of that type will not be able to add any dimensions.
+
+As you can see, we've added _dimension_ to a single type of fact by specifying the
+unique internal fields of information that we expect. In this example, we expect that
+a blood pressure reading will have three components: the upper number (systolic), the
+lower number (diastolic), and optionally a heart rate.
+
+When defining dimensions, there is a wealth of configuration available:
+
+* **`name`** - is for display purposes
+* **`key`** - should be a unique name within each object and is used for querying (see below)
+* **`dataType`** - defines the data type and will be used to validate during creation of new objects. Available data types include:
+  * `string`
+  * `number`
+  * `date` - coming soon
+  * `boolean` - coming soon
+* **`dataUnit`** (optional) - a human readable name of unit (e.g., "hg/mm", "cm", "in", etc.)
+* **`isRequired`** - whether or not a value is required for this field with each recorded fact (default: true)
+
+It is possible to define detailed and complex parameters for facts using this set of
+configuration options.
 
 ### Data API: Inserting and Querying Data
 
