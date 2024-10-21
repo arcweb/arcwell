@@ -292,20 +292,9 @@ The latest news and information about Arcwell is often available on
 > timeframes for deployment. Some future modules may require paid 
 > subscriptions.
 
-**How do you make money?**
-> Arcweb aims to generate revenue through partnerships, consulting, and
-> support services related to the Arcwell platform. 
-> [Reach out to us](https://arcwebtech.com) for more information.
-
 **Can I use this in a product I hope to commercialize?**
 > Absolutely! You can utilize Arcwell in commercial products, provided 
 > you adhere to the licensing terms.
-
-**Can I use this in my highly compliant environment?**
-> Yes, Arcwell is designed to meet compliance requirements, making it 
-> suitable for use in regulated environments. Note: certain compliance 
-> environments may require our forthcoming Compliance module (a paid 
-> product).
 
 **What license is Arcwell distributed under?**
 > Arcwell is distributed under the Apache 2.0 license, allowing you to
