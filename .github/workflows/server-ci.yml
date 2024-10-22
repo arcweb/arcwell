@@ -98,13 +98,13 @@ jobs:
           set -e
           echo "Checking health of the server..."
           # Retry the health check up to 10 times with a 10-second interval
-          for i in {1..10}; do
+          for i in {1..2}; do
             if docker compose exec server curl --fail http://localhost:3333/health; then
               echo "Health check passed!"
               break
             else
               echo "Health check failed, retrying in 5 seconds..."
-              sleep 10
+              sleep 5
             fi
           done
           
