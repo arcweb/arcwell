@@ -6,7 +6,7 @@ const EVENT_TYPE_URL = '/events/types'
 
 test.group('Router event type', () => {
   test('event type index test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client.get(`${EVENT_TYPE_URL}`).loginAs(adminUser!)
 
     response.assertStatus(200)
@@ -17,7 +17,7 @@ test.group('Router event type', () => {
 
   test('event type show test', async ({ assert, client }) => {
     const eventType = await EventType.first()
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client.get(`${EVENT_TYPE_URL}/${eventType?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
@@ -31,7 +31,7 @@ test.group('Router event type', () => {
   test('event type show with events test', async ({ assert, client }) => {
     const eventType = await EventType.findBy('key', 'appointment')
 
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client
       .get(`${EVENT_TYPE_URL}/${eventType?.id}/events`)
       .loginAs(adminUser!)

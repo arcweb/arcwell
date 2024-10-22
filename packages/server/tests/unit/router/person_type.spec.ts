@@ -6,7 +6,7 @@ const PERSON_TYPE_URL = '/people/types'
 
 test.group('Router person type', () => {
   test('person type index test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client.get(`${PERSON_TYPE_URL}`).loginAs(adminUser!)
 
     response.assertStatus(200)
@@ -18,7 +18,7 @@ test.group('Router person type', () => {
   test('person type show test', async ({ assert, client }) => {
     const personType = await PersonType.first()
 
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client.get(`${PERSON_TYPE_URL}/${personType?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
@@ -31,7 +31,7 @@ test.group('Router person type', () => {
 
   test('person type show with people test', async ({ assert, client }) => {
     const personType = await PersonType.findBy('key', 'staff')
-    const adminUser = await User.findBy('email', 'dev-admin@example.com')
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const response = await client
       .get(`${PERSON_TYPE_URL}/${personType?.id}/people`)
       .loginAs(adminUser!)
