@@ -111,6 +111,7 @@ jobs:
           # If we exhausted all retries and curl still fails, exit the job
           if ! docker compose exec server curl --fail http://localhost:3333/health; then
             echo "Health check failed after 10 attempts. Exiting."
+            docker compose logs server
             exit 1
           fi
 
