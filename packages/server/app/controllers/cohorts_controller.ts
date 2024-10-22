@@ -10,22 +10,6 @@ import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
-<<<<<<< HEAD
-=======
-export function getFullCohort(id: string, queryData?: Record<string, any>) {
-  console.log('this is to test linting7')
-  return Cohort.query()
-    .where('id', id)
-    .preload('tags')
-    .withCount('people')
-    .preload('people', (people) => {
-      let [peopleQuery] = buildApiQuery(people, queryData, 'people')
-      peopleQuery.preload('personType')
-      buildPeopleSort(peopleQuery, queryData)
-    })
-    .firstOrFail()
-}
->>>>>>> 5801721 (fix/ci-paths)
 export default class CohortsController {
   /**
    * @index
