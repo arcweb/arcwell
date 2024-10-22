@@ -6,7 +6,8 @@ const TAG_URL = '/tags'
 
 test.group('Router tag', () => {
   test('tag index test', async ({ assert, client }) => {
-    const response = await client.get(TAG_URL)
+    const adminUser = await User.findBy('email', 'admin@example.com')
+    const response = await client.get(TAG_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -17,7 +18,8 @@ test.group('Router tag', () => {
   test('tag show test', async ({ assert, client }) => {
     const tag = await Tag.first()
 
-    const response = await client.get(`${TAG_URL}/${tag?.id}`)
+    const adminUser = await User.findBy('email', 'admin@example.com')
+    const response = await client.get(`${TAG_URL}/${tag?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -26,7 +28,7 @@ test.group('Router tag', () => {
     assert.equal(data.data.pathname, tag?.pathname)
   })
 
-  test('tag udate test', async ({ assert, client }) => {
+  test('tag update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const tag = await Tag.first()
 
