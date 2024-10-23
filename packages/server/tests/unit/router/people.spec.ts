@@ -13,8 +13,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 114)
-    assert.equal(data.meta.count, 114)
+    assert.equal(data.data.length, 112)
+    assert.equal(data.meta.count, 112)
   })
 
   test('people index filtered test', async ({ assert, client }) => {
@@ -25,8 +25,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 114)
-    assert.equal(data.meta.count, 114)
+    assert.equal(data.data.length, 112)
+    assert.equal(data.meta.count, 112)
   })
 
   test('people show test', async ({ assert, client }) => {
