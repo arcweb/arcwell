@@ -54,8 +54,7 @@
     "hot-hook": "^0.2.6",
     "pino-pretty": "^11.2.1",
     "prettier": "^3.3.2",
-    "typescript": "~5.4",
-    "ts-node-maintained": "^10.9.4"
+    "typescript": "~5.4"
   },
   "dependencies": {
     "@adonisjs/auth": "^9.2.3",
@@ -70,7 +69,8 @@
     "edge.js": "^6.2.0",
     "luxon": "^3.4.4",
     "pg": "^8.12.0",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "ts-node-maintained": "^10.9.4"
   },
   "hotHook": {
     "boundaries": [

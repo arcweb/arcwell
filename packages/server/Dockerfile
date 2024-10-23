@@ -50,8 +50,6 @@ RUN npm install --no-fund --include=dev
 # run build
 RUN npm run build
 
-#remove ace
-RUN rm ./build/ace.js
 
 #######################################
 # Production
