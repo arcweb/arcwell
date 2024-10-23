@@ -7,7 +7,8 @@ const RESOURCE_URL = '/resources'
 
 test.group('Router resource', () => {
   test('resource index test', async ({ assert, client }) => {
-    const response = await client.get(RESOURCE_URL)
+    const adminUser = await User.findBy('email', 'admin@example.com')
+    const response = await client.get(RESOURCE_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -16,8 +17,9 @@ test.group('Router resource', () => {
   })
 
   test('resource index filtered test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const rType = await ResourceType.findBy('key', 'dme')
-    const response = await client.get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`)
+    const response = await client.get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -27,9 +29,10 @@ test.group('Router resource', () => {
   })
 
   test('resource show test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resource = await Resource.first()
 
-    const response = await client.get(`${RESOURCE_URL}/${resource?.id}`)
+    const response = await client.get(`${RESOURCE_URL}/${resource?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
