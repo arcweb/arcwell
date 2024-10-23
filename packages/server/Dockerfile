@@ -14,20 +14,13 @@ ENV PORT $PORT
 EXPOSE $PORT 5173
 
 #######################################
-# All deps stage
-FROM base AS deps
-USER node
-WORKDIR /home/node/app
-
-
-COPY --chown=node:node package.json package-lock.json* ./
-RUN npm install --no-fund
-
-#######################################
 # Development
 FROM base AS develop
 USER node
 WORKDIR /home/node/app
+
+# Check every 30s to ensure this service returns HTTP 200
+HEALTHCHECK --interval=60s CMD node healthcheck.js
 
 # Install development tools (curl, etc.)
 USER root
@@ -35,28 +28,12 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
+# Add source code which includes pakcage.json:
 USER node
-
-# Copy deps
-COPY --from=deps /home/node/app/node_modules /home/node/app/node_modules
-
-# Add source code last (it changes the most), as node user:
 COPY --chown=node:node . .
+RUN npm install --no-fund
 
-# Check every 30s to ensure this service returns HTTP 200
-HEALTHCHECK --interval=60s CMD node healthcheck.js
-
-# In development build, always npm install prior to app start
-CMD npm install --no-fund; npm run dev
-
-#######################################
-# Production only deps stage
-FROM base AS production-deps
-USER node
-WORKDIR /home/node/app
-
-COPY --chown=node:node package.json package-lock.json* ./
-RUN npm install --no-fund --omit=dev
+CMD npm run dev
 
 #######################################
 # Build stage
@@ -64,9 +41,17 @@ FROM base AS build
 USER node
 WORKDIR /home/node/app
 
-COPY --from=deps --chown=node:node /home/node/app/node_modules /home/node/app/node_modules
+# copy in source
 COPY --chown=node:node . .
+
+# install dependencies --include=dev required to install dev dependencies if NODE_ENV=production
+RUN npm install --no-fund --include=dev
+
+# run build
 RUN npm run build
+
+#remove ace
+RUN rm ./build/ace.js
 
 #######################################
 # Production
@@ -74,8 +59,14 @@ FROM base AS production
 USER node
 WORKDIR /home/node/app
 
-COPY --from=production-deps --chown=node:node /home/node/app/node_modules /home/node/app/node_modules
+
+# copy in built app
 COPY --from=build --chown=node:node /home/node/app/build /home/node/app
+
+# install production dependencies --omit=dev is reduntant with NODE_ENV=PRODUCTION but keeping for clarity
+COPY --chown=node:node package.json package-lock.json* ./
+RUN npm install --no-fund --omit=dev
+
 
 # In production build, simply start server
 CMD ["npm", "run", "start"]
