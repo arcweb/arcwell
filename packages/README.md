@@ -143,4 +143,4 @@ building the container, for example, from the ```packages/server``` directory yo
 docker build --target production -t arcwell-production .
 ```
 When deploying with either one of these builds one would want to make sure to set the running environment's variables to
-values appropriate for production. See ```packages/server/.env.example``` for possible environment variables
+values appropriate for production. See ```packages/server/.env.example``` for possible environment variables.
