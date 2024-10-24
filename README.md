@@ -60,8 +60,11 @@ Docker-compatible containerization software. We recommend
 [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 and have adapted our instructions and guides based on it.
 
-Read the instructions below if you prefer to develop directly on your host
-machine.
+ℹ️ _If you prefer to develop by running services directly on your host machine
+(not within containers), 
+[this guide outlines your quickstart steps](doc/containerless.md)._ 
+
+Read the instructions below to get up and running quickly using containers.
 
 ### 1. Expand local dev environment files
 
@@ -104,8 +107,15 @@ command displays configuration and exits successfully, you are good to go:
 docker compose config
 ```
 
-
 ### 2. Start up services in Docker
+
+In local development, a handful of services are orchestrated for you
+within Docker and a relationship is configured in the `/compose.yml`
+[Compose File](https://docs.docker.com/compose/). These services are:
+
+* **Arcwell Server** as server, defined in `packages/server/Dockerfile`
+* **Arcwell Admin** as admin, defined in `packages/admin/Dockerfile`
+* **PostgreSQL Database** as db, pulled from [postgres:16-bookworm](https://hub.docker.com/_/postgres/)
 
 Once you've verified that the configuration is in place, you can start the
 Docker service containers. The first time through, you'll want to ensure the
@@ -144,110 +154,223 @@ Arcwell Admin:
 * Browse to the admin root at http://localhost:4200
 * Login with seeded dev credentials (see below)
 
-Environment seed data will create user credentials for you:
+Environment seed data will create a user for you:
 
-| Email                         | Password      | Role          |
-|-------------------------------|---------------|---------------|
-| dev-admin@example.com         | password      | Super Admin   |
-| dev-limited-admin@example.com | password      | Limited Admin |
-| dev-guest@example.com         | password      | Guest         |
+| Email                      | Password             | Role    |
+|----------------------------|----------------------|---------|
+| admin@example.com          | example-healthy-pass | Admin   |
+
+Your environment should now be up and running, ready for you to take a look.
 
 
-### 5. Explore!
+# Explore!
 
 Now, you can poke around the Admin experience or Server code and documentation.
 
 <img src="doc/laptop-with-phone.png" alt="Arcwell Admin screen and mobile phone application example"/>
 
-We have provided a Postman definition for use with the 
-[Postman API Platform](https://www.postman.com/)
-and compatible services. This can be useful for development to learn the
-API contracts, formats, and endpoints:
 
-- Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
-- Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
+### Object Classes: What are People, Cohorts, Resources, & Events?
+
+Arcwell provides a base data model organized around a few major types:
+
+* **People** – Humans about which your system will store data and track, such as patients, providers, support staff, and other team members
+* **Cohorts** – Organize People into logical groups for management purposes
+* **Resources** – Any non-humans your system will associate data with or manage, such as medical devices, locations, educational materials, and more
+* **Events** – Occurences, instances in time, or time spans you plan to organize data around; examples include the time of a patient report, an encounter, a class, an application session
+* **Facts** - The data, measurements, observations, and information you are storing. This is the meat of Arcwell's offering – data can take custom shape, ingested from external services, inserted via the API, or queried using a robust query engine
+
+Each of these major data classes can be typed and customized _by you_ via the Server API
+or Arcwell Admin. Moreover, all of the major object classes within Arcwell can accept 
+**Tags**, which further allow you to segment and organize your stored data in a custom 
+and flexible way. In our work, tags are often used to group data by diagnosis or application.
+
+It is possible to stand up an instance of Arcwell, enter a few type definitions for the
+types of people, events, and resources you want to manage, and begin sending data into
+that system in minutes.
+
+Consider an example system where Blood Pressure Readings are collected via Medical
+Monitor devices from Patients diagnosed with diabetes using a custom application. That
+model could be constructed as follows:
+
+<img src="doc/object_classes_facts.png" alt="People, Resources, Events, Facts with Tags diagram"/>
+
+You can see this system coordinates:
+
+* **Patients** – a `PersonType` representing patients
+* **Medical Monitors** – a `ResourceType` describing configuration for monitors
+* **App Sessions** – an `EventType` for earmarking sources from which data flows into the system
+* **Blood Pressure Readings** - a `FactType` to define the schema and parameters of reading information produced by the monitors
+* **"diagnosis/diabetes"** - a `Tag` to make patients and their associated BP readings easily searchable by data queries
+
+How you organize your own data system is completely up to you.
 
 
-## Local Dev with or without Containers
+### Data System: What are Facts?
 
-In local development, a handful of services are orchestrated for you
-within Docker and a relationship is configured in the `/compose.yml`
-[Compose File](https://docs.docker.com/compose/). These services are:
+The core building blocks of Arcwell's data system are **Facts** and **FactTypes**.
+Naturally, you can create and insert different people, resources, and events in your
+system, but it's the information you will collect about them, attach to them, and query
+about them that will power your research, analysis, and calculations.
 
-* **Arcwell Server** as server, defined in `packages/server/Dockerfile`
-* **Arcwell Admin** as admin, defined in `packages/admin/Dockerfile`
-* **PostgreSQL Database** as db, pulled from [postgres:16-bookworm](https://hub.docker.com/_/postgres/)
+Within Arcwell, you define a FactType for each variety of information you want to store.
+Examples might include:
 
-ℹ️ **Using containers is not a requirement to develop Arcwell.**
+* Readings from a device
+* Patient-reported outcomes from an app interface
+* Survey responses
+* Journal entries from a daily logs app
+* HealthKit or tracker values such as steps, hydration habits, calories eaten
+* Lab results
+* and more
 
-If you wish to use containers in your development workflow, the 
-[Quickstart section of this README](#quickstart) (above)
-outlines that bootstrapping procedure.
+Each of these different types will require different pieces of information for every
+time they are logged. A blood pressure reading is wholly different from an entry in a
+daily emotion log, but both can be represented within Arcwell cleanly.
 
-If you wish to run the Arcwell Server and Admin products directly on your
-host machine (without Docker), and you have your TypeScript/JavaScript
-development environment prepared, these commands get you going:
+In the next section, you'll learn [how types are defined](#data-model-how-types-work),
+but consider those two examples. The fields for a blood pressure reading and an emotion
+journal are definitely different:
 
-### 1. Expand local dev environment files
+Consider blood pressure:
 
-This process is the same; follow [the quickstart instructions](#quickstart)
+| Dimensions         | Data Type | Units | Example |
+|--------------------|-----------|-------|---------|
+| Systolic Pressure  | number    | hg/mm | 120     |
+| Diastolic Pressure | number    | hg/mm | 80      |
 
-You will want to create a database within your local PostgreSQL server and 
-update the hydrated `packages/server/.env.development` file to point to that
-database. You may need to change as follows:
+And now think about an emotion journal:
 
-```sh
-# Database Connection:
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=your-db-user-name
-DB_PASSWORD=your-db-user-password
-DB_DATABASE=your-db-name
+| Dimensions | Data Type                  | Example                       |
+|------------|----------------------------|-------------------------------|
+| Log Day    | date                       | *today*                       |
+| Emotion    | enum (happy, neutral, sad) | happy                         |
+| Notes      | string                     | *Feeling really good about..* |
+
+Both of these can be desribed within Arcwell Facts. Read on to learn how they are
+defined.
+
+
+### Data Model: How Types Work
+
+Each of the major objects (Facts, People, Resources & Events) are typed. Types allow
+users of Arcwell to group objects more granularly and define the parameters, schema,
+and shape of information that will be collected about those objects. That depth of
+information is achieved by defining **dimensions**.
+
+Below is an example schema for the blood pressure fact type that is located in the object's `dimensionSchemas` jsonb field
+```json
+[
+  { "name": "Diastolic Pressure", "key": "diastolic", "dataType": "number", "isRequired": true },
+  { "name": "Systolic Pressure", "key": "systolic", "dataType": "number", "isRequired": true },
+  { "name": "Heart Rate", "key": "heart_rate", "dataType": "number", "dataUnit": "beat/min", "isRequired": false }
+]
 ```
 
-### 2. Install dependencies
+As you can see, we've added _dimension_ to a single type of fact by specifying the
+unique internal fields of information that we expect. In this example, we expect that
+a blood pressure reading will have three components: the upper number (systolic), the
+lower number (diastolic), and optionally a heart rate.
 
-Arcwell's repository is configured with NPM workspaces, meaning a top-level
-installation should reconcile the installation of dependencies for all
-sub-packages, as well:
+When defining dimensions, there is a wealth of configuration available:
 
-```sh
-npm install
+* **`name`** - is for display purposes
+* **`key`** - should be a unique name within each object and is used for querying (see below)
+* **`dataType`** - defines the data type and will be used to validate during creation of new objects. Available data types include:
+  * `string`
+  * `number`
+  * `date` - coming soon
+  * `boolean` - coming soon
+* **`dataUnit`** (optional) - a human readable name of unit (e.g., "hg/mm", "cm", "in", etc.)
+* **`isRequired`** - whether or not a value is required for this field with each recorded fact (default: true)
+
+It is possible to define detailed and complex parameters for facts using this set of
+configuration options.
+
+### Data API: Inserting Data
+
+When adding dimensions to an object, you must supply all "isRequired" fields
+
+Example Insert:
+ 
+`POST /api/v1/data/insert`
+```json
+{
+    "observedAt": "2025-11-15T23:11:00.000-05:00",
+    "typeKey": "blood_pressure",
+    "personId": "522291d6-2c91-4801-aacf-ac0759f7b175",
+    "dimensions": [
+        {
+            "key": "diastolic",
+            "value": 85
+        },
+        {
+            "key": "systolic",
+            "value": 135
+        }
+    ]
+}
 ```
 
-### 3. Seed Database
 
-We have provided some initial seed data to pre-populate your local dev instance
-with useful data and users. Run this command from within the server package:
+### Data API: Querying Data
 
-```sh
-node ace migration:refresh --seed
+There are many ways you can leverage the Server's Data API to slice and investigate
+the data living within your Arcwell instance. The `/api/v1/data/query` endpoint is very
+powerful.
+
+**Dimension Querying** allows you to return only facts that match your paramters and
+queries of their embedded dimensions.
+
+The query parameter format is `dim[key][operator]=value` or `filter[field_name]=value`
+
+Example: Return all facts with a heart_rate greater than 80
+```
+/api/v1/data/query?dim[heart_rate][gt]=80
 ```
 
-Read [the quickstart instructions](#quickstart) above for more information on the data contained in this set of seeds.
 
+**Filtering** can be used to query any object on the base object. Filters always assume
+"equals"
 
-### 3. Run Server and Admin
-
-Now that you've installed your dependencies and seeded your local database, you
-can start the Server and Admin applications on your machine with commands
-specified in the respective `package.json` definitions:
-
-```sh
-# Start Server for local dev:
-cd packages/server
-npm run dev
-
-# Start Admin for local dev:
-cd packages/admin
-npm run dev
+Example: Return all facts with person_id of 4073aecb-6c8a-4161-b15c-270f44367f72
+```
+/api/v1/data/query?filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
 ```
 
-You can now check that the server is up at http://localhost:3333 and the admin
-at http://localhost:4200. 
+It is allowable to combine and chain multiple filters and dimension queries.
 
-The [quickstart instructions](#quickstart) above include details on how to
-begin exploring your local dev Arcwell instance.
+Example: Return all facts where...
+* The person had ID 4073aecb-6c8a-4161-b15c-270f44367f72
+* AND where the heart_rate > 80 
+* AND where the provider was "Dr. Simon Reed"
+```
+/api/v1/data/query?dim[provider][eq]=Dr. Simon Reed&dim[heart_rate][gt]=80&filter[person_id]=4073aecb-6c8a-4161-b15c-270f44367f72
+```
+
+The valid query operators are:
+* eq = equals
+* gt = greater than
+* gte = greater than or equal
+* lt = less than
+* lte = less than or equal
+* ne = not equal
+
+### Hands On
+
+Arcwell Server automatically generates a fairly robust OpenAPI specification document.
+You can review this within your running local development server in two ways:
+
+* Navigate to http://localhost:3333/docs to review API spec visually
+* Download the OpenAPI formatted spec form http://localhost:3333/docs/swagger.yaml
+
+
+We have also provided a Postman definition for use with the 
+[Postman API Platform](https://www.postman.com/) and compatible services. This can be
+useful for development to learn the API contracts, formats, and endpoints:
+
+* Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
+* Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
 
 
 ## Building for Production

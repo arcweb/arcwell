@@ -19,6 +19,12 @@ export default class extends BaseSeeder {
   static environment = ['development', 'test']
 
   async run() {
+    await Tag.createMany([
+      { pathname: 'measurements' },
+      { pathname: 'measurements/diabetes' },
+      { pathname: 'measurements/weight' },
+    ])
+
     await PersonTypeFactory.merge({ key: 'patient', name: 'Patient' }).create()
     await PersonTypeFactory.merge({ key: 'staff', name: 'Staff' }).create()
     await PersonTypeFactory.merge({ key: 'temp', name: 'Temp' }).create()
@@ -26,9 +32,10 @@ export default class extends BaseSeeder {
     await ResourceTypeFactory.merge({
       key: 'medical-device',
       name: 'Medical Device',
+      dimensionSchemas: [],
     }).create()
-    await ResourceTypeFactory.merge({ key: 'room', name: 'Room' }).create()
-    await ResourceTypeFactory.merge({ key: 'bed', name: 'Bed' }).create()
+    await ResourceTypeFactory.merge({ key: 'room', name: 'Room', dimensionSchemas: [] }).create()
+    await ResourceTypeFactory.merge({ key: 'bed', name: 'Bed', dimensionSchemas: [] }).create()
 
     await EventTypeFactory.merge({
       key: 'appointment',
@@ -38,9 +45,7 @@ export default class extends BaseSeeder {
     await EventTypeFactory.merge({ key: 'intake', name: 'Intake' }).create()
     await EventTypeFactory.merge({ key: 'release', name: 'Release' }).create()
 
-    const superAdminRole = await Role.findBy('name', 'Super Admin')
-    const limitedAdminRole = await Role.findBy('name', 'Limited Admin')
-    const guestRole = await Role.findBy('name', 'Guest')
+    const adminRole = await Role.findBy('name', 'Admin')
 
     const patientPersonType = await PersonType.findBy('key', 'patient')
     const staffPersonType = await PersonType.findBy('key', 'staff')
@@ -51,7 +56,7 @@ export default class extends BaseSeeder {
     const apptEventType = await EventType.findBy('key', 'appointment')
     const surgeryEventType = await EventType.findBy('key', 'surgery')
 
-    if (!superAdminRole || !limitedAdminRole || !guestRole) {
+    if (!adminRole) {
       throw new Error('A role not found.  Run the defaults seeder first')
     }
 
@@ -70,31 +75,13 @@ export default class extends BaseSeeder {
     const person1 = await PersonFactory.merge({
       typeKey: staffPersonType.key,
     }).create()
-    const person2 = await PersonFactory.merge({
-      typeKey: staffPersonType.key,
-    }).create()
-    const person3 = await PersonFactory.merge({
-      typeKey: staffPersonType.key,
-    }).create()
 
     await User.createMany([
       {
-        email: 'dev-admin@example.com',
-        password: 'password',
-        roleId: superAdminRole.id,
+        email: 'admin@example.com',
+        password: 'example-healthy-pass',
+        roleId: adminRole.id,
         personId: person1.id,
-      },
-      {
-        email: 'dev-limited-admin@example.com',
-        password: 'password',
-        roleId: limitedAdminRole.id,
-        personId: person2.id,
-      },
-      {
-        email: 'dev-guest@example.com',
-        password: 'password',
-        roleId: guestRole.id,
-        personId: person3.id,
       },
     ])
 
@@ -125,27 +112,61 @@ export default class extends BaseSeeder {
     }
     await EventFactory.merge({ typeKey: surgeryEventType.key }).createMany(5)
 
-    await Tag.createMany([
-      { pathname: 'measurements' },
-      { pathname: 'measurements/diabetes' },
-      { pathname: 'measurements/weight' },
-    ])
-
     // for (let i = 0; i < 10; i++) {
     //   await TagFactory.createMany(10)
     // }
 
     // create data for populating the facts table
     const factType = await FactTypeFactory.merge({
-      key: 'blood-pressure',
+      key: 'blood_pressure',
       name: 'Blood Pressure',
       description: 'A reading from your BP monitor',
+      dimensionSchemas: [
+        {
+          name: 'Diastolic Pressure',
+          key: 'diastolic',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: true,
+        },
+        {
+          name: 'Systolic Pressure',
+          key: 'systolic',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: true,
+        },
+        {
+          name: 'Heart Rate',
+          key: 'heart_rate',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: false,
+        },
+      ],
     }).create()
 
     const factType2 = await FactTypeFactory.merge({
       key: 'weight',
       name: 'Weight',
       description: 'Recording of patient weight',
+      dimensionSchemas: [
+        { name: 'Weight', key: 'weight', dataType: 'number', dataUnit: 'lbs', isRequired: true },
+        {
+          name: 'Heart Rate',
+          key: 'heart_rate',
+          dataType: 'number',
+          dataUnit: '',
+          isRequired: false,
+        },
+        {
+          name: 'Provider Name',
+          key: 'provider',
+          dataType: 'string',
+          dataUnit: '',
+          isRequired: false,
+        },
+      ],
     }).create()
 
     // const factType2 = await FactTypeFactory.with('dimensionSchemas', 8).create()
@@ -160,29 +181,63 @@ export default class extends BaseSeeder {
       typeKey: deviceResourceType.key,
     }).create()
 
-    await FactFactory.merge({ typeKey: factType.key }).createMany(2)
+    await FactFactory.merge({
+      typeKey: factType.key,
+      dimensions: [
+        { key: 'diastolic', value: 85 },
+        { key: 'systolic', value: 135 },
+        { key: 'heart_rate', value: 82 },
+      ],
+    })
+      // .with('tags', 3)
+      .create()
+    await FactFactory.merge({
+      typeKey: factType.key,
+      dimensions: [
+        { key: 'diastolic', value: 90 },
+        { key: 'systolic', value: 145 },
+      ],
+    }).create()
     // create a fact with a person, resource, and event
     await FactFactory.merge({
       typeKey: factType.key,
       personId: person.id,
       resourceId: resource.id,
       eventId: event.id,
-      dimensions: [],
+      dimensions: [
+        { key: 'diastolic', value: 80 },
+        { key: 'systolic', value: 120 },
+        { key: 'heart_rate', value: 74 },
+      ],
     }).create()
     // create a fact with just a person
     await FactFactory.merge({
       typeKey: factType.key,
       personId: person.id,
+      dimensions: [
+        { key: 'diastolic', value: 75 },
+        { key: 'systolic', value: 115 },
+        { key: 'heart_rate', value: 68 },
+      ],
     }).create()
     // create a fact with just a resource
     await FactFactory.merge({
       typeKey: factType2.key,
       resourceId: resource.id,
+      dimensions: [
+        { key: 'weight', value: 190 },
+        { key: 'heart_rate', value: 78 },
+        { key: 'provider', value: 'Dr. Simon Reed' },
+      ],
     }).create()
     // create a fact with just an event
     await FactFactory.merge({
       typeKey: factType2.key,
       eventId: event.id,
+      dimensions: [
+        { key: 'weight', value: 150 },
+        { key: 'heart_rate', value: 88 },
+      ],
     }).create()
   }
 }

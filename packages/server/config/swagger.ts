@@ -7,7 +7,7 @@ export default {
   tagIndex: 3,
   info: {
     title: 'Arcwell Platform Server',
-    version: '0.0.1.internal',
+    version: '0.1.0',
     description: `<strong>Arcwell Digital Health Platform</strong> \
     <p> \
     Arcwell is an extensible platform for modeling solutions in digital \
