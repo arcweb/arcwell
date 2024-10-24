@@ -6,7 +6,8 @@ const RESOURCE_TYPE_URL = '/resources/types'
 
 test.group('Router resource type', () => {
   test('resource type index test', async ({ assert, client }) => {
-    const response = await client.get(`${RESOURCE_TYPE_URL}`)
+    const adminUser = await User.findBy('email', 'admin@example.com')
+    const response = await client.get(`${RESOURCE_TYPE_URL}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -15,9 +16,10 @@ test.group('Router resource type', () => {
   })
 
   test('resource type show test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.first()
 
-    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}`)
+    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -28,9 +30,10 @@ test.group('Router resource type', () => {
   })
 
   test('resource type show with resources test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.findBy('key', 'medical-device')
 
-    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`)
+    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
