@@ -14,8 +14,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 112)
-    assert.equal(data.meta.count, 112)
+    assert.equal(data.data.length, 113)
+    assert.equal(data.meta.count, 113)
   })
 
   test('people index test no auth', async ({ client }) => {
@@ -32,8 +32,8 @@ test.group('Router people', () => {
     response.assertStatus(200)
 
     const data = response.body()
-    assert.equal(data.data.length, 112)
-    assert.equal(data.meta.count, 112)
+    assert.equal(data.data.length, 113)
+    assert.equal(data.meta.count, 113)
   })
 
   test('people index cohort test', async ({ assert, client }) => {
@@ -50,7 +50,7 @@ test.group('Router people', () => {
 
     response.assertStatus(200)
     const data = response.body()
-    assert.equal(data.data.count, 112)
+    assert.equal(data.data.count, 113)
   })
 
   test('people attach cohort', async ({ client }) => {
