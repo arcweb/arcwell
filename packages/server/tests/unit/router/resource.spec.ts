@@ -46,7 +46,7 @@ test.group('Router resource', () => {
     const resource = await Resource.first()
 
     const newData = {
-      name: 'NewName',
+      name: 'New Name',
     }
     const response = await client
       .patch(`${RESOURCE_URL}/${resource?.id}`)
