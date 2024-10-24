@@ -373,6 +373,16 @@ useful for development to learn the API contracts, formats, and endpoints:
 * Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
 
 
+## Building for Production
+
+The [quickstart instructions](#quickstart) and guide to this point have been
+focused on building a _development_ environment. Arcwell can be built for
+production-like environments (e.g., your hosted staging, QA/dev, or production
+targets).
+
+Learn more about generated environment-specific, production-like builds within
+the [production build docs](doc/builds.md).
+
 
 ## Deployment & Hosting
 

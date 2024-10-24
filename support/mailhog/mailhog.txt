@@ -1,0 +1,10 @@
+Mailhog is an email interceptor, run as a container in development
+beside Arcwell services to test delivery and facilitate development
+of email templates.
+
+GitHub: https://github.com/mailhog/MailHog
+Docker Hub: https://registry.hub.docker.com/r/mailhog/mailhog/
+
+The container is a bit outdated and the Arcwell development team are
+considering alternatives for this purpose in future releases.
+

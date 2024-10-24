@@ -13,27 +13,14 @@ ARG PORT=3333
 ENV PORT $PORT
 EXPOSE $PORT 5173
 
-# Unprivileged node user
+#######################################
+# Development
+FROM base AS develop
 USER node
-
-# Create a node applications root
 WORKDIR /home/node/app
-
-# Copy in package defs first and install dependencies:
-COPY --chown=node:node package.json package-lock.json* ./
-RUN npm install --no-fund && npm cache clean --force
 
 # Check every 30s to ensure this service returns HTTP 200
 HEALTHCHECK --interval=60s CMD node healthcheck.js
-
-# Add source code last (it changes the most), as node user:
-COPY --chown=node:node . .
-
-
-#
-# Development
-#
-FROM base AS develop
 
 # Install development tools (curl, etc.)
 USER root
@@ -41,18 +28,43 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
+# Add source code which includes pakcage.json:
 USER node
-# In development build, always npm install prior to app start
-CMD npm install --no-fund; npm run dev
+COPY --chown=node:node . .
+RUN npm install --no-fund
+
+CMD npm run dev
+
+#######################################
+# Build stage
+FROM base AS build
+USER node
+WORKDIR /home/node/app
+
+# copy in source
+COPY --chown=node:node . .
+
+# install dependencies --include=dev required to install dev dependencies if NODE_ENV=production
+RUN npm install --no-fund --include=dev
+
+# run build
+RUN npm run build
 
 
-#
+#######################################
 # Production
-#
 FROM base AS production
+USER node
+WORKDIR /home/node/app
+
+
+# copy in built app
+COPY --from=build --chown=node:node /home/node/app/build /home/node/app
+
+# install production dependencies --omit=dev is reduntant with NODE_ENV=PRODUCTION but keeping for clarity
+COPY --chown=node:node package.json package-lock.json* ./
+RUN npm install --no-fund --omit=dev
+
 
 # In production build, simply start server
-# CMD ["npm", "run", "start"]
-
-# tempory production command
-CMD npm install --no-fund; npm run start
+CMD ["npm", "run", "start"]
