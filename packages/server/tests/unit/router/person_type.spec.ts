@@ -15,6 +15,12 @@ test.group('Router person type', () => {
     assert.equal(data.data.length, 3)
   })
 
+  test('person types index test no auth', async ({ client }) => {
+    const response = await client.get(PERSON_TYPE_URL)
+
+    response.assertStatus(401)
+  })
+
   test('person type show test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const personType = await PersonType.first()

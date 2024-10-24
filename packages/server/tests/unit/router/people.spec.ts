@@ -18,7 +18,7 @@ test.group('Router people', () => {
     assert.equal(data.meta.count, 112)
   })
 
-  test('people index test', async ({ client }) => {
+  test('people index test no auth', async ({ client }) => {
     const response = await client.get(PEOPLE_URL)
 
     response.assertStatus(401)
