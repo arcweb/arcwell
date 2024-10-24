@@ -125,3 +125,22 @@ Example of fact insert
     ]
 }
 ```
+## Environment Specific Builds
+Arcwell is designed to be run under multiple conditions such as development and production. This is
+supported through the use of environment variables and builds optimized for a given environment. The server package
+uses the [Adonis JS framework](https://docs.adonisjs.com/guides/preface/introduction) and is written in 
+[TypeScript](https://www.typescriptlang.org/). In development, the package is run via an Adonis server which just in 
+time transpiles TypScript code to Javascript code for execution. This supports aspects of development, but sacrifices
+some performance. To run Arcwell optimized for production, the server package is transpiled to Javascript en masse and 
+deployed to the production environment. To build the server package for production, from the ```packages/server``` 
+directory run:
+```
+npm run build
+```
+If running the server in a container, a production container can be built by specificying a target of production when
+building the container, for example, from the ```packages/server``` directory you could run:
+```
+docker build --target production -t arcwell-production .
+```
+When deploying with either one of these builds one would want to make sure to set the running environment's variables to
+values appropriate for production. See ```packages/server/.env.example``` for possible environment variables
