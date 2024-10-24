@@ -250,11 +250,15 @@ The [quickstart instructions](#quickstart) above include details on how to
 begin exploring your local dev Arcwell instance.
 
 
-## Environment Specific Builds
+## Building for Production
 
-Arcwell is designed to be built for a specific environment, for example, development, staging, and production.
-Previous sections discuss builds for the development environment. Environment specific builds for a particular package
-can be found in the [packages' readme](./packages/README.md).
+The [quickstart instructions](#quickstart) and guide to this point have been
+focused on building a _development_ environment. Arcwell can be built for
+production-like environments (e.g., your hosted staging, QA/dev, or production
+targets).
+
+Learn more about generated environment-specific, production-like builds within
+the [production build docs](doc/builds.md).
 
 
 ## Deployment & Hosting
