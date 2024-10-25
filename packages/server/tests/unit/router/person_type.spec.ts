@@ -39,7 +39,9 @@ test.group('Router person type', () => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const personType = await PersonType.findBy('key', 'staff')
 
-    const response = await client.get(`${PERSON_TYPE_URL}/${personType?.id}/people`).loginAs(adminUser!)
+    const response = await client
+      .get(`${PERSON_TYPE_URL}/${personType?.id}/people`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 

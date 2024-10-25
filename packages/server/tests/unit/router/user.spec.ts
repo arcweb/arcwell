@@ -48,19 +48,21 @@ test.group('Router users', () => {
 
     const data = response.body()
     assert.notEqual(data.data.password, user.password)
-  }).setup(async () => {
-    const role = await Role.findByOrFail('name', 'Admin')
-    const tempUser = {
-      email: 'test-2@example.com',
-      password: 'example-test-pass',
-      roleId: role.id,
-    }
-
-    await User.create(tempUser)
-  }).teardown(async () => {
-    const user = await User.findByOrFail('email', 'test-2@example.com')
-    user.delete()
   })
+    .setup(async () => {
+      const role = await Role.findByOrFail('name', 'Admin')
+      const tempUser = {
+        email: 'test-2@example.com',
+        password: 'example-test-pass',
+        roleId: role.id,
+      }
+
+      await User.create(tempUser)
+    })
+    .teardown(async () => {
+      const user = await User.findByOrFail('email', 'test-2@example.com')
+      user.delete()
+    })
 
   test('user destroy test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')

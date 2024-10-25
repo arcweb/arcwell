@@ -36,10 +36,10 @@ test.group('Router people', () => {
     assert.equal(data.meta.count, 113)
   })
 
-  test('people index cohort test', async ({ assert, client }) => {
+  test('people index cohort test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const person = await Person.first()
-    const response = await client.get(`${PEOPLE_URL}/${person?.id}/cohorts`).loginAs(adminUser! )
+    const response = await client.get(`${PEOPLE_URL}/${person?.id}/cohorts`).loginAs(adminUser!)
 
     response.assertStatus(200)
   })
@@ -56,7 +56,7 @@ test.group('Router people', () => {
   test('people attach cohort', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const cohort = await Cohort.first()
-    const person =  await Person.findByOrFail('givenName', 'Tester')
+    const person = await Person.findByOrFail('givenName', 'Tester')
 
     const cohortIds = {
       cohortIds: [cohort?.id],
@@ -81,7 +81,7 @@ test.group('Router people', () => {
   test('people detach cohort', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const cohort = await Cohort.findByOrFail('name', 'Arcweb')
-    const person =  await Person.findByOrFail('givenName', 'Tester')
+    const person = await Person.findByOrFail('givenName', 'Tester')
 
     const cohortIds = {
       cohortIds: [cohort?.id],

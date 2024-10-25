@@ -19,7 +19,9 @@ test.group('Router resource', () => {
   test('resource index filtered test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const rType = await ResourceType.findBy('key', 'dme')
-    const response = await client.get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`).loginAs(adminUser!)
+    const response = await client
+      .get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 

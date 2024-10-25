@@ -1,4 +1,3 @@
-import Policy from '#models/policy'
 import Role from '#models/role'
 import User from '#models/user'
 import { test } from '@japa/runner'
@@ -16,7 +15,7 @@ test.group('Router roles', () => {
     assert.equal(data.meta.count, 1)
   })
 
-  test('role index test no auth', async ({ assert, client }) => {
+  test('role index test no auth', async ({ client }) => {
     const response = await client.get(ROLE_URL)
 
     response.assertStatus(401)
@@ -37,7 +36,7 @@ test.group('Router roles', () => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const role = await Role.findByOrFail('name', 'test')
     const newData = {
-      name: 'new-test'
+      name: 'new-test',
     }
     const response = await client
       .patch(`${ROLE_URL}/${role.id}`)
@@ -51,7 +50,7 @@ test.group('Router roles', () => {
   }).setup(async () => {
     // const policy = Policy.first()
     const newData = {
-      name: 'test'
+      name: 'test',
     }
     await Role.create(newData)
   })

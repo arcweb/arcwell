@@ -18,7 +18,7 @@ test.group('Router facts', () => {
     assert.equal(data.meta.count, 6)
   })
 
-  test ('facts index no auth test', async ({ client }) => {
+  test('facts index no auth test', async ({ client }) => {
     const response = await client.get(FACTS_URL)
 
     response.assertStatus(401)
@@ -69,7 +69,7 @@ test.group('Router facts', () => {
   test('fact update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const person = await Person.first()
-    const fact =await Fact.first()
+    const fact = await Fact.first()
     const newData = {
       personId: person!.id,
     }
@@ -84,7 +84,7 @@ test.group('Router facts', () => {
     assert.equal(data.data.personId, newData.personId)
   })
 
-  test('fact destroy test', async ({ assert, client }) => {
+  test('fact destroy test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const fact = await Fact.first()
 

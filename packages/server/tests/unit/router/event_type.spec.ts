@@ -33,7 +33,9 @@ test.group('Router event type', () => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const eventType = await EventType.findBy('key', 'appointment')
 
-    const response = await client.get(`${EVENT_TYPE_URL}/${eventType?.id}/events`).loginAs(adminUser!)
+    const response = await client
+      .get(`${EVENT_TYPE_URL}/${eventType?.id}/events`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 

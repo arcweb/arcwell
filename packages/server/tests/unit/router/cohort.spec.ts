@@ -64,7 +64,7 @@ test.group('Router cohort', () => {
     assert.equal(data.data.name, newData.name)
   }).setup(async () => {
     const testCohort = {
-      name: 'tester'
+      name: 'tester',
     }
     await Cohort.create(testCohort)
   })
@@ -72,10 +72,10 @@ test.group('Router cohort', () => {
   test('cohort attach person', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const cohort = await Cohort.findByOrFail('name', 'tester')
-    const person =  await Person.findByOrFail('givenName', 'Tester')
+    const person = await Person.findByOrFail('givenName', 'Tester')
 
     const personIds = {
-      peopleIds: [person.id]
+      peopleIds: [person.id],
     }
     const response = await client
       .post(`${COHORT_URL}/${cohort.id}/attach`)
@@ -94,7 +94,7 @@ test.group('Router cohort', () => {
     await Person.create(newPerson)
 
     const testCohort = {
-      name: 'tester'
+      name: 'tester',
     }
     await Cohort.create(testCohort)
   })
@@ -102,10 +102,10 @@ test.group('Router cohort', () => {
   test('cohort detach test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const cohort = await Cohort.findByOrFail('name', 'tester')
-    const person =  await Person.findByOrFail('givenName', 'Tester')
+    const person = await Person.findByOrFail('givenName', 'Tester')
 
     const personIds = {
-      peopleIds: [person.id]
+      peopleIds: [person.id],
     }
     const response = await client
       .delete(`${COHORT_URL}/${cohort.id}/detach`)
@@ -115,7 +115,7 @@ test.group('Router cohort', () => {
     response.assertStatus(204)
   })
 
-  test('cohort destroy test', async ({ assert, client}) => {
+  test('cohort destroy test', async ({ client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const cohort = await Cohort.findByOrFail('name', 'deleter')
 
@@ -123,7 +123,7 @@ test.group('Router cohort', () => {
     response.assertStatus(204)
   }).setup(async () => {
     const testCohort = {
-      name: 'deleter'
+      name: 'deleter',
     }
     await Cohort.create(testCohort)
   })

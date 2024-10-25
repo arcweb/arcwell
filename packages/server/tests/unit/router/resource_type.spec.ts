@@ -19,7 +19,9 @@ test.group('Router resource type', () => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.first()
 
-    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}`).loginAs(adminUser!)
+    const response = await client
+      .get(`${RESOURCE_TYPE_URL}/${resourceType?.id}`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -33,7 +35,9 @@ test.group('Router resource type', () => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const resourceType = await ResourceType.findBy('key', 'medical-device')
 
-    const response = await client.get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`).loginAs(adminUser!)
+    const response = await client
+      .get(`${RESOURCE_TYPE_URL}/${resourceType?.id}/resources`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 

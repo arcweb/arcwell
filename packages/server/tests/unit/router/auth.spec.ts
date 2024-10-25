@@ -8,7 +8,7 @@ test.group('Router Auth', () => {
   test('auth login test', async ({ assert, client }) => {
     const loginInfo = {
       email: 'test@example.com',
-      password: 'example-test-pass'
+      password: 'example-test-pass',
     }
     const response = await client.post(`${AUTH_URL}/login`).json({ ...loginInfo })
     response.assertStatus(200)
@@ -31,7 +31,7 @@ test.group('Router Auth', () => {
   test('auth login bad test', async ({ client }) => {
     const loginInfo = {
       email: 'bad@example.com',
-      password: 'example-test-pass-fail'
+      password: 'example-test-pass-fail',
     }
     const response = await client.post(`${AUTH_URL}/login`).json({ ...loginInfo })
     response.assertStatus(404)
