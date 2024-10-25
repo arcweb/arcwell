@@ -61,13 +61,12 @@ export default class ResourceService {
   ): Promise<Resource> {
     const resource = await Resource.findOrFail(id)
     resource.useTransaction(trx)
-
-    const updatedResouce = await resource.merge(updateData).save()
+    await resource.merge(updateData).save()
 
     if (updateData.tags) {
       await setTagsForObject(trx, resource.id, 'resources', updateData.tags)
     }
 
-    return updatedResouce
+    return resource
   }
 }

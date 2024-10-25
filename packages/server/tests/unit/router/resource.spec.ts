@@ -43,7 +43,7 @@ test.group('Router resource', () => {
     assert.equal(data.data.name, resource?.name)
   })
 
-  test('resource udate test', async ({ assert, client }) => {
+  test('resource update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const resource = await Resource.first()
 
