@@ -9,6 +9,10 @@ permissions:
   contents: read
   packages: write
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   push-postgres:
     runs-on: ubuntu-latest
