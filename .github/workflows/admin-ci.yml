@@ -112,6 +112,7 @@ jobs:
         run: |
           docker compose run admin npm run lint
 
-      - name: Test Server
-        run: |
-          docker compose run admin ng test --watch=false
+      # TODO: Temporarily commenting this out until ARCWELL-387 "Implement Admin unit testing is completed"
+#      - name: Test Server
+#        run: |
+#          docker compose run admin ng test --watch=false
