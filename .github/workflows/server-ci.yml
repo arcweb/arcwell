@@ -49,7 +49,7 @@ jobs:
             server:
               - 'packages/server/**'
 
-  build-server:
+  build-server-and-test:
     needs: changes
     if: ${{ needs.changes.outputs.server == 'true' }}
 
