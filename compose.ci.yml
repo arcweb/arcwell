@@ -16,6 +16,9 @@ services:
       test: 'exit 0'
 
   server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
     image: ${SERVER_IMAGE}
     ports:
       - '3333:3333'
@@ -35,14 +38,17 @@ services:
     depends_on:
       - db
 
-  admin:
-    image: ${ADMIN_IMAGE}
-    command: npm run dev
-    ports:
-      - '80:4200'
-    depends_on:
-      - db
-      - server
+#  admin:
+#    build:
+#      context: ./packages/admin
+#      dockerfile: Dockerfile
+#    image: ${ADMIN_IMAGE}
+#    command: npm run dev
+#    ports:
+#      - '80:4200'
+#    depends_on:
+#      - db
+#      - server
 
 volumes:
   pgdata:
