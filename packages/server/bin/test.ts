@@ -11,7 +11,7 @@
 */
 
 process.env.NODE_ENV = 'test'
-process.env.DB_DATABASE = 'arcwell_test'
+process.env.DB_DATABASE = 'arcwell'
 process.env.SESSION_DRIVER = 'memory'
 
 import 'reflect-metadata'
