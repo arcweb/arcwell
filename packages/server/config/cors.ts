@@ -9,7 +9,7 @@ import env from '#start/env'
  */
 const corsConfig = defineConfig({
   enabled: true,
-  origin: env.get('ARCWELL_SERVER_CORS_ORIGINS'),
+  origin: env.get('ARCWELL_SERVER_CORS_ORIGINS')?.split(','),
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
   headers: true,
   exposeHeaders: [],
