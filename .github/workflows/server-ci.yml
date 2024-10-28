@@ -135,6 +135,15 @@ jobs:
             exit 1
           fi
 
+      - name: Lint Server
+        run: |
+          docker compose exec server npm run lint
+        continue-on-error: true
+
+      - name: Test Server
+        run: |
+          docker compose exec server npm run test       
+
 #  lint-server:
 #    needs: build-server
 #
