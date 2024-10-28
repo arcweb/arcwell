@@ -18,7 +18,7 @@ export default class ResourceService {
     return (
       Resource.query(trx ? { client: trx } : {})
         .where('id', id)
-        // .withScopes((scopes) => scopes.fullResource())
+        .withScopes((scopes) => scopes.fullResource())
         .firstOrFail()
     )
   }
