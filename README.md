@@ -156,9 +156,9 @@ Arcwell Admin:
 
 Environment seed data will create a user for you:
 
-| Email                      | Password             | Role    |
-|----------------------------|----------------------|---------|
-| admin@example.com          | example-healthy-pass | Admin   |
+| Email              | Password               | Role   |
+|--------------------|------------------------|--------|
+| admin@example.com  | example-healthy-pass   | Admin  |
 
 Your environment should now be up and running, ready for you to take a look.
 
