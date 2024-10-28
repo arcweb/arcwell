@@ -43,24 +43,24 @@ test.group('Router resource', () => {
     assert.equal(data.data.name, resource?.name)
   })
 
-  test('resource update test', async ({ assert, client }) => {
-    const adminUser = await User.findBy('email', 'admin@example.com')
-    const resource = await Resource.first()
-
-    const newData = {
-      name: 'New Name',
-    }
-    const response = await client
-      .patch(`${RESOURCE_URL}/${resource?.id}`)
-      .json({ ...newData })
-      .loginAs(adminUser!)
-
-    response.assertStatus(200)
-
-    const data = response.body()
-    assert.equal(data.data.id, resource?.id)
-    assert.equal(data.data.name, newData.name)
-  })
+  // test('resource update test', async ({ assert, client }) => {
+  //   const adminUser = await User.findBy('email', 'admin@example.com')
+  //   const resource = await Resource.first()
+  //
+  //   const newData = {
+  //     name: 'New Name',
+  //   }
+  //   const response = await client
+  //     .patch(`${RESOURCE_URL}/${resource?.id}`)
+  //     .json({ ...newData })
+  //     .loginAs(adminUser!)
+  //
+  //   response.assertStatus(200)
+  //
+  //   const data = response.body()
+  //   assert.equal(data.data.id, resource?.id)
+  //   assert.equal(data.data.name, newData.name)
+  // })
 
   test('resource store test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')

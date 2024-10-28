@@ -138,7 +138,6 @@ jobs:
       - name: Lint Server
         run: |
           docker compose exec server npm run lint
-        continue-on-error: true
 
       - name: Test Server
         run: |
