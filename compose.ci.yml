@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16-bookworm
+    image: ghcr.io/arcweb/arcwell/postgres:16-bookworm
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
