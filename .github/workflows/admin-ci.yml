@@ -7,6 +7,27 @@ env:
   COMPOSE_FILE: ./compose.ci.yml
   SERVER_IMAGE: ghcr.io/${{ github.repository }}/server/${{ github.ref_name }}:latest
   ADMIN_IMAGE: ghcr.io/${{ github.repository }}/admin/${{ github.ref_name }}:latest
+  ARCWELL_INSTANCE_NAME: CI Arcwell Server"
+  ARCWELL_INSTANCE_ID: arcweb-ci
+  ARCWELL_NODE: "Arcweb/Dev-Node"
+  ARCWELL_KEY: "LOCAL-DEV-SERVER"
+  TZ: UTC
+  PORT: 3333
+  HOST: 0.0.0.0
+  LOG_LEVEL: info
+  APP_KEY: NOT_AN_REAL_APP_KEY
+  NODE_ENV: development
+  DB_HOST: db
+  DB_PORT: 5432
+  DB_USER: arcwell
+  DB_PASSWORD: arcwell
+  DB_DATABASE: arcwell_test
+  SMTP_HOST: mailhog
+  SMTP_PORT: 1025
+  SMTP_USER: arcwell
+  SMTP_PASSWORD: arcwell
+  SMTP_FROM_ADDRESS: arcwell@example.com
+  SMTP_FROM_NAME: "Arcwell Admin"
 
 jobs:
 #  changes:
