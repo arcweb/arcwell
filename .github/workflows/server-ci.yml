@@ -23,7 +23,7 @@ env:
   DB_PORT: 5432
   DB_USER: arcwell
   DB_PASSWORD: arcwell
-  DB_DATABASE: arcwell
+  DB_DATABASE: arcwell_test
   # Mail Delivery:
   SMTP_HOST: mailhog
   SMTP_PORT: 1025
