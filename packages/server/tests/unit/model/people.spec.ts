@@ -43,13 +43,4 @@ test.group('Model people', (group) => {
 
     assert.equal(person?.givenName, 'NewPerson')
   })
-
-  // We no longer use model level taggin, the controler uses raw SQl
-  // test('people tagging test', async ({ assert }) => {
-  //   const person = await Person.firstOrFail()
-  //   const tag = await Tag.firstOrFail()
-
-  //   await person.related('tags').attach([tag.id])
-  //   assert.equal(person.tags, tag.id)
-  // })
 })

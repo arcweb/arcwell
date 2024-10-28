@@ -18,7 +18,7 @@ export default class ResourceService {
     return (
       Resource.query(trx ? { client: trx } : {})
         .where('id', id)
-        // .withScopes((scopes) => scopes.fullResource())
+        .withScopes((scopes) => scopes.fullResource())
         .firstOrFail()
     )
   }
@@ -61,13 +61,12 @@ export default class ResourceService {
   ): Promise<Resource> {
     const resource = await Resource.findOrFail(id)
     resource.useTransaction(trx)
-
-    const updatedResouce = await resource.merge(updateData).save()
+    await resource.merge(updateData).save()
 
     if (updateData.tags) {
       await setTagsForObject(trx, resource.id, 'resources', updateData.tags)
     }
 
-    return updatedResouce
+    return resource
   }
 }

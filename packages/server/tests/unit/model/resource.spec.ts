@@ -39,13 +39,4 @@ test.group('Model resource', (group) => {
 
     assert.equal(resource?.name, 'New Object')
   })
-
-  // We no longer use model level taggin, the controler uses raw SQl
-  // test('resource tagging test', async ({ assert }) => {
-  //   const resource = await Resource.firstOrFail()
-  //   const tag = await Tag.firstOrFail()
-
-  //   await resource.related('tags').attach([tag.id])
-  //   assert.equal(resource.tags, tag.id)
-  // })
 })

@@ -25,17 +25,4 @@ test.group('Model person type', (group) => {
     personType?.merge(newData).save()
     assert.equal(personType?.name, newData.name)
   })
-
-  // We no longer use model level taggin, the controler uses raw SQl
-  // test('person type tagging test', async ({ assert }) => {
-  //   const personTypeInfo = {
-  //     key: 'TEST',
-  //     name: 'TEST',
-  //     tags: JSON.stringify(['first/list']),
-  //   }
-
-  //   const newPersonType = await PersonType.create(personTypeInfo)
-
-  //   assert.equal(newPersonType.tags, personTypeInfo.tags)
-  // })
 })

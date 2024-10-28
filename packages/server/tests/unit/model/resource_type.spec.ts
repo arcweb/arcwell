@@ -25,18 +25,4 @@ test.group('Model resource type', (group) => {
     resourceType?.merge(newData).save()
     assert.equal(resourceType?.name, newData.name)
   })
-
-  // We no longer use model level taggin, the controler uses raw SQl
-  // test('resource type tagging test', async ({ assert }) => {
-  //   const resourceTypeInfo = {
-  //     key: 'TEST',
-  //     name: 'TEST',
-  //     tags: JSON.stringify(['first/list']),
-  //   }
-
-  //   const newResourceType = await ResourceType.create(resourceTypeInfo)
-  //   console.log(newResourceType)
-
-  //   assert.equal(newResourceType.tags, resourceTypeInfo.tags)
-  // })
 })
