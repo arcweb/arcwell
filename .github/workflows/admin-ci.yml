@@ -49,7 +49,7 @@ jobs:
             admin:
               - 'packages/admin/**'
 
-  build-admin:
+  build-admin-and-test:
     needs: changes
     if: ${{ needs.changes.outputs.admin == 'true' }}
 
