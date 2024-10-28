@@ -30,27 +30,27 @@ env:
   SMTP_FROM_NAME: "Arcwell Admin"
 
 jobs:
-#  changes:
-#    runs-on: ubuntu-latest
-#
-#    outputs:
-#      admin: ${{ steps.filter.outputs.admin }}
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#
-#      - name: Filter paths
-#        uses: dorny/paths-filter@v3
-#        id: filter
-#        with:
-#          filters: |
-#            admin:
-#              - 'packages/admin/**'
+  changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      admin: ${{ steps.filter.outputs.admin }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Filter paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            admin:
+              - 'packages/admin/**'
 
   build-admin:
-#    needs: changes
-#    if: ${{ needs.changes.outputs.admin == 'true' }}
+    needs: changes
+    if: ${{ needs.changes.outputs.admin == 'true' }}
 
     runs-on: ubuntu-latest
 
