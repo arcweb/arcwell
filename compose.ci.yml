@@ -40,7 +40,7 @@ services:
       DB_HOST:
       DB_PORT:
       DB_USER:
-      DB_PASSWORD: wrongone
+      DB_PASSWORD:
       DB_DATABASE:
       # Mail Delivery:
       SMTP_HOST:
