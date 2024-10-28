@@ -71,17 +71,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Pull Server Image for Cache (if exists)
-        run: |
-          docker pull ${{ env.SERVER_IMAGE }} || echo "No cache found for Server image."
+#      - name: Cache Docker layers
+#        uses: actions/cache@v4
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
+#
+#      - name: Pull Server Image for Cache (if exists)
+#        run: |
+#          docker pull ${{ env.SERVER_IMAGE }} || echo "No cache found for Server image."
 
       - name: Build and Push Server Image
         uses: docker/build-push-action@v5
@@ -94,13 +94,13 @@ jobs:
             PORT=3333
           push: true
           tags: ${{ env.SERVER_IMAGE }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 #
 #      - name: Save Docker Image
 #        run: |
@@ -112,13 +112,16 @@ jobs:
 #          name: server-image
 #          path: server-image.tar
 
+      - name: Start Services
+        run: |
+          docker compose up -d db server
+
       - name: Health Check
         run: |
-          docker compose up server db -d
           set -e
           echo "Checking health of the server..."
           # Retry the health check up to 10 times with a 10-second interval
-          for i in {1..2}; do
+          for i in {1..5}; do
             if docker compose exec server curl --fail http://localhost:3333/health; then
               echo "Health check passed!"
               break

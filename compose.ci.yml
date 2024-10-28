@@ -8,9 +8,9 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5432:5432
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./support/postgres/init_databases.sh:/docker-entrypoint-initdb.d/initializer.sh
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#      - ./support/postgres/init_databases.sh:/docker-entrypoint-initdb.d/initializer.sh
     restart: on-failure
     healthcheck:
       test: 'exit 0'
@@ -65,5 +65,5 @@ services:
 #      - db
 #      - server
 
-volumes:
-  pgdata:
+#volumes:
+#  pgdata:
