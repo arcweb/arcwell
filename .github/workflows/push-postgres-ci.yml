@@ -1,7 +1,9 @@
 name: Push Postgres Image to GHCR
 
 on:
-  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+  workflow_dispatch:     # Allows manual triggering
 
 permissions:
   contents: read
@@ -15,6 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Dependencies (jq)
+        run: sudo apt-get install -y jq
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -25,8 +30,25 @@ jobs:
       - name: Pull Postgres Image from Docker Hub
         run: docker pull postgres:16-bookworm
 
+      - name: Check for Image Updates
+        id: check_updates
+        run: |
+          set -e
+          LOCAL_DIGEST=$(docker images --no-trunc --quiet postgres:16-bookworm)
+          REMOTE_DIGEST=$(docker manifest inspect postgres:16-bookworm | jq -r '.config.digest')
+          echo "local_digest=$LOCAL_DIGEST" >> $GITHUB_OUTPUT
+          echo "remote_digest=$REMOTE_DIGEST" >> $GITHUB_OUTPUT
+          if [ "$LOCAL_DIGEST" == "$REMOTE_DIGEST" ]; then
+            echo "No updates available for postgres:16-bookworm."
+            exit 0
+          else
+            echo "Updates available for postgres:16-bookworm."
+          fi
+
       - name: Tag Image for GHCR
+        if: ${{ steps.check_updates.outcome != 'success' }}
         run: docker tag postgres:16-bookworm ghcr.io/${{ github.repository }}/postgres:16-bookworm
 
       - name: Push Image to GHCR
+        if: ${{ steps.check_updates.outcome != 'success' }}
         run: docker push ghcr.io/${{ github.repository }}/postgres:16-bookworm
