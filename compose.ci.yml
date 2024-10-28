@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:16-bookworm
     environment:
-      DATABASE_URL: ${DATABASE_URL}
+#      DATABASE_URL: ${DATABASE_URL}
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -25,16 +25,31 @@ services:
       - '5173:5173'
     command: npm run dev
     environment:
-      APP_KEY: ${APP_KEY}
-      PORT: 3333
-      TZ: UTC
-      HOST: 0.0.0.0
-      LOG_LEVEL: info
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_DATABASE}
+      ARCWELL_INSTANCE_NAME:
+      ARCWELL_INSTANCE_ID:
+      # Arcwell Configuration:
+      ARCWELL_NODE:
+      ARCWELL_KEY:
+      # AdonisJS Configuration:
+      TZ:
+      PORT:
+      HOST:
+      LOG_LEVEL:
+      APP_KEY:
+      NODE_ENV:
+      DB_HOST:
+      DB_PORT:
+      DB_USER:
+      DB_PASSWORD:
+      DB_DATABASE:
+      # Mail Delivery:
+      SMTP_HOST:
+      SMTP_PORT:
+      SMTP_USER:
+      SMTP_PASSWORD:
+      SMTP_FROM_ADDRESS:
+      SMTP_FROM_NAME:
+
     depends_on:
       - db
 
