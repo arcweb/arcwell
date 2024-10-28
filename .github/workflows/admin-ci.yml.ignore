@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  COMPOSE_FILE: packages/admin/compose.ci.yml
+#  COMPOSE_FILE: packages/admin/compose.ci.yml
   ADMIN_IMAGE: ghcr.io/${{ github.repository }}/admin/${{ github.ref_name }}:latest
 
 jobs:
@@ -91,7 +91,7 @@ jobs:
               sleep 10
             fi
           done
-          
+
           # If we exhausted all retries and curl still fails, exit the job
           if ! docker compose exec admin curl --fail http://localhost:4200/; then
             echo "Health check failed after 10 attempts. Exiting."

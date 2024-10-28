@@ -1,6 +1,0 @@
-services:  
-  admin:
-    image: ${ADMIN_IMAGE}
-    command: npm run dev
-    ports:
-      - '80:4200'

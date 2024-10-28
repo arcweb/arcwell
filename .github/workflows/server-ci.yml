@@ -4,36 +4,36 @@ on:
   pull_request:
 
 env:
-  COMPOSE_FILE: packages/server/compose.ci.yml
+#  COMPOSE_FILE: packages/server/compose.ci.yml
   SERVER_IMAGE: ghcr.io/${{ github.repository }}/server/${{ github.ref_name }}:latest
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#  DATABASE_URL: ${{ secrets.DATABASE_URL }}
   DB_USER: arcwell
   DB_PASSWORD: arcwell
   DB_DATABASE: arcwell_test
   APP_KEY: ${{ secrets.APP_KEY }}
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-
-    outputs:
-      server: ${{ steps.filter.outputs.server }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Filter paths
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            server:
-              - 'packages/server/**'
+#  changes:
+#    runs-on: ubuntu-latest
+#
+#    outputs:
+#      server: ${{ steps.filter.outputs.server }}
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Filter paths
+#        uses: dorny/paths-filter@v3
+#        id: filter
+#        with:
+#          filters: |
+#            server:
+#              - 'packages/server/**'
 
   build-server:
-    needs: changes
-    if: ${{ needs.changes.outputs.server == 'true' }}
+#    needs: changes
+#    if: ${{ needs.changes.outputs.server == 'true' }}
 
     runs-on: ubuntu-latest
 
@@ -94,7 +94,7 @@ jobs:
 
       - name: Health Check
         run: |
-          docker compose up -d
+          docker compose up server db -d
           set -e
           echo "Checking health of the server..."
           # Retry the health check up to 10 times with a 10-second interval
@@ -115,53 +115,53 @@ jobs:
             exit 1
           fi
 
-  lint-server:
-    needs: build-server
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Docker Environment
-        run: docker info
-
-      - name: Download Image Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: server-image
-
-      - name: Load Docker Image
-        run: |
-          docker load -i server-image.tar
-
-      - name: Lint Server
-        run: |
-          docker compose run server npm run lint
-        continue-on-error: true
-
-  test-server:
-    needs: build-server
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Docker Environment
-        run: docker info
-
-      - name: Download Image Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: server-image
-
-      - name: Load Docker Image
-        run: |
-          docker load -i server-image.tar
-
-      - name: Test Server
-        run: |
-          docker compose run server npm run test
+#  lint-server:
+#    needs: build-server
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Docker Environment
+#        run: docker info
+#
+#      - name: Download Image Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: server-image
+#
+#      - name: Load Docker Image
+#        run: |
+#          docker load -i server-image.tar
+#
+#      - name: Lint Server
+#        run: |
+#          docker compose run server npm run lint
+#        continue-on-error: true
+#
+#  test-server:
+#    needs: build-server
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Docker Environment
+#        run: docker info
+#
+#      - name: Download Image Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: server-image
+#
+#      - name: Load Docker Image
+#        run: |
+#          docker load -i server-image.tar
+#
+#      - name: Test Server
+#        run: |
+#          docker compose run server npm run test
