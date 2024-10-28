@@ -36,6 +36,7 @@ export default class ConfigController {
       arcwell: {
         name: env.get('ARCWELL_INSTANCE_NAME'),
         id: env.get('ARCWELL_INSTANCE_ID'),
+        cors: env.get('ARCWELL_SERVER_CORS_ORIGINS')
       },
       mail: {
         host: env.get('SMTP_HOST'),
