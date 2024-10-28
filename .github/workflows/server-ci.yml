@@ -101,16 +101,16 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-      - name: Save Docker Image
-        run: |
-          docker save ${{ env.SERVER_IMAGE }} -o server-image.tar
-
-      - name: Upload Image Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: server-image
-          path: server-image.tar
+#
+#      - name: Save Docker Image
+#        run: |
+#          docker save ${{ env.SERVER_IMAGE }} -o server-image.tar
+#
+#      - name: Upload Image Artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: server-image
+#          path: server-image.tar
 
       - name: Health Check
         run: |
