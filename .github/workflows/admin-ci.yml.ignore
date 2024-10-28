@@ -4,7 +4,8 @@ on:
   pull_request:
 
 env:
-#  COMPOSE_FILE: packages/admin/compose.ci.yml
+  COMPOSE_FILE: ./compose.ci.yml
+  SERVER_IMAGE: ghcr.io/${{ github.repository }}/server/${{ github.ref_name }}:latest
   ADMIN_IMAGE: ghcr.io/${{ github.repository }}/admin/${{ github.ref_name }}:latest
 
 jobs:

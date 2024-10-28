@@ -2,15 +2,11 @@ services:
   db:
     image: postgres:16-bookworm
     environment:
-#      DATABASE_URL: ${DATABASE_URL}
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5432:5432
-#    volumes:
-#      - pgdata:/var/lib/postgresql/data
-#      - ./support/postgres/init_databases.sh:/docker-entrypoint-initdb.d/initializer.sh
     restart: on-failure
     healthcheck:
       test: 'exit 0'
@@ -53,17 +49,14 @@ services:
     depends_on:
       - db
 
-#  admin:
-#    build:
-#      context: ./packages/admin
-#      dockerfile: Dockerfile
-#    image: ${ADMIN_IMAGE}
-#    command: npm run dev
-#    ports:
-#      - '80:4200'
-#    depends_on:
-#      - db
-#      - server
-
-#volumes:
-#  pgdata:
+  admin:
+    build:
+      context: ./packages/admin
+      dockerfile: Dockerfile
+    image: ${ADMIN_IMAGE}
+    command: npm run dev
+    ports:
+      - '80:4200'
+    depends_on:
+      - db
+      - server
