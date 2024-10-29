@@ -10,8 +10,8 @@ services:
     restart: on-failure
     healthcheck:
       test: 'exit 0'
-    networks:
-      - data
+#    networks:
+#      - data
 
   server:
     build:
@@ -58,12 +58,12 @@ services:
     command: npm run dev
     ports:
       - '80:4200'
-    networks:
-      - application
+#    networks:
+#      - application
     depends_on:
       - db
       - server
 
-networks:
-  application:
-  data:
+#networks:
+#  application:
+#  data:
