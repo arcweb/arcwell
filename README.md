@@ -2,6 +2,8 @@
 
 Arcwell Open Source Clinical Research Platform
 
+![Develop Server CI Badge](https://github.com/arcweb/arcwell/actions/workflows/server-ci.yml/badge.svg?branch=develop) ![Develop Admin CI Badge](https://github.com/arcweb/arcwell/actions/workflows/admin-ci.yml/badge.svg?branch=develop)
+
 ## Overview
 
 [Arcwell](https://arcwell.health/) is a free, open-source platform designed to
@@ -156,9 +158,9 @@ Arcwell Admin:
 
 Environment seed data will create a user for you:
 
-| Email                      | Password             | Role    |
-|----------------------------|----------------------|---------|
-| admin@example.com          | example-healthy-pass | Admin   |
+| Email              | Password               | Role   |
+|--------------------|------------------------|--------|
+| admin@example.com  | example-healthy-pass   | Admin  |
 
 Your environment should now be up and running, ready for you to take a look.
 
