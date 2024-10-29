@@ -36,6 +36,10 @@ export class SettingsComponent {
       value: this.configStore.config()?.arcwell?.id,
       disabled: false,
     }),
+    registrationEnabled: new FormControl({
+      value: `${this.configStore.config()?.arcwell.registrationEnabled}`,
+      disabled: false,
+    }),
   });
 
   mailForm = new FormGroup({
