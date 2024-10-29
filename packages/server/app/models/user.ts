@@ -84,17 +84,21 @@ export default class User extends compose(AwBaseModel, AuthFinder) {
     return user.passwordResetCode
   }
 
-  static async generateTempPassword(user: User) {
+  static async generateTempPassword(user?: User) {
     let letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     let tempPassword = ''
     for (let i = 0; i < 12; i++) {
       tempPassword += letters[Math.floor(Math.random() * 62)]
     }
 
-    user.merge({ tempPassword: tempPassword, requiresPasswordChange: true })
-    await user.save()
+    if (user) {
+      user.merge({ tempPassword: tempPassword, requiresPasswordChange: true })
+      await user.save()
 
-    return user.tempPassword
+      return user.tempPassword
+    } else {
+      return tempPassword
+    }
   }
 
   static fullUser = scope((query: ModelQueryBuilderContract<typeof User>) => {

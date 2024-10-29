@@ -1,6 +1,7 @@
 @use 'layout.scss' as layout;
 
 @mixin auth-theme($theme) {
+  .register-container,
   .set-container,
   .forgot-container,
   .login-container {
@@ -36,6 +37,7 @@
     }
   }
 
+  .register-form,
   .set-form,
   .forgot-form,
   .login-form {
@@ -58,8 +60,22 @@
       align-self: stretch;
     }
 
-    .forgot-button {
-      align-self: flex-end;
+    .login-button-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      width: 100%;
+
+      .register-button {
+        align-self: flex-start;
+        justify-content: start;
+        flex-grow: 4;
+      }
+
+      .forgot-button {
+        align-self: flex-end;
+        justify-self: flex-end;
+      }
     }
   }
 

@@ -30,6 +30,15 @@ export const UserUpdateSchema = UserSchema.extend({
   roleId: z.string().uuid().optional(),
 }).strict();
 
+// for registering a new user
+export const UserRegisterSchema: any = z
+  .object({
+    givenName: z.string(),
+    familyName: z.string(),
+    email: z.string(),
+  })
+  .strict();
+
 // Responses
 
 //  Multiple Users
@@ -52,6 +61,7 @@ export type UserType = z.infer<typeof UserSchema>;
 export type UserUpdateType = z.infer<typeof UserUpdateSchema>;
 export type UsersResponseType = z.infer<typeof UsersResponseSchema>;
 export type UserResponseType = z.infer<typeof UserResponseSchema>;
+export type UserRegisterType = z.infer<typeof UserRegisterSchema>;
 
 // Deserializer / Serializer
 export const deserializeUser = (data: UserType): UserModel => {

@@ -13,6 +13,9 @@ import {
 import { ResetType } from '@shared/schemas/password-reset.schema';
 import { ChangeType } from '@schemas/password-change.schema';
 import { SetType } from '../schemas/pasword-set.schema';
+import { UserRegisterType, UserType } from '../schemas/user.schema';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ToastLevel } from '../models';
 
 export type LoginStatus =
   | 'none'
@@ -42,92 +45,111 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withDevtools('auth'),
   withState(initialState),
-  withMethods((store, authService = inject(AuthService)) => ({
-    login: rxMethod<Credentials>(
-      pipe(
-        tap(() => {
-          patchState(store, { loginStatus: 'authenticating' });
-        }),
-        switchMap(credentials => {
-          return authService
-            .loginTo({
-              email: credentials.email,
-              password: credentials.password,
-            })
-            .pipe(
-              map(response => {
-                if (response?.user.requiresPasswordChange) {
-                  return patchState(store, {
-                    currentUser: response?.user,
-                    loginStatus: 'set-password',
-                  });
-                } else {
-                  return patchState(store, {
-                    token: response?.token.value,
-                    currentUser: response?.user,
-                    loginStatus: 'success',
-                  });
-                }
-              }),
-              catchError(err => {
-                console.error('err=', err);
-                patchState(store, { loginStatus: 'error' });
-                return EMPTY;
-              }),
-            );
-        }),
+  withMethods(
+    (
+      store,
+      authService = inject(AuthService),
+      toastService = inject(ToastService),
+    ) => ({
+      login: rxMethod<Credentials>(
+        pipe(
+          tap(() => {
+            patchState(store, { loginStatus: 'authenticating' });
+          }),
+          switchMap(credentials => {
+            return authService
+              .loginTo({
+                email: credentials.email,
+                password: credentials.password,
+              })
+              .pipe(
+                map(response => {
+                  if (response?.user.requiresPasswordChange) {
+                    return patchState(store, {
+                      currentUser: response?.user,
+                      loginStatus: 'set-password',
+                    });
+                  } else {
+                    return patchState(store, {
+                      token: response?.token.value,
+                      currentUser: response?.user,
+                      loginStatus: 'success',
+                    });
+                  }
+                }),
+                catchError(err => {
+                  console.error('err=', err);
+                  patchState(store, { loginStatus: 'error' });
+                  return EMPTY;
+                }),
+              );
+          }),
+        ),
       ),
-    ),
-    async logout() {
-      patchState(store, { loginStatus: 'pending' });
-      await firstValueFrom(authService.logout());
-      // Don't need to check if the logout was successful, just reset state
-      patchState(store, initialState);
-    },
-    async clearStore() {
-      patchState(store, initialState);
-    },
-    async loadCurrentUser() {
-      patchState(store, { loginStatus: 'pending' });
-      const user = await firstValueFrom(authService.me());
-      if (user.errors) {
-        this.logout();
-      }
-      patchState(store, { currentUser: user, loginStatus: 'success' });
-    },
-    async forgotPassword(email: string, host: string) {
-      patchState(store, { loginStatus: 'pending' });
-      await firstValueFrom(authService.sendPasswordReset(email, host));
-      patchState(store, { loginStatus: 'none' });
-    },
-    async resetPassword(reset: ResetType) {
-      patchState(store, { loginStatus: 'pending' });
-      const resp = await firstValueFrom(authService.resetPassword(reset));
-      if (resp && resp.errors) {
-        patchState(store, { loginStatus: 'error' });
-      } else {
+      async logout() {
+        patchState(store, { loginStatus: 'pending' });
+        await firstValueFrom(authService.logout());
+        // Don't need to check if the logout was successful, just reset state
+        patchState(store, initialState);
+      },
+      async clearStore() {
+        patchState(store, initialState);
+      },
+      async loadCurrentUser() {
+        patchState(store, { loginStatus: 'pending' });
+        const user = await firstValueFrom(authService.me());
+        if (user.errors) {
+          this.logout();
+        }
+        patchState(store, { currentUser: user, loginStatus: 'success' });
+      },
+      async forgotPassword(email: string, host: string) {
+        patchState(store, { loginStatus: 'pending' });
+        await firstValueFrom(authService.sendPasswordReset(email, host));
         patchState(store, { loginStatus: 'none' });
-      }
-    },
-    async changePassword(change: ChangeType) {
-      patchState(store, { loginStatus: 'pending' });
-      const resp = await firstValueFrom(authService.changePassword(change));
-      if (resp && resp.errors) {
-        patchState(store, { loginStatus: 'error' });
-      } else {
-        patchState(store, { loginStatus: 'none' });
-      }
-    },
-    async setPassword(set: SetType) {
-      patchState(store, { loginStatus: 'pending' });
-      const resp = await firstValueFrom(authService.setPassword(set));
-      if (resp && resp.errors) {
-        patchState(store, { loginStatus: 'error' });
-      } else {
-        patchState(store, { loginStatus: 'none' });
-      }
-    },
-  })),
+      },
+      async resetPassword(reset: ResetType) {
+        patchState(store, { loginStatus: 'pending' });
+        const resp = await firstValueFrom(authService.resetPassword(reset));
+        if (resp && resp.errors) {
+          patchState(store, { loginStatus: 'error' });
+        } else {
+          patchState(store, { loginStatus: 'none' });
+        }
+      },
+      async changePassword(change: ChangeType) {
+        patchState(store, { loginStatus: 'pending' });
+        const resp = await firstValueFrom(authService.changePassword(change));
+        if (resp && resp.errors) {
+          patchState(store, { loginStatus: 'error' });
+        } else {
+          patchState(store, { loginStatus: 'none' });
+        }
+      },
+      async setPassword(set: SetType) {
+        patchState(store, { loginStatus: 'pending' });
+        const resp = await firstValueFrom(authService.setPassword(set));
+        if (resp && resp.errors) {
+          patchState(store, { loginStatus: 'error' });
+        } else {
+          patchState(store, { loginStatus: 'none' });
+        }
+      },
+      async register(user: UserRegisterType) {
+        patchState(store, { loginStatus: 'pending' });
+        const resp = await firstValueFrom(authService.register(user));
+        if (resp && resp.errors) {
+          patchState(store, { loginStatus: 'error' });
+        } else {
+          toastService.sendMessage(
+            'You have been registered, check your email.',
+            ToastLevel.INFO,
+          );
+          patchState(store, { loginStatus: 'none' });
+        }
+      },
+    }),
+  ),
   withStorageSync({
     key: '_arcwell_auth_', // key used when writing to/reading from storage
     autoSync: true, // read from storage on init and write on state changes - `true` by default
