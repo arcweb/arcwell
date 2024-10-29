@@ -23,7 +23,7 @@ export default class AuthController {
     const data = await request.validateUsing(registerValidator)
 
     //TODO: For now, this only adds Guest roles, change to the actual requirements
-    const role = await Role.findBy({ name: 'Guest' })
+    const role = await Role.findBy({ name: 'Admin' })
     if (!role) {
       throwCustomHttpError(
         {
@@ -37,7 +37,7 @@ export default class AuthController {
     }
 
     // TDOD: For now, only adds temp persontype
-    const persontype = await PersonType.findBy('key', 'Temp')
+    const persontype = await PersonType.findBy('key', 'temp')
     if (!persontype) {
       throwCustomHttpError(
         {
@@ -53,7 +53,7 @@ export default class AuthController {
     // check if a personId was provided
     const personId = request.only(['personId'])
     let newUser
-    if (personId.personId !== null) {
+    if (personId.personId !== undefined) {
       newUser = await User.create({ ...data })
     } else {
       const personInfo = request.only(['familyName', 'givenName'])
@@ -67,6 +67,7 @@ export default class AuthController {
         {
           ...userInfo,
           password: tempPassword!,
+          tempPassword: tempPassword!,
           requiresPasswordChange: true,
           personId: newPerson.id,
           roleId: role.id 
@@ -78,7 +79,7 @@ export default class AuthController {
       message
         .to(newUser.email)
         .subject('You have been registered')
-        .htmlView('emails/register', { newUser, host: cleanRequest.host })
+        .htmlView('emails/register', { user: newUser, host: cleanRequest.host })
     })
 
     return {
