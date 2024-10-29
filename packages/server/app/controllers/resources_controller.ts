@@ -145,7 +145,7 @@ export default class ResourcesController {
 
     return db.transaction(async (trx) => {
       const updatedResource = await ResourceService.updateResource(trx, params.id, cleanRequest)
-      return { data: await ResourceService.getFullResource(updatedResource.id) }
+      return { data: await ResourceService.getFullResource(updatedResource.id, trx) }
     })
   }
 
