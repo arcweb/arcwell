@@ -63,3 +63,7 @@ services:
     depends_on:
       - db
       - server
+
+networks:
+  application:
+  data:
