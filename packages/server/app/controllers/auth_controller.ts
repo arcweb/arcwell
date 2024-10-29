@@ -245,6 +245,10 @@ export default class AuthController {
       user.requiresPasswordChange = null
       await user.save()
 
+      const token = await User.accessTokens.create(user, ['*'], {
+        expiresIn: '7 days',
+      })
+
       mail.send((message) => {
         message
           .to(user.email)
@@ -252,7 +256,16 @@ export default class AuthController {
           .htmlView('emails/password_set', { user })
       })
 
-      return { data: user }
+      return {
+        data: {
+          token: {
+            type: 'bearer',
+            value: token.value!.release(),
+            expiresAt: token.expiresAt,
+          },
+          user: user.serialize(),
+        },
+      }
     } else {
       // TODO: what of anything should be done if the user is not in teh system or the require
       // password change is false or the temp passwords dont match

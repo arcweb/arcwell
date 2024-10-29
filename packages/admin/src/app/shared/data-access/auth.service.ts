@@ -104,9 +104,9 @@ export class AuthService {
       );
   }
 
-  setPassword(set: SetType): Observable<UserResponseType | ErrorResponseType> {
+  setPassword(set: SetType): Observable<LoginResponseType | ErrorResponseType> {
     return this.http
-      .post<UserResponseType>(`${this.apiUrl}/auth/set`, {
+      .post<LoginResponseType>(`${this.apiUrl}/auth/set`, {
         ...set,
       })
       .pipe(

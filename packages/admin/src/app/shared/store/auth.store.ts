@@ -132,7 +132,11 @@ export const AuthStore = signalStore(
         if (resp && resp.errors) {
           patchState(store, { loginStatus: 'error' });
         } else {
-          patchState(store, { loginStatus: 'none' });
+          patchState(store, {
+            token: resp?.data.token.value,
+            currentUser: resp?.data.user,
+            loginStatus: 'success',
+          });
         }
       },
       async register(user: UserRegisterType) {

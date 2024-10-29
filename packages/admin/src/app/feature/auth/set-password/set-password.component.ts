@@ -67,9 +67,7 @@ export class SetPasswordComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           this.authStore.setPassword(this.setForm.value).then(() => {
-            if (this.authStore.loginStatus() !== 'error') {
-              this.router.navigate(['auth', 'login']);
-            }
+            this.router.navigate(['auth', 'login']);
           });
         }
       });
