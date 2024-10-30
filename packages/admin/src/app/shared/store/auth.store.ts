@@ -13,7 +13,7 @@ import {
 import { ResetType } from '@shared/schemas/password-reset.schema';
 import { ChangeType } from '@schemas/password-change.schema';
 import { SetType } from '../schemas/pasword-set.schema';
-import { UserRegisterType, UserType } from '../schemas/user.schema';
+import { UserRegisterType } from '../schemas/user.schema';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '../models';
 

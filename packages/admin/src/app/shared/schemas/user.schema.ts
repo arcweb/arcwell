@@ -31,6 +31,7 @@ export const UserUpdateSchema = UserSchema.extend({
 }).strict();
 
 // for registering a new user
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const UserRegisterSchema: any = z
   .object({
     givenName: z.string(),
