@@ -135,6 +135,10 @@ module "server" {
     {
       name = "ARCWELL_INSTANCE_ID",
       valueFrom = "${module.server[0].task_secret_id}:ARCWELL_INSTANCE_ID::"
+    },
+    {
+      name = "ARCWELL_REGISTER_ENABLED",
+      valueFrom = "${module.server[0].task_secret_id}:ARCWELL_REGISTER_ENABLED::"
     }
   ]
 }

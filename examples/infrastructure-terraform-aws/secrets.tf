@@ -21,6 +21,7 @@ resource "aws_secretsmanager_secret_version" "server_secrets" {
     SMTP_FROM_NAME = "Admin"
     ARCWELL_INSTANCE_ID = ""
     ARCWELL_INSTANCE_NAME = ""
+    ARCWELL_REGISTER_ENABLED = true
   })
 
   lifecycle {
