@@ -22,6 +22,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   // Arcwell instance configuration:
   ARCWELL_INSTANCE_NAME: Env.schema.string(),
   ARCWELL_INSTANCE_ID: Env.schema.string(),
+  ARCWELL_SERVER_CORS_ORIGINS: Env.schema.string(),
 
   // Database connection:
   DB_HOST: Env.schema.string({ format: 'host' }),
