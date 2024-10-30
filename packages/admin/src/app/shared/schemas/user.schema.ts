@@ -31,12 +31,11 @@ export const UserUpdateSchema = UserSchema.extend({
 }).strict();
 
 // for registering a new user
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const UserRegisterSchema: any = z
+export const UserRegisterSchema = z
   .object({
-    givenName: z.string(),
-    familyName: z.string(),
-    email: z.string(),
+    givenName: z.string().nullable().optional(),
+    familyName: z.string().nullable().optional(),
+    email: z.string().nullable().optional(),
   })
   .strict();
 
