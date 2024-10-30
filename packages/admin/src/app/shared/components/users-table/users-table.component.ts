@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -18,6 +18,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { PersonModel } from '@app/shared/models/person.model';
 import { UserModel } from '@app/shared/models';
 import { JsonPipe } from '@angular/common';
+import { AuthStore } from '@app/shared/store/auth.store';
 
 @Component({
   selector: 'aw-users-table',
@@ -43,6 +44,8 @@ import { JsonPipe } from '@angular/common';
   styleUrl: './users-table.component.scss',
 })
 export class UsersTableComponent {
+  readonly authStore = inject(AuthStore);
+
   dataSource = input.required<MatTableDataSource<UserModel>>();
   displayedColumns = input.required<string[]>();
   length = input.required<number>();
