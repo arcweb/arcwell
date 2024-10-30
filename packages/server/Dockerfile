@@ -15,7 +15,7 @@ EXPOSE $PORT 5173
 
 #######################################
 # Development
-FROM base AS develop
+FROM base AS develop-base
 USER node
 WORKDIR /home/node/app
 
@@ -28,12 +28,20 @@ RUN apt-get update && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
+
+
+#######################################
+# Development
+FROM develop-base AS develop
+
 # Add source code which includes pakcage.json:
 USER node
 COPY --chown=node:node . .
 RUN npm install --no-fund
 
 CMD npm run dev
+
+
 
 #######################################
 # Build stage
