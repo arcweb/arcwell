@@ -1,5 +1,10 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator, registerValidator, resetPasswordValidator, setPasswordValidator } from '#validators/auth'
+import {
+  loginValidator,
+  registerValidator,
+  resetPasswordValidator,
+  setPasswordValidator,
+} from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
@@ -63,15 +68,14 @@ export default class AuthController {
       let userInfo = request.only(['email'])
       // use a temp password and email it to them before first login
       const tempPassword = await User.generateTempPassword()
-      newUser = await User.create(
-        {
-          ...userInfo,
-          password: tempPassword!,
-          tempPassword: tempPassword!,
-          requiresPasswordChange: true,
-          personId: newPerson.id,
-          roleId: role.id 
-        })
+      newUser = await User.create({
+        ...userInfo,
+        password: tempPassword!,
+        tempPassword: tempPassword!,
+        requiresPasswordChange: true,
+        personId: newPerson.id,
+        roleId: role.id,
+      })
     }
 
     const cleanRequest = request.only(['host'])
