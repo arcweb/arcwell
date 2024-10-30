@@ -1,0 +1,72 @@
+services:
+  db:
+    image: ghcr.io/arcweb/arcwell/postgres:16-bookworm
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    restart: on-failure
+    healthcheck:
+      test: 'exit 0'
+    networks:
+      - data
+
+  server:
+    build:
+      context: ./packages/server
+      dockerfile: Dockerfile
+    image: ${SERVER_IMAGE}
+    ports:
+      - '3333:3333'
+      - '5173:5173'
+    command: npm run dev
+    environment:
+      ARCWELL_INSTANCE_NAME:
+      ARCWELL_INSTANCE_ID:
+      # Arcwell Configuration:
+      ARCWELL_NODE:
+      ARCWELL_KEY:
+      # AdonisJS Configuration:
+      TZ:
+      PORT:
+      HOST:
+      LOG_LEVEL:
+      APP_KEY:
+      NODE_ENV:
+      DB_HOST:
+      DB_PORT:
+      DB_USER:
+      DB_PASSWORD:
+      DB_DATABASE:
+      # Mail Delivery:
+      SMTP_HOST:
+      SMTP_PORT:
+      SMTP_USER:
+      SMTP_PASSWORD:
+      SMTP_FROM_ADDRESS:
+      SMTP_FROM_NAME:
+    networks:
+      - application
+      - data
+    depends_on:
+      - db
+
+  admin:
+    build:
+      context: ./packages/admin
+      dockerfile: Dockerfile
+    image: ${ADMIN_IMAGE}
+    command: npm run dev
+    ports:
+      - '80:4200'
+    networks:
+      - application
+    depends_on:
+      - db
+      - server
+
+networks:
+  application:
+  data:

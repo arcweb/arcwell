@@ -208,6 +208,7 @@ export default class TagsController {
    * Show the related records of the tag for the given object type
    */
   async update({ params, request }: HttpContext) {
+    console.log('using this to test linter1')
     await request.validateUsing(updateTagValidator)
     await paramsUUIDValidator.validate(params)
 

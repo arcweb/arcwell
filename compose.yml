@@ -13,7 +13,6 @@ networks:
   application:
   data:
 
-
 services:
   server:
     image: arcwell_server
@@ -27,7 +26,7 @@ services:
       - ./packages/server/.env.development
     depends_on:
       - db
-      - mailhog
+      - mailpit
     networks:
       - application
       - data
@@ -55,6 +54,9 @@ services:
     ports:
       - '4200:4200'
       - '80:4200'
+    depends_on:
+      - db
+      - server
     volumes:
       - ./packages/admin:/home/node/app
       - excluded_admin:/home/node/app/node_modules
@@ -74,10 +76,19 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./support/postgres/init_test.sql:/docker-entrypoint-initdb.d/init_test.sql
 
-  mailhog:
-    image: mailhog/mailhog
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - ./support/mailpit/data:/data
     ports:
-      - "1025:1025" # smtp server
-      - "8025:8025" # web server
+      - '8025:8025' # Web UI
+      - '1025:1025' # SMTP
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - application
