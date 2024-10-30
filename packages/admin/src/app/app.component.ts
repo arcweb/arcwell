@@ -21,6 +21,8 @@ export class AppComponent {
   readonly configStore = inject(ConfigStore);
 
   constructor() {
+    console.log('Just triggering ci');
+
     this.matIconRegistry.addSvgIcon(
       'arcwell-logo-white',
       this.domSanitizer.bypassSecurityTrustResourceUrl(

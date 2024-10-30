@@ -60,6 +60,8 @@ export default class CohortsController {
   async store({ request }: HttpContext) {
     await request.validateUsing(createCohortValidator)
 
+    console.log('Just triggering ci')
+
     return db.transaction(async (trx) => {
       const newCohort = await CohortService.createCohort(trx, request.body(), request.input('tags'))
       return { data: await CohortService.getFullCohort(newCohort.id, undefined, trx) }
