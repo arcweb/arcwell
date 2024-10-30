@@ -29,6 +29,7 @@ services:
       # Arcwell Configuration:
       ARCWELL_NODE:
       ARCWELL_KEY:
+      ARCWELL_SERVER_CORS_ORIGINS:
       # AdonisJS Configuration:
       TZ:
       PORT:
