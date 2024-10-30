@@ -42,7 +42,10 @@ const vineBooleanSchema = vine.compile(vine.boolean())
  * @returns {Promise<string[]>} - Returns an array of error messages if validation fails, or an empty array if the value is valid.
  * @throws {Error} - Throws an error if the data type is unrecognized.
  */
-async function validateDimensionSchema(value: string, dataType: string): Promise<string[]> {
+async function validateDimensionSchema(
+  value: string | number,
+  dataType: string
+): Promise<string[]> {
   const errors: string[] = []
 
   switch (dataType.toLowerCase()) {
