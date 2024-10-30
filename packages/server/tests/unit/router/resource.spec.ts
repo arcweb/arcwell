@@ -88,11 +88,11 @@ test.group('Router resource', () => {
     .teardown(async () => {
       const resource = await Resource.findBy('name', 'Object')
       if (resource) {
-        resource.delete()
+        await resource.delete()
       }
       const rTypeT = await ResourceType.findBy('key', 'tester')
       if (rTypeT) {
-        rTypeT.delete()
+        await rTypeT.delete()
       }
     })
 
