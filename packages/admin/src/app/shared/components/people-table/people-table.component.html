@@ -102,6 +102,7 @@
           type="button"
           (click)="deleteClick(element.id); $event.stopPropagation()"
           class="default-button"
+          [attr.data-cy]="'delete-button-' + element.id"
         >
           Delete
         </button>
@@ -122,7 +123,7 @@
   </table>
 
   <mat-paginator
-    #paginator
+    data-cy="people-table-paginator"
     [length]="length()"
     [pageSizeOptions]="pageSizes()"
     [pageSize]="pageSize()"

@@ -20,12 +20,13 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatSortModule } from '@angular/material/sort';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { createOutputSpy } from 'cypress/angular-signals';
-import { peopleFactory } from '@shared/factories/people';
+import { peopleFactory } from '@app/shared/testing/factories/people';
+import { PeopleResponseType } from '@app/shared/schemas/person.schema';
 
 describe('PeopleTableComponent', () => {
   it('can mount with correct inputs', () => {
-    const peopleList = peopleFactory(13);
-    const personResponse: { data: PersonModel[]; meta: { count: number } } = {
+    const peopleList = peopleFactory(10);
+    const personResponse: PeopleResponseType = {
       data: peopleList,
       meta: {
         count: peopleList.length,
@@ -59,6 +60,7 @@ describe('PeopleTableComponent', () => {
         MatButton,
         NoopAnimationsModule,
       ],
+      autoSpyOutputs: true,
       componentProperties: {
         dataSource: new MatTableDataSource<PersonModel>(personResponse.data),
         displayedColumns: displayedColumns,
@@ -66,17 +68,18 @@ describe('PeopleTableComponent', () => {
         matSortDirection: initialState.order,
         length: peopleList.length,
         pageSizes: [10, 25, 50],
-        pageSize: initialState.limit,
+        pageSize: 10,
         pageIndex: initialState.pageIndex,
         onDeleteClicked: createOutputSpy('onDeleteClickedSpy'),
         onPageChanged: createOutputSpy('onPageChangedClickSpy'),
         onRowClicked: createOutputSpy('onRowClickedSpy'),
-        onSortChanged: createOutputSpy('onSortClickedSpy'),
+        onSortChanged: createOutputSpy('onSortChangedSpy'),
         onViewAccountClicked: createOutputSpy('onViewAccountClickedSpy'),
       },
     });
-
+    // check the table is rendered
     cy.get('[data-cy=people-table]').should('exist');
+    // check the header row and its contents
     cy.get('[data-cy=people-header-row]').should('exist');
     cy.get('[data-cy=people-header-row]').within(() => {
       cy.contains('Family Name');
@@ -84,7 +87,31 @@ describe('PeopleTableComponent', () => {
       cy.contains('Person Type');
       cy.contains('Tags');
     });
-
+    // check the data rows and their contents
     cy.get('[data-cy=person-data-row]').should('have.length', 10);
+    cy.get('[data-cy=person-data-row]')
+      .first()
+      .within(() => {
+        cy.contains('Doe-0');
+        cy.contains('John-0');
+        cy.contains('Student');
+      });
+    // check the paginator and its contents
+    cy.get('[data-cy=people-table-paginator]').should('exist');
+    cy.get('.mat-mdc-paginator-range-label').contains('1 – 10 of 10');
+    // check the sort header
+    cy.get(
+      '[data-cy="given-name-header-cell"] > .mat-sort-header-container > .mat-sort-header-content',
+    ).click();
+    cy.get('@onSortChangedSpy').should('have.been.calledWith', {
+      active: 'givenName',
+      direction: 'asc',
+    });
+    // check the delete button
+    cy.get('[data-cy=delete-button-1]').should('exist').click();
+    cy.get('@onDeleteClickedSpy').should('have.been.calledWith', '1');
+    // check the row click
+    cy.get('[data-cy="familyName-0"]').click();
+    cy.get('@onRowClickedSpy').should('have.been.calledWith', peopleList[0]);
   });
 });

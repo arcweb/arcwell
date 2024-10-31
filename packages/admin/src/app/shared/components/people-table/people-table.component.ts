@@ -7,6 +7,7 @@ import {
   inject,
   input,
   output,
+  viewChild,
 } from '@angular/core';
 import {
   MatCell,
@@ -50,7 +51,7 @@ import { PersonModel } from '@shared/models/person.model';
   templateUrl: './people-table.component.html',
   styleUrl: './people-table.component.scss',
 })
-export class PeopleTableComponent implements AfterViewInit {
+export class PeopleTableComponent {
   dataSource = input.required<MatTableDataSource<PersonModel>>();
   displayedColumns = input.required<string[]>();
   matSortActive = input.required<string>();
@@ -66,14 +67,6 @@ export class PeopleTableComponent implements AfterViewInit {
   onRowClicked = output<PersonModel>();
   onSortChanged = output<Sort>();
   onViewAccountClicked = output<string>();
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  ngAfterViewInit() {
-    console.log(this.pageSize());
-    this.dataSource().paginator = this.paginator;
-    this.dataSource().paginator!.length = this.length();
-  }
 
   pageChange(event: PageEvent) {
     this.onPageChanged.emit(event);
