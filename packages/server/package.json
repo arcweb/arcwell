@@ -52,7 +52,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "hot-hook": "^0.2.6",
-    "pino-pretty": "^11.2.1",
     "prettier": "^3.3.2",
     "typescript": "~5.4"
   },
@@ -70,7 +69,8 @@
     "luxon": "^3.4.4",
     "pg": "^8.12.0",
     "reflect-metadata": "^0.2.2",
-    "ts-node-maintained": "^10.9.4"
+    "ts-node-maintained": "^10.9.4",
+    "pino-pretty": "^11.2.1"
   },
   "hotHook": {
     "boundaries": [
