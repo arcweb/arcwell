@@ -37,7 +37,7 @@ export default class ConfigController {
         name: env.get('ARCWELL_INSTANCE_NAME'),
         id: env.get('ARCWELL_INSTANCE_ID'),
         cors: env.get('ARCWELL_SERVER_CORS_ORIGINS'),
-        debugError: env.get('ARCWELL_SERVER_DEBUG_ERRORS')
+        debugError: env.get('ARCWELL_SERVER_DEBUG_ERRORS'),
       },
       mail: {
         host: env.get('SMTP_HOST'),

@@ -5,7 +5,6 @@ import { errors as adonisCoreErrors } from '@adonisjs/core'
 import { errors as authErrors } from '@adonisjs/auth'
 import { errors as lucidErrors } from '@adonisjs/lucid'
 import env from '#start/env'
-import { Console } from 'console'
 // Keeping this commented out import as a reminder when we implement polices
 // import { errors as bouncerErrors } from '@adonisjs/bouncer'
 
@@ -157,7 +156,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
 
       let detail
       if (env.get('ARCWELL_SERVER_DEBUG_ERRORS') === 'true') {
-        console.log('\n\nGENERATING DETAIL\n\n')
         detail = err && err.message ? err.message : 'No Further Information'
       } else {
         detail = 'A server error occurred processing that request'
