@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonButton, IonContent, IonHeader, IonImg, IonInput, IonItem, IonTitle, IonToolbar, Platform } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-login',
@@ -54,9 +55,11 @@ export class LoginPage implements OnInit {
       this.email = '';
       this.password = '';
       this.errorMessage = '';
+      await Keyboard.hide();
       this.router.navigate(['/surveys']);
     } catch (error) {
       this.errorMessage = 'Invalid login credentials';
+      await Keyboard.hide();
     }
   }
 }
