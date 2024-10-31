@@ -17,7 +17,9 @@ corresponding subfolder here under `/support`
 | Path | Product | Notes |
 |------|---------|-------|
 | postgres | [PostgreSQL database][psql] | Initializer scripts, configuration |
+| mailpit | [Mailpit](mailpit) | Email testing tool & API for developers |
 
 
 
 [psql]: https://www.postgresql.org/
+[mailpit]: https://mailpit.axllent.org/

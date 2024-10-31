@@ -7,7 +7,8 @@ const RESOURCE_URL = '/resources'
 
 test.group('Router resource', () => {
   test('resource index test', async ({ assert, client }) => {
-    const response = await client.get(RESOURCE_URL)
+    const adminUser = await User.findBy('email', 'admin@example.com')
+    const response = await client.get(RESOURCE_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -16,8 +17,11 @@ test.group('Router resource', () => {
   })
 
   test('resource index filtered test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const rType = await ResourceType.findBy('key', 'dme')
-    const response = await client.get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`)
+    const response = await client
+      .get(`${RESOURCE_URL}?resourceTypeId=${rType?.id}`)
+      .loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -27,9 +31,10 @@ test.group('Router resource', () => {
   })
 
   test('resource show test', async ({ assert, client }) => {
+    const adminUser = await User.findBy('email', 'admin@example.com')
     const resource = await Resource.first()
 
-    const response = await client.get(`${RESOURCE_URL}/${resource?.id}`)
+    const response = await client.get(`${RESOURCE_URL}/${resource?.id}`).loginAs(adminUser!)
 
     response.assertStatus(200)
 
@@ -38,12 +43,12 @@ test.group('Router resource', () => {
     assert.equal(data.data.name, resource?.name)
   })
 
-  test('resource udate test', async ({ assert, client }) => {
+  test('resource update test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
     const resource = await Resource.first()
 
     const newData = {
-      name: 'NewName',
+      name: 'New Name',
     }
     const response = await client
       .patch(`${RESOURCE_URL}/${resource?.id}`)
@@ -83,11 +88,11 @@ test.group('Router resource', () => {
     .teardown(async () => {
       const resource = await Resource.findBy('name', 'Object')
       if (resource) {
-        resource.delete()
+        await resource.delete()
       }
       const rTypeT = await ResourceType.findBy('key', 'tester')
       if (rTypeT) {
-        rTypeT.delete()
+        await rTypeT.delete()
       }
     })
 

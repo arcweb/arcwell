@@ -31,13 +31,28 @@
     }
 
     .feature-accordion {
-      height: 85%;
+      height: 90%;
       display: flex;
       flex-direction: column;
       gap: $spacing;
       padding: $spacing;
       justify-content: space-between;
-      overflow-y: visible;
+
+      @media screen and (max-height: layout.$vertical-breakpoint-large) {
+        height: 85%;
+      }
+
+      @media screen and (max-height: layout.$vertical-breakpoint-medium) {
+        height: 80%;
+      }
+
+      @media screen and (max-height: layout.$vertical-breakpoint-small) {
+        height: 100%;
+
+        .mat-expansion-panel {
+          margin: 0;
+        }
+      }
 
       .mat-expansion-panel {
         background-color: colors.$dark-blue;

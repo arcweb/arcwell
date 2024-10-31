@@ -11,7 +11,7 @@ import { FeatureModel } from '@shared/models/feature.model';
 import { FeatureService } from '@shared/services/feature.service';
 import { Router } from '@angular/router';
 import { SubfeatureModel } from '../models/subfeature.model';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { ConfigStore } from './config.store';
 
 interface FeatureState {

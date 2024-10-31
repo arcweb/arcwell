@@ -7,11 +7,6 @@ LABEL project="Arcwell Admin"
 LABEL version="0.1"
 LABEL author.co="Arcweb Technologies, LLC <https://arcweb.co>"
 
-# RUN apt-get update -qq \
-#     && apt-get install -qq vim \
-#     && apt-get clean -qq \
-#     && rm -rf /var/lib/lists/*
-
 # Provide path to node-sass binary to avoid regular rebuild:
 # ENV SASS_BINARY_NAME=linux-x64-67
 

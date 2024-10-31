@@ -2,6 +2,8 @@
 
 Arcwell Open Source Clinical Research Platform
 
+![Develop Server CI Badge](https://github.com/arcweb/arcwell/actions/workflows/server-ci.yml/badge.svg?branch=develop) ![Develop Admin CI Badge](https://github.com/arcweb/arcwell/actions/workflows/admin-ci.yml/badge.svg?branch=develop)
+
 ## Overview
 
 [Arcwell](https://arcwell.health/) is a free, open-source platform designed to
@@ -156,9 +158,9 @@ Arcwell Admin:
 
 Environment seed data will create a user for you:
 
-| Email                      | Password             | Role    |
-|----------------------------|----------------------|---------|
-| admin@example.com          | example-healthy-pass | Admin   |
+| Email              | Password               | Role   |
+|--------------------|------------------------|--------|
+| admin@example.com  | example-healthy-pass   | Admin  |
 
 Your environment should now be up and running, ready for you to take a look.
 
@@ -372,6 +374,16 @@ useful for development to learn the API contracts, formats, and endpoints:
 * Use the included [Postman Environment](<doc/Arcwell Lib.postman_environment.json>) to setup your localhost-pointed Postman environment
 * Pull the full [Postman API definition](doc/Arcwell.postman_collection.json) to experiment with the Server REST API locally
 
+
+## Building for Production
+
+The [quickstart instructions](#quickstart) and guide to this point have been
+focused on building a _development_ environment. Arcwell can be built for
+production-like environments (e.g., your hosted staging, QA/dev, or production
+targets).
+
+Learn more about generated environment-specific, production-like builds within
+the [production build docs](doc/builds.md).
 
 
 ## Deployment & Hosting
