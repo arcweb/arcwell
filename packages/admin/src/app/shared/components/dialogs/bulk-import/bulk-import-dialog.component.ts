@@ -79,7 +79,6 @@ export class BulkImportDialogComponent {
     ),
   });
   readonly data = inject<BulkImportDialogData>(MAT_DIALOG_DATA);
-
   selectedFile?: File;
   canDownload = false;
 
