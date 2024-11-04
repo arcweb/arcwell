@@ -59,6 +59,7 @@ export class BulkImportDialogComponent implements OnInit {
     ),
   });
   readonly data = inject<BulkImportDialogData>(MAT_DIALOG_DATA);
+  selectedFile?: File;
 
   ngOnInit(): void {
     this.bulkForm.events
@@ -66,10 +67,11 @@ export class BulkImportDialogComponent implements OnInit {
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
           const formValue = this.bulkForm.value;
+          console.log(formValue);
         }
       });
   }
   csvInputChange(event: any) {
-    console.log(event);
+    this.selectedFile = event.target.files[0];
   }
 }

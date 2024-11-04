@@ -11,7 +11,7 @@
         accept=".csv"
       />
       <span class="file-name">
-        {{ bulkForm.controls.file.value ?? 'Choose File' }}
+        {{ selectedFile?.name ?? 'Choose File' }}
       </span>
       <button mat-flat-button color="primary" (click)="csvInput.click()">
         <fa-icon
