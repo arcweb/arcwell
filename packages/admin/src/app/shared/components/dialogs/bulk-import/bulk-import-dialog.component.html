@@ -1,0 +1,30 @@
+<div class="bulk-dialog-container">
+  <h5 mat-dialog-title>{{ data.title ?? 'Import' }}</h5>
+  <mat-dialog-content>
+    <form [formGroup]="bulkForm" class="bulk-form">
+      <input
+        #csvInput
+        hidden="true"
+        type="file"
+        formControlName="file"
+        (change)="csvInputChange($event)"
+        accept=".csv"
+      />
+      <span class="file-name">
+        {{ bulkForm.controls.file.value ?? 'Choose File' }}
+      </span>
+      <button mat-flat-button color="primary" (click)="csvInput.click()">
+        <fa-icon
+          aria-label="attach"
+          [icon]="faPaperclip"
+          size="xl"
+          class="dialog-icon"
+        ></fa-icon>
+      </button>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Cancel</button>
+    <button mat-flat-button type="submit" class="default-button">Import</button>
+  </mat-dialog-actions>
+</div>

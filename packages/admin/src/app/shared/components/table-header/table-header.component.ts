@@ -6,6 +6,7 @@ import {
   faCirclePlus,
   faBars,
   faMagnifyingGlass,
+  faFileImport,
 } from '@fortawesome/free-solid-svg-icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
@@ -34,14 +35,17 @@ export class TableHeaderComponent {
   createLinkQueryParams = input<QueryParams>();
   enableFilter = input<boolean>(true);
   enableSearch = input<boolean>(true);
+  enableImport = input<boolean>(true);
 
   // hook these up when we have the functionality
   search = output<string>();
   filter = output<string>();
+  bulkInput = output();
 
   faCirclePlus = faCirclePlus;
   faBars = faBars;
   faMagnifyingGlass = faMagnifyingGlass;
+  faFileImport = faFileImport;
 
   onCreate() {
     this.router.navigate([], {
