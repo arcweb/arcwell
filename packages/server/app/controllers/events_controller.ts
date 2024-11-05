@@ -179,7 +179,7 @@ export default class EventsController {
   }
 
   async bulk({ params, request, response }: HttpContext) {
-    await request.validateUsing(bulkUploadValidator)
+    //await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
     console.log(file)
   }

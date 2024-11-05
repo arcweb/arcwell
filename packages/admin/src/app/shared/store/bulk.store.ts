@@ -34,6 +34,7 @@ export const BulkStore = signalStore(
       toastService = inject(ToastService),
     ) => ({
       async uploadCSV(apiRoute: string, file: File) {
+        console.log(file);
         patchState(store, { ...initialState }, setPending());
         const resp = await firstValueFrom(
           bulkService.uploadCsv(apiRoute, file),
