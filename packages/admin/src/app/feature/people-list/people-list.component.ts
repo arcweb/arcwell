@@ -62,6 +62,7 @@ export class PeopleListComponent {
   constructor() {
     effect(() => {
       this.dataSource.data = this.peopleListStore.people();
+      console.log(this.peopleListStore.totalData());
     });
     // load the people list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
