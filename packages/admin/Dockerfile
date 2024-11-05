@@ -53,11 +53,19 @@ RUN apt-get update && apt-get install -y \
     libnss3 \
     libxss1 \
     fonts-liberation \
+    libgtk2.0-0 \
+    libgtk-3-0 \
+    libgbm-dev \
+    libnotify-dev \
+    libasound2 \
+    libxtst6 \
+    xauth \
+    xvfb \
     xdg-utils \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
 
-# Set the CHROME_BIN environment variable for Karma
-ENV CHROME_BIN=/usr/bin/chromium
+    # Set the CHROME_BIN environment variable for Karma
+    ENV CHROME_BIN=/usr/bin/chromium
 
 # Set Puppeteer to skip downloading Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true

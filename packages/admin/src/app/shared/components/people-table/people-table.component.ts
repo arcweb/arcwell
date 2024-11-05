@@ -1,4 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -50,6 +56,7 @@ export class PeopleTableComponent {
   pageSizes = input.required<number[]>();
   pageSize = input.required<number>();
   pageIndex = input.required<number>();
+  cdr = inject(ChangeDetectorRef);
 
   onDeleteClicked = output<string>();
   onPageChanged = output<PageEvent>();
