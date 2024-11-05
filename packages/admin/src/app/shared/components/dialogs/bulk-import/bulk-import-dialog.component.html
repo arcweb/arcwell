@@ -25,6 +25,14 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     <button mat-button [mat-dialog-close]="false">Cancel</button>
-    <button mat-flat-button type="submit" class="default-button">Import</button>
+    <button
+      mat-flat-button
+      class="default-button"
+      (click)="submitForm()"
+      [mat-dialog-close]="true"
+      [disabled]="!bulkForm.valid"
+    >
+      Import
+    </button>
   </mat-dialog-actions>
 </div>

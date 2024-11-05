@@ -110,6 +110,7 @@ router
               .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
               .as('events/types.showWithEvents')
             router.get('events/count', [EventController, 'count']).as('events.count')
+            router.post('events/bulk', [EventController, 'bulk']).as('events.bulk')
             router.resource('events', EventController).apiOnly()
           })
           .use(middleware.auth())

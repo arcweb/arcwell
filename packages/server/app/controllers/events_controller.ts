@@ -9,6 +9,7 @@ import EventService from '#services/event_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { bulkUploadValidator } from '#validators/bulk'
 
 export default class EventsController {
   /**
@@ -175,5 +176,11 @@ export default class EventsController {
     const event = await Event.findOrFail(params.id)
     await event.delete()
     response.status(204).send('')
+  }
+
+  async bulk({ params, request, response }: HttpContext) {
+    await request.validateUsing(bulkUploadValidator)
+    const file = request.file('file')
+    console.log(file)
   }
 }
