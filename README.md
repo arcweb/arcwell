@@ -95,11 +95,15 @@ consider adjustments to the following variables:
 # Instance Configuration:
 ARCWELL_INSTANCE_NAME="Development Arcwell Server"
 ARCWELL_INSTANCE_ID=arcweb-dev
+ARCWELL_REGISTER_ENABLED=true
 ```
 
 The `ARCWELL_INSTANCE_NAME` variable is a human-readable name for your server,
 which will appear in configuration and the Admin UI. The `ARCWELL-INSTANCE-ID`
 variable is a shortstring by which the server is referred.
+
+`ARCWELL_REGISTER_ENABLED` set to true will allow new user to register to use the system,
+set to false will block new registration.
 
 Once you have configured to your liking, you can double-check that things are
 good by confirming the Docker Compose configuration is now working. If this

@@ -25,6 +25,7 @@ services:
     environment:
       ARCWELL_INSTANCE_NAME:
       ARCWELL_INSTANCE_ID:
+      ARCWELL_REGISTER_ENABLED:
       # Arcwell Configuration:
       ARCWELL_NODE:
       ARCWELL_KEY:

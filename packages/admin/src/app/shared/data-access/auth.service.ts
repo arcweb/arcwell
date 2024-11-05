@@ -4,6 +4,7 @@ import { Credentials } from '@shared/interfaces/credentials';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '@shared/models/user.model';
 import {
+  UserRegisterType,
   UserResponseType,
   UsersResponseType,
   deserializeUser,
@@ -103,10 +104,24 @@ export class AuthService {
       );
   }
 
-  setPassword(set: SetType): Observable<UserResponseType | ErrorResponseType> {
+  setPassword(set: SetType): Observable<LoginResponseType | ErrorResponseType> {
     return this.http
-      .post<UserResponseType>(`${this.apiUrl}/auth/set`, {
+      .post<LoginResponseType>(`${this.apiUrl}/auth/set`, {
         ...set,
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  register(
+    user: UserRegisterType,
+  ): Observable<UsersResponseType | ErrorResponseType> {
+    return this.http
+      .post<UserResponseType>(`${this.apiUrl}/auth/register`, {
+        ...user,
       })
       .pipe(
         catchError(error => {

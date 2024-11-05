@@ -3,6 +3,7 @@ import { ConfigType } from '@schemas/config.schema';
 interface ArcwellModel {
   id: string;
   name: string;
+  registrationEnabled: boolean;
 }
 
 interface MailModel {
