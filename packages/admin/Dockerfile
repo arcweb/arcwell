@@ -55,6 +55,7 @@ RUN #apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 
 #RUN apt-get install libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
 
 RUN apt-get install -y \
+     curl \
      chromium \
      libgbm1 \
      xdg-utils \
