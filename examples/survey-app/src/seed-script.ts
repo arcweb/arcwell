@@ -3,8 +3,8 @@ const readline = require('readline');
 
 // Change these values to match your environment
 const backendUrl = 'http://localhost:3333/api/v1';
-const authUserEmail = 'dev-admin@example.com';
-const authUserPassword = 'password';
+const authUserEmail = 'admin@example.com';
+const authUserPassword = 'example-healthy-pass';
 
 interface InstallResponse {
   data: {
@@ -169,7 +169,7 @@ async function main() {
   try {
     console.log('=== Seed Data Installation ===\n');
 
-    const authToken = await login('dev-admin@example.com', 'password');
+    const authToken = await login(authUserEmail, authUserPassword);
 
     // Prompt user for new survey user information
     console.log('Please supply New Survey User information.');
