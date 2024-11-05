@@ -109,7 +109,7 @@ describe('PeopleTableComponent', () => {
     });
     // check the delete button
     cy.get('[data-cy=delete-button-1]').should('exist').click();
-    cy.get('@onDeleteClickedSpy').should('have.been.calledWith', '1');
+    cy.get('@onDeleteClickedSpy').should('have.been.calledWith', '21');
     // check the row click
     cy.get('[data-cy="familyName-0"]').click();
     cy.get('@onRowClickedSpy').should('have.been.calledWith', peopleList[0]);
