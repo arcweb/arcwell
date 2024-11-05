@@ -70,15 +70,10 @@ RUN apt-get install -y \
      xvfb \
      lsb-release
 
-
-
 RUN rm -rf /var/lib/apt/lists/*
 
-    # Set the CHROME_BIN environment variable for Karma
-    ENV CHROME_BIN=/usr/bin/chromium
-
-# Set Puppeteer to skip downloading Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+# Set the CHROME_BIN environment variable for Karma
+ENV CHROME_BIN=/usr/bin/chromium
 
 # Switch back to unprivileged user
 USER node
