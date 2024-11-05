@@ -17,7 +17,9 @@ export class BulkService {
     file: File,
   ): Observable<ErrorResponseType | null> {
     const url = `${environment.apiUrl}/${apiRoute}/bulk`;
-    return this.http.post(url, { file: file }).pipe(
+    const data = new FormData();
+    data.append('file', file, file.name);
+    return this.http.post(url, data).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);
       }),
