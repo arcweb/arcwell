@@ -17,7 +17,6 @@ import {
 import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BulkService } from '@app/shared/services/bulk.service';
 import { BulkStore } from '@app/shared/store/bulk.store';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
@@ -71,12 +70,6 @@ export class BulkImportDialogComponent {
   submitForm() {
     if (this.selectedFile && this.data.apiRoute) {
       this.bulkStore.uploadCSV(this.data.apiRoute, this.selectedFile);
-      // this.bulkService
-      //   .uploadCsv(this.data.apiRoute, this.selectedFile)
-      //   .pipe(takeUntilDestroyed(this.destroyRef))
-      //   .subscribe(() => {
-      //     this.complete.emit();
-      //   });
     }
   }
 }

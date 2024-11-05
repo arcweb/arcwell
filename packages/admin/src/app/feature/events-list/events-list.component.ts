@@ -144,7 +144,7 @@ export class EventsListComponent {
       data: {
         title: 'Import Events',
         types: [''],
-        apiModel: 'Event',
+        apiRoute: 'events',
       },
     });
   }
