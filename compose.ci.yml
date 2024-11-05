@@ -24,8 +24,9 @@ services:
     command: npm run dev
     environment:
       ARCWELL_INSTANCE_NAME:
-      ARCWELL_INSTANCE_ID: # Arcwell Configuration:
-
+      ARCWELL_INSTANCE_ID:
+      ARCWELL_REGISTER_ENABLED:
+      # Arcwell Configuration:
       ARCWELL_NODE:
       ARCWELL_KEY:
       ARCWELL_SERVER_CORS_ORIGINS:

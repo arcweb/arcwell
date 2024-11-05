@@ -37,7 +37,7 @@ router
         // Authentication
         router
           .group(() => {
-            // router.post('/register', [AuthController, 'register']).as('register')
+            router.post('/register', [AuthController, 'register']).as('register')
             router.post('/login', [AuthController, 'login']).as('login')
             router.delete('/logout', [AuthController, 'logout']).as('logout').use(middleware.auth())
             router.get('/me', [AuthController, 'me']).as('me').use(middleware.auth())

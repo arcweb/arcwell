@@ -36,6 +36,7 @@ export default class ConfigController {
       arcwell: {
         name: env.get('ARCWELL_INSTANCE_NAME'),
         id: env.get('ARCWELL_INSTANCE_ID'),
+        registrationEnabled: env.get('ARCWELL_REGISTER_ENABLED'),
         cors: env.get('ARCWELL_SERVER_CORS_ORIGINS'),
         debugError: env.get('ARCWELL_SERVER_DEBUG_ERRORS'),
       },

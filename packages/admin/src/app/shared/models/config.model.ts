@@ -4,6 +4,7 @@ interface ArcwellModel {
   id: string;
   name: string;
   debugErrors: string;
+  registrationEnabled: boolean;
 }
 
 interface MailModel {

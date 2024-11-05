@@ -1,0 +1,53 @@
+<div class="register-container">
+  <div class="logo-container"></div>
+  <div class="form-container">
+    <form [formGroup]="registerForm" class="register-form">
+      <mat-icon class="logo" svgIcon="arcwell-logo-blue"></mat-icon>
+      <div class="header-text">
+        <h2 class="headline-large">Register</h2>
+        <p class="headline-small">
+          Fill out the form to register for access to the Arcwell System.
+        </p>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input
+          matNativeControl
+          formControlName="givenName"
+          placeholder="First Name"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input
+          matNativeControl
+          formControlName="familyName"
+          placeholder="Last Name"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matNativeControl
+          formControlName="email"
+          type="email"
+          placeholder="email"
+        />
+        <mat-icon matPrefix>mail</mat-icon>
+      </mat-form-field>
+
+      <button
+        mat-stroked-button
+        color="primary"
+        type="submit"
+        class="submit-button form-button body-small"
+        [disabled]="!registerForm.valid"
+      >
+        Register
+      </button>
+    </form>
+  </div>
+</div>

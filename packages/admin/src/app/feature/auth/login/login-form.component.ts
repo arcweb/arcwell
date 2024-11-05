@@ -8,6 +8,7 @@ import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { LoginStatus } from '@shared/store/auth.store';
 import { Router } from '@angular/router';
+import { ConfigStore } from '@app/shared/store/config.store';
 
 @Component({
   selector: 'aw-login-form',
@@ -27,6 +28,7 @@ import { Router } from '@angular/router';
 })
 export class LoginFormComponent {
   private router = inject(Router);
+  readonly configStore = inject(ConfigStore);
   loginStatus = input.required<LoginStatus>();
   login = output<Credentials>();
 
@@ -39,5 +41,9 @@ export class LoginFormComponent {
 
   forgotPassword() {
     this.router.navigate(['auth', 'forgot']);
+  }
+
+  register() {
+    this.router.navigate(['auth', 'register']);
   }
 }

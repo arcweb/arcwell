@@ -7,6 +7,7 @@ import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
 import UserService from '#services/user_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
+import env from '#start/env'
 
 export default class UsersController {
   /**
@@ -54,7 +55,10 @@ export default class UsersController {
    * @summary Create User
    * @description Create a new User record within Arcwell
    */
-  async store({ request }: HttpContext) {
+  async store({ request, response }: HttpContext) {
+    if (!env.get('ARCWELL_REGISTER_ENABLED')) {
+      response.status(403).send('Registration is disabled on this Arcwell instance')
+    }
     // TODO: Add create user functionality back in...
     await request.validateUsing(createUserValidator)
 
