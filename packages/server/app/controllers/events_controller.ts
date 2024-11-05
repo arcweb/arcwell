@@ -1,3 +1,5 @@
+import Papa from 'papaparse';
+import fs from 'node:fs';
 import Event from '#models/event'
 import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
@@ -179,8 +181,27 @@ export default class EventsController {
   }
 
   async bulk({ params, request, response }: HttpContext) {
-    //await request.validateUsing(bulkUploadValidator)
+    await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    console.log(file)
+    console.log(file?.tmpPath)
+    if (file) {
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
+      Papa.parse(csvFile, {
+        header: true,
+        skipEmptyLines: true,
+        complete: () => {
+          console.log('DONE')
+        },
+        error: (error: any) => {
+          // rollback
+          console.log('ERROR')
+        },
+        step: (result: any) => {
+          // save the event
+          console.log('step')
+          console.log(result)
+        }
+      })
+    }
   }
 }
