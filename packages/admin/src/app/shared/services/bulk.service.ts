@@ -13,10 +13,10 @@ export class BulkService {
   private http: HttpClient = inject(HttpClient);
 
   uploadCsv(
-    apiModel: string,
+    apiRoute: string,
     file: File,
   ): Observable<ErrorResponseType | null> {
-    const url = `${environment.apiUrl}/${apiModel}/bulk`;
+    const url = `${environment.apiUrl}/${apiRoute}/bulk`;
     return this.http.post(url, { file: file }).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);
