@@ -37,7 +37,7 @@ export default class ResourcesController {
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
 
-    let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resources', 'name')
+    let [query, countQuery] = buildApiQuery(Resource.query(), queryData, 'resources')
 
     query.apply((scopes: ExtractScopes<typeof Resource>) => scopes.fullResource())
 

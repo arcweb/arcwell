@@ -112,7 +112,7 @@ export default class TagsController {
     const queryData = request.qs()
     const parentStr = queryData['parentStr']
 
-    let [query, countQuery] = buildApiQuery(Tag.query(), queryData, 'tags', 'pathname')
+    let [query, countQuery] = buildApiQuery(Tag.query(), queryData, 'tags')
 
     query.orderBy('pathname', 'asc')
 

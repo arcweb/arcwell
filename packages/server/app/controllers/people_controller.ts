@@ -43,7 +43,7 @@ export default class PeopleController {
     const typeKey = queryData['typeKey']
     const notInCohort = queryData['notInCohort']
 
-    let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people', 'familyName')
+    let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people')
 
     query.apply((scopes: ExtractScopes<typeof Person>) => scopes.fullPerson())
 
