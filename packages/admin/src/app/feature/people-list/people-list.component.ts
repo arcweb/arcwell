@@ -153,4 +153,14 @@ export class PeopleListComponent {
       },
     });
   }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import People',
+        types: [''],
+        apiRoute: 'people',
+      },
+    });
+  }
 }

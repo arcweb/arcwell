@@ -161,4 +161,14 @@ export class ResourcesListComponent {
       },
     });
   }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import Resources',
+        types: [''],
+        apiRoute: 'resources',
+      },
+    });
+  }
 }
