@@ -5,10 +5,11 @@ export const AUTH_ROUTES: Route[] = [
     path: 'login',
     redirectTo: '/login',
   },
-  // {
-  //   path: 'register',
-  //   loadComponent: () => import('./register/register.component'),
-  // },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./register/register.component').then(m => m.RegisterComponent),
+  },
   {
     path: 'forgot',
     loadComponent: () =>

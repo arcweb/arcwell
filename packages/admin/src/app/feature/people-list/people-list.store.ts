@@ -27,7 +27,7 @@ interface PeopleListState {
   search: { field: string; searchString: string }[];
 }
 
-const initialState: PeopleListState = {
+export const initialState: PeopleListState = {
   people: [],
   limit: 10,
   offset: 0,
