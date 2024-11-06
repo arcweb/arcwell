@@ -47,20 +47,33 @@ FROM base as develop
 
 # Install Chromium for Karma tests and other dependencies
 USER root
-RUN apt-get update && apt-get install -y \
-    chromium \
-    curl \
-    libnss3 \
-    libxss1 \
-    fonts-liberation \
-    xdg-utils \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+
+RUN #apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
+# For Ubunto 24.04 use the following comamand (Need to check why only this specific version is mentioned)
+#RUN apt-get install libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
+
+RUN apt-get install -y \
+     curl \
+     chromium \
+     libgbm1 \
+     xdg-utils \
+     fonts-liberation \
+     libgtk-3-0 \
+     libnotify-dev \
+     libnss3 \
+     libxss1 \
+     libasound2 \
+     libxtst6 \
+     xauth \
+     xvfb \
+     lsb-release
+
+RUN rm -rf /var/lib/apt/lists/*
 
 # Set the CHROME_BIN environment variable for Karma
 ENV CHROME_BIN=/usr/bin/chromium
-
-# Set Puppeteer to skip downloading Chromium
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 # Switch back to unprivileged user
 USER node

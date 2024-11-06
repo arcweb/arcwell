@@ -37,13 +37,26 @@ export function buildApiQuery(
     modelQuery.whereILike(defaultSearch, search)
     countQuery.whereILike(defaultSearch, search)
   } else if (typeof search === 'object' && search !== null) {
-    for (const key in search) {
-      if (search.hasOwnProperty(key)) {
-        const searchString = '%' + search[key] + '%'
-        modelQuery.whereILike(string.camelCase(key), searchString)
-        countQuery.whereILike(string.snakeCase(key), searchString)
+    modelQuery.where((query: any) => {
+      // Wrap all of this in .where() so the OR clauses generated below will all be enclosed in
+      // parentheses in the generated SQL as one logical unit.
+      for (const key in search) {
+        if (search.hasOwnProperty(key)) {
+          const searchString = '%' + search[key] + '%'
+          // Specify table name with key to avoid ambiguous column reference error when combining
+          // query with "types" table. Use OR clause so a match in any specified column will be returned.
+          query.orWhere((subQuery: any) => subQuery.whereILike(`${tableName}.${key}`, searchString))
+        }
       }
-    }
+    })
+    countQuery.where((query: any) => {
+      for (const key in search) {
+        if (search.hasOwnProperty(key)) {
+          const searchString = '%' + search[key] + '%'
+          query.orWhere((subQuery: any) => subQuery.whereILike(`${tableName}.${key}`, searchString))
+        }
+      }
+    })
   }
 
   return [modelQuery, countQuery]
@@ -64,6 +77,7 @@ export function buildEventsSort(
         eventsQuery
           .join('event_types', 'event_types.key', 'events.type_key')
           .orderBy('event_types.name', order)
+          .select('events.*')
         break
       case 'person':
         eventsQuery
@@ -98,6 +112,7 @@ export function buildFactsSort(
         factsQuery
           .join('fact_types', 'fact_types.key', 'facts.type_key')
           .orderBy('fact_types.name', order)
+          .select('facts.*')
         break
       case 'person':
         factsQuery
@@ -135,6 +150,7 @@ export function buildPeopleSort(
     const camelSortStr = string.camelCase(sort)
     if (camelSortStr === 'personType') {
       peopleQuery
+        .select('people.*')
         .join('person_types', 'person_types.key', 'people.type_key')
         .orderBy('person_types.name', order)
     } else {
@@ -156,13 +172,16 @@ export function buildResourcesSort(
     const camelSortStr = string.camelCase(sort)
     if (camelSortStr === 'resourceType') {
       resourcesQuery
+        // Need to select the resources columns specifically to avoid aliasing issues with the
+        // resource_types columns
+        .select('resources.*')
         .join('resource_types', 'resource_types.key', 'resources.type_key')
         .orderBy('resource_types.name', order)
     } else {
-      resourcesQuery.orderBy(camelSortStr, order)
+      resourcesQuery.orderBy(`resources.${camelSortStr}`, order)
     }
   } else {
-    resourcesQuery.orderBy('name', 'asc')
+    resourcesQuery.orderBy('resources.name', 'asc')
   }
 }
 

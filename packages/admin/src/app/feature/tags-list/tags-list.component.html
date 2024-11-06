@@ -1,12 +1,15 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Tags'"
-  [enableFilter]="tagsListStore.tags().length > 0"
-  [enableSearch]="tagsListStore.tags().length > 0"
+  [enableFilter]="
+    tagsListStore.tags().length > 0 || tagsListStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (tagsListStore.isErrored()) {
   <aw-error-container [errors]="tagsListStore.errors()" />
 }
+
 @if (tagsListStore.tags().length > 0) {
   <div class="table-form-container">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z0">

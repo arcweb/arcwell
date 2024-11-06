@@ -13,6 +13,7 @@ import {
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
+import { buildSearchParams } from '../helpers/basic-search.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class EventTypeService {
     offset?: number;
     sort?: string;
     order?: string;
+    search?: { field: string; searchString: string }[];
   }): Observable<EventTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -37,6 +39,9 @@ export class EventTypeService {
     if (props.sort && props.order) {
       params = params.set('sort', props.sort);
       params = params.set('order', props.order);
+    }
+    if (props.search && props.search.length > 0) {
+      params = buildSearchParams(props.search, params);
     }
 
     return this.http

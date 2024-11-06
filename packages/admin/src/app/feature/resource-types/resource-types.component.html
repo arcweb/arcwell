@@ -1,7 +1,10 @@
 <aw-table-header
   tableName="Resource Types"
-  [enableFilter]="resourceTypesStore.resourceTypes().length > 0"
-  [enableSearch]="resourceTypesStore.resourceTypes().length > 0"
+  [enableFilter]="
+    resourceTypesStore.resourceTypes().length > 0 ||
+    resourceTypesStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (resourceTypesStore.isErrored()) {

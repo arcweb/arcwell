@@ -118,3 +118,8 @@ jobs:
 #      - name: Test Server
 #        run: |
 #          docker compose exec admin ng test --watch=false
+
+
+      - name: Cypress Test - Components
+        run: |
+          docker compose exec admin npx cypress run --component --browser chromium

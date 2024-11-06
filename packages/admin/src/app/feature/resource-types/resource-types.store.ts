@@ -30,6 +30,7 @@ interface ResourceTypesState {
   pageIndex: number;
   sort: string;
   order: SortDirection;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: ResourceTypesState = {
@@ -40,6 +41,7 @@ const initialState: ResourceTypesState = {
   pageIndex: 0,
   sort: 'name',
   order: 'asc',
+  search: [],
 };
 
 export const ResourceTypesStore = signalStore(
@@ -58,6 +60,7 @@ export const ResourceTypesStore = signalStore(
         sort?: string;
         order?: SortDirection;
         pageIndex?: number;
+        search?: { field: string; searchString: string }[];
       }) {
         patchState(
           store,
@@ -100,6 +103,7 @@ export const ResourceTypesStore = signalStore(
           resourceTypesService.getResourceTypes({
             limit: store.limit(),
             offset: store.offset(),
+            search: store.search(),
           }),
         );
 

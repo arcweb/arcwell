@@ -30,6 +30,7 @@ interface PersonTypesState {
   pageIndex: number;
   sort: string;
   order: SortDirection;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: PersonTypesState = {
@@ -40,6 +41,7 @@ const initialState: PersonTypesState = {
   pageIndex: 0,
   sort: 'name',
   order: 'asc',
+  search: [],
 };
 
 export const PersonTypesStore = signalStore(
@@ -58,6 +60,7 @@ export const PersonTypesStore = signalStore(
         sort?: string;
         order?: SortDirection;
         pageIndex?: number;
+        search?: { field: string; searchString: string }[];
       }) {
         patchState(
           store,
@@ -100,6 +103,7 @@ export const PersonTypesStore = signalStore(
           personTypesService.getPersonTypes({
             limit: store.limit(),
             offset: store.offset(),
+            search: store.search(),
           }),
         );
 
