@@ -111,13 +111,13 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
-            ],
-            "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/app/styles"
-              ]
-            },
+          "src/styles.scss"
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "src/app/styles"
+            ]
+          },
             "scripts": []
           }
         },
