@@ -25,6 +25,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TableHeaderComponent } from '@shared/components/table-header/table-header.component';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
 @Component({
   selector: 'aw-person-types',
@@ -81,6 +82,7 @@ export class PersonTypesComponent {
           sort: this.personTypesStore.sort(),
           order: this.personTypesStore.order(),
           pageIndex: this.personTypesStore.pageIndex(),
+          search: this.personTypesStore.search(),
         });
       });
   }
@@ -92,6 +94,14 @@ export class PersonTypesComponent {
     });
   }
 
+  searchTextChanged(searchText: string) {
+    this.personTypesStore.load({
+      limit: this.personTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature('person_types', searchText),
+    });
+  }
+
   sortChange(event: Sort) {
     this.personTypesStore.load({
       limit: this.personTypesStore.limit(),
@@ -99,6 +109,7 @@ export class PersonTypesComponent {
       sort: event.active,
       order: event.direction,
       pageIndex: this.personTypesStore.pageIndex(),
+      search: this.personTypesStore.search(),
     });
   }
 }

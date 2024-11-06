@@ -25,6 +25,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
 @Component({
   selector: 'aw-resource-types',
@@ -80,6 +81,7 @@ export class ResourceTypesComponent {
           sort: this.resourceTypesStore.sort(),
           order: this.resourceTypesStore.order(),
           pageIndex: this.resourceTypesStore.pageIndex(),
+          search: this.resourceTypesStore.search(),
         });
       });
   }
@@ -91,6 +93,14 @@ export class ResourceTypesComponent {
     });
   }
 
+  searchTextChanged(searchText: string) {
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature('resource_types', searchText),
+    });
+  }
+
   sortChange(event: Sort) {
     this.resourceTypesStore.load({
       limit: this.resourceTypesStore.limit(),
@@ -98,6 +108,7 @@ export class ResourceTypesComponent {
       sort: event.active,
       order: event.direction,
       pageIndex: this.resourceTypesStore.pageIndex(),
+      search: this.resourceTypesStore.search(),
     });
   }
 }

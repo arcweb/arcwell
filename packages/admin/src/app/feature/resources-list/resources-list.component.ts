@@ -28,6 +28,8 @@ import { ResourcesTableComponent } from '@app/shared/components/resources-table/
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
 @Component({
   selector: 'aw-resources-list',
@@ -65,6 +67,7 @@ export class ResourcesListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -83,10 +86,26 @@ export class ResourcesListComponent {
     });
     // load the resources list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
+      // Check if the search/filter store has filters set for the current feature type. If so,
+      // set search. This typekey pipe fires before the navigation pipe in features-menu.component.ts
+      // that flushes the filterstore if the feature changed, so the feature type must be checked against
+      // here.
+      let search: { field: string; searchString: string }[] = [];
+      if (
+        this.featureSearchAndFilterStore.currentFeature() == 'resources' &&
+        this.featureSearchAndFilterStore.currentSubFeature() != 'types' &&
+        this.featureSearchAndFilterStore.searchText().length > 0
+      ) {
+        search = buildBasicSearchForFeature(
+          'resources',
+          this.featureSearchAndFilterStore.searchText(),
+        );
+      }
       this.resourcesListStore.load({
         limit: this.resourcesListStore.limit(),
         offset: 0,
-        typeKey: typeKey,
+        typeKey,
+        search,
       });
     });
 
@@ -97,6 +116,7 @@ export class ResourcesListComponent {
           limit: this.resourcesListStore.limit(),
           offset: this.resourcesListStore.offset(),
           typeKey: this.resourcesListStore.typeKey(),
+          search: this.resourcesListStore.search(),
         });
       });
   }
@@ -108,6 +128,15 @@ export class ResourcesListComponent {
     });
   }
 
+  searchTextChanged(searchText: string) {
+    this.resourcesListStore.load({
+      limit: this.resourcesListStore.limit(),
+      offset: 0,
+      typeKey: this.resourcesListStore.typeKey(),
+      search: buildBasicSearchForFeature('resources', searchText),
+    });
+  }
+
   sortChange(event: Sort) {
     this.resourcesListStore.load({
       limit: this.resourcesListStore.limit(),
@@ -116,6 +145,7 @@ export class ResourcesListComponent {
       order: event.direction,
       pageIndex: this.resourcesListStore.pageIndex(),
       typeKey: this.resourcesListStore.typeKey(),
+      search: this.resourcesListStore.search(),
     });
   }
 }

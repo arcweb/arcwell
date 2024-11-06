@@ -1,0 +1,27 @@
+<div class="filter-form-wrapper">
+  <!-- Search not enabled for Events and Facts -->
+  @if (
+    (featureSearchAndFilterStore.currentFeature() !== 'events' &&
+      featureSearchAndFilterStore.currentFeature() !== 'facts') ||
+    featureSearchAndFilterStore.currentSubFeature() === 'types'
+  ) {
+    <mat-form-field appearance="outline">
+      <input
+        matInput
+        #searchInput
+        placeholder="Search items..."
+        [formControl]="searchTextCtrl"
+      />
+    </mat-form-field>
+  }
+  <div>
+    <button
+      mat-button
+      (click)="onClear()"
+      matTooltip="Clear all filters"
+      class="table-header-button label-medium font-weight-regular"
+    >
+      Clear All
+    </button>
+  </div>
+</div>

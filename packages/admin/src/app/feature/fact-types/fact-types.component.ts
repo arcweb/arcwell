@@ -25,6 +25,8 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+
 @Component({
   selector: 'aw-fact-types',
   standalone: true,
@@ -78,6 +80,7 @@ export class FactTypesComponent {
           sort: this.factTypesStore.sort(),
           order: this.factTypesStore.order(),
           pageIndex: this.factTypesStore.pageIndex(),
+          search: this.factTypesStore.search(),
         });
       });
   }
@@ -89,6 +92,14 @@ export class FactTypesComponent {
     });
   }
 
+  searchTextChanged(searchText: string) {
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature('fact_types', searchText),
+    });
+  }
+
   sortChange(event: Sort) {
     this.factTypesStore.load({
       limit: this.factTypesStore.limit(),
@@ -96,6 +107,7 @@ export class FactTypesComponent {
       sort: event.active,
       order: event.direction,
       pageIndex: this.factTypesStore.pageIndex(),
+      search: this.factTypesStore.search(),
     });
   }
 }

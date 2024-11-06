@@ -14,6 +14,7 @@ import { catchError, map } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
 import { environment } from '../../../environments/environment';
+import { buildSearchParams } from '../helpers/basic-search.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,7 @@ export class PersonTypeService {
     offset?: number;
     sort?: string;
     order?: string;
+    search?: { field: string; searchString: string }[];
   }): Observable<PersonTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -38,6 +40,9 @@ export class PersonTypeService {
     if (props.sort && props.order) {
       params = params.set('sort', props.sort);
       params = params.set('order', props.order);
+    }
+    if (props.search && props.search.length > 0) {
+      params = buildSearchParams(props.search, params);
     }
 
     return this.http

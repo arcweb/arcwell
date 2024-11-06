@@ -1,5 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationStart,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { FeatureStore } from '@shared/store/feature.store';
@@ -25,6 +30,7 @@ import {
   faGear,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-features-menu',
@@ -43,6 +49,7 @@ import {
 export class FeaturesMenuComponent {
   readonly dialog = inject(MatDialog);
   readonly featureStore = inject(FeatureStore);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   private router = inject(Router);
   public authStore = inject(AuthStore);
   readonly navigation = this.router.events.pipe(
@@ -84,6 +91,15 @@ export class FeaturesMenuComponent {
           features,
           true,
         );
+        // Will force reset of search/filters if feature has changed
+        if (this.featureStore.activeFeature()) {
+          this.featureSearchAndFilterStore.checkCurrentFeature(
+            this.featureStore.activeFeature()!.path,
+            this.featureStore.activeSubfeature()
+              ? this.featureStore.activeSubfeature()!.path
+              : null,
+          );
+        }
       }
     });
   }

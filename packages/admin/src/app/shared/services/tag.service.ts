@@ -14,6 +14,7 @@ import { ErrorResponseType } from '@schemas/error.schema';
 import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
+import { buildSearchParams } from '../helpers/basic-search.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +25,12 @@ export class TagService {
   getTags(props: {
     limit?: number;
     offset?: number;
-    search?: string;
+    search?: { field: string; searchString: string }[];
   }): Observable<TagsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
-    if (props.search) {
-      params = params.set('search', props.search);
+    if (props.search && props.search.length > 0) {
+      params = buildSearchParams(props.search, params);
     }
     if (props.limit) {
       params = params.set('limit', props.limit.toString());

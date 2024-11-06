@@ -1,7 +1,10 @@
 <aw-table-header
   tableName="Person Types"
-  [enableFilter]="personTypesStore.personTypes().length > 0"
-  [enableSearch]="personTypesStore.personTypes().length > 0"
+  [enableFilter]="
+    personTypesStore.personTypes().length > 0 ||
+    personTypesStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (personTypesStore.isErrored()) {
