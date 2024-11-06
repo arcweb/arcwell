@@ -82,6 +82,18 @@ export class TableHeaderComponent {
     });
   }
 
+  readonly navigation = this.router.events.pipe(
+    takeUntilDestroyed(),
+    filter(event => event instanceof NavigationEnd),
+  );
+
+  constructor() {
+    this.navigation.pipe(takeUntilDestroyed()).subscribe(event => {
+      // Always close filter overlay on navigation change
+      this.filterOpen = false;
+    });
+  }
+
   onCreate() {
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
