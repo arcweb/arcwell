@@ -12,6 +12,7 @@ import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { bulkUploadValidator } from '#validators/bulk'
+import { parseDynamicReturningUndefined } from '#helpers/bulk_parsing';
 
 export default class EventsController {
   /**
@@ -183,23 +184,30 @@ export default class EventsController {
   async bulk({ params, request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    console.log(file?.tmpPath)
+    const trx = await db.transaction() 
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
       Papa.parse(csvFile, {
+        dynamicTyping: false,
+        transform: parseDynamicReturningUndefined,
         header: true,
         skipEmptyLines: true,
         complete: () => {
+          trx.commit()
           console.log('DONE')
         },
-        error: (error: any) => {
-          // rollback
-          console.log('ERROR')
-        },
-        step: (result: any) => {
+        step: async (result: any, parser: any) => {
+          parser.pause()
           // save the event
-          console.log('step')
-          console.log(result)
+          try {
+            console.log('DATA: ',result.data)
+            const resp = await EventService.createEvent(trx, result.data)
+            console.log('RESP: ',resp)
+          } catch (error) {
+            await trx.rollback()
+            parser.abort()
+          }
+          parser.resume()
         }
       })
     }
