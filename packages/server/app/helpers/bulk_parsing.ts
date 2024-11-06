@@ -1,12 +1,12 @@
-import { TransactionClientContract } from "@adonisjs/lucid/types/database"
-import Papa from 'papaparse';
+import { TransactionClientContract } from '@adonisjs/lucid/types/database'
+import Papa from 'papaparse'
 
 export function parseDynamicReturningUndefined(value: any) {
   if (value === 'true' || value === 'TRUE') {
     return true
   } else if (value === 'false' || value === 'FALSE') {
     return false
-  } else { 
+  } else {
     const val = value === '' ? undefined : value
     return val
   }
@@ -32,6 +32,6 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, model
       } finally {
         parser.resume()
       }
-    }
+    },
   })
 }

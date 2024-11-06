@@ -11,7 +11,7 @@ import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { parseBulkCsv } from '#helpers/bulk_parsing'
 import { bulkUploadValidator } from '#validators/bulk'
-import fs from 'node:fs';
+import fs from 'node:fs'
 
 export default class ResourcesController {
   /**
@@ -167,10 +167,10 @@ export default class ResourcesController {
   async bulk({ request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    const trx = await db.transaction() 
+    const trx = await db.transaction()
     if (file) {
-      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
-      parseBulkCsv(trx,  csvFile, ResourceService);
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
+      parseBulkCsv(trx, csvFile, ResourceService)
     } else {
       response.status(404).send('File not found')
     }

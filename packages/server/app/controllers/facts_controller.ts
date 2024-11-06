@@ -1,5 +1,5 @@
 import Fact from '#models/fact'
-import fs from 'node:fs';
+import fs from 'node:fs'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
@@ -184,10 +184,10 @@ export default class FactsController {
   async bulk({ request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    const trx = await db.transaction() 
+    const trx = await db.transaction()
     if (file) {
-      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
-      parseBulkCsv(trx,  csvFile, FactService);
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
+      parseBulkCsv(trx, csvFile, FactService)
     } else {
       response.status(404).send('File not found')
     }
