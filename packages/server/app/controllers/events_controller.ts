@@ -194,20 +194,18 @@ export default class EventsController {
         skipEmptyLines: true,
         complete: () => {
           trx.commit()
-          console.log('DONE')
         },
         step: async (result: any, parser: any) => {
           parser.pause()
           // save the event
           try {
-            console.log('DATA: ',result.data)
-            const resp = await EventService.createEvent(trx, result.data)
-            console.log('RESP: ',resp)
+            await EventService.createEvent(trx, result.data)
           } catch (error) {
             await trx.rollback()
             parser.abort()
+          } finally {
+            parser.resume()
           }
-          parser.resume()
         }
       })
     }
