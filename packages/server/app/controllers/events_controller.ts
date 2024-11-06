@@ -1,4 +1,3 @@
-import Papa from 'papaparse';
 import fs from 'node:fs';
 import Event from '#models/event'
 import EventType from '#models/event_type'
@@ -12,7 +11,7 @@ import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { bulkUploadValidator } from '#validators/bulk'
-import { parseDynamicReturningUndefined } from '#helpers/bulk_parsing';
+import { parseBulkCsv } from '#helpers/bulk_parsing';
 
 export default class EventsController {
   /**
@@ -187,27 +186,28 @@ export default class EventsController {
     const trx = await db.transaction() 
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
-      Papa.parse(csvFile, {
-        dynamicTyping: false,
-        transform: parseDynamicReturningUndefined,
-        header: true,
-        skipEmptyLines: true,
-        complete: () => {
-          trx.commit()
-        },
-        step: async (result: any, parser: any) => {
-          parser.pause()
-          // save the event
-          try {
-            await EventService.createEvent(trx, result.data)
-          } catch (error) {
-            await trx.rollback()
-            parser.abort()
-          } finally {
-            parser.resume()
-          }
-        }
-      })
+      parseBulkCsv(trx,  csvFile, EventService);
+      // Papa.parse(csvFile, {
+      //   dynamicTyping: false,
+      //   transform: parseDynamicReturningUndefined,
+      //   header: true,
+      //   skipEmptyLines: true,
+      //   complete: () => {
+      //     trx.commit()
+      //   },
+      //   step: async (result: any, parser: any) => {
+      //     parser.pause()
+      //     // save the event
+      //     try {
+      //       await EventService.createEvent(trx, result.data)
+      //     } catch (error) {
+      //       await trx.rollback()
+      //       parser.abort()
+      //     } finally {
+      //       parser.resume()
+      //     }
+      //   }
+      // })
     }
   }
 }
