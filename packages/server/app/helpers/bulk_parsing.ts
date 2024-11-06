@@ -26,7 +26,7 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, model
       // save the event
       try {
         await modelService.createEvent(trx, result.data)
-      } catch (error) {
+      } catch {
         await trx.rollback()
         parser.abort()
       } finally {
