@@ -3,6 +3,7 @@
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="peopleListStore.people().length > 0"
   [enableSearch]="peopleListStore.people().length > 0"
+  (bulkInput)="bulkImport()"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {

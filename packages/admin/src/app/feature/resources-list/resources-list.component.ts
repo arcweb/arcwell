@@ -28,6 +28,8 @@ import { ResourcesTableComponent } from '@app/shared/components/resources-table/
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { MatDialog } from '@angular/material/dialog';
+import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
 
 @Component({
   selector: 'aw-resources-list',
@@ -65,6 +67,7 @@ export class ResourcesListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly dialog = inject(MatDialog);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -116,6 +119,16 @@ export class ResourcesListComponent {
       order: event.direction,
       pageIndex: this.resourcesListStore.pageIndex(),
       typeKey: this.resourcesListStore.typeKey(),
+    });
+  }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import Resources',
+        types: [''],
+        apiRoute: 'resources',
+      },
     });
   }
 }
