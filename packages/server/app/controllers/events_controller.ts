@@ -180,34 +180,15 @@ export default class EventsController {
     response.status(204).send('')
   }
 
-  async bulk({ params, request, response }: HttpContext) {
+  async bulk({ request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
     const trx = await db.transaction() 
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8');
       parseBulkCsv(trx,  csvFile, EventService);
-      // Papa.parse(csvFile, {
-      //   dynamicTyping: false,
-      //   transform: parseDynamicReturningUndefined,
-      //   header: true,
-      //   skipEmptyLines: true,
-      //   complete: () => {
-      //     trx.commit()
-      //   },
-      //   step: async (result: any, parser: any) => {
-      //     parser.pause()
-      //     // save the event
-      //     try {
-      //       await EventService.createEvent(trx, result.data)
-      //     } catch (error) {
-      //       await trx.rollback()
-      //       parser.abort()
-      //     } finally {
-      //       parser.resume()
-      //     }
-      //   }
-      // })
+    } else {
+      response.status(404).send('File not found')
     }
   }
 }
