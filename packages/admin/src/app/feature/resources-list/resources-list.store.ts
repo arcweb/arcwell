@@ -24,6 +24,7 @@ interface ResourceListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: ResourceListState = {
@@ -35,6 +36,7 @@ const initialState: ResourceListState = {
   sort: 'name',
   order: 'asc',
   typeKey: '',
+  search: [],
 };
 
 export const ResourcesListStore = signalStore(
@@ -54,6 +56,7 @@ export const ResourcesListStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         typeKey?: string;
+        search?: { field: string; searchString: string }[];
       }) {
         patchState(
           store,
@@ -97,6 +100,7 @@ export const ResourcesListStore = signalStore(
             sort: store.sort(),
             order: store.order(),
             typeKey: store.typeKey(),
+            search: store.search(),
           }),
         );
 

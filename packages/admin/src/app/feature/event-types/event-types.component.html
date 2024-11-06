@@ -1,7 +1,10 @@
 <aw-table-header
   tableName="Event Types"
-  [enableFilter]="eventTypesStore.eventTypes().length > 0"
-  [enableSearch]="eventTypesStore.eventTypes().length > 0"
+  [enableFilter]="
+    eventTypesStore.eventTypes().length > 0 ||
+    eventTypesStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (eventTypesStore.isErrored()) {

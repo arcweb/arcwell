@@ -1,7 +1,10 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Cohorts'"
-  [enableFilter]="cohortsListStore.cohorts().length > 0"
-  [enableSearch]="cohortsListStore.cohorts().length > 0"
+  [enableFilter]="
+    cohortsListStore.cohorts().length > 0 ||
+    cohortsListStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (cohortsListStore.isErrored()) {
