@@ -3,6 +3,7 @@
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="resourcesListStore.resources().length > 0"
   [enableSearch]="resourcesListStore.resources().length > 0"
+  (bulkInput)="bulkImport()"
 ></aw-table-header>
 
 @if (resourcesListStore.isErrored()) {

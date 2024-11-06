@@ -16,6 +16,8 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { MatDialog } from '@angular/material/dialog';
+import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
 
 @Component({
   selector: 'aw-people-list',
@@ -41,6 +43,7 @@ export class PeopleListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly dialog = inject(MatDialog);
   pageSizes = [10, 20, 50];
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
@@ -107,6 +110,16 @@ export class PeopleListComponent {
       order: event.direction,
       pageIndex: this.peopleListStore.pageIndex(),
       typeKey: this.peopleListStore.typeKey(),
+    });
+  }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import People',
+        types: [''],
+        apiRoute: 'people',
+      },
     });
   }
 }

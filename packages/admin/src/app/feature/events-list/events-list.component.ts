@@ -140,7 +140,7 @@ export class EventsListComponent {
   }
 
   bulkImport() {
-    const dialogRef = this.dialog.open(BulkImportDialogComponent, {
+    this.dialog.open(BulkImportDialogComponent, {
       data: {
         title: 'Import Events',
         types: [''],
