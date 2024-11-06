@@ -3,5 +3,9 @@ export function parseDynamicReturningUndefined(value: any) {
     return true
   } else if (value === 'false' || value === 'FALSE') {
     return false
-  } else return value === '' ? undefined : value
+  } else { 
+    const val = value === '' ? undefined : value
+    console.log("FINAL ELSE", value, '<->',val)
+    return val
+  }
 }
