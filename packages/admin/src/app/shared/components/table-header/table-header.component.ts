@@ -67,7 +67,7 @@ export class TableHeaderComponent {
   );
 
   constructor() {
-    this.navigation.subscribe(event => {
+    this.navigation.pipe(takeUntilDestroyed()).subscribe(event => {
       // Always close filter overlay on navigation change
       this.filterOpen = false;
     });

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   OnInit,
   ViewChild,
@@ -22,6 +23,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FeatureSearchAndFilterStore } from './feature-search-and-filter.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'aw-feature-search-and-filter',
@@ -46,6 +48,7 @@ import { FeatureSearchAndFilterStore } from './feature-search-and-filter.store';
 export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
   readonly searchTextCtrl = new FormControl();
   readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
+  destroyRef = inject(DestroyRef);
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   onSearchTextChanged = output<string>();
@@ -63,7 +66,11 @@ export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.searchTextCtrl.valueChanges
       // Delay after user finishes typing to allow for further typing
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((searchText: string) => {
         if (searchText != this.featureSearchAndFilterStore.searchText()) {
           this.featureSearchAndFilterStore.setSearchText(searchText);
