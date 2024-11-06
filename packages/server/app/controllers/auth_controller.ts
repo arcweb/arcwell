@@ -1,10 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { loginValidator, resetPasswordValidator, setPasswordValidator } from '#validators/auth'
+import {
+  loginValidator,
+  registerValidator,
+  resetPasswordValidator,
+  setPasswordValidator,
+} from '#validators/auth'
 import User from '#models/user'
 // import Role from '#models/role'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { paramsEmailValidator } from '#validators/email'
 import mail from '@adonisjs/mail/services/main'
+import env from '#start/env'
+import Person from '#models/person'
+import PersonType from '#models/person_type'
+import Role from '#models/role'
 // import Person from '#models/person'
 // import PersonType from '#models/person_type'
 
@@ -12,66 +21,82 @@ export default class AuthController {
   /**
    * Registers a new guest user.
    */
-  // async register({ request }: HttpContext) {
-  //   const data = await request.validateUsing(registerValidator)
+  async register({ request, response }: HttpContext) {
+    if (!env.get('ARCWELL_REGISTER_ENABLED')) {
+      response.status(403).send('Registration is disabled on this Arcwell instance')
+    }
+    const data = await request.validateUsing(registerValidator)
 
-  //   //TODO: For now, this only adds Guest roles, change to the actual requirements
-  //   const role = await Role.findBy({ name: 'Guest' })
-  //   if (!role) {
-  //     throwCustomHttpError(
-  //       {
-  //         title: 'Missing guest role',
-  //         code: 'E_AUTHORIZATION_FAILURE',
-  //         detail: 'Unable to register new user with guest role because none exists',
-  //       },
-  //       500
-  //     )
-  //     return // TODO: required since typescript doesn't believe that the above function throws an exception
-  //   }
+    //TODO: For now, this only adds Guest roles, change to the actual requirements
+    const role = await Role.findBy({ name: 'Admin' })
+    if (!role) {
+      throwCustomHttpError(
+        {
+          title: 'Missing guest role',
+          code: 'E_AUTHORIZATION_FAILURE',
+          detail: 'Unable to register new user with guest role because none exists',
+        },
+        500
+      )
+      return // TODO: required since typescript doesn't believe that the above function throws an exception
+    }
 
-  //   // TDOD: For now, only adds temp persontype
-  //   const persontype = await PersonType.findBy('key', 'Temp')
-  //   if (!persontype) {
-  //     throwCustomHttpError(
-  //       {
-  //         title: 'Missing temp person type',
-  //         code: 'E_AUTHORIZATION_FAILURE',
-  //         detail: 'Unable to register new user with temp person type because none exists',
-  //       },
-  //       500
-  //     )
-  //     return
-  //   }
+    // TDOD: For now, only adds temp persontype
+    const persontype = await PersonType.findBy('key', 'temp')
+    if (!persontype) {
+      throwCustomHttpError(
+        {
+          title: 'Missing temp person type',
+          code: 'E_AUTHORIZATION_FAILURE',
+          detail: 'Unable to register new user with temp person type because none exists',
+        },
+        500
+      )
+      return
+    }
 
-  //   // check if a personId was provided
-  //   const personId = request.only(['personId'])
-  //   let newUser
-  //   if (personId.personId !== null) {
-  //     newUser = await User.create({ ...data })
-  //   } else {
-  //     const personInfo = request.only(['familyName', 'givenName'])
-  //     const newPerson = await Person.create({ ...personInfo, personTypeId: persontype.id })
-  //     // const person = Person.firstOrCreate(personInfo)
+    // check if a personId was provided
+    const personId = request.only(['personId'])
+    let newUser
+    if (personId.personId !== undefined) {
+      newUser = await User.create({ ...data })
+    } else {
+      const personInfo = request.only(['familyName', 'givenName'])
+      const newPerson = await Person.create({ ...personInfo, typeKey: persontype.key })
+      // const person = Person.firstOrCreate(personInfo)
 
-  //     const userInfo = request.only(['email', 'password'])
-  //     newUser = await User.create({ ...userInfo, personId: newPerson.id, roleId: role.id })
-  //   }
+      let userInfo = request.only(['email'])
+      // use a temp password and email it to them before first login
+      const tempPassword = await User.generateTempPassword()
+      newUser = await User.create({
+        ...userInfo,
+        password: tempPassword!,
+        tempPassword: tempPassword!,
+        requiresPasswordChange: true,
+        personId: newPerson.id,
+        roleId: role.id,
+      })
+    }
 
-  //   const token = await User.accessTokens.create(newUser, ['*'], {
-  //     expiresIn: '30 days',
-  //   })
+    const cleanRequest = request.only(['host'])
+    mail.send((message) => {
+      message
+        .to(newUser.email)
+        .subject('You have been registered')
+        .htmlView('emails/register', { user: newUser, host: cleanRequest.host })
+    })
 
-  //   return {
-  //     data: {
-  //       token: {
-  //         type: 'bearer',
-  //         value: token.value!.release(),
-  //         expiresAt: token.expiresAt,
-  //       },
-  //       user: newUser.serialize(),
-  //     },
-  //   }
-  // }
+    return {
+      data: {
+        // token: {
+        //   type: 'bearer',
+        //   value: token.value!.release(),
+        //   expiresAt: token.expiresAt,
+        // },
+        user: newUser.serialize(),
+      },
+    }
+  }
 
   /**
    * @login
@@ -224,6 +249,10 @@ export default class AuthController {
       user.requiresPasswordChange = null
       await user.save()
 
+      const token = await User.accessTokens.create(user, ['*'], {
+        expiresIn: '7 days',
+      })
+
       mail.send((message) => {
         message
           .to(user.email)
@@ -231,7 +260,16 @@ export default class AuthController {
           .htmlView('emails/password_set', { user })
       })
 
-      return { data: user }
+      return {
+        data: {
+          token: {
+            type: 'bearer',
+            value: token.value!.release(),
+            expiresAt: token.expiresAt,
+          },
+          user: user.serialize(),
+        },
+      }
     } else {
       // TODO: what of anything should be done if the user is not in teh system or the require
       // password change is false or the temp passwords dont match

@@ -6,6 +6,7 @@ export const ConfigSchema: any = z
     arcwell: z.object({
       name: z.string().trim(),
       id: z.string().trim(),
+      debugErrors: z.string().trim(),
     }),
     mail: z.object({
       host: z.string().trim(),

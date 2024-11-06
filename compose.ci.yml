@@ -25,11 +25,13 @@ services:
     environment:
       ARCWELL_INSTANCE_NAME:
       ARCWELL_INSTANCE_ID:
+      ARCWELL_REGISTER_ENABLED:
       # Arcwell Configuration:
       ARCWELL_NODE:
       ARCWELL_KEY:
       ARCWELL_SERVER_CORS_ORIGINS:
-      # AdonisJS Configuration:
+      ARCWELL_SERVER_DEBUG_ERRORS: # AdonisJS Configuration:
+
       TZ:
       PORT:
       HOST:
@@ -40,8 +42,8 @@ services:
       DB_PORT:
       DB_USER:
       DB_PASSWORD:
-      DB_DATABASE:
-      # Mail Delivery:
+      DB_DATABASE: # Mail Delivery:
+
       SMTP_HOST:
       SMTP_PORT:
       SMTP_USER:

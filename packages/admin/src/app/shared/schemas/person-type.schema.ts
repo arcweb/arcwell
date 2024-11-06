@@ -16,7 +16,7 @@ export const PersonTypeSchema = z
       z.array(DimensionSchemaSchema.optional()).optional(),
     ),
     tags: z.array(z.string()).optional(),
-    people: z.array(PersonSchema).optional(),
+    people: z.lazy(() => z.array(PersonSchema).optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })

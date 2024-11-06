@@ -137,6 +137,10 @@ module "server" {
       valueFrom = "${module.server[0].task_secret_id}:ARCWELL_INSTANCE_ID::"
     },
     {
+      name = "ARCWELL_REGISTER_ENABLED",
+      valueFrom = "${module.server[0].task_secret_id}:ARCWELL_REGISTER_ENABLED::"
+    },
+    {
       name = "ARCWELL_SERVER_CORS_ORIGINS",
       valueFrom = "${module.server[0].task_secret_id}:ARCWELL_SERVER_CORS_ORIGINS::"
     }
