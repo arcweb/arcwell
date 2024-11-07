@@ -19,7 +19,11 @@ export default class EventTypesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(EventType.query(), queryData, 'event_types')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: EventType.query(),
+      queryData,
+      tableName: 'event_types',
+    })
 
     query.preload('tags')
 

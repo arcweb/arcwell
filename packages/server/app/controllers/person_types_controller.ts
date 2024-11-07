@@ -20,7 +20,11 @@ export default class PersonTypesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(PersonType.query(), queryData, 'person_types')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: PersonType.query(),
+      queryData,
+      tableName: 'person_types',
+    })
 
     query.preload('tags')
 

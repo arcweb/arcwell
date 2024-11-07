@@ -19,7 +19,11 @@ export default class UsersController {
   async index({ request }: HttpContext) {
     const queryData = request.qs()
 
-    let [query, countQuery] = buildApiQuery(User.query(), queryData, 'users')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: User.query(),
+      queryData,
+      tableName: 'users',
+    })
 
     query
       .orderBy('email', 'asc')

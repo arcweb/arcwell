@@ -37,7 +37,12 @@ export default class EventsController {
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
 
-    let [query, countQuery] = buildApiQuery(Event.query(), queryData, 'events', 'typeKey')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Event.query(),
+      queryData,
+      tableName: 'events',
+      defaultSearch: 'typeKey',
+    })
 
     query.apply((scopes: ExtractScopes<typeof Event>) => scopes.fullEvent())
 

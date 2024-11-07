@@ -223,6 +223,7 @@ export default class DataFactsController {
    *
    * @returns {Promise<object>} - Returns an object containing the filtered facts and their dimensions.
    * @throws {Error} - Throws an error if an unsupported operator is provided or validation fails.
+   * @deprecated - Will likely move this functionality into the get all facts request
    */
   async query({ request }: HttpContext): Promise<object> {
     const params = request.qs()
