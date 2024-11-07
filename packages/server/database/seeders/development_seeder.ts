@@ -25,8 +25,34 @@ export default class extends BaseSeeder {
       { pathname: 'measurements/weight' },
     ])
 
-    await PersonTypeFactory.merge({ key: 'patient', name: 'Patient' }).create()
-    await PersonTypeFactory.merge({ key: 'staff', name: 'Staff' }).create()
+    await PersonTypeFactory.merge({
+      key: 'patient',
+      name: 'Patient',
+    }).create()
+    await PersonTypeFactory.merge({
+      key: 'staff',
+      name: 'Staff',
+      dimensionSchemas: [
+        {
+          name: 'Title',
+          key: 'title',
+          dataType: 'string',
+          isRequired: false,
+        },
+        {
+          name: 'Employed Years',
+          key: 'employed_years',
+          dataType: 'number',
+          isRequired: true,
+        },
+        {
+          name: 'Age',
+          key: 'age',
+          dataType: 'number',
+          isRequired: true,
+        },
+      ],
+    }).create()
     await PersonTypeFactory.merge({ key: 'temp', name: 'Temp' }).create()
 
     await ResourceTypeFactory.merge({

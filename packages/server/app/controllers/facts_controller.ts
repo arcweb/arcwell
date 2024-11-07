@@ -37,7 +37,11 @@ export default class FactsController {
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
 
-    let [query, countQuery] = buildApiQuery(Fact.query(), queryData, 'facts')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Fact.query(),
+      queryData,
+      tableName: 'facts',
+    })
 
     query.apply((scopes: ExtractScopes<typeof Fact>) => scopes.fullFact())
 
