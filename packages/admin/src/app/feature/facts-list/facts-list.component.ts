@@ -151,9 +151,9 @@ export class FactsListComponent {
   bulkImport() {
     this.dialog.open(BulkImportDialogComponent, {
       data: {
-        title: 'Import Events',
+        title: 'Import Facts',
         types: this.factsListStore.factTypes(),
-        apiRoute: 'events',
+        apiRoute: 'facts',
       },
     });
   }
