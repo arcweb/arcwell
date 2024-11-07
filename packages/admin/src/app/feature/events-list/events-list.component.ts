@@ -143,7 +143,7 @@ export class EventsListComponent {
     this.dialog.open(BulkImportDialogComponent, {
       data: {
         title: 'Import Events',
-        types: [''],
+        types: this.eventsListStore.eventTypes(),
         apiRoute: 'events',
       },
     });
