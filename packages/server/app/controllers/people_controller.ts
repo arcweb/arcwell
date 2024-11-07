@@ -234,7 +234,6 @@ export default class PeopleController {
   }
 
   async bulk({ request, response }: HttpContext) {
-    console.log("BULKING PEOPLE")
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
     const tpyeKeyData = request.only(['typeKey'])
