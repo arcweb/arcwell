@@ -14,6 +14,7 @@ import { CohortTableComponent } from '@app/shared/components/cohort-table/cohort
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 @Component({
   selector: 'aw-cohorts-list',
   standalone: true,
@@ -56,7 +57,7 @@ export class CohortsListComponent {
     });
 
     this.typeKey$.subscribe(() => {
-      this.cohortsListStore.load(this.cohortsListStore.limit(), 0);
+      this.cohortsListStore.load(this.cohortsListStore.limit(), 0, []);
     });
 
     this.refreshService.refreshTrigger$
@@ -65,6 +66,7 @@ export class CohortsListComponent {
         this.cohortsListStore.load(
           this.cohortsListStore.limit(),
           this.cohortsListStore.offset(),
+          this.cohortsListStore.search(),
         );
       });
   }
@@ -74,5 +76,13 @@ export class CohortsListComponent {
       relativeTo: this.activatedRoute,
       queryParams: { detail_id: row.id },
     });
+  }
+
+  searchTextChanged(searchText: string) {
+    this.cohortsListStore.load(
+      this.cohortsListStore.limit(),
+      0,
+      buildBasicSearchForFeature('cohorts', searchText),
+    );
   }
 }

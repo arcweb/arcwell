@@ -4,6 +4,10 @@
   [enableFilter]="peopleListStore.people().length > 0"
   [enableSearch]="peopleListStore.people().length > 0"
   (bulkInput)="bulkImport()"
+  [enableFilter]="
+    peopleListStore.people().length > 0 || peopleListStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {

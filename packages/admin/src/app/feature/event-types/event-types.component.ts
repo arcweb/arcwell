@@ -25,6 +25,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -79,6 +80,7 @@ export class EventTypesComponent {
           sort: this.eventTypesStore.sort(),
           order: this.eventTypesStore.order(),
           pageIndex: this.eventTypesStore.pageIndex(),
+          search: this.eventTypesStore.search(),
         });
       });
   }
@@ -90,6 +92,14 @@ export class EventTypesComponent {
     });
   }
 
+  searchTextChanged(searchText: string) {
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature('event_types', searchText),
+    });
+  }
+
   sortChange(event: Sort) {
     this.eventTypesStore.load({
       limit: this.eventTypesStore.limit(),
@@ -97,6 +107,7 @@ export class EventTypesComponent {
       sort: event.active,
       order: event.direction,
       pageIndex: this.eventTypesStore.pageIndex(),
+      search: this.eventTypesStore.search(),
     });
   }
 }

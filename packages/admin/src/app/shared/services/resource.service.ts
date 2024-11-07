@@ -14,6 +14,7 @@ import {
 import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
+import { buildSearchParams } from '../helpers/basic-search.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class ResourceService {
     sort?: string;
     order?: string;
     typeKey?: string;
-    search?: [{ field: string; searchString: string }];
+    search?: { field: string; searchString: string }[];
   }): Observable<ResourcesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -42,15 +43,7 @@ export class ResourceService {
     }
 
     if (props.search && props.search.length > 0) {
-      props.search.forEach(searchItem => {
-        if (searchItem.field && searchItem.searchString) {
-          // Format: search[field]=searchString
-          params = params.set(
-            `search[${searchItem.field}]`,
-            searchItem.searchString,
-          );
-        }
-      });
+      params = buildSearchParams(props.search, params);
     }
     if (props.sort && props.order) {
       params = params.set('sort', props.sort);

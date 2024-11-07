@@ -4,6 +4,11 @@
   [enableFilter]="resourcesListStore.resources().length > 0"
   [enableSearch]="resourcesListStore.resources().length > 0"
   (bulkInput)="bulkImport()"
+  [enableFilter]="
+    resourcesListStore.resources().length > 0 ||
+    resourcesListStore.search().length > 0
+  "
+  (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>
 
 @if (resourcesListStore.isErrored()) {

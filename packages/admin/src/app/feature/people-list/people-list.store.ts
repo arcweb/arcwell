@@ -24,6 +24,7 @@ interface PeopleListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  search: { field: string; searchString: string }[];
 }
 
 export const initialState: PeopleListState = {
@@ -35,6 +36,7 @@ export const initialState: PeopleListState = {
   sort: 'familyName',
   order: 'asc',
   typeKey: '',
+  search: [],
 };
 
 export const PeopleListStore = signalStore(
@@ -54,6 +56,7 @@ export const PeopleListStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         typeKey?: string;
+        search?: { field: string; searchString: string }[];
       }) {
         patchState(
           store,
@@ -97,6 +100,7 @@ export const PeopleListStore = signalStore(
             sort: store.sort(),
             order: store.order(),
             typeKey: store.typeKey(),
+            search: store.search(),
           }),
         );
 

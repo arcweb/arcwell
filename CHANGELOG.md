@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Pending]
 
 ### Added
+- All list screens except Events and Facts can be filtered by search terms in Admin
 
-- 
 
 ### Changed
 
@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - 
+
+### Fixed
+
+- Sorting bug on Resources list
 
 ## [0.1.0] - 2024-10-21
 

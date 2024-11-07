@@ -2,7 +2,7 @@
   <h4 class="font-weight-light">
     {{ tableName() }}
   </h4>
-  <div class="icons-container">
+  <div class="icons-container" #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
     <button
       mat-button
       (click)="onCreate()"
@@ -18,40 +18,52 @@
       Add New
     </button>
     @if (enableFilter()) {
-      <div matTooltip="Coming Soon">
-        <button
-          mat-button
-          matTooltip="Filter"
-          disabled
-          class="table-header-button label-medium font-weight-regular disabled"
-        >
-          <fa-icon
-            aria-label="Filter icon button"
-            class="table-header-button-icon"
-            [icon]="faBars"
-            size="xl"
-          ></fa-icon>
-          Filter
-        </button>
-      </div>
-    }
-    @if (enableSearch()) {
-      <div matTooltip="Coming Soon">
-        <button
-          mat-button
-          matTooltip="Search"
-          disabled
-          class="table-header-button label-medium font-weight-regular disabled"
-        >
-          <fa-icon
-            aria-label="Search icon button"
-            class="table-header-button-icon"
-            [icon]="faMagnifyingGlass"
-            size="xl"
-          ></fa-icon>
-          Search
-        </button>
-      </div>
+      <!-- TODO: Remove disabling of button from Events and Facts once we have any filter developed -->
+      <button
+        mat-button
+        matTooltip="Filter"
+        (click)="filterOpen = !filterOpen"
+        [disabled]="
+          (featureSearchAndFilterStore.currentFeature() === 'events' ||
+            featureSearchAndFilterStore.currentFeature() === 'facts') &&
+          featureSearchAndFilterStore.currentSubFeature() !== 'types'
+        "
+        class="table-header-button label-medium font-weight-regular"
+        [ngClass]="{
+          disabled:
+            (featureSearchAndFilterStore.currentFeature() === 'events' ||
+              featureSearchAndFilterStore.currentFeature() === 'facts') &&
+            featureSearchAndFilterStore.currentSubFeature() !== 'types',
+        }"
+        [matBadge]="activeFilterCount()"
+        [matBadgeHidden]="activeFilterCount() < 1"
+      >
+        <fa-icon
+          aria-label="Filter icon button"
+          class="table-header-button-icon"
+          [icon]="faBars"
+          size="xl"
+        ></fa-icon>
+        Filter
+      </button>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="filterOpen"
+        [cdkConnectedOverlayPositions]="[
+          {
+            originX: 'end',
+            originY: 'bottom',
+            overlayX: 'end',
+            overlayY: 'top',
+          },
+        ]"
+        [cdkConnectedOverlayOffsetY]="filterOffsetY"
+      >
+        <aw-feature-search-and-filter
+          (onSearchTextChanged)="searchTextChanged($event)"
+        ></aw-feature-search-and-filter>
+      </ng-template>
     }
     @if (enableImport()) {
       <div matTooltip="bulk import">
