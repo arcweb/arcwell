@@ -50,16 +50,6 @@ export default class PeopleController {
       defaultSearch: 'familyName',
     })
 
-    // const filters = queryData['filter']
-    // const dims = queryData['dim']
-    // if (filters || dims) {
-    //   const tableName = 'people'
-    //   const typeTableName = 'person_types'
-    //   const result = await getIdsByDimensionQuery(tableName, typeTableName, filters, dims)
-    //   query.andWhereIn('id', result)
-    //   countQuery.andWhereIn('id', result)
-    // }
-
     query.apply((scopes: ExtractScopes<typeof Person>) => scopes.fullPerson())
 
     if (typeKey) {
