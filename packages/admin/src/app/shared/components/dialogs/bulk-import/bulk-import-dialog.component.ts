@@ -110,4 +110,6 @@ export class BulkImportDialogComponent {
       );
     }
   }
+
+  downloadExample() {}
 }

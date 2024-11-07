@@ -1,7 +1,13 @@
 .bulk-dialog-container {
+  padding: 12px;
+  mat-dialog-content {
+    padding: 8px;
+  }
+
   .bulk-form {
     display: flex;
     flex-direction: column;
+    gap: 8px;
   }
   .file-select {
     display: flex;
