@@ -25,6 +25,12 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, typeK
     },
     step: async (result: any, parser: any) => {
       parser.pause()
+
+      // handle seperated diemntion data
+      let objData = {}
+      let dimData = {}
+
+      console.log(typeof result)
       try {
         await modelServiceCall(trx, { ...result.data, typeKey: typeKey })
       } catch (error) {
