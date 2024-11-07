@@ -156,7 +156,7 @@ export class ResourcesListComponent {
     this.dialog.open(BulkImportDialogComponent, {
       data: {
         title: 'Import Resources',
-        types: [''],
+        types: this.resourcesListStore.resourceTypes(),
         apiRoute: 'resources',
       },
     });
