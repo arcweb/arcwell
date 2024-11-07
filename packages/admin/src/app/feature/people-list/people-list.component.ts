@@ -148,7 +148,6 @@ export class PeopleListComponent {
     this.dialog.open(BulkImportDialogComponent, {
       data: {
         title: 'Import People',
-        types: [''],
         apiRoute: 'people',
       },
     });

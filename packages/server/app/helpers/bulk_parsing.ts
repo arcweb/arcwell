@@ -12,7 +12,7 @@ export function parseDynamicReturningUndefined(value: any) {
   }
 }
 
-export function parseBulkCsv(trx: TransactionClientContract, file: string, modelService: any) {
+export function parseBulkCsv(trx: TransactionClientContract, file: string, modelServiceCall: any) {
   Papa.parse(file, {
     dynamicTyping: false,
     transform: parseDynamicReturningUndefined,
@@ -23,10 +23,12 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, model
     },
     step: async (result: any, parser: any) => {
       parser.pause()
-      // save the event
+      
+      console.log("DATA: ", result)
       try {
-        await modelService.createEvent(trx, result.data)
-      } catch {
+        await modelServiceCall(trx, result.data)
+      } catch (error) {
+        console.log(error)
         await trx.rollback()
         parser.abort()
       } finally {
