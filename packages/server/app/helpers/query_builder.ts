@@ -8,6 +8,18 @@ import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import Tag from '#models/tag'
 import { getIdsByDimensionQuery } from '#helpers/query_dimensions'
 
+const defaultSearchFields: Record<string, string[]> = {
+  cohorts: ['name'],
+  event_types: ['name'],
+  fact_types: ['name'],
+  people: ['family_name', 'given_name'],
+  person_types: ['name'],
+  resources: ['name'],
+  resource_types: ['name'],
+  tags: ['pathname'],
+  users: ['email'],
+}
+
 function getSortSettings(queryData: Record<string, any> = {}) {
   const sort = queryData['sort']
   const order = queryData['order']
@@ -19,7 +31,6 @@ export async function buildApiQuery({
   modelQuery,
   queryData = { limit: 10, offset: 0 },
   tableName,
-  defaultSearch,
 }: {
   modelQuery: any
   queryData?: Record<string, any>
@@ -29,7 +40,7 @@ export async function buildApiQuery({
   let countQuery = db.from(tableName)
   const limit = queryData['limit']
   const offset = queryData['offset']
-  const search = queryData['search']
+  const searchQuery = queryData['search']
   const filters = queryData['filter']
   const dims = queryData['dim']
   if (filters || dims) {
@@ -46,11 +57,20 @@ export async function buildApiQuery({
     modelQuery.offset(offset)
   }
 
-  // Add search functionality to modelQuery
-  if (typeof search === 'string' && defaultSearch) {
-    modelQuery.whereILike(defaultSearch, search)
-    countQuery.whereILike(defaultSearch, search)
-  } else if (typeof search === 'object' && search !== null) {
+  // Searching not supported for Events or Facts. Just ignore for those.
+  if (tableName !== 'events' && tableName !== 'facts') {
+    let search: any
+    // If simple string passed as search param, convert to search object filter so every
+    // request uses the same search code mechanism below
+    if (typeof searchQuery === 'string') {
+      search = {}
+      defaultSearchFields[tableName].forEach((key: string) => {
+        search[key] = searchQuery
+      })
+    } else {
+      search = searchQuery
+    }
+
     modelQuery.where((query: any) => {
       // Wrap all of this in .where() so the OR clauses generated below will all be enclosed in
       // parentheses in the generated SQL as one logical unit.

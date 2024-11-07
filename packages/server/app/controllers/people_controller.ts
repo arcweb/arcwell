@@ -47,7 +47,6 @@ export default class PeopleController {
       modelQuery: Person.query(),
       queryData,
       tableName: 'people',
-      defaultSearch: 'familyName',
     })
 
     query.apply((scopes: ExtractScopes<typeof Person>) => scopes.fullPerson())

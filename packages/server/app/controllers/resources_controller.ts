@@ -41,7 +41,6 @@ export default class ResourcesController {
       modelQuery: Resource.query(),
       queryData,
       tableName: 'resources',
-      defaultSearch: 'name',
     })
 
     query.apply((scopes: ExtractScopes<typeof Resource>) => scopes.fullResource())

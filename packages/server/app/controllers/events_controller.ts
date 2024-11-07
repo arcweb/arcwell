@@ -41,7 +41,6 @@ export default class EventsController {
       modelQuery: Event.query(),
       queryData,
       tableName: 'events',
-      defaultSearch: 'typeKey',
     })
 
     query.apply((scopes: ExtractScopes<typeof Event>) => scopes.fullEvent())

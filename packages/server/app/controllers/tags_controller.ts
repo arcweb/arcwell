@@ -136,7 +136,6 @@ export default class TagsController {
       modelQuery: Tag.query(),
       queryData,
       tableName: 'tags',
-      defaultSearch: 'pathname',
     })
 
     query.orderBy('pathname', 'asc')
