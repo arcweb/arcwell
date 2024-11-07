@@ -186,7 +186,7 @@ export default class EventsController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      parseBulkCsv(trx, csvFile, EventService)
+      parseBulkCsv(trx, csvFile, EventService.createEvent)
     } else {
       response.status(404).send('File not found')
     }
