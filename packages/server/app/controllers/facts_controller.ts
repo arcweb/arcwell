@@ -187,7 +187,10 @@ export default class FactsController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      parseBulkCsv(trx, csvFile, FactService.createFact)
+      const resp = parseBulkCsv(trx, csvFile, FactService.createFact)
+      if (resp) {
+        response.status(500).send(resp)
+      }
     } else {
       response.status(404).send('File not found')
     }

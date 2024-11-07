@@ -234,13 +234,15 @@ export default class PeopleController {
   }
 
   async bulk({ request, response }: HttpContext) {
-    console.log("BULKING PEOPLE")
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      parseBulkCsv(trx, csvFile, PersonService.createPerson)
+      const resp = parseBulkCsv(trx, csvFile, PersonService.createPerson)
+      if (resp) {
+        response.status(500).send(resp)
+      }
     } else {
       response.status(404).send('File not found')
     }
