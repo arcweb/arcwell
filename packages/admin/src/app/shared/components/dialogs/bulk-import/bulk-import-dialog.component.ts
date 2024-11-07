@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,14 +16,15 @@ import {
 import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { BulkStore } from '@app/shared/store/bulk.store';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 
 export interface BulkImportDialogData {
   title?: string;
-  types?: string[];
-  apiRoute?: string;
+  types: any[];
+  apiRoute: string;
 }
 
 @Component({
@@ -32,6 +33,8 @@ export interface BulkImportDialogData {
   imports: [
     MatDialogContent,
     MatButton,
+    MatOption,
+    MatSelect,
     MatDialogActions,
     MatDialogTitle,
     MatDialogClose,
@@ -50,6 +53,13 @@ export class BulkImportDialogComponent {
   faPaperclip = faPaperclip;
 
   bulkForm = new FormGroup({
+    type: new FormControl<any[] | null>(
+      {
+        value: null,
+        disabled: false,
+      },
+      Validators.required,
+    ),
     file: new FormControl(
       {
         value: null,
@@ -62,13 +72,28 @@ export class BulkImportDialogComponent {
 
   selectedFile?: File;
 
+  constructor() {
+    console.log(this.data);
+    effect(() => {
+      if (this.data.types) {
+        this.bulkForm.patchValue({
+          type: this.data.types,
+        });
+      }
+    });
+  }
+
   csvInputChange(event: any) {
     this.selectedFile = event.target.files[0];
   }
 
   submitForm() {
     if (this.selectedFile && this.data.apiRoute) {
-      this.bulkStore.uploadCSV(this.data.apiRoute, this.selectedFile);
+      this.bulkStore.uploadCSV(
+        this.data.apiRoute,
+        this.bulkForm.controls.type,
+        this.selectedFile,
+      );
     }
   }
 }

@@ -239,7 +239,7 @@ export default class PeopleController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      const resp = parseBulkCsv(trx, csvFile, PersonService.createPerson)
+      const resp = await parseBulkCsv(trx, csvFile, PersonService.createPerson)
       if (resp) {
         response.status(500).send(resp)
       }

@@ -1,6 +1,10 @@
 .bulk-dialog-container {
   .bulk-form {
     display: flex;
+    flex-direction: column;
+  }
+  .file-select {
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
