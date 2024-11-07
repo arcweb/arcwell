@@ -27,13 +27,28 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, typeK
       parser.pause()
 
       // handle seperated diemntion data
-      let objData = {}
-      let dimData = {}
+      var objData = {}
+      var dimData = []
+    
+      for (const key in result.data) {
+        if (key.includes('DIM.')) {
+          if (result.data[key]) {
+            const outKey = key.split('.')[1]
+            dimData.push({ key: outKey, value: result.data[key] })
+          }
+        } else {
+          objData = { ...objData, [key]: result.data[key] }
+        }
+      }
 
-      console.log(typeof result)
       try {
-        await modelServiceCall(trx, { ...result.data, typeKey: typeKey })
+        let createData: {[x: string]: any} = { ...objData, typeKey: typeKey }
+        if (dimData.length > 0) {
+          createData = { ...createData, dimensions: dimData }
+        }
+        await modelServiceCall(trx, createData)
       } catch (error) {
+        console.log(error)
         let detail
         if (env.get('ARCWELL_SERVER_DEBUG_ERRORS') === 'true') {
           detail = error.data
@@ -44,6 +59,7 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, typeK
         parser.abort()
         return detail
       } finally {
+        console.log('DIM: ', dimData, 'OBJ: ', objData)
         parser.resume()
       }
     },

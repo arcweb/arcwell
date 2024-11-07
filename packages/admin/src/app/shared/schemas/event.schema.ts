@@ -1,10 +1,9 @@
 import { z } from 'zod';
-
+import { EventTypeSchema } from './event-type.schema';
 import { EventModel } from '../models/event.model';
 import { PersonSchema } from '@schemas/person.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
 import { DimensionSchema, serializeDimension } from '@schemas/dimension.schema';
-import { EventTypeSchema } from './event-type.schema';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const EventSchema: any = z
@@ -13,7 +12,7 @@ export const EventSchema: any = z
     typeKey: z.string(),
     tags: z.array(z.string()).optional(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
-    eventType: EventTypeSchema.optional(),
+    eventType: z.lazy(() => EventTypeSchema.optional()),
     startedAt: z.string().datetime({ offset: true }),
     endedAt: z.string().datetime({ offset: true }).optional().nullable(),
     person: z.lazy(() => PersonSchema.optional().nullable()),

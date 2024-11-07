@@ -192,6 +192,7 @@ export default class FactsController {
       if (resp) {
         response.status(500).send(resp)
       }
+      response.status(200).send('Fact Import successful')
     } else {
       response.status(404).send('File not found')
     }
