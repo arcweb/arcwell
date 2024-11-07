@@ -2,25 +2,37 @@
   <h5 mat-dialog-title>{{ data.title ?? 'Import' }}</h5>
   <mat-dialog-content>
     <form [formGroup]="bulkForm" class="bulk-form">
-      <input
-        #csvInput
-        hidden="true"
-        type="file"
-        formControlName="file"
-        (change)="csvInputChange($event)"
-        accept=".csv"
-      />
-      <span class="file-name">
-        {{ selectedFile?.name ?? 'Choose File' }}
-      </span>
-      <button mat-flat-button color="primary" (click)="csvInput.click()">
-        <fa-icon
-          aria-label="attach"
-          [icon]="faPaperclip"
-          size="xl"
-          class="dialog-icon"
-        ></fa-icon>
-      </button>
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type">
+          @for (type of data.types; track type.id) {
+            <mat-option [value]="type">
+              {{ type.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <div class="file-select">
+        <input
+          #csvInput
+          hidden="true"
+          type="file"
+          formControlName="file"
+          (change)="csvInputChange($event)"
+          accept=".csv"
+        />
+        <span class="file-name">
+          {{ selectedFile?.name ?? 'Choose File' }}
+        </span>
+        <button mat-flat-button color="primary" (click)="csvInput.click()">
+          <fa-icon
+            aria-label="attach"
+            [icon]="faPaperclip"
+            size="xl"
+            class="dialog-icon"
+          ></fa-icon>
+        </button>
+      </div>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions>

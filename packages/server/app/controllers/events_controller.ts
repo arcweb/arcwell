@@ -186,7 +186,7 @@ export default class EventsController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      const resp = parseBulkCsv(trx, csvFile, EventService.createEvent)
+      const resp = await parseBulkCsv(trx, csvFile, EventService.createEvent)
       if (resp) {
         response.status(500).send(resp)
       }
