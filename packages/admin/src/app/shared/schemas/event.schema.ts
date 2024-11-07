@@ -1,10 +1,9 @@
 import { z } from 'zod';
-
+import { EventTypeSchema } from './event-type.schema';
 import { EventModel } from '../models/event.model';
 import { PersonSchema } from '@schemas/person.schema';
 import { ResourceSchema } from '@schemas/resource.schema';
 import { DimensionSchema, serializeDimension } from '@schemas/dimension.schema';
-import { EventTypeSchema } from './event-type.schema';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const EventSchema: any = z
