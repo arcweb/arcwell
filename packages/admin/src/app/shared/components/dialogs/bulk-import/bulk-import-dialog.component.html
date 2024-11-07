@@ -12,6 +12,13 @@
           }
         </mat-select>
       </mat-form-field>
+      <button
+        mat-button
+        (click)="downloadExample()"
+        [disabled]="!bulkForm.controls.type.value"
+      >
+        Download Example
+      </button>
       <div class="file-select">
         <input
           #csvInput
