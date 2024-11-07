@@ -17,13 +17,21 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { EventTypeType } from '@app/shared/schemas/event-type.schema';
+import { FactTypeType } from '@app/shared/schemas/fact-type.schema';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { BulkStore } from '@app/shared/store/bulk.store';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 
 export interface BulkImportDialogData {
   title?: string;
-  types: any[];
+  types:
+    | FactTypeType[]
+    | EventTypeType[]
+    | ResourceTypeType[]
+    | PersonTypeType[];
   apiRoute: string;
 }
 
@@ -53,9 +61,11 @@ export class BulkImportDialogComponent {
   faPaperclip = faPaperclip;
 
   bulkForm = new FormGroup({
-    type: new FormControl<any[] | null>(
+    type: new FormControl<
+      FactTypeType[] | EventTypeType[] | ResourceTypeType[] | PersonTypeType[]
+    >(
       {
-        value: null,
+        value: [],
         disabled: false,
       },
       Validators.required,
@@ -88,10 +98,14 @@ export class BulkImportDialogComponent {
   }
 
   submitForm() {
-    if (this.selectedFile && this.data.apiRoute) {
+    if (
+      this.selectedFile &&
+      this.data.apiRoute &&
+      this.bulkForm.controls.type.value
+    ) {
       this.bulkStore.uploadCSV(
         this.data.apiRoute,
-        this.bulkForm.controls.type,
+        this.bulkForm.controls.type.value,
         this.selectedFile,
       );
     }

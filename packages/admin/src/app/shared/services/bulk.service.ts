@@ -15,10 +15,12 @@ export class BulkService {
   uploadCsv(
     apiRoute: string,
     file: File,
+    typeKey: string,
   ): Observable<ErrorResponseType | null> {
     const url = `${environment.apiUrl}/${apiRoute}/bulk`;
     const data = new FormData();
     data.append('file', file, file.name);
+    data.append('typeKey', typeKey);
     return this.http.post(url, data).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);

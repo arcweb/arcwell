@@ -11,6 +11,10 @@ import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { ToastLevel } from '../models';
+import { EventTypeType } from '../schemas/event-type.schema';
+import { FactTypeType } from '../schemas/fact-type.schema';
+import { PersonTypeType } from '../schemas/person-type.schema';
+import { ResourceTypeType } from '../schemas/resource-type.schema';
 
 export type UploadStatus = 'none' | 'pending' | 'success' | 'error';
 
@@ -33,12 +37,14 @@ export const BulkStore = signalStore(
       bulkService = inject(BulkService),
       toastService = inject(ToastService),
     ) => ({
-      async uploadCSV(apiRoute: string, type: any, file: File) {
-        console.log(type);
-        console.log(file);
+      async uploadCSV(
+        apiRoute: string,
+        type: FactTypeType | EventTypeType | ResourceTypeType | PersonTypeType,
+        file: File,
+      ) {
         patchState(store, { ...initialState }, setPending());
         const resp = await firstValueFrom(
-          bulkService.uploadCsv(apiRoute, file),
+          bulkService.uploadCsv(apiRoute, file, type.key),
         );
         if (resp.errors) {
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
