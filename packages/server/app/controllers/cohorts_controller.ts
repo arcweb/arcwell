@@ -20,7 +20,11 @@ export default class CohortsController {
   async index({ request, auth }: HttpContext) {
     await auth.authenticate()
     const queryData = request.qs()
-    let [query, countQuery] = buildApiQuery(Cohort.query(), queryData, 'cohorts')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Cohort.query(),
+      queryData,
+      tableName: 'cohorts',
+    })
 
     query.orderBy('name', 'asc').preload('tags')
 

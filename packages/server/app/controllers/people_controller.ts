@@ -43,7 +43,11 @@ export default class PeopleController {
     const typeKey = queryData['typeKey']
     const notInCohort = queryData['notInCohort']
 
-    let [query, countQuery] = buildApiQuery(Person.query(), queryData, 'people')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Person.query(),
+      queryData,
+      tableName: 'people',
+    })
 
     query.apply((scopes: ExtractScopes<typeof Person>) => scopes.fullPerson())
 
@@ -53,6 +57,7 @@ export default class PeopleController {
       // DB context use sql column names
       countQuery.where('type_key', personType.key)
     }
+
     buildPeopleSort(query, queryData)
     if (notInCohort) {
       // Get complete list of people ids associated with cohort to filter them out

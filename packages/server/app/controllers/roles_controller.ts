@@ -16,7 +16,11 @@ export default class RolesController {
   async index({ request }: HttpContext) {
     const queryData = request.qs()
 
-    let [query, countQuery] = buildApiQuery(Role.query(), queryData, 'roles')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Role.query(),
+      queryData,
+      tableName: 'roles',
+    })
 
     query.orderBy('name', 'asc').preload('users')
 

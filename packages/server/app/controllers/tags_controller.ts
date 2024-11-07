@@ -16,16 +16,24 @@ import TagService from '#services/tag_service'
 
 export default class TagsController {
   // TODO: Same as in query_builder. Should these return the query object?
-  private eventsSubQuery(query: any, queryData: Record<string, any>) {
-    let [eventsQuery] = buildApiQuery(query, queryData, 'events')
+  private async eventsSubQuery(query: any, queryData: Record<string, any>) {
+    let [eventsQuery] = await buildApiQuery({
+      modelQuery: query,
+      queryData,
+      tableName: 'events',
+    })
     eventsQuery.preload('eventType')
     eventsQuery.preload('resource')
     eventsQuery.preload('person')
     buildEventsSort(eventsQuery, queryData)
   }
 
-  private factsSubQuery(query: any, queryData: Record<string, any>) {
-    let [factsQuery] = buildApiQuery(query, queryData, 'facts')
+  private async factsSubQuery(query: any, queryData: Record<string, any>) {
+    let [factsQuery] = await buildApiQuery({
+      modelQuery: query,
+      queryData,
+      tableName: 'facts',
+    })
     factsQuery.preload('factType')
     factsQuery.preload('resource')
     factsQuery.preload('person')
@@ -33,20 +41,32 @@ export default class TagsController {
     buildFactsSort(query, queryData)
   }
 
-  private peopleSubQuery(query: any, queryData: Record<string, any>) {
-    let [peopleQuery] = buildApiQuery(query, queryData, 'people')
+  private async peopleSubQuery(query: any, queryData: Record<string, any>) {
+    let [peopleQuery] = await buildApiQuery({
+      modelQuery: query,
+      queryData,
+      tableName: 'people',
+    })
     peopleQuery.preload('personType')
     buildPeopleSort(peopleQuery, queryData)
   }
 
-  private resourcesSubQuery(query: any, queryData: Record<string, any>) {
-    let [resourcesQuery] = buildApiQuery(query, queryData, 'resources')
+  private async resourcesSubQuery(query: any, queryData: Record<string, any>) {
+    let [resourcesQuery] = await buildApiQuery({
+      modelQuery: query,
+      queryData,
+      tableName: 'resources',
+    })
     resourcesQuery.preload('resourceType')
     buildResourcesSort(resourcesQuery, queryData)
   }
 
-  private usersSubQuery(query: any, queryData: Record<string, any>) {
-    let [usersQuery] = buildApiQuery(query, queryData, 'users')
+  private async usersSubQuery(query: any, queryData: Record<string, any>) {
+    let [usersQuery] = await buildApiQuery({
+      modelQuery: query,
+      queryData,
+      tableName: 'users',
+    })
     usersQuery.preload('role')
     usersQuery.preload('person')
     usersQuery.orderBy('email', 'asc')
@@ -112,7 +132,11 @@ export default class TagsController {
     const queryData = request.qs()
     const parentStr = queryData['parentStr']
 
-    let [query, countQuery] = buildApiQuery(Tag.query(), queryData, 'tags')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: Tag.query(),
+      queryData,
+      tableName: 'tags',
+    })
 
     query.orderBy('pathname', 'asc')
 

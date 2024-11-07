@@ -2,7 +2,7 @@ export default class DimensionSchema {
   key: string
   name: string
   dataType: string
-  dataUnit: string | null
+  dataUnit?: string
   isRequired: boolean
 
   constructor(
