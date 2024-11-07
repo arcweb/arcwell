@@ -13,7 +13,7 @@ export function parseDynamicReturningUndefined(value: any) {
   }
 }
 
-export function parseBulkCsv(trx: TransactionClientContract, file: string, modelServiceCall: any): string | void {
+export function parseBulkCsv(trx: TransactionClientContract, file: string, typeKey: string, modelServiceCall: any): string | void {
   Papa.parse(file, {
     dynamicTyping: false,
     transform: parseDynamicReturningUndefined,
@@ -26,7 +26,7 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, model
     step: async (result: any, parser: any) => {
       parser.pause()
       try {
-        await modelServiceCall(trx, result.data)
+        await modelServiceCall(trx, { ...result.data, typeKey: typeKey })
       } catch (error) {
         let detail
         if (env.get('ARCWELL_SERVER_DEBUG_ERRORS') === 'true') {

@@ -9,14 +9,17 @@ import {
 import { PersonService } from '@shared/services/person.service';
 import { inject } from '@angular/core';
 import { PersonModel } from '@shared/models/person.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
+import { PersonTypeService } from '@app/shared/services/person-type.service';
 
 interface PeopleListState {
   people: PersonModel[];
+  personTypes: PersonTypeType[];
   limit: number;
   offset: number;
   totalData: number;
@@ -29,6 +32,7 @@ interface PeopleListState {
 
 export const initialState: PeopleListState = {
   people: [],
+  personTypes: [],
   limit: 10,
   offset: 0,
   totalData: 0,
@@ -47,6 +51,7 @@ export const PeopleListStore = signalStore(
     (
       store,
       personService = inject(PersonService),
+      personTypeService = inject(PersonTypeService),
       toastService = inject(ToastService),
     ) => ({
       async load(props: {
@@ -66,18 +71,35 @@ export const PeopleListStore = signalStore(
           },
           setPending(),
         );
-        const resp = await firstValueFrom(personService.getPeople(props));
-        if (resp.errors) {
-          patchState(store, setErrors(resp.errors));
+        const { peopleResp, personTypeResp } = await firstValueFrom(
+          forkJoin({
+            peopleResp: personService.getPeople(props),
+            personTypeResp: personTypeService.getPersonTypes({}),
+          }),
+        );
+
+        if (peopleResp.errors) {
+          patchState(store, setErrors(peopleResp.errors));
 
           toastService.sendMessage(
             toastService.createCrudMessage('People', 'Fetching', false),
             ToastLevel.ERROR,
           );
+        } else if (personTypeResp.errors) {
+          patchState(store, setErrors(personTypeResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Person Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
-            { people: resp.data, totalData: resp.meta.count },
+            {
+              people: peopleResp.data,
+              totalData: peopleResp.meta.count,
+              personTypes: personTypeResp.data,
+            },
             setFulfilled(),
           );
         }
