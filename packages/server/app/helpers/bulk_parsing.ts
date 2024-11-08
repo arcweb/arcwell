@@ -21,6 +21,7 @@ export async function parseBulkCsv(
 ) {
   const data = await new Promise((resolve, reject) => {
     let detail: string
+    let count = 1
     Papa.parse(file, {
       dynamicTyping: false,
       transform: parseDynamicReturningUndefined,
@@ -62,12 +63,13 @@ export async function parseBulkCsv(
             createData = { ...createData, dimensions: dimData }
           }
           await modelServiceCall(trx, createData)
+          count++
           parser.resume()
         } catch (error) {
           if (env.get('ARCWELL_SERVER_DEBUG_ERRORS') === 'true') {
-            detail = error.data
+            detail = `Row ${result.data} failed with error: ${JSON.stringify(error.data)}`
           } else {
-            detail = 'Bulk import failed'
+            detail = `Bulk import failed on row (${count}) - ${JSON.stringify(result.data)}`
           }
           await trx.rollback()
           parser.abort()
