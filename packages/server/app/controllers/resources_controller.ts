@@ -171,7 +171,12 @@ export default class ResourcesController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      const resp = await parseBulkCsv(trx, csvFile, tpyeKeyData.typeKey, ResourceService.createResource)
+      const resp = await parseBulkCsv(
+        trx,
+        csvFile,
+        tpyeKeyData.typeKey,
+        ResourceService.createResource
+      )
       if (resp) {
         response.status(500).send(resp)
       }
