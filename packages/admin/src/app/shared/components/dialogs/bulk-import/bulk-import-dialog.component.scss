@@ -1,5 +1,6 @@
 .bulk-dialog-container {
   padding: 12px;
+
   mat-dialog-content {
     padding: 8px;
   }
@@ -9,6 +10,7 @@
     flex-direction: column;
     gap: 8px;
   }
+
   .file-select {
     display: flex;
     flex-direction: row;
