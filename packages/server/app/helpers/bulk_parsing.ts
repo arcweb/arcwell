@@ -29,7 +29,6 @@ export async function parseBulkCsv(
       skipEmptyLines: true,
       complete: () => {
         if (detail) {
-          console.log('AN ERROR: ', detail)
           reject(detail)
         } else {
           trx.commit()
