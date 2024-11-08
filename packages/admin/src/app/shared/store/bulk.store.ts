@@ -11,10 +11,6 @@ import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { ToastLevel } from '../models';
-import { EventTypeType } from '../schemas/event-type.schema';
-import { FactTypeType } from '../schemas/fact-type.schema';
-import { PersonTypeType } from '../schemas/person-type.schema';
-import { ResourceTypeType } from '../schemas/resource-type.schema';
 
 export type UploadStatus = 'none' | 'pending' | 'success' | 'error';
 
