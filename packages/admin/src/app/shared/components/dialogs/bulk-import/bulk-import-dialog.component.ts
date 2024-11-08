@@ -81,6 +81,7 @@ export class BulkImportDialogComponent {
   readonly data = inject<BulkImportDialogData>(MAT_DIALOG_DATA);
 
   selectedFile?: File;
+  canDownload = false;
 
   constructor() {
     console.log(this.data);
@@ -111,10 +112,28 @@ export class BulkImportDialogComponent {
     }
   }
 
+  typeChanged() {
+    this.canDownload =
+      this.bulkForm.controls.type.value!.length > 0 ? true : false;
+  }
+
   downloadExample() {
     console.log(
       'FILE NAME: ',
       `${this.data.apiRoute}_${this.bulkForm.controls.type.value}`,
     );
+    const link = document.createElement('a');
+    link.setAttribute('target', '_blank');
+    link.setAttribute(
+      'href',
+      `assets/examples/${this.data.apiRoute}_${this.bulkForm.controls.type.value}.csv`,
+    );
+    link.setAttribute(
+      'download',
+      `${this.data.apiRoute}_${this.bulkForm.controls.type.value}.csv`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 }

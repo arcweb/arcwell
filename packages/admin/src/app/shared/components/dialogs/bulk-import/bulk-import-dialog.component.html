@@ -4,19 +4,15 @@
     <form [formGroup]="bulkForm" class="bulk-form">
       <mat-form-field appearance="outline">
         <mat-label>Type</mat-label>
-        <mat-select formControlName="type">
+        <mat-select formControlName="type" (selectionChange)="typeChanged()">
           @for (type of data.types; track type.id) {
-            <mat-option [value]="type">
+            <mat-option [value]="type.key">
               {{ type.name }}
             </mat-option>
           }
         </mat-select>
       </mat-form-field>
-      <button
-        mat-button
-        (click)="downloadExample()"
-        [disabled]="!bulkForm.controls.type.valid"
-      >
+      <button mat-button (click)="downloadExample()" [disabled]="!canDownload">
         Download Example
       </button>
       <div class="file-select">
