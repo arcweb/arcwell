@@ -19,7 +19,11 @@ export default class FactTypesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(FactType.query(), queryData, 'fact_types')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: FactType.query(),
+      queryData,
+      tableName: 'fact_types',
+    })
 
     query.preload('tags')
 

@@ -15,6 +15,7 @@ import { UserModel } from '@shared/models';
 import { ErrorResponseType } from '@schemas/error.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
+import { buildSearchParams } from '../helpers/basic-search.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,7 @@ export class UserService {
   getAllUsers(
     limit?: number,
     offset?: number,
+    search?: { field: string; searchString: string }[],
   ): Observable<UsersResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -33,6 +35,9 @@ export class UserService {
     }
     if (offset !== undefined) {
       params = params.set('offset', offset.toString());
+    }
+    if (search && search.length > 0) {
+      params = buildSearchParams(search, params);
     }
 
     return this.http

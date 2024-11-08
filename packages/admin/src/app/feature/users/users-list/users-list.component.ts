@@ -25,6 +25,8 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
 import { ErrorContainerComponent } from '@feature/error-container/error-container.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 
 @Component({
   selector: 'aw-users-list',
@@ -46,6 +48,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatPaginator,
     UsersTableComponent,
     TableHeaderComponent,
+    NoRecordsComponent,
   ],
   providers: [UsersStore],
   templateUrl: './users-list.component.html',
@@ -72,7 +75,11 @@ export class AllUsersComponent {
     this.refreshService.refreshTrigger$
       .pipe(takeUntilDestroyed())
       .subscribe(() => {
-        this.userStore.load(this.userStore.limit(), this.userStore.offset());
+        this.userStore.load(
+          this.userStore.limit(),
+          this.userStore.offset(),
+          this.userStore.search(),
+        );
       });
   }
 
@@ -99,6 +106,14 @@ export class AllUsersComponent {
         this.userStore.invite(row.id, location.origin);
       }
     });
+  }
+
+  searchTextChanged(searchText: string) {
+    this.userStore.load(
+      this.userStore.limit(),
+      0,
+      buildBasicSearchForFeature('users', searchText),
+    );
   }
 
   viewPerson(personId: string) {

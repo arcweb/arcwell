@@ -16,6 +16,8 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
 @Component({
   selector: 'aw-people-list',
@@ -41,6 +43,7 @@ export class PeopleListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   pageSizes = [10, 20, 50];
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
@@ -66,10 +69,26 @@ export class PeopleListComponent {
     });
     // load the people list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
+      // Check if the search/filter store has filters set for the current feature type. If so,
+      // set search. This typekey pipe fires before the navigation pipe in features-menu.component.ts
+      // that flushes the filterstore if the feature changed, so the feature type must be checked against
+      // here.
+      let search: { field: string; searchString: string }[] = [];
+      if (
+        this.featureSearchAndFilterStore.currentFeature() == 'people' &&
+        this.featureSearchAndFilterStore.currentSubFeature() != 'types' &&
+        this.featureSearchAndFilterStore.searchText().length > 0
+      ) {
+        search = buildBasicSearchForFeature(
+          'people',
+          this.featureSearchAndFilterStore.searchText(),
+        );
+      }
       this.peopleListStore.load({
         limit: this.peopleListStore.limit(),
         offset: 0,
-        typeKey: typeKey,
+        typeKey,
+        search,
       });
     });
 
@@ -83,6 +102,7 @@ export class PeopleListComponent {
           order: this.peopleListStore.order(),
           pageIndex: this.peopleListStore.pageIndex(),
           typeKey: this.peopleListStore.typeKey(),
+          search: this.peopleListStore.search(),
         });
       });
   }
@@ -91,6 +111,15 @@ export class PeopleListComponent {
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: { detail_id: row.id },
+    });
+  }
+
+  searchTextChanged(searchText: string) {
+    this.peopleListStore.load({
+      limit: this.peopleListStore.limit(),
+      offset: 0,
+      typeKey: this.peopleListStore.typeKey(),
+      search: buildBasicSearchForFeature('people', searchText),
     });
   }
 
@@ -108,6 +137,7 @@ export class PeopleListComponent {
       order: event.direction,
       pageIndex: this.peopleListStore.pageIndex(),
       typeKey: this.peopleListStore.typeKey(),
+      search: this.peopleListStore.search(),
     });
   }
 }

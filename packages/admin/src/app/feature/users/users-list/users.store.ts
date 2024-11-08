@@ -24,6 +24,7 @@ interface UserState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: UserState = {
@@ -32,6 +33,7 @@ const initialState: UserState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  search: [],
 };
 
 export const UsersStore = signalStore(
@@ -39,9 +41,19 @@ export const UsersStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withMethods((store, userService = inject(UserService)) => ({
-    async load(limit: number, offset: number) {
-      patchState(store, setPending());
-      const resp = await firstValueFrom(userService.getAllUsers(limit, offset));
+    async load(
+      limit: number,
+      offset: number,
+      search?: { field: string; searchString: string }[],
+    ) {
+      patchState(
+        store,
+        { ...initialState, limit, offset, search },
+        setPending(),
+      );
+      const resp = await firstValueFrom(
+        userService.getAllUsers(limit, offset, search),
+      );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
       } else {
@@ -64,7 +76,7 @@ export const UsersStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        userService.getAllUsers(store.limit(), store.offset()),
+        userService.getAllUsers(store.limit(), store.offset(), store.search()),
       );
 
       if (resp.errors) {
@@ -89,7 +101,7 @@ export const UsersStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load(store.limit(), store.offset(), []);
     },
   }),
 );

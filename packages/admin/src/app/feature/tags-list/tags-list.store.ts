@@ -24,6 +24,7 @@ interface TagsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: TagsListState = {
@@ -32,16 +33,26 @@ const initialState: TagsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  search: [],
 };
 
 export const TagsListStore = signalStore(
-  withDevtools('people'),
+  withDevtools('tags'),
   withState(initialState),
   withRequestStatus(),
   withMethods((store, tagService = inject(TagService)) => ({
-    async load(limit: number, offset: number) {
+    async load(
+      limit: number,
+      offset: number,
+      search?: { field: string; searchString: string }[],
+    ) {
+      patchState(
+        store,
+        { ...initialState, limit, offset, search },
+        setPending(),
+      );
       const resp = await firstValueFrom(
-        tagService.getTags({ limit: limit, offset: offset }),
+        tagService.getTags({ limit, offset, search }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -65,7 +76,11 @@ export const TagsListStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        tagService.getTags({ limit: store.limit(), offset: store.offset() }),
+        tagService.getTags({
+          limit: store.limit(),
+          offset: store.offset(),
+          search: store.search(),
+        }),
       );
 
       if (resp.errors) {
@@ -90,7 +105,7 @@ export const TagsListStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.load(store.limit(), store.offset());
+      store.load(store.limit(), store.offset(), []);
     },
   }),
 );

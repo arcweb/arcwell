@@ -20,6 +20,7 @@ interface CohortsListState {
   offset: number;
   totalData: number;
   pageIndex: number;
+  search: { field: string; searchString: string }[];
 }
 
 const initialState: CohortsListState = {
@@ -28,6 +29,7 @@ const initialState: CohortsListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
+  search: [],
 };
 
 export const CohortsListStore = signalStore(
@@ -40,10 +42,18 @@ export const CohortsListStore = signalStore(
       cohortService = inject(CohortService),
       toastService = inject(ToastService),
     ) => ({
-      async load(limit: number, offset: number) {
-        patchState(store, { ...initialState }, setPending());
+      async load(
+        limit: number,
+        offset: number,
+        search?: { field: string; searchString: string }[],
+      ) {
+        patchState(
+          store,
+          { ...initialState, limit, offset, search },
+          setPending(),
+        );
         const resp = await firstValueFrom(
-          cohortService.getCohorts({ limit: limit, offset: offset }),
+          cohortService.getCohorts({ limit, offset, search }),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
@@ -75,6 +85,7 @@ export const CohortsListStore = signalStore(
           cohortService.getCohorts({
             limit: store.limit(),
             offset: store.offset(),
+            search: store.search(),
           }),
         );
 

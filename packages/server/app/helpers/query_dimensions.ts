@@ -1,0 +1,230 @@
+import db from '@adonisjs/lucid/services/db'
+import string from '@adonisjs/core/helpers/string'
+import { throwCustomHttpError } from '#exceptions/handler_helper'
+
+export interface DataObject {
+  id: string
+  type_key: string
+  key: string
+  value: string
+}
+
+export interface TransformedDataObject {
+  id: string
+  type_key: string
+  [key: string]: string
+}
+
+export enum DimensionOperatorEnum {
+  eq = 'eq',
+  gt = 'gt',
+  gte = 'gte',
+  lt = 'lt',
+  lte = 'lte',
+  ne = 'ne',
+}
+
+/**
+ * Parses filter parameters from a nested object structure and returns an array of parsed filters.
+ * Each filter contains a field, operator, and value.
+ *
+ * @private
+ * @param {Record<string, Record<string, string | undefined> | string>} filter - The raw filter object to parse.
+ * @returns {{ field: string; operator: string; value: string }[]} - Parsed filter conditions.
+ */
+export function parseFilters(
+  filter: Record<string, Record<string, string | undefined> | string>
+): { field: string; operator: string; value: string }[] {
+  const result: { field: string; operator: string; value: string }[] = []
+
+  for (const field in filter) {
+    if (filter.hasOwnProperty(field)) {
+      const operators = filter[field]
+
+      if (typeof operators === 'string') {
+        // If operators is a string, it means the operator is missing, so use 'eq' as default
+        result.push({ field, operator: 'eq', value: operators })
+      } else {
+        for (const operator in operators) {
+          if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
+            const value = operators[operator]!
+            result.push({ field, operator, value })
+          }
+        }
+      }
+    }
+  }
+
+  return result
+}
+
+export async function getIdsByDimensionQuery(
+  tableName: string,
+  typeTableName: string,
+  filters: Record<string, any>,
+  dims: Record<string, any>
+): Promise<string[]> {
+  const parsedFilters = filters ? parseFilters(filters) : []
+  const parsedDims = dims ? parseFilters(dims) : []
+
+  let rawQueryString = `
+    SELECT
+      ${tableName}.id AS id
+    FROM ${tableName}
+    JOIN LATERAL jsonb_array_elements(${tableName}.dimensions) AS dimension_element ON true
+  `
+
+  let whereClause = ''
+  let bindings: Record<string, any> = {}
+  let paramIndex = 1
+
+  // Handle standard filters
+  for (let filterItem of parsedFilters) {
+    const fieldName = string.snakeCase(filterItem.field)
+    const paramName = `fieldValue${paramIndex}`
+
+    whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
+    whereClause += `${tableName}.${fieldName} = :${paramName}`
+
+    bindings[paramName] = filterItem.value
+    paramIndex++
+  }
+
+  // Handle dimension filters
+  for (let dimItem of parsedDims) {
+    const fieldParam = `fieldKey${paramIndex}`
+    const valueParam = `fieldValue${paramIndex}`
+
+    // Fetch all possible data types for the dimension key
+    const dataTypesResult = await db.rawQuery(
+      `
+        SELECT DISTINCT schema_element ->> 'dataType' AS data_type
+        FROM ${typeTableName},
+             jsonb_array_elements(${typeTableName}.dimension_schemas) AS schema_element
+        WHERE schema_element ->> 'key' = :dimensionKey
+      `,
+      { dimensionKey: dimItem.field }
+    )
+
+    const dataTypes = dataTypesResult.rows.map((row: { data_type: any }) => row.data_type)
+
+    if (dataTypes.length === 0) {
+      throwCustomHttpError(
+        {
+          title: 'Bad Request',
+          code: 'E_BAD_REQUEST',
+          detail: `Unknown dimension key: ${dimItem.field}`,
+        },
+        400
+      )
+    }
+
+    let sqlOperator: string
+    switch (dimItem.operator) {
+      case DimensionOperatorEnum.eq:
+        sqlOperator = '='
+        break
+      case DimensionOperatorEnum.gt:
+        sqlOperator = '>'
+        break
+      case DimensionOperatorEnum.gte:
+        sqlOperator = '>='
+        break
+      case DimensionOperatorEnum.lt:
+        sqlOperator = '<'
+        break
+      case DimensionOperatorEnum.lte:
+        sqlOperator = '<='
+        break
+      case DimensionOperatorEnum.ne:
+        sqlOperator = '<>'
+        break
+      default:
+        throwCustomHttpError(
+          {
+            title: 'Bad Request',
+            code: 'E_BAD_REQUEST',
+            detail: 'Unimplemented operator type: ' + dimItem.operator,
+          },
+          400
+        )
+    }
+
+    let dataTypeConditions = dataTypes.map((dataType: string) => {
+      let valueExpression: string
+      const currentValueParam = `${valueParam}_${dataType}` // Unique parameter name per data type
+
+      if (dataType === 'number') {
+        const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+        bindings[regexPatternParam] = '^\\d+(\\.\\d+)?$'
+
+        valueExpression = `
+          CASE
+            WHEN (inner_element ->> 'value') ~ :${regexPatternParam} THEN
+              (inner_element ->> 'value')::numeric ${sqlOperator} :${currentValueParam}
+            ELSE FALSE
+          END
+        `
+        bindings[currentValueParam] = Number(dimItem.value)
+      } else if (dataType === 'boolean') {
+        const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+        bindings[regexPatternParam] = '^(true|false)$'
+
+        valueExpression = `
+                              CASE
+                                WHEN lower(inner_element ->> 'value') ~ :${regexPatternParam} THEN
+                                  (inner_element ->> 'value')::boolean ${sqlOperator} :${currentValueParam}
+                                ELSE FALSE
+                              END
+                            `
+        // Bind the value as a boolean
+        bindings[currentValueParam] = dimItem.value.toLowerCase() === 'true'
+      } else if (dataType === 'date') {
+        const regexPatternParam = `regexPattern${paramIndex}_${dataType}`
+        bindings[regexPatternParam] =
+          '^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})?)?$'
+
+        valueExpression = `
+                              CASE
+                                WHEN (inner_element ->> 'value') ~ :${regexPatternParam} THEN
+                                  (inner_element ->> 'value')::timestamp ${sqlOperator} :${currentValueParam}
+                                ELSE FALSE
+                              END
+                            `
+        bindings[currentValueParam] = dimItem.value
+      } else {
+        // For strings, no change needed
+        valueExpression = `(inner_element ->> 'value') ${sqlOperator} :${currentValueParam}`
+        bindings[currentValueParam] = dimItem.value
+      }
+
+      return valueExpression
+    })
+
+    const combinedDataTypeConditions = dataTypeConditions.join(' OR ')
+
+    whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
+    whereClause += `
+      EXISTS (
+        SELECT 1
+        FROM jsonb_array_elements(${tableName}.dimensions) AS inner_element
+        WHERE
+          inner_element ->> 'key' = :${fieldParam}
+          AND (${combinedDataTypeConditions})
+      )
+    `
+
+    bindings[fieldParam] = dimItem.field
+    paramIndex++
+  }
+
+  // Combine the base query with the dynamically generated WHERE clause
+  rawQueryString += whereClause
+
+  // Execute the query using the database client with bindings as an object
+  const result = await db.rawQuery(rawQueryString, bindings, {
+    mode: 'read',
+  })
+
+  return result.rows.map((row: { id: string }) => row.id)
+}

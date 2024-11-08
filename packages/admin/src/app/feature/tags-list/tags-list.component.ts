@@ -25,6 +25,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
 @Component({
   selector: 'aw-tags-list',
@@ -74,6 +75,7 @@ export class TagsListComponent {
         this.tagsListStore.load(
           this.tagsListStore.limit(),
           this.tagsListStore.offset(),
+          this.tagsListStore.search(),
         );
       });
   }
@@ -86,5 +88,13 @@ export class TagsListComponent {
       relativeTo: this.activatedRoute,
       queryParams: { detail_id: row.id },
     });
+  }
+
+  searchTextChanged(searchText: string) {
+    this.tagsListStore.load(
+      this.tagsListStore.limit(),
+      0,
+      buildBasicSearchForFeature('tags', searchText),
+    );
   }
 }

@@ -2,7 +2,6 @@
   [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="factsListStore.facts().length > 0"
-  [enableSearch]="factsListStore.facts().length > 0"
 ></aw-table-header>
 
 @if (factsListStore.isErrored()) {
