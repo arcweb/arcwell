@@ -13,6 +13,7 @@ import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import PersonService from '#services/person_service'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import Papa from 'papaparse'
 
 export default class PeopleController {
   /**
@@ -233,5 +234,26 @@ export default class PeopleController {
     await person.related('cohorts').detach(cleanRequest.cohortIds)
 
     response.status(204).send('')
+  }
+
+  /**
+   * @exportAllPeople
+   * @summary Export All People
+   * @description Export all people to a CSV file
+   */
+  async exportAllPeople({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = Person.query()
+
+    if (typeKey) {
+      const personType = await PersonType.findByOrFail('key', typeKey)
+      query.where('typeKey', personType.key)
+    }
+
+    const people = await query
+
+    return Papa.unparse(people)
   }
 }

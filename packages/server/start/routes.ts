@@ -69,6 +69,7 @@ router
               .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
               .as('people/types.showWithPeople')
             router.get('people/count', [PeopleController, 'count']).as('people.count')
+            router.get('people/export', [PeopleController, 'exportAllPeople']).as('people.export')
             router.resource('people', PeopleController).apiOnly()
           })
           .use(middleware.auth())
