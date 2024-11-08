@@ -93,17 +93,6 @@ export class BulkImportDialogComponent {
     });
   }
 
-  constructor() {
-    console.log(this.data);
-    effect(() => {
-      if (this.data.types) {
-        this.bulkForm.patchValue({
-          type: this.data.types,
-        });
-      }
-    });
-  }
-
   csvInputChange(event: any) {
     this.selectedFile = event.target.files[0];
   }
