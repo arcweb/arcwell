@@ -240,9 +240,11 @@ export default class PeopleController {
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
-      const resp = await parseBulkCsv(trx, csvFile, tpyeKeyData.typeKey, PersonService.createPerson)
-      if (resp) {
-        response.status(500).send(resp)
+      try {
+        await parseBulkCsv(trx, csvFile, tpyeKeyData.typeKey, PersonService.createPerson)
+        response.status(200).send('People Imported')
+      } catch (error) {
+        response.status(500).send({ errors: error })
       }
     } else {
       response.status(404).send('File not found')
