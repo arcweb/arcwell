@@ -13,7 +13,12 @@ export function parseDynamicReturningUndefined(value: any) {
   }
 }
 
-export function parseBulkCsv(trx: TransactionClientContract, file: string, typeKey: string, modelServiceCall: any): string | void {
+export function parseBulkCsv(
+  trx: TransactionClientContract,
+  file: string,
+  typeKey: string,
+  modelServiceCall: any
+): string | void {
   Papa.parse(file, {
     dynamicTyping: false,
     transform: parseDynamicReturningUndefined,
@@ -29,7 +34,7 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, typeK
       // handle seperated diemntion data
       var objData = {}
       var dimData = []
-    
+
       for (const key in result.data) {
         if (key.includes('DIM.')) {
           if (result.data[key]) {
@@ -42,7 +47,7 @@ export function parseBulkCsv(trx: TransactionClientContract, file: string, typeK
       }
 
       try {
-        let createData: {[x: string]: any} = { ...objData, typeKey: typeKey }
+        let createData: { [x: string]: any } = { ...objData, typeKey: typeKey }
         if (dimData.length > 0) {
           createData = { ...createData, dimensions: dimData }
         }

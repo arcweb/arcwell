@@ -15,7 +15,7 @@
       <button
         mat-button
         (click)="downloadExample()"
-        [disabled]="!bulkForm.controls.type.value"
+        [disabled]="!bulkForm.controls.type.valid"
       >
         Download Example
       </button>

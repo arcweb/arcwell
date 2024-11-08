@@ -111,5 +111,10 @@ export class BulkImportDialogComponent {
     }
   }
 
-  downloadExample() {}
+  downloadExample() {
+    console.log(
+      'FILE NAME: ',
+      `${this.data.apiRoute}_${this.bulkForm.controls.type.value}`,
+    );
+  }
 }
