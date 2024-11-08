@@ -84,7 +84,6 @@ export class BulkImportDialogComponent {
   canDownload = false;
 
   constructor() {
-    console.log(this.data);
     effect(() => {
       if (this.data.types) {
         this.bulkForm.patchValue({
