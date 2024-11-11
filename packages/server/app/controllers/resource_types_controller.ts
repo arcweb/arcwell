@@ -19,7 +19,11 @@ export default class ResourceTypesController {
     const sort = queryData['sort']
     const order = queryData['order']
 
-    let [query, countQuery] = buildApiQuery(ResourceType.query(), queryData, 'resource_types')
+    let [query, countQuery] = await buildApiQuery({
+      modelQuery: ResourceType.query(),
+      queryData,
+      tableName: 'resource_types',
+    })
 
     query.preload('tags')
 

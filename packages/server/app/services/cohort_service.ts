@@ -21,8 +21,12 @@ export default class CohortService {
       .where('id', id)
       .preload('tags')
       .withCount('people')
-      .preload('people', (people) => {
-        let [peopleQuery] = buildApiQuery(people, queryData, 'people')
+      .preload('people', async (people) => {
+        let [peopleQuery] = await buildApiQuery({
+          modelQuery: people,
+          queryData,
+          tableName: 'people',
+        })
         peopleQuery.preload('personType')
         buildPeopleSort(peopleQuery, queryData)
       })

@@ -169,7 +169,7 @@ Environment seed data will create a user for you:
 Your environment should now be up and running, ready for you to take a look.
 
 
-# Explore!
+## Explore!
 
 Now, you can poke around the Admin experience or Server code and documentation.
 

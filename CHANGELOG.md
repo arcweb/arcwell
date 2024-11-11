@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - All list screens except Events and Facts can be filtered by search terms in Admin
-
+- Filter and dimension query logic added to all appropriate objects
+- Ability to import People, Events, Facts, and Resources data via CSV bulk endpoint.
 
 ### Changed
 
-- 
+- All searches use the object filter system
 
 ### Removed
 
