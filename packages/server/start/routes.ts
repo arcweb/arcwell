@@ -171,6 +171,10 @@ router
               .as('featuresMenu')
               .use(middleware.auth())
             router
+              .get('filter-configuration', [ConfigController, 'filterConfiguration'])
+              .as('filterConfiguration')
+              .use(middleware.auth())
+            router
               .post('install', [ConfigController, 'install'])
               .as('install')
               .use(middleware.auth())
