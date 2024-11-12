@@ -14,6 +14,16 @@
       />
     </mat-form-field>
   }
+  <!-- Filter area -->
+  <div class="filter-area">
+    @if (featureSearchAndFilterStore.filters().length < 1) {
+      <div class="align-center">
+        No filters currently defined.
+        <br />
+        <a>Create the first.</a>
+      </div>
+    }
+  </div>
   <div>
     <button
       mat-button
