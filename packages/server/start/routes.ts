@@ -27,6 +27,7 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
+const FilesController = () => import('#controllers/files_controller')
 
 router
   // API Outer Wrapper
@@ -177,6 +178,14 @@ router
           })
           .as('config')
           .prefix('config')
+
+        router
+          .group(() => {
+            router.put('', [FilesController, 'upload']).as('upload')
+            router.get('', [FilesController, 'download']).as('download')
+          })
+          .as('files')
+          .prefix('files')
       })
       .prefix('v1')
       .as('v1')

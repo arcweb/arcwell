@@ -30,7 +30,7 @@ export default class File extends AwBaseModel {
   declare tags: ManyToMany<typeof Tag>
 
   @afterDelete()
-  static async detachTags(cohort: Cohort) {
-    await cohort.related('tags').detach()
+  static async detachTags(file: File) {
+    await file.related('tags').detach()
   }
 }
