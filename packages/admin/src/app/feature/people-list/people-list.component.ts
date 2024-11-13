@@ -7,7 +7,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { Sort } from '@angular/material/sort';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
@@ -65,7 +65,6 @@ export class PeopleListComponent {
   constructor() {
     effect(() => {
       this.dataSource.data = this.peopleListStore.people();
-      console.log(this.peopleListStore.totalData());
     });
     // load the people list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
@@ -138,6 +137,12 @@ export class PeopleListComponent {
       pageIndex: this.peopleListStore.pageIndex(),
       typeKey: this.peopleListStore.typeKey(),
       search: this.peopleListStore.search(),
+    });
+  }
+
+  exportCSV() {
+    this.typeKey$.pipe(take(1)).subscribe(typeKey => {
+      this.peopleListStore.getCsv(typeKey ?? '');
     });
   }
 }

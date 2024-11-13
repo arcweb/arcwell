@@ -209,4 +209,23 @@ export class PersonService {
         }),
       );
   }
+
+  getCsv(typeKey?: string): Observable<Blob | ErrorResponseType> {
+    const params = new HttpParams();
+
+    if (typeKey) {
+      params.set('type_key', typeKey);
+    }
+
+    return this.http
+      .get(`${environment.apiUrl}/people/exportCSV`, {
+        params,
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

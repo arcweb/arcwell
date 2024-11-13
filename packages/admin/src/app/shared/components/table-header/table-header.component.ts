@@ -12,6 +12,7 @@ import {
   faCirclePlus,
   faBars,
   faMagnifyingGlass,
+  faFileArrowDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
@@ -56,9 +57,11 @@ export class TableHeaderComponent {
 
   onSearchTextChanged = output<string>();
   onFilterClosed = output();
+  onExportCSV = output();
 
   faCirclePlus = faCirclePlus;
   faBars = faBars;
+  faFileArrowDown = faFileArrowDown;
   faMagnifyingGlass = faMagnifyingGlass;
 
   readonly navigation = this.router.events.pipe(
@@ -94,5 +97,9 @@ export class TableHeaderComponent {
 
   searchTextChanged(searchText: string) {
     this.onSearchTextChanged.emit(searchText);
+  }
+
+  exportCSV() {
+    this.onExportCSV.emit();
   }
 }

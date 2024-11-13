@@ -5,6 +5,7 @@
     peopleListStore.people().length > 0 || peopleListStore.search().length > 0
   "
   (onSearchTextChanged)="searchTextChanged($event)"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {
