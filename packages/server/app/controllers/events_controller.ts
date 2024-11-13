@@ -187,12 +187,12 @@ export default class EventsController {
   async bulk({ request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    const tpyeKeyData = request.only(['typeKey'])
+    const typeKeyData = request.only(['typeKey'])
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
       try {
-        await parseBulkCsv(trx, csvFile, tpyeKeyData.typeKey, EventService.createEvent)
+        await parseBulkCsv(trx, csvFile, typeKeyData.typeKey, EventService.createEvent)
         response.status(200).send('Events Imported')
       } catch (error) {
         response.status(500).send({ errors: error })

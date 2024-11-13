@@ -171,12 +171,12 @@ export default class ResourcesController {
   async bulk({ request, response }: HttpContext) {
     await request.validateUsing(bulkUploadValidator)
     const file = request.file('file')
-    const tpyeKeyData = request.only(['typeKey'])
+    const typeKeyData = request.only(['typeKey'])
     const trx = await db.transaction()
     if (file) {
       const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
       try {
-        await parseBulkCsv(trx, csvFile, tpyeKeyData.typeKey, ResourceService.createResource)
+        await parseBulkCsv(trx, csvFile, typeKeyData.typeKey, ResourceService.createResource)
         response.status(200).send('Resources Imported')
       } catch (error) {
         response.status(500).send({ errors: error })
