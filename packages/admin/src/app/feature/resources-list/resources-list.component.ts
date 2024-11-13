@@ -28,6 +28,8 @@ import { ResourcesTableComponent } from '@app/shared/components/resources-table/
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { MatDialog } from '@angular/material/dialog';
+import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
 import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
@@ -67,6 +69,7 @@ export class ResourcesListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly dialog = inject(MatDialog);
   readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
@@ -146,6 +149,16 @@ export class ResourcesListComponent {
       pageIndex: this.resourcesListStore.pageIndex(),
       typeKey: this.resourcesListStore.typeKey(),
       search: this.resourcesListStore.search(),
+    });
+  }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import Resources',
+        types: this.resourcesListStore.resourceTypes(),
+        apiRoute: 'resources',
+      },
     });
   }
 }

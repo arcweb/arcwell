@@ -12,7 +12,7 @@ export const EventSchema: any = z
     typeKey: z.string(),
     tags: z.array(z.string()).optional(),
     dimensions: z.array(DimensionSchema).optional().nullable(),
-    eventType: EventTypeSchema.optional(),
+    eventType: z.lazy(() => EventTypeSchema.optional()),
     startedAt: z.string().datetime({ offset: true }),
     endedAt: z.string().datetime({ offset: true }).optional().nullable(),
     person: z.lazy(() => PersonSchema.optional().nullable()),

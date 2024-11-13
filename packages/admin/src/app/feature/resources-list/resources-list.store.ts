@@ -8,15 +8,18 @@ import {
 } from '@shared/store/request-status.feature';
 import { inject } from '@angular/core';
 import { ResourceModel } from '@shared/models/resource.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ResourceService } from '@shared/services/resource.service';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
+import { ResourceTypeService } from '@app/shared/services/resource-type.service';
 
 interface ResourceListState {
   resources: ResourceModel[];
+  resourceTypes: ResourceTypeType[];
   limit: number;
   offset: number;
   totalData: number;
@@ -29,6 +32,7 @@ interface ResourceListState {
 
 const initialState: ResourceListState = {
   resources: [],
+  resourceTypes: [],
   limit: 10,
   offset: 0,
   totalData: 0,
@@ -47,6 +51,7 @@ export const ResourcesListStore = signalStore(
     (
       store,
       resourceService = inject(ResourceService),
+      resourceTyeService = inject(ResourceTypeService),
       toastService = inject(ToastService),
     ) => ({
       async load(props: {
@@ -66,18 +71,35 @@ export const ResourcesListStore = signalStore(
           },
           setPending(),
         );
-        const resp = await firstValueFrom(resourceService.getResources(props));
-        if (resp.errors) {
-          patchState(store, setErrors(resp.errors));
+        const { resourceResp, resourceTypeResp } = await firstValueFrom(
+          forkJoin({
+            resourceResp: resourceService.getResources(props),
+            resourceTypeResp: resourceTyeService.getResourceTypes({}),
+          }),
+        );
+
+        if (resourceResp.errors) {
+          patchState(store, setErrors(resourceResp.errors));
 
           toastService.sendMessage(
             toastService.createCrudMessage('Resources', 'Fetching', false),
             ToastLevel.ERROR,
           );
+        } else if (resourceTypeResp.errors) {
+          patchState(store, setErrors(resourceTypeResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resource Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
-            { resources: resp.data, totalData: resp.meta.count },
+            {
+              resources: resourceResp.data,
+              totalData: resourceResp.meta.count,
+              resourceTypes: resourceTypeResp.data,
+            },
             setFulfilled(),
           );
         }
