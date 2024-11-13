@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import Event from '#models/event'
 import EventType from '#models/event_type'
 import { paramsUUIDValidator } from '#validators/common'
@@ -9,6 +10,8 @@ import EventService from '#services/event_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { bulkUploadValidator } from '#validators/bulk'
+import { parseBulkCsv } from '#helpers/bulk_parsing'
 
 export default class EventsController {
   /**
@@ -179,5 +182,23 @@ export default class EventsController {
     const event = await Event.findOrFail(params.id)
     await event.delete()
     response.status(204).send('')
+  }
+
+  async bulk({ request, response }: HttpContext) {
+    await request.validateUsing(bulkUploadValidator)
+    const file = request.file('file')
+    const typeKeyData = request.only(['typeKey'])
+    const trx = await db.transaction()
+    if (file) {
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
+      try {
+        await parseBulkCsv(trx, csvFile, typeKeyData.typeKey, EventService.createEvent)
+        response.status(200).send('Events Imported')
+      } catch (error) {
+        response.status(500).send({ errors: error })
+      }
+    } else {
+      response.status(404).send('File not found')
+    }
   }
 }

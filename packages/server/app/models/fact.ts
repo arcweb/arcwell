@@ -14,7 +14,7 @@ export default class Fact extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare typeKey: string
 
   @column()

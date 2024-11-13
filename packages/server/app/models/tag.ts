@@ -12,7 +12,7 @@ export default class Tag extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare pathname: string
 
   @column.dateTime({ autoCreate: true, serializeAs: null })

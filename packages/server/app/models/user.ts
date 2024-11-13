@@ -20,7 +20,7 @@ export default class User extends compose(AwBaseModel, AuthFinder) {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare email: string
 
   @column({ serializeAs: null })

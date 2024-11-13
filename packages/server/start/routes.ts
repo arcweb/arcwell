@@ -70,6 +70,7 @@ router
               .get('people/types/:id/people', [PersonTypesController, 'showWithPeople'])
               .as('people/types.showWithPeople')
             router.get('people/count', [PeopleController, 'count']).as('people.count')
+            router.post('people/bulk', [PeopleController, 'bulk']).as('people.bulk')
             router.resource('people', PeopleController).apiOnly()
           })
           .use(middleware.auth())
@@ -99,6 +100,7 @@ router
               .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
               .as('resources/types.showWithResources')
             router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
+            router.post('resources/bulk', [ResourcesController, 'bulk']).as('resources.bulk')
             router.resource('resources', ResourcesController).apiOnly()
           })
           .use(middleware.auth())
@@ -111,6 +113,7 @@ router
               .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
               .as('events/types.showWithEvents')
             router.get('events/count', [EventController, 'count']).as('events.count')
+            router.post('events/bulk', [EventController, 'bulk']).as('events.bulk')
             router.resource('events', EventController).apiOnly()
           })
           .use(middleware.auth())
@@ -123,6 +126,7 @@ router
               .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
               .as('facts/types.showWithFacts')
             router.get('facts/count', [FactsController, 'count']).as('facts.count')
+            router.post('facts/bulk', [FactsController, 'bulk']).as('facts.bulk')
             router.resource('facts', FactsController).apiOnly()
           })
           .use(middleware.auth())
@@ -170,6 +174,10 @@ router
             router
               .get('features-menu', [ConfigController, 'featuresMenu'])
               .as('featuresMenu')
+              .use(middleware.auth())
+            router
+              .get('filter-configuration', [ConfigController, 'filterConfiguration'])
+              .as('filterConfiguration')
               .use(middleware.auth())
             router
               .post('install', [ConfigController, 'install'])

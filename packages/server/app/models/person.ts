@@ -24,13 +24,13 @@ export default class Person extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare familyName: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare givenName: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare typeKey: string
 
   @column()
