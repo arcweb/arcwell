@@ -7,7 +7,6 @@ import {
   SubfeatureMenuItem,
   FeatureMenuItemNames,
 } from '#config/features'
-import Event from '#models/event'
 import EventType from '#models/event_type'
 import FactType from '#models/fact_type'
 import PersonType from '#models/person_type'
@@ -25,9 +24,7 @@ import TagService from '#services/tag_service'
 import UserService from '#services/user_service'
 import Person from '#models/person'
 import PersonService from '#services/person_service'
-import Cohort from '#models/cohort'
-import Fact from '#models/fact'
-import Resource from '#models/resource'
+import { filterableModels } from '#config/filter'
 
 export default class ConfigController {
   /**
@@ -117,21 +114,8 @@ export default class ConfigController {
    */
   async filterConfiguration({}: HttpContext) {
     const result: any = {}
-    const models = [
-      Cohort,
-      Event,
-      EventType,
-      Fact,
-      FactType,
-      Person,
-      PersonType,
-      Resource,
-      ResourceType,
-      Tag,
-      User,
-    ]
 
-    models.forEach((model) => {
+    filterableModels.forEach((model) => {
       const filterableColumns = Array.from(model.$columnsDefinitions.entries())
         .filter((column) => column[0] !== 'createdAt' && column[0] !== 'updatedAt')
         .filter((column) => column[1]['meta'])
