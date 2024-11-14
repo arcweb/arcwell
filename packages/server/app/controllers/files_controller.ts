@@ -40,6 +40,8 @@ export default class FilesController {
     const cleanRequest = request.only(['name'])
 
     const file = await File.findByOrFail('name', cleanRequest.name)
+
+    // TODO: the path will need to be investigated
     const absPath = app.makePath('downloaded', normalize(file.url))
 
     return response.download(absPath)
