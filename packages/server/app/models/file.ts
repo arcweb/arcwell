@@ -2,7 +2,6 @@ import { afterDelete, column, manyToMany } from '@adonisjs/lucid/orm'
 import AwBaseModel from './aw_base_model'
 import { DateTime } from 'luxon'
 import { ManyToMany } from '@adonisjs/lucid/types/relations'
-import Cohort from './cohort'
 import Tag from './tag'
 
 export default class File extends AwBaseModel {
@@ -14,6 +13,12 @@ export default class File extends AwBaseModel {
 
   @column()
   declare extension: string
+
+  @column()
+  declare url: string
+
+  @column()
+  declare size: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

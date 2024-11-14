@@ -11,7 +11,7 @@ import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { parseBulkCsv } from '#helpers/bulk_parsing'
-import { bulkUploadValidator } from '#validators/bulk'
+import { bulkUploadValidator } from '#validators/file'
 
 export default class FactsController {
   /**
