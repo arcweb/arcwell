@@ -98,6 +98,12 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     icon: 'faTags',
     subfeatures: [],
   },
+  {
+    name: 'Files',
+    path: 'files',
+    icon: 'faFile',
+    subfeatures: [],
+  },
   // TODO: do we want settings to be absolute paths?
   {
     name: 'Settings',

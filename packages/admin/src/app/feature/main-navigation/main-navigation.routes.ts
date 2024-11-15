@@ -23,6 +23,8 @@ import { TagComponent } from '../tag/tag.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { DashboardComponent } from '@feature/dashboard/dashboard.component';
 import { UserComponent } from '../users/user/user.component';
+import { FileListComponent } from '../file-list/file-list.component';
+import { FileComponent } from '../file/file.component';
 
 export const MAIN_NAVIGATION_ROUTES: Route[] = [
   {
@@ -162,6 +164,17 @@ export const MAIN_NAVIGATION_ROUTES: Route[] = [
       {
         path: 'tags',
         redirectTo: 'tags/list',
+      },
+      {
+        path: 'files/list',
+        component: FileListComponent,
+        data: {
+          detailComponent: FileComponent,
+        },
+      },
+      {
+        path: 'files',
+        redirectTo: 'files/list',
       },
       {
         path: 'settings',
