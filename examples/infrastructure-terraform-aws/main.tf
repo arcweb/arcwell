@@ -143,6 +143,10 @@ module "server" {
     {
       name = "ARCWELL_SERVER_CORS_ORIGINS",
       valueFrom = "${module.server[0].task_secret_id}:ARCWELL_SERVER_CORS_ORIGINS::"
+    },
+    {
+      name = "ARCWELL_SERVER_DRIVE_DISK",
+      valueFrom = "${module.server[0].task_secret_id}: ARCWELL_SERVER_DRIVE_DISK::"
     }
   ]
 }

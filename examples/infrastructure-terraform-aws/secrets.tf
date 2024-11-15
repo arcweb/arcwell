@@ -23,6 +23,7 @@ resource "aws_secretsmanager_secret_version" "server_secrets" {
     ARCWELL_INSTANCE_NAME = ""
     ARCWELL_REGISTER_ENABLED = true
     ARCWELL_SERVER_CORS_ORIGINS = "http://localhost:4200,0.0.0.0:4200,127.0.0.1:4200,http://localhost:3333"
+    ARCWELL_SERVER_DRIVE_DISK = "fs"
   })
 
   lifecycle {
