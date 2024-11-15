@@ -101,7 +101,7 @@ export const featureMenuConfig: FeatureMenuItem[] = [
   {
     name: 'Files',
     path: 'files',
-    icon: 'faFile',
+    icon: 'faFolderOpen',
     subfeatures: [],
   },
   // TODO: do we want settings to be absolute paths?
