@@ -2,6 +2,7 @@
   [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="factsListStore.facts().length > 0"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (factsListStore.isErrored()) {

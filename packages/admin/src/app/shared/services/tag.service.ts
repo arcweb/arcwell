@@ -198,4 +198,16 @@ export class TagService {
         }),
       );
   }
+
+  getCsv(): Observable<Blob | ErrorResponseType> {
+    return this.http
+      .get(`${environment.apiUrl}/tags/exportCSV`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

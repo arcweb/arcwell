@@ -13,6 +13,7 @@ import {
 } from '#helpers/query_builder'
 import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import TagService from '#services/tag_service'
+import Papa from 'papaparse'
 
 export default class TagsController {
   // TODO: Same as in query_builder. Should these return the query object?
@@ -310,5 +311,19 @@ export default class TagsController {
     })
 
     response.status(204).send('')
+  }
+
+  /**
+   * @exportAllTags
+   * @summary Export All Tags to a CSV File
+   * @description Export all tags to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('tags').select('*')
+    const tags = await query
+
+    const csv = Papa.unparse(tags)
+
+    return csv
   }
 }

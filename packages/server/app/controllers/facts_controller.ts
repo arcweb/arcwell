@@ -9,6 +9,7 @@ import FactService from '#services/fact_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import Papa from 'papaparse'
 
 export default class FactsController {
   /**
@@ -180,5 +181,27 @@ export default class FactsController {
     const fact = await Fact.findOrFail(params.id)
     await fact.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Facts to a CSV File
+   * @description Export all facts to a CSV file
+   */
+  async exportCSV({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = db.from('facts').select('*')
+
+    if (typeKey) {
+      const factType = await FactType.findByOrFail('key', typeKey)
+      query.where('type_key', factType.key)
+    }
+
+    const people = await query
+
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

@@ -24,6 +24,7 @@ interface EventsListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  csv?: Blob;
 }
 
 const initialState: EventsListState = {
@@ -35,6 +36,7 @@ const initialState: EventsListState = {
   sort: 'startedAt',
   order: 'asc',
   typeKey: '',
+  csv: undefined,
 };
 
 export const EventsListStore = signalStore(
@@ -127,6 +129,26 @@ export const EventsListStore = signalStore(
           );
         } else {
           patchState(store, { totalData: resp.data.count }, setFulfilled());
+        }
+      },
+      async getCsv(typeKey?: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(eventService.getCsv(typeKey));
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('People CSV', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = `events${typeKey ? '-' + typeKey : ''}.csv`;
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

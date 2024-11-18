@@ -24,6 +24,7 @@ interface FactsListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  csv?: Blob;
 }
 
 const initialState: FactsListState = {
@@ -35,6 +36,7 @@ const initialState: FactsListState = {
   sort: 'familyName',
   order: 'asc',
   typeKey: '',
+  csv: undefined,
 };
 
 export const FactsListStore = signalStore(
@@ -125,6 +127,26 @@ export const FactsListStore = signalStore(
           );
         } else {
           patchState(store, { totalData: resp.data.count }, setFulfilled());
+        }
+      },
+      async getCsv(typeKey?: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(factService.getCsv(typeKey));
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Facts CSV', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = `facts${typeKey ? '-' + typeKey : ''}.csv`;
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

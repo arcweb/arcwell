@@ -4,6 +4,7 @@
     tagsListStore.tags().length > 0 || tagsListStore.search().length > 0
   "
   (onSearchTextChanged)="searchTextChanged($event)"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (tagsListStore.isErrored()) {

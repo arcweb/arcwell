@@ -2,6 +2,7 @@
   [tableName]="featureStore.activeSubfeature()?.name || 'Events'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="eventsListStore.events().length > 0"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (eventsListStore.isErrored()) {

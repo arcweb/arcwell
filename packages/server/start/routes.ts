@@ -87,6 +87,9 @@ router
               .delete('cohorts/:id/detach', [CohortsController, 'detachPeople'])
               .as('cohorts.detachPeople')
             router.post('cohorts/:id/set', [CohortsController, 'setPeople']).as('cohorts.setPeople')
+            router
+              .get('cohorts/exportCSV', [CohortsController, 'exportCSV'])
+              .as('cohorts.exportCSV')
             router.resource('cohorts', CohortsController).apiOnly()
           })
           .use(middleware.auth())
@@ -98,7 +101,13 @@ router
             router
               .get('resources/types/:id/resources', [ResourceTypesController, 'showWithResources'])
               .as('resources/types.showWithResources')
+            router
+              .get('resource/types/exportCSV', [ResourceTypesController, 'exportCSV'])
+              .as('resource.types.exportCSV')
             router.get('resources/count', [ResourcesController, 'count']).as('resources.count')
+            router
+              .get('resources/exportCSV', [ResourcesController, 'exportCSV'])
+              .as('resources.exportCSV')
             router.resource('resources', ResourcesController).apiOnly()
           })
           .use(middleware.auth())
@@ -106,11 +115,15 @@ router
         // Event Management
         router
           .group(() => {
+            router
+              .get('events/types/exportCSV', [EventTypeController, 'exportCSV'])
+              .as('events.types.exportCSV')
             router.resource('events/types', EventTypeController).apiOnly()
             router
               .get('events/types/:id/events', [EventTypeController, 'showWithEvents'])
               .as('events/types.showWithEvents')
             router.get('events/count', [EventController, 'count']).as('events.count')
+            router.get('events/exportCSV', [EventController, 'exportCSV']).as('events.exportCSV')
             router.resource('events', EventController).apiOnly()
           })
           .use(middleware.auth())
@@ -118,11 +131,15 @@ router
         // Fact Management
         router
           .group(() => {
+            router
+              .get('facts/types/exportCSV', [FactTypesController, 'exportCSV'])
+              .as('facts.types.exportCSV')
             router.resource('facts/types', FactTypesController).apiOnly()
             router
               .get('facts/types/:id/facts', [FactTypesController, 'showWithFacts'])
               .as('facts/types.showWithFacts')
             router.get('facts/count', [FactsController, 'count']).as('facts.count')
+            router.get('facts/exportCSV', [FactsController, 'exportCSV']).as('facts.exportCSV')
             router.resource('facts', FactsController).apiOnly()
           })
           .use(middleware.auth())
@@ -136,6 +153,7 @@ router
               .as('tags.showRelated')
             router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
             router.get('tags/count', [TagsController, 'count']).as('tags.count')
+            router.get('tags/exportCSV', [TagsController, 'exportCSV']).as('tags.exportCSV')
             router.resource('tags', TagsController).apiOnly()
           })
           .use(middleware.auth())

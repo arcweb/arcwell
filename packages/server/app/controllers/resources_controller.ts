@@ -9,6 +9,7 @@ import ResourceService from '#services/resource_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import Papa from 'papaparse'
 
 export default class ResourcesController {
   /**
@@ -163,5 +164,27 @@ export default class ResourcesController {
     const resource = await Resource.findOrFail(params.id)
     await resource.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Resources to a CSV File
+   * @description Export all resources to a CSV file, filter by typeKey if provided
+   */
+  async exportCSV({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = db.from('resources').select('*')
+
+    if (typeKey) {
+      const resourceType = await ResourceType.findByOrFail('key', typeKey)
+      query.where('type_key', resourceType.key)
+    }
+
+    const people = await query
+
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

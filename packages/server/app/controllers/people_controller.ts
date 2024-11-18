@@ -237,27 +237,24 @@ export default class PeopleController {
   }
 
   /**
-   * @exportAllPeople
+   * @exportCSV
    * @summary Export All People to a CSV File
    * @description Export all people to a CSV file
    */
   async exportCSV({ request }: HttpContext) {
     const queryData = request.qs()
-    const typeKey = queryData['type_key']
+    const typeKey = queryData['typeKey']
 
     let query = db.from('people').select('*')
 
     if (typeKey) {
       const personType = await PersonType.findByOrFail('key', typeKey)
-      query.where('typeKey', personType.key)
+      query.where('type_key', personType.key)
     }
 
-    // call the query
     const people = await query
-    const csv = Papa.unparse(people)
 
-    return {
-      data: csv,
-    }
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

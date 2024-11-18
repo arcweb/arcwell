@@ -111,4 +111,8 @@ export class ResourceTypesComponent {
       search: this.resourceTypesStore.search(),
     });
   }
+
+  exportCSV() {
+    this.resourceTypesStore.getCsv();
+  }
 }

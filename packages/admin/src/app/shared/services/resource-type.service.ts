@@ -135,4 +135,16 @@ export class ResourceTypeService {
         }),
       );
   }
+
+  getCsv(): Observable<Blob | ErrorResponseType> {
+    return this.http
+      .get(`${environment.apiUrl}/resource/types/exportCSV`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

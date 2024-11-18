@@ -22,7 +22,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { FactsTableComponent } from '@app/shared/components/facts-table/facts-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
@@ -84,6 +84,7 @@ export class FactsListComponent {
     'observedAt',
     'tags',
   ];
+  eventsListStore: any;
 
   constructor() {
     effect(() => {
@@ -142,6 +143,12 @@ export class FactsListComponent {
       order: event.direction,
       pageIndex: this.factsListStore.pageIndex(),
       typeKey: this.factsListStore.typeKey(),
+    });
+  }
+
+  exportCSV() {
+    this.typeKey$.pipe(take(1)).subscribe(typeKey => {
+      this.factsListStore.getCsv(typeKey ?? '');
     });
   }
 }

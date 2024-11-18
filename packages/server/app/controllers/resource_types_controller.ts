@@ -6,6 +6,7 @@ import { createResourceTypeValidator, updateResourceTypeValidator } from '#valid
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import Papa from 'papaparse'
 
 export default class ResourceTypesController {
   /**
@@ -120,5 +121,19 @@ export default class ResourceTypesController {
     const resourceType = await ResourceType.findOrFail(params.id)
     await resourceType.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Resource Types to a CSV File
+   * @description Export all Resource Types to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('resource_types').select('*')
+
+    const resourceTypes = await query
+
+    const csv = Papa.unparse(resourceTypes)
+    return csv
   }
 }

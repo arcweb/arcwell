@@ -31,6 +31,7 @@ interface EventTypesState {
   sort: string;
   order: SortDirection;
   search: { field: string; searchString: string }[];
+  csv?: Blob;
 }
 
 const initialState: EventTypesState = {
@@ -42,6 +43,7 @@ const initialState: EventTypesState = {
   sort: 'key',
   order: 'asc',
   search: [],
+  csv: undefined,
 };
 
 export const EventTypesStore = signalStore(
@@ -120,6 +122,30 @@ export const EventTypesStore = signalStore(
             { eventTypes: resp.data, totalData: resp.meta.count },
             setFulfilled(),
           );
+        }
+      },
+      async getCsv() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(eventTypesService.getCsv());
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage(
+              'Event Types CSV',
+              'Fetching',
+              false,
+            ),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = 'Event_Types.csv';
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

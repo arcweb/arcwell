@@ -135,10 +135,10 @@ export const PeopleListStore = signalStore(
           patchState(store, { totalData: resp.data.count }, setFulfilled());
         }
       },
-      async getCsv(typeKey: string) {
+      async getCsv(typeKey?: string) {
         patchState(store, setPending());
         const resp = await firstValueFrom(personService.getCsv(typeKey));
-        if (resp.errors) {
+        if (resp.errors || Object.keys(resp).includes('errors')) {
           patchState(store, setErrors(resp.errors));
 
           toastService.sendMessage(
@@ -146,7 +146,6 @@ export const PeopleListStore = signalStore(
             ToastLevel.ERROR,
           );
         } else {
-          console.log(resp);
           const blob = new Blob([resp], { type: 'text/csv' });
           const data = window.URL.createObjectURL(blob);
           const link = document.createElement('a');

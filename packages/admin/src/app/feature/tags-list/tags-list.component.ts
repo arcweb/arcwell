@@ -97,4 +97,8 @@ export class TagsListComponent {
       buildBasicSearchForFeature('tags', searchText),
     );
   }
+
+  exportCSV() {
+    this.tagsListStore.getCsv();
+  }
 }

@@ -110,4 +110,8 @@ export class FactTypesComponent {
       search: this.factTypesStore.search(),
     });
   }
+
+  exportCSV() {
+    this.factTypesStore.getCsv();
+  }
 }

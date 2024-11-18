@@ -9,6 +9,7 @@ import EventService from '#services/event_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import Papa from 'papaparse'
 
 export default class EventsController {
   /**
@@ -179,5 +180,27 @@ export default class EventsController {
     const event = await Event.findOrFail(params.id)
     await event.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Events to a CSV File
+   * @description Export all events to a CSV file
+   */
+  async exportCSV({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = db.from('events').select('*')
+
+    if (typeKey) {
+      const eventType = await EventType.findByOrFail('key', typeKey)
+      query.where('type_key', eventType.key)
+    }
+
+    const people = await query
+
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

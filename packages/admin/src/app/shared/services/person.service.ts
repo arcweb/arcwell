@@ -211,12 +211,11 @@ export class PersonService {
   }
 
   getCsv(typeKey?: string): Observable<Blob | ErrorResponseType> {
-    const params = new HttpParams();
+    let params = new HttpParams();
 
     if (typeKey) {
-      params.set('type_key', typeKey);
+      params = params.set('typeKey', typeKey);
     }
-
     return this.http
       .get(`${environment.apiUrl}/people/exportCSV`, {
         params,

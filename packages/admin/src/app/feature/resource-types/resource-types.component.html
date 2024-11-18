@@ -5,6 +5,7 @@
     resourceTypesStore.search().length > 0
   "
   (onSearchTextChanged)="searchTextChanged($event)"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (resourceTypesStore.isErrored()) {
