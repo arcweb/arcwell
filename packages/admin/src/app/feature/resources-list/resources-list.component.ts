@@ -21,7 +21,7 @@ import { ErrorContainerComponent } from '@app/feature/error-container/error-cont
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { ResourcesTableComponent } from '@app/shared/components/resources-table/resources-table.component';
@@ -159,6 +159,12 @@ export class ResourcesListComponent {
         types: this.resourcesListStore.resourceTypes(),
         apiRoute: 'resources',
       },
+    });
+  }
+
+  exportCSV() {
+    this.typeKey$.pipe(take(1)).subscribe(typeKey => {
+      this.resourcesListStore.getCsv(typeKey ?? '');
     });
   }
 }

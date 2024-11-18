@@ -110,4 +110,8 @@ export class EventTypesComponent {
       search: this.eventTypesStore.search(),
     });
   }
+
+  exportCSV() {
+    this.eventTypesStore.getCsv();
+  }
 }

@@ -16,6 +16,7 @@ import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { parseBulkCsv } from '#helpers/bulk_parsing'
 import { bulkUploadValidator } from '#validators/bulk'
+import Papa from 'papaparse'
 
 export default class PeopleController {
   /**
@@ -254,5 +255,27 @@ export default class PeopleController {
     } else {
       response.status(404).send('File not found')
     }
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All People to a CSV File
+   * @description Export all people to a CSV file
+   */
+  async exportCSV({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = db.from('people').select('*')
+
+    if (typeKey) {
+      const personType = await PersonType.findByOrFail('key', typeKey)
+      query.where('type_key', personType.key)
+    }
+
+    const people = await query
+
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

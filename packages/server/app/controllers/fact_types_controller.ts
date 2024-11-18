@@ -6,6 +6,7 @@ import { createFactTypeValidator, updateFactTypeValidator } from '#validators/fa
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import Papa from 'papaparse'
 
 export default class FactTypesController {
   /**
@@ -126,5 +127,19 @@ export default class FactTypesController {
     const factType = await FactType.findOrFail(params.id)
     await factType.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportAllFactTypes
+   * @summary Export All Fact Types to a CSV File
+   * @description Export all fact types to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('fact_types').select('*')
+    const factTypes = await query
+
+    const csv = Papa.unparse(factTypes)
+
+    return csv
   }
 }

@@ -6,6 +6,7 @@ import { createEventTypeValidator, updateEventTypeValidator } from '#validators/
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import Papa from 'papaparse'
 
 export default class EventTypesController {
   /**
@@ -127,5 +128,20 @@ export default class EventTypesController {
     const eventType = await EventType.findOrFail(params.id)
     await eventType.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportAllEventTypes
+   * @summary Export All Event Types to a CSV File
+   * @description Export All Event Types to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('event_types').select('*')
+
+    const eventTypes = await query
+
+    const csv = Papa.unparse(eventTypes)
+
+    return csv
   }
 }

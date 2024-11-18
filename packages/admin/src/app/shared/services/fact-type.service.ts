@@ -129,4 +129,16 @@ export class FactTypeService {
         }),
       );
   }
+
+  getCsv(): Observable<Blob | ErrorResponseType> {
+    return this.http
+      .get(`${environment.apiUrl}/facts/types/exportCSV`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

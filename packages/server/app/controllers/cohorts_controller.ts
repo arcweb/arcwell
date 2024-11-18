@@ -9,6 +9,7 @@ import {
 import { paramsUUIDValidator } from '#validators/common'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import Papa from 'papaparse'
 
 export default class CohortsController {
   /**
@@ -178,5 +179,19 @@ export default class CohortsController {
     await cohort.related('people').sync(cleanRequest.peopleIds)
 
     response.status(201).send('')
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Cohorts to a CSV File
+   * @description Export all Cohorts to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('cohorts').select('*')
+
+    const cohorts = await query
+
+    const csv = Papa.unparse(cohorts)
+    return csv
   }
 }

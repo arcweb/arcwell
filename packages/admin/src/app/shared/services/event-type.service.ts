@@ -132,4 +132,16 @@ export class EventTypeService {
         }),
       );
   }
+
+  getCsv(): Observable<Blob | ErrorResponseType> {
+    return this.http
+      .get(`${environment.apiUrl}/events/types/exportCSV`, {
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

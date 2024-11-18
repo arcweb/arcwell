@@ -12,6 +12,7 @@ import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { parseBulkCsv } from '#helpers/bulk_parsing'
 import { bulkUploadValidator } from '#validators/bulk'
 import fs from 'node:fs'
+import Papa from 'papaparse'
 
 export default class ResourcesController {
   /**
@@ -184,5 +185,27 @@ export default class ResourcesController {
     } else {
       response.status(404).send('File not found')
     }
+  }
+
+  /**
+   * @exportCSV
+   * @summary Export All Resources to a CSV File
+   * @description Export all resources to a CSV file, filter by typeKey if provided
+   */
+  async exportCSV({ request }: HttpContext) {
+    const queryData = request.qs()
+    const typeKey = queryData['typeKey']
+
+    let query = db.from('resources').select('*')
+
+    if (typeKey) {
+      const resourceType = await ResourceType.findByOrFail('key', typeKey)
+      query.where('type_key', resourceType.key)
+    }
+
+    const people = await query
+
+    const csv = Papa.unparse(people)
+    return csv
   }
 }

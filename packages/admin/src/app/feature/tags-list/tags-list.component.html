@@ -5,6 +5,7 @@
   "
   [enableImport]="false"
   (onSearchTextChanged)="searchTextChanged($event)"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (tagsListStore.isErrored()) {

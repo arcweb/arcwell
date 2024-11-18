@@ -5,6 +5,7 @@
     factTypesStore.factTypes().length > 0 || factTypesStore.search().length > 0
   "
   (onSearchTextChanged)="searchTextChanged($event)"
+  (onExportCSV)="exportCSV()"
 ></aw-table-header>
 
 @if (factTypesStore.isErrored()) {

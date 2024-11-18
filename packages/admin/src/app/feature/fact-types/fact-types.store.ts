@@ -31,6 +31,7 @@ interface FactTypesState {
   sort: string;
   order: SortDirection;
   search: { field: string; searchString: string }[];
+  csv?: Blob;
 }
 
 const initialState: FactTypesState = {
@@ -42,6 +43,7 @@ const initialState: FactTypesState = {
   sort: 'name',
   order: 'asc',
   search: [],
+  csv: undefined,
 };
 
 export const FactTypesStore = signalStore(
@@ -118,6 +120,26 @@ export const FactTypesStore = signalStore(
             { factTypes: resp.data, totalData: resp.meta.count },
             setFulfilled(),
           );
+        }
+      },
+      async getCsv() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(factTypesService.getCsv());
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Type CSV', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = `Fact_Types.csv`;
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

@@ -64,6 +64,20 @@
           (onSearchTextChanged)="searchTextChanged($event)"
         ></aw-feature-search-and-filter>
       </ng-template>
+      <button
+        mat-button
+        (click)="exportCSV()"
+        matTooltip="Export CSV"
+        class="table-header-button label-medium font-weight-regular"
+      >
+        <fa-icon
+          aria-label="Export CSV Icon Button"
+          class="table-header-button-icon"
+          [icon]="faFileArrowDown"
+          size="xl"
+        ></fa-icon>
+        Export CSV
+      </button>
     }
     @if (enableImport()) {
       <div matTooltip="bulk import">

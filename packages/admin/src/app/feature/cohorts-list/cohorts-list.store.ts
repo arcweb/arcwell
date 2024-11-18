@@ -21,6 +21,7 @@ interface CohortsListState {
   totalData: number;
   pageIndex: number;
   search: { field: string; searchString: string }[];
+  csv?: Blob;
 }
 
 const initialState: CohortsListState = {
@@ -30,6 +31,7 @@ const initialState: CohortsListState = {
   totalData: 0,
   pageIndex: 0,
   search: [],
+  csv: undefined,
 };
 
 export const CohortsListStore = signalStore(
@@ -102,6 +104,26 @@ export const CohortsListStore = signalStore(
             { cohorts: resp.data, totalData: resp.meta.count },
             setFulfilled(),
           );
+        }
+      },
+      async getCsv() {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(cohortService.getCsv());
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Cohort CSV', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = 'cohorts.csv';
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

@@ -85,4 +85,8 @@ export class CohortsListComponent {
       buildBasicSearchForFeature('cohorts', searchText),
     );
   }
+
+  exportCSV() {
+    this.cohortsListStore.getCsv();
+  }
 }

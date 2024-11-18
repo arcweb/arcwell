@@ -28,6 +28,7 @@ interface ResourceListState {
   order: SortDirection;
   typeKey: string;
   search: { field: string; searchString: string }[];
+  csv?: Blob;
 }
 
 const initialState: ResourceListState = {
@@ -41,6 +42,7 @@ const initialState: ResourceListState = {
   order: 'asc',
   typeKey: '',
   search: [],
+  csv: undefined,
 };
 
 export const ResourcesListStore = signalStore(
@@ -157,6 +159,26 @@ export const ResourcesListStore = signalStore(
           );
         } else {
           patchState(store, { totalData: resp.data.count }, setFulfilled());
+        }
+      },
+      async getCsv(typeKey?: string) {
+        patchState(store, setPending());
+        const resp = await firstValueFrom(resourceService.getCsv(typeKey));
+        if (resp.errors || Object.keys(resp).includes('errors')) {
+          patchState(store, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Resources CSV', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
+        } else {
+          const blob = new Blob([resp], { type: 'text/csv' });
+          const data = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = data;
+          link.download = `resources${typeKey ? '-' + typeKey : ''}.csv`;
+          link.click();
+          patchState(store, { csv: resp }, setFulfilled());
         }
       },
     }),

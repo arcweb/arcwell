@@ -4,6 +4,7 @@
     cohortsListStore.cohorts().length > 0 ||
     cohortsListStore.search().length > 0
   "
+  (onExportCSV)="exportCSV()"
   [enableImport]="false"
   (onSearchTextChanged)="searchTextChanged($event)"
 ></aw-table-header>

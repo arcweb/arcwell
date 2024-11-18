@@ -6,6 +6,7 @@ import { createPersonTypeValidator, updatePersonTypeValidator } from '#validator
 import string from '@adonisjs/core/helpers/string'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
+import Papa from 'papaparse'
 
 export default class PersonTypesController {
   /**
@@ -123,5 +124,20 @@ export default class PersonTypesController {
     const personType = await PersonType.findOrFail(params.id)
     await personType.delete()
     response.status(204).send('')
+  }
+
+  /**
+   * @exportAllPersonTypes
+   * @summary Export All Person Types to a CSV File
+   * @description Export all person types to a CSV file
+   */
+  async exportCSV() {
+    let query = db.from('person_types').select('*')
+    // call the query
+    const peopleTypes = await query
+
+    const csv = Papa.unparse(peopleTypes)
+
+    return csv
   }
 }

@@ -22,7 +22,7 @@ import { ErrorContainerComponent } from '../error-container/error-container.comp
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { EventsTableComponent } from '@app/shared/components/events-table/events-table.component';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
@@ -146,6 +146,12 @@ export class EventsListComponent {
         types: this.eventsListStore.eventTypes(),
         apiRoute: 'events',
       },
+    });
+  }
+
+  exportCSV() {
+    this.typeKey$.pipe(take(1)).subscribe(typeKey => {
+      this.eventsListStore.getCsv(typeKey ?? '');
     });
   }
 }

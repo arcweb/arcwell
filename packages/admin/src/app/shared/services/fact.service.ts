@@ -123,4 +123,21 @@ export class FactService {
         }),
       );
   }
+  getCsv(typeKey?: string): Observable<Blob | ErrorResponseType> {
+    let params = new HttpParams();
+
+    if (typeKey) {
+      params = params.set('typeKey', typeKey);
+    }
+    return this.http
+      .get(`${environment.apiUrl}/facts/exportCSV`, {
+        params,
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
 }

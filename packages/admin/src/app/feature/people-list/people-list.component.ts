@@ -7,7 +7,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ErrorContainerComponent } from '@app/feature/error-container/error-container.component';
 import { MatIconButton } from '@angular/material/button';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 import { FeatureStore } from '@app/shared/store/feature.store';
 import { Sort } from '@angular/material/sort';
 import { PeopleTableComponent } from '@app/shared/components/people-table/people-table.component';
@@ -150,6 +150,12 @@ export class PeopleListComponent {
         types: this.peopleListStore.personTypes(),
         apiRoute: 'people',
       },
+    });
+  }
+
+  exportCSV() {
+    this.typeKey$.pipe(take(1)).subscribe(typeKey => {
+      this.peopleListStore.getCsv(typeKey ?? '');
     });
   }
 }
