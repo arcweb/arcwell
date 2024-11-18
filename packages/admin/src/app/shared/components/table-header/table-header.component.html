@@ -79,5 +79,23 @@
         Export CSV
       </button>
     }
+    @if (enableImport()) {
+      <div matTooltip="bulk import">
+        <button
+          mat-button
+          matTooltip="bulk import"
+          class="table-header-button label-medium font-weight-regular"
+          (click)="bulkInput.emit()"
+        >
+          <fa-icon
+            aria-label="Bulk import button"
+            class="table-header-button-icon"
+            [icon]="faFileImport"
+            size="xl"
+          ></fa-icon>
+          Import
+        </button>
+      </div>
+    }
   </div>
 </div>

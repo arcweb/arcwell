@@ -1,4 +1,5 @@
 import Person from '#models/person'
+import fs from 'node:fs'
 import PersonType from '#models/person_type'
 import { paramsUUIDValidator } from '#validators/common'
 import {
@@ -13,6 +14,8 @@ import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import PersonService from '#services/person_service'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { parseBulkCsv } from '#helpers/bulk_parsing'
+import { bulkUploadValidator } from '#validators/bulk'
 import Papa from 'papaparse'
 
 export default class PeopleController {
@@ -234,6 +237,24 @@ export default class PeopleController {
     await person.related('cohorts').detach(cleanRequest.cohortIds)
 
     response.status(204).send('')
+  }
+
+  async bulk({ request, response }: HttpContext) {
+    await request.validateUsing(bulkUploadValidator)
+    const file = request.file('file')
+    const typeKeyData = request.only(['typeKey'])
+    const trx = await db.transaction()
+    if (file) {
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
+      try {
+        await parseBulkCsv(trx, csvFile, typeKeyData.typeKey, PersonService.createPerson)
+        response.status(200).send('People Imported')
+      } catch (error) {
+        response.status(500).send({ errors: error })
+      }
+    } else {
+      response.status(404).send('File not found')
+    }
   }
 
   /**

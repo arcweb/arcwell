@@ -3,6 +3,8 @@
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="eventsListStore.events().length > 0"
   (onExportCSV)="exportCSV()"
+  [enableSearch]="eventsListStore.events().length > 0"
+  (bulkInput)="bulkImport()"
 ></aw-table-header>
 
 @if (eventsListStore.isErrored()) {

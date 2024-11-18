@@ -16,6 +16,8 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TableHeaderComponent } from '@app/shared/components/table-header/table-header.component';
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { MatDialog } from '@angular/material/dialog';
+import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
 import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 
@@ -43,6 +45,7 @@ export class PeopleListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly dialog = inject(MatDialog);
   readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   pageSizes = [10, 20, 50];
   typeKey$ = this.activatedRoute.params.pipe(
@@ -137,6 +140,16 @@ export class PeopleListComponent {
       pageIndex: this.peopleListStore.pageIndex(),
       typeKey: this.peopleListStore.typeKey(),
       search: this.peopleListStore.search(),
+    });
+  }
+
+  bulkImport() {
+    this.dialog.open(BulkImportDialogComponent, {
+      data: {
+        title: 'Import People',
+        types: this.peopleListStore.personTypes(),
+        apiRoute: 'people',
+      },
     });
   }
 

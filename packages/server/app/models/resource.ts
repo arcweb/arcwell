@@ -21,13 +21,13 @@ export default class Resource extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare name: string
 
   @column()
   declare dimensions: Dimension[]
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare typeKey: string
 
   @belongsTo(() => ResourceType, { foreignKey: 'typeKey', localKey: 'key' })

@@ -14,10 +14,10 @@ export default class FactType extends AwBaseModel {
   @column()
   declare key: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare name: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare description: string
 
   @hasMany(() => Fact, { foreignKey: 'typeKey', localKey: 'key' })

@@ -3,6 +3,8 @@
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="factsListStore.facts().length > 0"
   (onExportCSV)="exportCSV()"
+  [enableSearch]="factsListStore.facts().length > 0"
+  (bulkInput)="bulkImport()"
 ></aw-table-header>
 
 @if (factsListStore.isErrored()) {

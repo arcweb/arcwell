@@ -4,6 +4,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastLevel } from '@app/shared/models';
 import { EventModel } from '@app/shared/models/event.model';
+import { EventTypeType } from '@app/shared/schemas/event-type.schema';
+import { EventTypeService } from '@app/shared/services/event-type.service';
 import { EventService } from '@app/shared/services/event.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import {
@@ -13,10 +15,11 @@ import {
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 interface EventsListState {
   events: EventModel[];
+  eventTypes: EventTypeType[];
   limit: number;
   offset: number;
   totalData: number;
@@ -29,6 +32,7 @@ interface EventsListState {
 
 const initialState: EventsListState = {
   events: [],
+  eventTypes: [],
   limit: 10,
   offset: 0,
   totalData: 0,
@@ -47,6 +51,7 @@ export const EventsListStore = signalStore(
     (
       store,
       eventService = inject(EventService),
+      eventTypeService = inject(EventTypeService),
       toastService = inject(ToastService),
     ) => ({
       async load(props: {
@@ -65,18 +70,35 @@ export const EventsListStore = signalStore(
           },
           setPending(),
         );
-        const resp = await firstValueFrom(eventService.getEvents(props));
-        if (resp.errors) {
-          patchState(store, setErrors(resp.errors));
+        const { eventsResp, eventTypesResp } = await firstValueFrom(
+          forkJoin({
+            eventsResp: eventService.getEvents(props),
+            eventTypesResp: eventTypeService.getEventTypes({}),
+          }),
+        );
+
+        if (eventsResp.errors) {
+          patchState(store, setErrors(eventsResp.errors));
 
           toastService.sendMessage(
             toastService.createCrudMessage('Events', 'Fetching', false),
             ToastLevel.ERROR,
           );
+        } else if (eventTypesResp.errors) {
+          patchState(store, setErrors(eventTypesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Event Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
-            { events: resp.data, totalData: resp.meta.count },
+            {
+              events: eventsResp.data,
+              totalData: eventsResp.meta.count,
+              eventTypes: eventTypesResp.data,
+            },
             setFulfilled(),
           );
         }

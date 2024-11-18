@@ -3,6 +3,7 @@
   [enableFilter]="
     tagsListStore.tags().length > 0 || tagsListStore.search().length > 0
   "
+  [enableImport]="false"
   (onSearchTextChanged)="searchTextChanged($event)"
   (onExportCSV)="exportCSV()"
 ></aw-table-header>

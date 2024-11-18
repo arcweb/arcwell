@@ -9,14 +9,17 @@ import {
 import { FactService } from '@shared/services/fact.service';
 import { inject } from '@angular/core';
 import { FactModel } from '@shared/models/fact.model';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, forkJoin } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { FactTypeType } from '@app/shared/schemas/fact-type.schema';
+import { FactTypeService } from '@app/shared/services/fact-type.service';
 
 interface FactsListState {
   facts: FactModel[];
+  factTypes: FactTypeType[];
   limit: number;
   offset: number;
   totalData: number;
@@ -29,6 +32,7 @@ interface FactsListState {
 
 const initialState: FactsListState = {
   facts: [],
+  factTypes: [],
   limit: 10,
   offset: 0,
   totalData: 0,
@@ -47,6 +51,7 @@ export const FactsListStore = signalStore(
     (
       store,
       factService = inject(FactService),
+      factTypeService = inject(FactTypeService),
       toastService = inject(ToastService),
     ) => ({
       async load(props: {
@@ -65,18 +70,34 @@ export const FactsListStore = signalStore(
           },
           setPending(),
         );
-        const resp = await firstValueFrom(factService.getFacts(props));
-        if (resp.errors) {
-          patchState(store, setErrors(resp.errors));
+        const { factsResp, factTypesResp } = await firstValueFrom(
+          forkJoin({
+            factsResp: factService.getFacts(props),
+            factTypesResp: factTypeService.getFactTypes({}),
+          }),
+        );
+        if (factsResp.errors) {
+          patchState(store, setErrors(factsResp.errors));
 
           toastService.sendMessage(
             toastService.createCrudMessage('Facts', 'Fetching', false),
             ToastLevel.ERROR,
           );
+        } else if (factTypesResp.errors) {
+          patchState(store, setErrors(factTypesResp.errors));
+
+          toastService.sendMessage(
+            toastService.createCrudMessage('Fact Types', 'Fetching', false),
+            ToastLevel.ERROR,
+          );
         } else {
           patchState(
             store,
-            { facts: resp.data, totalData: resp.meta.count },
+            {
+              facts: factsResp.data,
+              totalData: factsResp.meta.count,
+              factTypes: factTypesResp.data,
+            },
             setFulfilled(),
           );
         }

@@ -13,6 +13,7 @@ import {
   faBars,
   faMagnifyingGlass,
   faFileArrowDown,
+  faFileImport,
 } from '@fortawesome/free-solid-svg-icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
@@ -54,6 +55,13 @@ export class TableHeaderComponent {
   tableName = input.required<string>();
   createLinkQueryParams = input<QueryParams>();
   enableFilter = input<boolean>(true);
+  enableSearch = input<boolean>(true);
+  enableImport = input<boolean>(true);
+
+  // hook these up when we have the functionality
+  search = output<string>();
+  filter = output<string>();
+  bulkInput = output();
 
   onSearchTextChanged = output<string>();
   onFilterClosed = output();
@@ -63,6 +71,7 @@ export class TableHeaderComponent {
   faBars = faBars;
   faFileArrowDown = faFileArrowDown;
   faMagnifyingGlass = faMagnifyingGlass;
+  faFileImport = faFileImport;
 
   readonly navigation = this.router.events.pipe(
     takeUntilDestroyed(),
