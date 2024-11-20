@@ -1,4 +1,5 @@
 import Fact from '#models/fact'
+import fs from 'node:fs'
 import FactType from '#models/fact_type'
 import { paramsUUIDValidator } from '#validators/common'
 import { createFactValidator, updateFactValidator } from '#validators/fact'
@@ -9,6 +10,8 @@ import FactService from '#services/fact_service'
 import { ExtractScopes } from '@adonisjs/lucid/types/model'
 import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
+import { parseBulkCsv } from '#helpers/bulk_parsing'
+import { bulkUploadValidator } from '#validators/bulk'
 
 export default class FactsController {
   /**
@@ -180,5 +183,23 @@ export default class FactsController {
     const fact = await Fact.findOrFail(params.id)
     await fact.delete()
     response.status(204).send('')
+  }
+
+  async bulk({ request, response }: HttpContext) {
+    await request.validateUsing(bulkUploadValidator)
+    const file = request.file('file')
+    const typeKeyData = request.only(['typeKey'])
+    const trx = await db.transaction()
+    if (file) {
+      const csvFile = fs.readFileSync(file.tmpPath!, 'utf8')
+      try {
+        await parseBulkCsv(trx, csvFile, typeKeyData.typeKey, FactService.createFact)
+        response.status(200).send('Facts Imported')
+      } catch (error) {
+        response.status(500).send({ errors: error })
+      }
+    } else {
+      response.status(404).send('File not found')
+    }
   }
 }

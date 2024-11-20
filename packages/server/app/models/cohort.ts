@@ -9,10 +9,10 @@ export default class Cohort extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare name: string
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare description: string | null
 
   @manyToMany(() => Person, {

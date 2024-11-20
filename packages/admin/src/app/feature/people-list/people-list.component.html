@@ -1,6 +1,8 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'People'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  [enableSearch]="peopleListStore.people().length > 0"
+  (bulkInput)="bulkImport()"
   [enableFilter]="
     peopleListStore.people().length > 0 || peopleListStore.search().length > 0
   "

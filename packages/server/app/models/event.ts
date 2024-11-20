@@ -25,7 +25,7 @@ export default class Event extends AwBaseModel {
   @column()
   declare dimensions: Dimension[]
 
-  @column()
+  @column({ meta: { type: 'string' } })
   declare typeKey: string
 
   @belongsTo(() => EventType, { foreignKey: 'typeKey', localKey: 'key' })
