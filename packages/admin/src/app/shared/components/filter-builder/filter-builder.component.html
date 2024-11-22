@@ -1,0 +1,77 @@
+<form [formGroup]="filterBuilderForm">
+  <div class="filter-builder-row">
+    <mat-form-field appearance="outline" class="field-input">
+      <mat-label>Field</mat-label>
+      <mat-select
+        formControlName="field"
+        [compareWith]="compareFields"
+        (selectionChange)="fieldChanged($event)"
+      >
+        @for (field of filterConfig!.fields; track field.name) {
+          <mat-option [value]="field">
+            {{ field.title }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (filterOperators.length > 0) {
+      <mat-form-field appearance="outline" class="operator-input">
+        <mat-label>Operator</mat-label>
+        <mat-select formControlName="operator" [compareWith]="compareOperators">
+          @for (operator of filterOperators; track operator.name) {
+            <mat-option [value]="operator">
+              {{ operator.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    @if (
+      filterBuilderForm.value['operator'] &&
+      filterBuilderForm.value['field']!.type !== 'datetime'
+    ) {
+      <mat-form-field appearance="outline" class="value-input">
+        <mat-label>Value</mat-label>
+        <input matInput placeholder="Value" formControlName="filterValue" />
+      </mat-form-field>
+    }
+
+    @if (
+      filterBuilderForm.value['operator'] &&
+      filterBuilderForm.value['field']!.type === 'datetime'
+    ) {
+      <mat-form-field appearance="outline" class="value-input">
+        <mat-label>Value</mat-label>
+        <input
+          matInput
+          type="datetime"
+          formControlName="filterValue"
+          [owlDateTime]="dt1"
+          data-lpignore="true"
+        />
+        <mat-icon class="event-icon" [owlDateTimeTrigger]="dt1">event</mat-icon>
+        <owl-date-time #dt1></owl-date-time>
+      </mat-form-field>
+    }
+  </div>
+  <div class="filter-builder-row">
+    <button
+      mat-button
+      type="button"
+      (click)="onCancel()"
+      class="default-button"
+    >
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      type="submit"
+      class="default-button"
+      [disabled]="!filterBuilderForm.value['filterValue']"
+    >
+      Save
+    </button>
+  </div>
+</form>

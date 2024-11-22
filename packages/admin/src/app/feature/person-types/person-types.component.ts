@@ -26,6 +26,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TableHeaderComponent } from '@shared/components/table-header/table-header.component';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-person-types',
@@ -60,6 +61,7 @@ export class PersonTypesComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   dataSource = new MatTableDataSource<PersonTypeModel>();
 
@@ -94,11 +96,14 @@ export class PersonTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.personTypesStore.load({
       limit: this.personTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('person_types', searchText),
+      search: buildBasicSearchForFeature(
+        'person_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 

@@ -4,7 +4,7 @@
     resourceTypesStore.resourceTypes().length > 0 ||
     resourceTypesStore.search().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (resourceTypesStore.isErrored()) {

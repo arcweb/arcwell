@@ -131,12 +131,15 @@ export class ResourcesListComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.resourcesListStore.load({
       limit: this.resourcesListStore.limit(),
       offset: 0,
       typeKey: this.resourcesListStore.typeKey(),
-      search: buildBasicSearchForFeature('resources', searchText),
+      search: buildBasicSearchForFeature(
+        'resources',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 

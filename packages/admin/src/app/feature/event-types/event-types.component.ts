@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -56,6 +57,7 @@ import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.hel
 })
 export class EventTypesComponent {
   public eventTypesStore = inject(EventTypesStore);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
@@ -92,11 +94,14 @@ export class EventTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.eventTypesStore.load({
       limit: this.eventTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('event_types', searchText),
+      search: buildBasicSearchForFeature(
+        'event_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 

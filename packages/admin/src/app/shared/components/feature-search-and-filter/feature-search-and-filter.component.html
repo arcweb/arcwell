@@ -1,11 +1,12 @@
 <div class="filter-form-wrapper">
   <!-- Search not enabled for Events and Facts -->
   @if (
-    (featureSearchAndFilterStore.currentFeature() !== 'events' &&
+    ((featureSearchAndFilterStore.currentFeature() !== 'events' &&
       featureSearchAndFilterStore.currentFeature() !== 'facts') ||
-    featureSearchAndFilterStore.currentSubFeature() === 'types'
+      featureSearchAndFilterStore.currentSubFeature() === 'types') &&
+    !filterFormActive
   ) {
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="search-input">
       <input
         matInput
         #searchInput
@@ -16,22 +17,78 @@
   }
   <!-- Filter area -->
   <div class="filter-area">
-    @if (featureSearchAndFilterStore.filters().length < 1) {
+    @if (
+      featureSearchAndFilterStore.filters().length < 1 && !filterFormActive
+    ) {
       <div class="align-center">
         No filters currently defined.
         <br />
-        <a>Create the first.</a>
+        <button
+          mat-button
+          (click)="filterFormActive = true"
+          class="table-header-button label-medium font-weight-regular"
+        >
+          Create the first.
+        </button>
       </div>
     }
+
+    @if (
+      featureSearchAndFilterStore.filters().length > 0 && !filterFormActive
+    ) {
+      <div class="filter-title">Filters</div>
+
+      @for (
+        filter of featureSearchAndFilterStore.filters();
+        track filter.field;
+        let idx = $index
+      ) {
+        <mat-card appearance="outlined" class="filter-card">
+          <mat-card-content>
+            {{ filter.field.title }}&nbsp;
+            <span class="font-weight-bold">{{ filter.operator.label }}</span>
+            &nbsp;
+            <span class="filter-value font-weight-bold">
+              {{ truncateValue(filter.value.toString(), 25) }}
+            </span>
+            <div class="filter-card-icons">
+              <mat-icon (click)="editFilter(idx)">edit</mat-icon>
+              <mat-icon class="delete" (click)="deleteFilter(idx)">
+                close
+              </mat-icon>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <button
+        mat-button
+        matTooltip="Add new filter"
+        (click)="filterFormActive = true"
+        class="table-header-button label-medium font-weight-regular"
+      >
+        Add New Filter
+      </button>
+    }
+
+    @if (filterFormActive) {
+      <aw-filter-builder
+        (onFilterCanceled)="filterCanceled()"
+        (onFilterSaved)="filterSaved($event)"
+        [filterToEditIndex]="filterToEditIndex"
+      ></aw-filter-builder>
+    }
   </div>
-  <div>
-    <button
-      mat-button
-      (click)="onClear()"
-      matTooltip="Clear all filters"
-      class="table-header-button label-medium font-weight-regular"
-    >
-      Clear All
-    </button>
-  </div>
+  @if (!filterFormActive) {
+    <div class="align-center">
+      <button
+        mat-button
+        (click)="onClear()"
+        matTooltip="Clear all filters"
+        class="table-header-button label-medium font-weight-regular"
+      >
+        Clear All
+      </button>
+    </div>
+  }
 </div>

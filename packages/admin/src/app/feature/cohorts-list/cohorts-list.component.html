@@ -5,7 +5,7 @@
     cohortsListStore.search().length > 0
   "
   [enableImport]="false"
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (cohortsListStore.isErrored()) {

@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-tags-list',
@@ -60,6 +61,7 @@ export class TagsListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   pageSizes = [10, 20, 50];
 
   dataSource = new MatTableDataSource<TagModel>();
@@ -90,11 +92,14 @@ export class TagsListComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.tagsListStore.load(
       this.tagsListStore.limit(),
       0,
-      buildBasicSearchForFeature('tags', searchText),
+      buildBasicSearchForFeature(
+        'tags',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     );
   }
 }

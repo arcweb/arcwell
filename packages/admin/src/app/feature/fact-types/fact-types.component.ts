@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-fact-types',
@@ -60,6 +61,7 @@ export class FactTypesComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   dataSource = new MatTableDataSource<FactTypeModel>();
 
@@ -92,11 +94,14 @@ export class FactTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.factTypesStore.load({
       limit: this.factTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('fact_types', searchText),
+      search: buildBasicSearchForFeature(
+        'fact_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 

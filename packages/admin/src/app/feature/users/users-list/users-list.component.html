@@ -1,7 +1,7 @@
 <aw-table-header
   [tableName]="'All Users'"
   [enableFilter]="userStore.users().length > 0 || userStore.search().length > 0"
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (userStore.isErrored()) {

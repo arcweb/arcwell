@@ -4,7 +4,7 @@
     eventTypesStore.eventTypes().length > 0 ||
     eventTypesStore.search().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (eventTypesStore.isErrored()) {

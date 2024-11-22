@@ -23,6 +23,7 @@ import {
 } from '@feature/detail/detail.component';
 import { DetailStore } from '@feature/detail/detail.store';
 import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
+import { FilterConfigStore } from '@app/shared/store/filter-config.store';
 
 @Component({
   selector: 'aw-home',
@@ -49,6 +50,7 @@ export class MainNavigationComponent implements AfterViewInit {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
+  readonly filterConfigStore = inject(FilterConfigStore);
   readonly navigation = this.router.events.pipe(
     takeUntilDestroyed(),
     filter(event => event instanceof NavigationEnd),
@@ -91,6 +93,7 @@ export class MainNavigationComponent implements AfterViewInit {
   async ngAfterViewInit() {
     if (this.authStore.currentUser()) {
       await this.featureStore.load();
+      await this.filterConfigStore.load();
       // Update filter/search store on refresh
       if (this.featureStore.activeFeature()) {
         this.featureSearchAndFilterStore.checkCurrentFeature(

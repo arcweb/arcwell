@@ -63,6 +63,12 @@ export const FeatureSearchAndFilterStore = signalStore(
     setSearchText(searchText: string) {
       patchState(store, { searchText });
     },
+    setFilters(filters: FeatureFilter[]) {
+      patchState(store, { filters });
+    },
+    resetSearchAndFilters() {
+      patchState(store, { filters: [], searchText: '' });
+    },
     resetAll() {
       patchState(store, { ...initialState });
     },

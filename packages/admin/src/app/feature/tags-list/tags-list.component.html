@@ -4,7 +4,7 @@
     tagsListStore.tags().length > 0 || tagsListStore.search().length > 0
   "
   [enableImport]="false"
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (tagsListStore.isErrored()) {

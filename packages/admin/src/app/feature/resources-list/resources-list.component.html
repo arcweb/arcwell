@@ -1,13 +1,12 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Resources'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
-  [enableSearch]="resourcesListStore.resources().length > 0"
   (bulkInput)="bulkImport()"
   [enableFilter]="
     resourcesListStore.resources().length > 0 ||
     resourcesListStore.search().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (resourcesListStore.isErrored()) {

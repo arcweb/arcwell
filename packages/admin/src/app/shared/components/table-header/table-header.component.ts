@@ -39,14 +39,14 @@ interface QueryParams {
     MatTooltipModule,
     OverlayModule,
     FeatureSearchAndFilterComponent,
-    NgClass,
   ],
   templateUrl: './table-header.component.html',
   styleUrl: './table-header.component.scss',
 })
 export class TableHeaderComponent {
   filterOpen = false;
-  filterOffsetY = 20;
+  filterOffsetX = -120;
+  filterWidth = 460;
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
@@ -54,7 +54,6 @@ export class TableHeaderComponent {
   tableName = input.required<string>();
   createLinkQueryParams = input<QueryParams>();
   enableFilter = input<boolean>(true);
-  enableSearch = input<boolean>(true);
   enableImport = input<boolean>(true);
 
   // hook these up when we have the functionality
@@ -62,7 +61,8 @@ export class TableHeaderComponent {
   filter = output<string>();
   bulkInput = output();
 
-  onSearchTextChanged = output<string>();
+  onFiltersChanged = output();
+  onSearchTextChanged = output();
   onFilterClosed = output();
 
   faCirclePlus = faCirclePlus;
@@ -98,10 +98,16 @@ export class TableHeaderComponent {
     if (this.featureSearchAndFilterStore.searchText().length > 0) {
       result++;
     }
+    result += this.featureSearchAndFilterStore.filters().length;
     return result;
   }
 
-  searchTextChanged(searchText: string) {
-    this.onSearchTextChanged.emit(searchText);
+  filtersChanged() {
+    this.onFiltersChanged.emit();
+    // TODO: Handle the filter changes in the containing components
+  }
+
+  searchTextChanged() {
+    this.onSearchTextChanged.emit();
   }
 }

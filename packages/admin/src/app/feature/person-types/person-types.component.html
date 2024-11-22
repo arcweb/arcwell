@@ -4,7 +4,7 @@
     personTypesStore.personTypes().length > 0 ||
     personTypesStore.search().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (personTypesStore.isErrored()) {

@@ -4,7 +4,7 @@
   [enableFilter]="
     factTypesStore.factTypes().length > 0 || factTypesStore.search().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
 ></aw-table-header>
 
 @if (factTypesStore.isErrored()) {

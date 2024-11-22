@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-resource-types',
@@ -60,6 +61,7 @@ export class ResourceTypesComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   dataSource = new MatTableDataSource<ResourceTypeModel>();
 
@@ -93,11 +95,14 @@ export class ResourceTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.resourceTypesStore.load({
       limit: this.resourceTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('resource_types', searchText),
+      search: buildBasicSearchForFeature(
+        'resource_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 

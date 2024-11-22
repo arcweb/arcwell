@@ -113,25 +113,28 @@ export default class ConfigController {
    * various data types.
    */
   async filterConfiguration({}: HttpContext) {
-    const result: any = {}
+    const result: any[] = []
 
     filterableModels.forEach((model) => {
       const filterableColumns = Array.from(model.$columnsDefinitions.entries())
         .filter((column) => column[0] !== 'createdAt' && column[0] !== 'updatedAt')
         .filter((column) => column[1]['meta'])
-      result[model.table] = []
+      const featureFilterConfig: any = { feature: model.table }
+      featureFilterConfig['fields'] = []
       filterableColumns.forEach((column) =>
-        result[model.table].push({
+        featureFilterConfig['fields'].push({
           name: column[0],
-          column_name: column[1]['columnName'],
+          columnName: column[1]['columnName'],
           type: column[1]['meta']['type'],
+          title: column[1]['meta']['title'],
         })
       )
+      result.push(featureFilterConfig)
     })
 
     // TODO: Figure out how to return filterable dimensions
 
-    return result
+    return { data: result }
   }
 
   /**

@@ -27,6 +27,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-users-list',
@@ -60,6 +61,7 @@ export class AllUsersComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   pageSizes = [10, 20, 50];
 
@@ -108,11 +110,14 @@ export class AllUsersComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.userStore.load(
       this.userStore.limit(),
       0,
-      buildBasicSearchForFeature('users', searchText),
+      buildBasicSearchForFeature(
+        'users',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     );
   }
 

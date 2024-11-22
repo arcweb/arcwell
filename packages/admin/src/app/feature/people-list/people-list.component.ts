@@ -116,12 +116,15 @@ export class PeopleListComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  searchTextChanged() {
     this.peopleListStore.load({
       limit: this.peopleListStore.limit(),
       offset: 0,
       typeKey: this.peopleListStore.typeKey(),
-      search: buildBasicSearchForFeature('people', searchText),
+      search: buildBasicSearchForFeature(
+        'people',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
     });
   }
 
