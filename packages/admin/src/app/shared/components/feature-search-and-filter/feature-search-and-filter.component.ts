@@ -57,6 +57,7 @@ export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
   destroyRef = inject(DestroyRef);
   @ViewChild('searchInput') searchInput!: ElementRef;
 
+  onCleared = output();
   onSearchTextChanged = output();
   onFiltersChanged = output();
 
@@ -98,10 +99,10 @@ export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
       this.searchInput.nativeElement.focus();
   }
 
-  onClear() {
+  clear() {
     this.featureSearchAndFilterStore.resetSearchAndFilters();
     this.searchTextCtrl.setValue('');
-    this.onSearchTextChanged.emit();
+    this.onCleared.emit();
   }
 
   deleteFilter(filterIndex: number) {

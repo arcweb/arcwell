@@ -2,9 +2,12 @@
   tableName="Event Types"
   [enableFilter]="
     eventTypesStore.eventTypes().length > 0 ||
-    eventTypesStore.search().length > 0
+    eventTypesStore.search().length > 0 ||
+    eventTypesStore.filters().length > 0
   "
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (eventTypesStore.isErrored()) {

@@ -24,6 +24,40 @@ export enum DimensionOperatorEnum {
   ne = 'ne',
 }
 
+function getSqlOperator(operator: string) {
+  let result: string = ''
+  switch (operator) {
+    case DimensionOperatorEnum.eq:
+      result = '='
+      break
+    case DimensionOperatorEnum.gt:
+      result = '>'
+      break
+    case DimensionOperatorEnum.gte:
+      result = '>='
+      break
+    case DimensionOperatorEnum.lt:
+      result = '<'
+      break
+    case DimensionOperatorEnum.lte:
+      result = '<='
+      break
+    case DimensionOperatorEnum.ne:
+      result = '<>'
+      break
+    default:
+      throwCustomHttpError(
+        {
+          title: 'Bad Request',
+          code: 'E_BAD_REQUEST',
+          detail: 'Unimplemented operator type: ' + operator,
+        },
+        400
+      )
+  }
+  return result
+}
+
 /**
  * Parses filter parameters from a nested object structure and returns an array of parsed filters.
  * Each filter contains a field, operator, and value.
@@ -33,7 +67,7 @@ export enum DimensionOperatorEnum {
  * @returns {{ field: string; operator: string; value: string }[]} - Parsed filter conditions.
  */
 export function parseFilters(
-  filter: Record<string, Record<string, string | undefined> | string>
+  filter: Record<string, Record<string, any | undefined> | string>
 ): { field: string; operator: string; value: string }[] {
   const result: { field: string; operator: string; value: string }[] = []
 
@@ -47,8 +81,16 @@ export function parseFilters(
       } else {
         for (const operator in operators) {
           if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
-            const value = operators[operator]!
-            result.push({ field, operator, value })
+            if (Array.isArray(operators[operator])) {
+              // Multiple values for an operator. They should be broken out into their own
+              // AND clauses, ie, name <> 's' AND name <> 't'
+              for (const value of operators[operator]) {
+                result.push({ field, operator, value })
+              }
+            } else {
+              const value = operators[operator]!
+              result.push({ field, operator, value })
+            }
           }
         }
       }
@@ -70,9 +112,9 @@ export async function getIdsByDimensionQuery(
   let rawQueryString = `
     SELECT
       ${tableName}.id AS id
-    FROM ${tableName}
-    JOIN LATERAL jsonb_array_elements(${tableName}.dimensions) AS dimension_element ON true
-  `
+    FROM ${tableName}`
+  // TODO: This is causing the query to return no matches if there are just filters and no "dims"
+  // JOIN LATERAL jsonb_array_elements(${tableName}.dimensions) AS dimension_element ON true
 
   let whereClause = ''
   let bindings: Record<string, any> = {}
@@ -83,8 +125,10 @@ export async function getIdsByDimensionQuery(
     const fieldName = string.snakeCase(filterItem.field)
     const paramName = `fieldValue${paramIndex}`
 
+    // TODO: Do we want case insensitivity with strings on eq/ne?
+    const sqlOperator = getSqlOperator(filterItem.operator)
     whereClause += whereClause.length === 0 ? ' WHERE ' : ' AND '
-    whereClause += `${tableName}.${fieldName} = :${paramName}`
+    whereClause += `${tableName}.${fieldName} ${sqlOperator} :${paramName}`
 
     bindings[paramName] = filterItem.value
     paramIndex++
@@ -119,36 +163,7 @@ export async function getIdsByDimensionQuery(
       )
     }
 
-    let sqlOperator: string
-    switch (dimItem.operator) {
-      case DimensionOperatorEnum.eq:
-        sqlOperator = '='
-        break
-      case DimensionOperatorEnum.gt:
-        sqlOperator = '>'
-        break
-      case DimensionOperatorEnum.gte:
-        sqlOperator = '>='
-        break
-      case DimensionOperatorEnum.lt:
-        sqlOperator = '<'
-        break
-      case DimensionOperatorEnum.lte:
-        sqlOperator = '<='
-        break
-      case DimensionOperatorEnum.ne:
-        sqlOperator = '<>'
-        break
-      default:
-        throwCustomHttpError(
-          {
-            title: 'Bad Request',
-            code: 'E_BAD_REQUEST',
-            detail: 'Unimplemented operator type: ' + dimItem.operator,
-          },
-          400
-        )
-    }
+    const sqlOperator = getSqlOperator(dimItem.operator)
 
     let dataTypeConditions = dataTypes.map((dataType: string) => {
       let valueExpression: string

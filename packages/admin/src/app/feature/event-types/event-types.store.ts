@@ -21,6 +21,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface EventTypesState {
   eventTypes: EventTypeModel[];
@@ -31,6 +32,7 @@ interface EventTypesState {
   sort: string;
   order: SortDirection;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: EventTypesState = {
@@ -42,6 +44,7 @@ const initialState: EventTypesState = {
   sort: 'key',
   order: 'asc',
   search: [],
+  filters: [],
 };
 
 export const EventTypesStore = signalStore(
@@ -61,6 +64,7 @@ export const EventTypesStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         search?: { field: string; searchString: string }[];
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -104,6 +108,7 @@ export const EventTypesStore = signalStore(
             limit: store.limit(),
             offset: store.offset(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 

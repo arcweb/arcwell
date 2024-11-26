@@ -85,6 +85,7 @@ export class PersonTypesComponent {
           order: this.personTypesStore.order(),
           pageIndex: this.personTypesStore.pageIndex(),
           search: this.personTypesStore.search(),
+          filters: this.personTypesStore.filters(),
         });
       });
   }
@@ -96,6 +97,24 @@ export class PersonTypesComponent {
     });
   }
 
+  filtersChanged() {
+    this.personTypesStore.load({
+      limit: this.personTypesStore.limit(),
+      offset: 0,
+      search: this.personTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.personTypesStore.load({
+      limit: this.personTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
   searchTextChanged() {
     this.personTypesStore.load({
       limit: this.personTypesStore.limit(),
@@ -104,6 +123,7 @@ export class PersonTypesComponent {
         'person_types',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      filters: this.personTypesStore.filters(),
     });
   }
 
@@ -115,6 +135,7 @@ export class PersonTypesComponent {
       order: event.direction,
       pageIndex: this.personTypesStore.pageIndex(),
       search: this.personTypesStore.search(),
+      filters: this.personTypesStore.filters(),
     });
   }
 }

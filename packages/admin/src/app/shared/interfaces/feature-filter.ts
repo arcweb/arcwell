@@ -9,5 +9,5 @@ export interface FeatureFilterOperator {
 export interface FeatureFilter {
   field: FilterConfigFieldModel;
   operator: FeatureFilterOperator;
-  value: string | number | boolean | DateTime;
+  value: string | number | boolean;
 }

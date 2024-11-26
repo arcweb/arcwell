@@ -16,6 +16,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { FactTypeType } from '@app/shared/schemas/fact-type.schema';
 import { FactTypeService } from '@app/shared/services/fact-type.service';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface FactsListState {
   facts: FactModel[];
@@ -27,6 +28,7 @@ interface FactsListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  filters: FeatureFilter[];
 }
 
 const initialState: FactsListState = {
@@ -39,6 +41,7 @@ const initialState: FactsListState = {
   sort: 'familyName',
   order: 'asc',
   typeKey: '',
+  filters: [],
 };
 
 export const FactsListStore = signalStore(
@@ -59,6 +62,7 @@ export const FactsListStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         typeKey?: string;
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -116,6 +120,7 @@ export const FactsListStore = signalStore(
             limit: store.limit(),
             offset: store.offset(),
             typeKey: store.typeKey(),
+            filters: store.filters(),
           }),
         );
 

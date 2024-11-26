@@ -84,6 +84,7 @@ export class ResourceTypesComponent {
           order: this.resourceTypesStore.order(),
           pageIndex: this.resourceTypesStore.pageIndex(),
           search: this.resourceTypesStore.search(),
+          filters: this.resourceTypesStore.filters(),
         });
       });
   }
@@ -95,6 +96,24 @@ export class ResourceTypesComponent {
     });
   }
 
+  filtersChanged() {
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: 0,
+      search: this.resourceTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
   searchTextChanged() {
     this.resourceTypesStore.load({
       limit: this.resourceTypesStore.limit(),
@@ -103,6 +122,7 @@ export class ResourceTypesComponent {
         'resource_types',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      filters: this.resourceTypesStore.filters(),
     });
   }
 
@@ -114,6 +134,7 @@ export class ResourceTypesComponent {
       order: event.direction,
       pageIndex: this.resourceTypesStore.pageIndex(),
       search: this.resourceTypesStore.search(),
+      filters: this.resourceTypesStore.filters(),
     });
   }
 }

@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface CohortsListState {
   cohorts: CohortModel[];
@@ -21,6 +22,7 @@ interface CohortsListState {
   totalData: number;
   pageIndex: number;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: CohortsListState = {
@@ -30,6 +32,7 @@ const initialState: CohortsListState = {
   totalData: 0,
   pageIndex: 0,
   search: [],
+  filters: [],
 };
 
 export const CohortsListStore = signalStore(
@@ -46,14 +49,15 @@ export const CohortsListStore = signalStore(
         limit: number,
         offset: number,
         search?: { field: string; searchString: string }[],
+        filters?: FeatureFilter[],
       ) {
         patchState(
           store,
-          { ...initialState, limit, offset, search },
+          { ...initialState, limit, offset, search, filters },
           setPending(),
         );
         const resp = await firstValueFrom(
-          cohortService.getCohorts({ limit, offset, search }),
+          cohortService.getCohorts({ limit, offset, search, filters }),
         );
         if (resp.errors) {
           patchState(store, setErrors(resp.errors));
@@ -86,6 +90,7 @@ export const CohortsListStore = signalStore(
             limit: store.limit(),
             offset: store.offset(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 

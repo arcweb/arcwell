@@ -1,10 +1,14 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Tags'"
   [enableFilter]="
-    tagsListStore.tags().length > 0 || tagsListStore.search().length > 0
+    tagsListStore.tags().length > 0 ||
+    tagsListStore.search().length > 0 ||
+    tagsListStore.filters().length > 0
   "
   [enableImport]="false"
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (tagsListStore.isErrored()) {

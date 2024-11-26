@@ -8,6 +8,7 @@ export const FilterConfigFieldSchema: any = z
     columnName: z.string(),
     type: z.string(),
     title: z.string(),
+    filterType: z.string(),
   })
   .strict();
 

@@ -1,8 +1,12 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
-  [enableFilter]="factsListStore.facts().length > 0"
+  [enableFilter]="
+    factsListStore.facts().length > 0 || factsListStore.filters().length > 0
+  "
   (bulkInput)="bulkImport()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (factsListStore.isErrored()) {

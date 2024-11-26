@@ -1,7 +1,13 @@
 <aw-table-header
   [tableName]="'All Users'"
-  [enableFilter]="userStore.users().length > 0 || userStore.search().length > 0"
+  [enableFilter]="
+    userStore.users().length > 0 ||
+    userStore.search().length > 0 ||
+    userStore.filters().length > 0
+  "
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (userStore.isErrored()) {

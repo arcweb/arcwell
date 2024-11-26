@@ -83,6 +83,7 @@ export class EventTypesComponent {
           order: this.eventTypesStore.order(),
           pageIndex: this.eventTypesStore.pageIndex(),
           search: this.eventTypesStore.search(),
+          filters: this.eventTypesStore.filters(),
         });
       });
   }
@@ -94,6 +95,24 @@ export class EventTypesComponent {
     });
   }
 
+  filtersChanged() {
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: 0,
+      search: this.eventTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
   searchTextChanged() {
     this.eventTypesStore.load({
       limit: this.eventTypesStore.limit(),
@@ -102,6 +121,7 @@ export class EventTypesComponent {
         'event_types',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      filters: this.eventTypesStore.filters(),
     });
   }
 
@@ -113,6 +133,7 @@ export class EventTypesComponent {
       order: event.direction,
       pageIndex: this.eventTypesStore.pageIndex(),
       search: this.eventTypesStore.search(),
+      filters: this.eventTypesStore.filters(),
     });
   }
 }

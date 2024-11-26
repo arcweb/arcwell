@@ -59,7 +59,7 @@ export class CohortsListComponent {
     });
 
     this.typeKey$.subscribe(() => {
-      this.cohortsListStore.load(this.cohortsListStore.limit(), 0, []);
+      this.cohortsListStore.load(this.cohortsListStore.limit(), 0, [], []);
     });
 
     this.refreshService.refreshTrigger$
@@ -69,6 +69,7 @@ export class CohortsListComponent {
           this.cohortsListStore.limit(),
           this.cohortsListStore.offset(),
           this.cohortsListStore.search(),
+          this.cohortsListStore.filters(),
         );
       });
   }
@@ -80,6 +81,19 @@ export class CohortsListComponent {
     });
   }
 
+  filtersChanged() {
+    this.cohortsListStore.load(
+      this.cohortsListStore.limit(),
+      0,
+      this.cohortsListStore.search(),
+      this.featureSearchAndFilterStore.filters(),
+    );
+  }
+
+  filtersCleared() {
+    this.cohortsListStore.load(this.cohortsListStore.limit(), 0, [], []);
+  }
+
   searchTextChanged() {
     this.cohortsListStore.load(
       this.cohortsListStore.limit(),
@@ -88,6 +102,7 @@ export class CohortsListComponent {
         'cohorts',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      this.cohortsListStore.filters(),
     );
   }
 }

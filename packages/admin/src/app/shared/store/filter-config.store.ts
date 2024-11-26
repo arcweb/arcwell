@@ -9,6 +9,7 @@ import { inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FilterConfigModel } from '../models/filter-config.model';
 import { FilterConfigService } from '../services/filter-config.service';
+import { SubfeatureModel } from '../models/subfeature.model';
 
 interface FilterConfigState {
   filterConfig: FilterConfigModel[];
@@ -31,8 +32,29 @@ export const FilterConfigStore = signalStore(
       );
       patchState(store, { filterConfig: resp }, setFulfilled());
     },
-    getConfigForFeature(feature: string) {
-      return store.filterConfig().find(config => config.feature === feature);
+    getConfigForFeature(feature: string, subFeature: SubfeatureModel | null) {
+      let matchingFeature = feature;
+      if (subFeature && subFeature.path === 'types') {
+        switch (feature) {
+          case 'events':
+            matchingFeature = 'event_types';
+            break;
+          case 'facts':
+            matchingFeature = 'fact_types';
+            break;
+          case 'people':
+            matchingFeature = 'person_types';
+            break;
+          case 'resources':
+            matchingFeature = 'resource_types';
+            break;
+        }
+      } else if (feature === 'settings') {
+        matchingFeature = 'users';
+      }
+      return store
+        .filterConfig()
+        .find(config => config.feature === matchingFeature);
     },
   })),
 );

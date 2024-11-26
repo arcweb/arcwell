@@ -61,6 +61,7 @@ export class TableHeaderComponent {
   filter = output<string>();
   bulkInput = output();
 
+  onFiltersCleared = output();
   onFiltersChanged = output();
   onSearchTextChanged = output();
   onFilterClosed = output();
@@ -104,7 +105,10 @@ export class TableHeaderComponent {
 
   filtersChanged() {
     this.onFiltersChanged.emit();
-    // TODO: Handle the filter changes in the containing components
+  }
+
+  filtersCleared() {
+    this.onFiltersCleared.emit();
   }
 
   searchTextChanged() {

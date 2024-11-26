@@ -81,6 +81,7 @@ export class AllUsersComponent {
           this.userStore.limit(),
           this.userStore.offset(),
           this.userStore.search(),
+          this.userStore.filters(),
         );
       });
   }
@@ -110,6 +111,19 @@ export class AllUsersComponent {
     });
   }
 
+  filtersChanged() {
+    this.userStore.load(
+      this.userStore.limit(),
+      0,
+      this.userStore.search(),
+      this.featureSearchAndFilterStore.filters(),
+    );
+  }
+
+  filtersCleared() {
+    this.userStore.load(this.userStore.limit(), 0, [], []);
+  }
+
   searchTextChanged() {
     this.userStore.load(
       this.userStore.limit(),
@@ -118,6 +132,7 @@ export class AllUsersComponent {
         'users',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      this.userStore.filters(),
     );
   }
 

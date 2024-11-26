@@ -16,6 +16,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { PersonTypeType } from '@app/shared/schemas/person-type.schema';
 import { PersonTypeService } from '@app/shared/services/person-type.service';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface PeopleListState {
   people: PersonModel[];
@@ -28,6 +29,7 @@ interface PeopleListState {
   order: SortDirection;
   typeKey: string;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 export const initialState: PeopleListState = {
@@ -41,6 +43,7 @@ export const initialState: PeopleListState = {
   order: 'asc',
   typeKey: '',
   search: [],
+  filters: [],
 };
 
 export const PeopleListStore = signalStore(
@@ -62,6 +65,7 @@ export const PeopleListStore = signalStore(
         pageIndex?: number;
         typeKey?: string;
         search?: { field: string; searchString: string }[];
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -123,6 +127,7 @@ export const PeopleListStore = signalStore(
             order: store.order(),
             typeKey: store.typeKey(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 

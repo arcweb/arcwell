@@ -127,12 +127,13 @@ export default class ConfigController {
           columnName: column[1]['columnName'],
           type: column[1]['meta']['type'],
           title: column[1]['meta']['title'],
+          filterType: 'filter',
         })
       )
+      // TODO: Figure out how to return filterable dimensions. Add them to featureFilterConfig['fields']
+      // with filterType 'dim'
       result.push(featureFilterConfig)
     })
-
-    // TODO: Figure out how to return filterable dimensions
 
     return { data: result }
   }

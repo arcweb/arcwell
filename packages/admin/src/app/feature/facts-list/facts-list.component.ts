@@ -30,6 +30,8 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { MatDialog } from '@angular/material/dialog';
 import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 @Component({
   selector: 'aw-all-facts',
@@ -69,6 +71,7 @@ export class FactsListComponent {
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
   readonly dialog = inject(MatDialog);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -94,10 +97,23 @@ export class FactsListComponent {
     });
     // load the facts list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
+      // Check if the filter store has filters set for the current feature type. If so,
+      // set filters. This typekey pipe fires before the navigation pipe in features-menu.component.ts
+      // that flushes the filterstore if the feature changed, so the feature type must be checked against
+      // here.
+      let filters: FeatureFilter[] = [];
+      if (
+        this.featureSearchAndFilterStore.currentFeature() == 'facts' &&
+        this.featureSearchAndFilterStore.currentSubFeature() != 'types' &&
+        this.featureSearchAndFilterStore.filters().length > 0
+      ) {
+        filters = this.featureSearchAndFilterStore.filters();
+      }
       this.factsListStore.load({
         limit: this.factsListStore.limit(),
         offset: 0,
-        typeKey: typeKey,
+        typeKey,
+        filters,
       });
     });
 
@@ -108,6 +124,7 @@ export class FactsListComponent {
           limit: this.factsListStore.limit(),
           offset: this.factsListStore.offset(),
           typeKey: this.factsListStore.typeKey(),
+          filters: this.factsListStore.filters(),
         });
       });
   }
@@ -137,6 +154,24 @@ export class FactsListComponent {
     });
   }
 
+  filtersChanged() {
+    this.factsListStore.load({
+      limit: this.factsListStore.limit(),
+      offset: 0,
+      typeKey: this.factsListStore.typeKey(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.factsListStore.load({
+      limit: this.factsListStore.limit(),
+      offset: 0,
+      typeKey: this.factsListStore.typeKey(),
+      filters: [],
+    });
+  }
+
   sortChange(event: Sort) {
     this.factsListStore.load({
       limit: this.factsListStore.limit(),
@@ -145,6 +180,7 @@ export class FactsListComponent {
       order: event.direction,
       pageIndex: this.factsListStore.pageIndex(),
       typeKey: this.factsListStore.typeKey(),
+      filters: this.factsListStore.filters(),
     });
   }
 

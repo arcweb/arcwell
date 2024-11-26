@@ -83,6 +83,7 @@ export class FactTypesComponent {
           order: this.factTypesStore.order(),
           pageIndex: this.factTypesStore.pageIndex(),
           search: this.factTypesStore.search(),
+          filters: this.factTypesStore.filters(),
         });
       });
   }
@@ -94,6 +95,24 @@ export class FactTypesComponent {
     });
   }
 
+  filtersChanged() {
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: 0,
+      search: this.factTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
   searchTextChanged() {
     this.factTypesStore.load({
       limit: this.factTypesStore.limit(),
@@ -102,6 +121,7 @@ export class FactTypesComponent {
         'fact_types',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      filters: this.factTypesStore.filters(),
     });
   }
 
@@ -113,6 +133,7 @@ export class FactTypesComponent {
       order: event.direction,
       pageIndex: this.factTypesStore.pageIndex(),
       search: this.factTypesStore.search(),
+      filters: this.factTypesStore.filters(),
     });
   }
 }

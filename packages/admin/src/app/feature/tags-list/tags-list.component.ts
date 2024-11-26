@@ -78,6 +78,7 @@ export class TagsListComponent {
           this.tagsListStore.limit(),
           this.tagsListStore.offset(),
           this.tagsListStore.search(),
+          this.tagsListStore.filters(),
         );
       });
   }
@@ -92,6 +93,19 @@ export class TagsListComponent {
     });
   }
 
+  filtersChanged() {
+    this.tagsListStore.load(
+      this.tagsListStore.limit(),
+      0,
+      this.tagsListStore.search(),
+      this.featureSearchAndFilterStore.filters(),
+    );
+  }
+
+  filtersCleared() {
+    this.tagsListStore.load(this.tagsListStore.limit(), 0, [], []);
+  }
+
   searchTextChanged() {
     this.tagsListStore.load(
       this.tagsListStore.limit(),
@@ -100,6 +114,7 @@ export class TagsListComponent {
         'tags',
         this.featureSearchAndFilterStore.searchText(),
       ),
+      this.tagsListStore.filters(),
     );
   }
 }

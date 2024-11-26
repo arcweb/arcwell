@@ -16,6 +16,8 @@ import { catchError } from 'rxjs/operators';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
 import { buildSearchParams } from '../helpers/basic-search.helper';
+import { FeatureFilter } from '../interfaces/feature-filter';
+import { buildFilterParams } from '../helpers/filter-api-call.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +30,7 @@ export class CohortService {
     offset?: number;
     notRelatedToPerson?: string;
     search?: { field: string; searchString: string }[];
+    filters?: FeatureFilter[];
   }): Observable<CohortsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -42,6 +45,9 @@ export class CohortService {
     }
     if (props.search && props.search.length > 0) {
       params = buildSearchParams(props.search, params);
+    }
+    if (props.filters && props.filters.length > 0) {
+      params = buildFilterParams(props.filters, params);
     }
 
     return this.http

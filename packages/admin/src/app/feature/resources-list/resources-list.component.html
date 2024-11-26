@@ -4,9 +4,12 @@
   (bulkInput)="bulkImport()"
   [enableFilter]="
     resourcesListStore.resources().length > 0 ||
-    resourcesListStore.search().length > 0
+    resourcesListStore.search().length > 0 ||
+    resourcesListStore.filters().length > 0
   "
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (resourcesListStore.isErrored()) {

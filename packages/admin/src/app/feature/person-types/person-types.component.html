@@ -2,9 +2,12 @@
   tableName="Person Types"
   [enableFilter]="
     personTypesStore.personTypes().length > 0 ||
-    personTypesStore.search().length > 0
+    personTypesStore.search().length > 0 ||
+    personTypesStore.filters().length > 0
   "
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (personTypesStore.isErrored()) {

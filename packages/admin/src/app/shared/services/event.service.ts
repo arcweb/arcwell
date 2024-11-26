@@ -14,6 +14,8 @@ import {
 import { EventType } from '@app/shared/schemas/event.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
+import { buildFilterParams } from '../helpers/filter-api-call.helper';
+import { FeatureFilter } from '../interfaces/feature-filter';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +29,7 @@ export class EventService {
     sort?: string;
     order?: string;
     typeKey?: string;
-    search?: [{ field: string; searchString: string }];
+    filters?: FeatureFilter[];
   }): Observable<EventsResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -40,17 +42,8 @@ export class EventService {
     if (props.typeKey) {
       params = params.set('typeKey', props.typeKey);
     }
-
-    if (props.search && props.search.length > 0) {
-      props.search.forEach(searchItem => {
-        if (searchItem.field && searchItem.searchString) {
-          // Format: search[field]=searchString
-          params = params.set(
-            `search[${searchItem.field}]`,
-            searchItem.searchString,
-          );
-        }
-      });
+    if (props.filters && props.filters.length > 0) {
+      params = buildFilterParams(props.filters, params);
     }
     if (props.sort && props.order) {
       params = params.set('sort', props.sort);

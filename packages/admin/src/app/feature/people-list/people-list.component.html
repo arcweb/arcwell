@@ -3,9 +3,13 @@
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   (bulkInput)="bulkImport()"
   [enableFilter]="
-    peopleListStore.people().length > 0 || peopleListStore.search().length > 0
+    peopleListStore.people().length > 0 ||
+    peopleListStore.search().length > 0 ||
+    peopleListStore.filters().length > 0
   "
   (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {

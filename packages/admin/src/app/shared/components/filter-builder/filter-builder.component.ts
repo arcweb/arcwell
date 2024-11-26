@@ -84,7 +84,8 @@ export class FilterBuilderComponent implements OnInit {
       value: null,
       disabled: false,
     }),
-    filterValue: new FormControl<string | number | boolean | DateTime | null>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    filterValue: new FormControl<any | null>({
       value: null,
       disabled: false,
     }),
@@ -93,9 +94,8 @@ export class FilterBuilderComponent implements OnInit {
   ngOnInit(): void {
     this.filterConfig = this.filterConfigStore.getConfigForFeature(
       this.featureStore.activeFeature()!.path,
+      this.featureStore.activeSubfeature(),
     );
-
-    console.log(this.filterToEditIndex());
 
     if (this.filterToEditIndex() !== undefined) {
       const filter =

@@ -21,6 +21,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface PersonTypesState {
   personTypes: PersonTypeModel[];
@@ -31,6 +32,7 @@ interface PersonTypesState {
   sort: string;
   order: SortDirection;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: PersonTypesState = {
@@ -42,6 +44,7 @@ const initialState: PersonTypesState = {
   sort: 'name',
   order: 'asc',
   search: [],
+  filters: [],
 };
 
 export const PersonTypesStore = signalStore(
@@ -61,6 +64,7 @@ export const PersonTypesStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         search?: { field: string; searchString: string }[];
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -104,6 +108,7 @@ export const PersonTypesStore = signalStore(
             limit: store.limit(),
             offset: store.offset(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 
