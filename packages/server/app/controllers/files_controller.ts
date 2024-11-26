@@ -1,4 +1,4 @@
-import { fileDownloadValidator, fileUploadValidator } from '#validators/file'
+import { fileAccessValidator, fileUploadValidator } from '#validators/file'
 import { HttpContext } from '@adonisjs/core/http'
 import File from '#models/file'
 import db from '@adonisjs/lucid/services/db'
@@ -18,15 +18,17 @@ export default class FilesController {
     // TODO: organize the files directory and assign to file
     // file.move()
 
-    return db.transaction(async (trx) => {
-      const newFile = await File.create({
-        name: file.fileName,
-        size: file.size.toString(),
-        extension: file.extname,
-        url: file.filePath ?? file.tmpPath,
+    if (file) {
+      return db.transaction(async (trx) => {
+        const newFile = await File.create({
+          name: file.fileName,
+          size: file.size.toString(),
+          extension: file.extname,
+          url: file.filePath ?? file.tmpPath,
+        })
+        return { data: newFile }
       })
-      return { data: newFile }
-    })
+    }
   }
 
   /**
@@ -36,7 +38,7 @@ export default class FilesController {
    */
   async download({ auth, params, response, request }: HttpContext) {
     await auth.authenticate()
-    await request.validateUsing(fileDownloadValidator)
+    await request.validateUsing(fileAccessValidator)
     const cleanRequest = request.only(['name'])
 
     const file = await File.findByOrFail('name', cleanRequest.name)
@@ -45,5 +47,25 @@ export default class FilesController {
     const absPath = app.makePath('downloaded', normalize(file.url))
 
     return response.download(absPath)
+  }
+
+  /**
+   * @delete
+   * @summary Allows deletion of a file
+   * @description Delete a file
+   */
+  async delete({ auth, params, response, request }: HttpContext) {
+    await auth.authenticate()
+    await request.validateUsing(fileAccessValidator)
+    const cleanRequest = request.only(['name'])
+
+    const file = await File.findByOrFail('name', cleanRequest.name)
+
+    // TODO: investigate the adonis file system delete command
+    //adonisFile.delete()
+
+    await file.delete()
+
+    response.status(204).send('')
   }
 }

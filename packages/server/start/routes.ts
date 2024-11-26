@@ -191,6 +191,7 @@ router
           .group(() => {
             router.put('', [FilesController, 'upload']).as('upload')
             router.get('', [FilesController, 'download']).as('download')
+            router.delete('', [FilesController, 'delete']).as('delete')
           })
           .as('files')
           .prefix('files')
