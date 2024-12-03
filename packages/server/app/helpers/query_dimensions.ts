@@ -81,6 +81,8 @@ export function parseFilters(
       } else {
         for (const operator in operators) {
           if (operators.hasOwnProperty(operator) && operators[operator] !== undefined) {
+            // TODO: This is to handle arrays for having more than one of the same operator on the same
+            // field. We should probably use IN/NOT IN eventually or OR clauses.
             if (Array.isArray(operators[operator])) {
               // Multiple values for an operator. They should be broken out into their own
               // AND clauses, ie, name <> 's' AND name <> 't'
@@ -113,7 +115,8 @@ export async function getIdsByDimensionQuery(
     SELECT
       ${tableName}.id AS id
     FROM ${tableName}`
-  // TODO: This is causing the query to return no matches if there are just filters and no "dims"
+  // TODO: This is causing the query to return no matches if there are just filters and no "dims".
+  // Confirm if we need this when we do dimension filtering.
   // JOIN LATERAL jsonb_array_elements(${tableName}.dimensions) AS dimension_element ON true
 
   let whereClause = ''
