@@ -95,7 +95,7 @@ jobs:
           set -e
           echo "Waiting for containers to become healthy..."
 
-          timeout=60
+          timeout=120
           while [ $timeout -gt 0 ]; do
             unhealthy_found=false
 
@@ -115,8 +115,8 @@ jobs:
             fi
 
             echo "Waiting for services to become healthy..."
-            sleep 5
-            timeout=$((timeout - 5))
+            sleep 10
+            timeout=$((timeout - 10))
           done
 
           echo "Error: Not all services became healthy in time."
