@@ -97,24 +97,13 @@ jobs:
 
           timeout=120
           while [ $timeout -gt 0 ]; do
-            unhealthy_found=false
-
-            for service in $(docker compose ps --services); do
-              container_name=$(docker compose ps -q $service)
-              health_status=$(docker inspect --format='{{.State.Health.Status}}' "$container_name")
-
-              if [ "$health_status" != "healthy" ]; then
-                unhealthy_found=true
-                echo "Service $service is not healthy yet."
-              fi
-            done
-
-            if [ "$unhealthy_found" = false ]; then
-              echo "All containers are healthy."
+            # Check the health status of all containers
+            if ! docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
+              echo "All services are healthy."
               exit 0
             fi
 
-            echo "Waiting for services to become healthy..."
+            echo "At least one service is not yet healthy. Retrying..."
             sleep 10
             timeout=$((timeout - 10))
           done
