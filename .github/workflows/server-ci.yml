@@ -95,21 +95,23 @@ jobs:
           set -e
           echo "Waiting for containers to become healthy..."
 
-          timeout=120
-          while [ $timeout -gt 0 ]; do
-            # Check the health status of all containers
-            if ! docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
-              echo "All services are healthy."
-              exit 0
+          # Wait for initial healthcheck to run
+          sleep 15
+
+          # Perform the first health check
+          if docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
+            echo "Some services are still unhealthy. Retrying after 60 seconds..."
+            sleep 60
+
+            # Perform the second health check
+            if docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
+              echo "Error: Not all services became healthy in time."
+              exit 1
             fi
+          fi
 
-            echo "At least one service is not yet healthy. Retrying..."
-            sleep 10
-            timeout=$((timeout - 10))
-          done
-
-          echo "Error: Not all services became healthy in time."
-          exit 1
+          echo "All services are healthy."
+          exit 0
 
       - name: Lint Server
         run: |
