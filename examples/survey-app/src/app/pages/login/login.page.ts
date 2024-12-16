@@ -55,11 +55,17 @@ export class LoginPage implements OnInit {
       this.email = '';
       this.password = '';
       this.errorMessage = '';
-      await Keyboard.hide();
+
+      if (Capacitor.getPlatform() !== 'web') {
+        await Keyboard.hide();
+      }
       this.router.navigate(['/surveys']);
     } catch (error) {
       this.errorMessage = 'Invalid login credentials';
-      await Keyboard.hide();
+
+      if (Capacitor.getPlatform() !== 'web') {
+        await Keyboard.hide();
+      }
     }
   }
 }
