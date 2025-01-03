@@ -5,11 +5,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthStore } from './shared/store/auth.store';
 import { ToastComponent } from './shared/components/toast/toast.component';
 import { ConfigStore } from './shared/store/config.store';
+import { SpinnerComponent } from './shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'aw-app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastComponent],
+  imports: [RouterOutlet, SpinnerComponent, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

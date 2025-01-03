@@ -1,5 +1,5 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { AuthService } from '@shared/data-access/auth.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { Credentials } from '@shared/interfaces/credentials';
@@ -51,6 +51,7 @@ export const AuthStore = signalStore(
       authService = inject(AuthService),
       toastService = inject(ToastService),
     ) => ({
+      isLoading: computed(() => store.loginStatus() === 'pending' || store.loginStatus() === 'authenticating'),
       login: rxMethod<Credentials>(
         pipe(
           tap(() => {
