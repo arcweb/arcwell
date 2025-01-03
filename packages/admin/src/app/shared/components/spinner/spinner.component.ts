@@ -8,7 +8,7 @@ import { SpinnerService } from '@app/shared/services/spinner.service';
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule],
   templateUrl: './spinner.component.html',
-  styleUrl: './spinner.component.scss'
+  styleUrl: './spinner.component.scss',
 })
 export class SpinnerComponent {
   readonly spinnerService = inject(SpinnerService);

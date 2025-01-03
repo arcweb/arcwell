@@ -76,10 +76,10 @@ export class TableHeaderComponent {
   );
 
   constructor() {
-    this.navigation.pipe(takeUntilDestroyed()).subscribe(event => {
-      // Always close filter overlay on navigation change
-      this.filterOpen = false;
-    });
+    // Always close filter overlay on navigation change
+    this.navigation
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => (this.filterOpen = false));
   }
 
   onCreate() {

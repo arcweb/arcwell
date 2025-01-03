@@ -51,7 +51,11 @@ export const AuthStore = signalStore(
       authService = inject(AuthService),
       toastService = inject(ToastService),
     ) => ({
-      isLoading: computed(() => store.loginStatus() === 'pending' || store.loginStatus() === 'authenticating'),
+      isLoading: computed(
+        () =>
+          store.loginStatus() === 'pending' ||
+          store.loginStatus() === 'authenticating',
+      ),
       login: rxMethod<Credentials>(
         pipe(
           tap(() => {

@@ -5,32 +5,31 @@ import { ConfigStore } from '../store/config.store';
 import { FeatureStore } from '../store/feature.store';
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class SpinnerService {
-    readonly authStore = inject(AuthStore);
-    readonly bulkStore = inject(BulkStore);
-    readonly configStore = inject(ConfigStore);
-    readonly featureStore = inject(FeatureStore);
+  readonly authStore = inject(AuthStore);
+  readonly bulkStore = inject(BulkStore);
+  readonly configStore = inject(ConfigStore);
+  readonly featureStore = inject(FeatureStore);
 
-    showSpinner = false;
+  showSpinner = false;
 
-    constructor() {
-        effect(() => {
-            const anythingLoading = (
-                this.authStore.isLoading() ||
-                this.bulkStore.isLoading() ||
-                this.configStore.isLoading() ||
-                this.featureStore.isLoading()
-            );
+  constructor() {
+    effect(() => {
+      const anythingLoading =
+        this.authStore.isLoading() ||
+        this.bulkStore.isLoading() ||
+        this.configStore.isLoading() ||
+        this.featureStore.isLoading();
 
-            if (!anythingLoading) {
-                setTimeout(() => {
-                    this.showSpinner = false;
-                }, 1000);
-            } else {
-                this.showSpinner = true;
-            }
-        });
-    }
+      if (!anythingLoading) {
+        setTimeout(() => {
+          this.showSpinner = false;
+        }, 1000);
+      } else {
+        this.showSpinner = true;
+      }
+    });
+  }
 }
