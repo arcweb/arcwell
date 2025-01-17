@@ -6,7 +6,7 @@ import {
   setPending,
   withRequestStatus,
 } from './request-status.feature';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { ConfigService } from '../services/config.service';
 import { firstValueFrom } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -51,6 +51,7 @@ export const ConfigStore = signalStore(
         }
         titleService.setTitle(title.join(' - '));
       },
+      isLoading: computed(() => store.requestStatus() === 'pending'),
     }),
   ),
 );

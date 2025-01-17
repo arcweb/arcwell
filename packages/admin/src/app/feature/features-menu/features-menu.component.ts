@@ -1,10 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import {
-  NavigationEnd,
-  NavigationStart,
-  Router,
-  RouterModule,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
 import { FeatureStore } from '@shared/store/feature.store';

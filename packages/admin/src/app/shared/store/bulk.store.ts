@@ -7,7 +7,7 @@ import {
   setPending,
   withRequestStatus,
 } from '@shared/store/request-status.feature';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { ToastLevel } from '../models';
@@ -53,6 +53,7 @@ export const BulkStore = signalStore(
           );
         }
       },
+      isLoading: computed(() => store.uploadStatus() === 'pending'),
     }),
   ),
 );
