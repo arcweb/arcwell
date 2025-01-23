@@ -1,1 +1,7 @@
-<p>file-list works!</p>
+<aw-table-header
+  [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
+  [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  [enableFilter]="factsListStore.facts().length > 0"
+  [enableSearch]="factsListStore.facts().length > 0"
+  (bulkInput)="bulkImport()"
+></aw-table-header>
