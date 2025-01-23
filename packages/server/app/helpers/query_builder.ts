@@ -6,6 +6,7 @@ import Resource from '#models/resource'
 import Person from '#models/person'
 import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import Tag from '#models/tag'
+import Group from '#models/group'
 import { getIdsByDimensionQuery } from '#helpers/query_dimensions'
 
 const defaultSearchFields: Record<string, string[]> = {
@@ -252,6 +253,46 @@ export async function setTagsForObject(
         VALUES(gen_random_uuid(), :tagId, :objectId, :objectType, now(), now());`,
       {
         tagId: dbTag.id,
+        objectId: objectId,
+        objectType: objectType,
+      }
+    )
+  }
+}
+
+export async function setGroupsForObject(
+  trx: TransactionClientContract,
+  objectId: string,
+  objectType: string,
+  groups: string[],
+  isUpdate: boolean = true
+) {
+  if (isUpdate) {
+    // Only delete all existing groups on update. For create request, this is unnecessary.
+    await trx.rawQuery(
+      'delete from group_object where object_id = :id and object_type = :objectType',
+      {
+        id: objectId,
+        objectType: objectType,
+      }
+    )
+  }
+
+  for (let groupString of groups) {
+    let dbGroup = await Group.findBy('name', groupString)
+    if (!dbGroup) {
+      const newGroup = new Group()
+      newGroup.name = groupString
+      newGroup.useTransaction(trx)
+      dbGroup = await newGroup.save()
+    }
+
+    await trx.rawQuery(
+      `INSERT INTO public.group_object
+        (id, group_id, object_id, object_type, created_at, updated_at)
+        VALUES(gen_random_uuid(), :groupId, :objectId, :objectType, now(), now());`,
+      {
+        groupId: dbGroup.id,
         objectId: objectId,
         objectType: objectType,
       }
