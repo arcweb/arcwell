@@ -138,7 +138,7 @@ export default class GroupsController {
       tableName: 'groups',
     })
 
-    query.orderBy('pathname', 'asc')
+    query.orderBy('name', 'asc')
 
     if (parentStr) {
       query.where('parent', parentStr)
@@ -236,7 +236,7 @@ export default class GroupsController {
     await request.validateUsing(updateGroupValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['pathname'])
+    const cleanRequest = request.only(['name'])
 
     return db.transaction(async (trx) => {
       const updatedGroup = await GroupService.updateGroup(trx, params.id, cleanRequest)
@@ -270,7 +270,7 @@ export default class GroupsController {
     const offset = queryData['offset']
     const search = queryData['search']
 
-    let query = Group.query().orderBy('pathname', 'asc')
+    let query = Group.query().orderBy('name', 'asc')
 
     if (parentStr) {
       query.where('parent', parentStr)
@@ -278,7 +278,7 @@ export default class GroupsController {
 
     if (search) {
       const searchString = '%' + search + '%'
-      query.whereILike('pathname', searchString)
+      query.whereILike('name', searchString)
     }
 
     if (limit) {

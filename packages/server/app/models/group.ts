@@ -8,7 +8,7 @@ import Fact from '#models/fact'
 import User from '#models/user'
 import AwBaseModel from '#models/aw_base_model'
 
-export default class Tag extends AwBaseModel {
+export default class Group extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 

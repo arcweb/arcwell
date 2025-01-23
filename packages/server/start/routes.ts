@@ -27,6 +27,7 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
+const GroupsController = () => import('#controllers/groups_controller')
 
 router
   // API Outer Wrapper
@@ -140,6 +141,19 @@ router
             router.post('tags/:id/set', [TagsController, 'setTags']).as('tags.set')
             router.get('tags/count', [TagsController, 'count']).as('tags.count')
             router.resource('tags', TagsController).apiOnly()
+          })
+          .use(middleware.auth())
+
+        // Groups Management
+        router
+          .group(() => {
+            router.get('groups/simple', [GroupsController, 'getStrings']).as('groups.simple')
+            router
+              .get('groups/:id/:object_name', [GroupsController, 'showRelated'])
+              .as('groups.showRelated')
+            router.post('groups/:id/set', [GroupsController, 'setGroups']).as('groups.set')
+            router.get('groups/count', [GroupsController, 'count']).as('groups.count')
+            router.resource('groups', GroupsController).apiOnly()
           })
           .use(middleware.auth())
 

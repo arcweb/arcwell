@@ -4,7 +4,7 @@ import vine from '@vinejs/vine'
  * Validates the person's create action
  */
 export const createGroupSchema = vine.object({
-  pathname: vine.string().trim(),
+  name: vine.string().trim(),
 })
 
 export const createGroupValidator = vine.compile(createGroupSchema)
@@ -13,7 +13,7 @@ export const createGroupValidator = vine.compile(createGroupSchema)
  * Validates the person's update action
  */
 export const updateGroupSchema = vine.object({
-  pathname: vine.string().trim().optional(),
+  name: vine.string().trim().optional(),
 })
 
 export const updateGroupValidator = vine.compile(updateGroupSchema)

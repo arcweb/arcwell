@@ -23,6 +23,8 @@ import { TagComponent } from '../tag/tag.component';
 import { SettingsComponent } from '../settings/settings.component';
 import { DashboardComponent } from '@feature/dashboard/dashboard.component';
 import { UserComponent } from '../users/user/user.component';
+import { GroupsListComponent } from '@feature/groups-list/groups-list.component';
+import { GroupComponent } from '@feature/group/group.component';
 
 export const MAIN_NAVIGATION_ROUTES: Route[] = [
   {
@@ -162,6 +164,18 @@ export const MAIN_NAVIGATION_ROUTES: Route[] = [
       {
         path: 'tags',
         redirectTo: 'tags/list',
+      },
+      // groups routes
+      {
+        path: 'groups/list',
+        component: GroupsListComponent,
+        data: {
+          detailComponent: GroupComponent,
+        },
+      },
+      {
+        path: 'groups',
+        redirectTo: 'groups/list',
       },
       {
         path: 'settings',

@@ -98,6 +98,12 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     icon: 'faTags',
     subfeatures: [],
   },
+  {
+    name: 'Groups',
+    path: 'groups',
+    icon: 'faUserGroup',
+    subfeatures: [],
+  },
   // TODO: do we want settings to be absolute paths?
   {
     name: 'Settings',

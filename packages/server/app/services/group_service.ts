@@ -3,7 +3,7 @@ import Group from '#models/group'
 
 export default class GroupService {
   /**
-   * Finds a Group by its pathname.
+   * Finds a Group by its name.
    *
    * @returns A Promise that resolves to the found Group or null if not found.
    * @param trx
@@ -13,7 +13,7 @@ export default class GroupService {
     trx: TransactionClientContract,
     groupData: any
   ): Promise<Group> {
-    let group = await Group.findBy('pathname', groupData.pathname)
+    let group = await Group.findBy('name', groupData.pathname)
 
     if (!group) {
       group = await this.createGroup(trx, groupData)

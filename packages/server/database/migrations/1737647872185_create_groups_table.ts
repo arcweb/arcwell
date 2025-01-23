@@ -8,7 +8,6 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
 
       table.string('name').unique().notNullable()
-      table.string('code').unique().notNullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
