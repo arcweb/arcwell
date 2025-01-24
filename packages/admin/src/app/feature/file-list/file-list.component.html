@@ -1,7 +1,33 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
-  [enableFilter]="factsListStore.facts().length > 0"
-  [enableSearch]="factsListStore.facts().length > 0"
+  [enableFilter]="filesListStore.files().length > 0"
+  [enableSearch]="filesListStore.files().length > 0"
   (bulkInput)="bulkImport()"
 ></aw-table-header>
+
+@if (filesListStore.isErrored()) {
+  <aw-error-container [errors]="filesListStore.errors()" />
+}
+
+@if (filesListStore.files().length > 0) {
+  <div class="table-form-container">
+    <aw-files-table
+      [dataSource]="dataSource"
+      [displayedColumns]="displayedColumns"
+      [matSortActive]="this.filesListStore.sort()"
+      [matSortDirection]="this.filesListStore.order()"
+      [length]="this.filesListStore.totalData()"
+      [pageSizes]="pageSizes"
+      [pageSize]="this.filesListStore.limit()"
+      [pageIndex]="this.filesListStore.pageIndex()"
+      (onPageChanged)="this.filesListStore.loadPage($event)"
+      (onRowClicked)="rowClick($event)"
+      (onSortChanged)="sortChange($event)"
+    ></aw-files-table>
+  </div>
+} @else {
+  <aw-no-records
+    [createLinkQueryParams]="{ type_key: typeKey$ | async }"
+  ></aw-no-records>
+}

@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { FileNewType, FileType } from '../schemas/file.schema';
 
 export class FileModel {
   public id?: string;
@@ -8,7 +9,7 @@ export class FileModel {
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
 
-  constructor(data: FileBase) {
+  constructor(data: FileType | FileNewType) {
     if ('id' in data && data.id) {
       this.id = data.id;
     }

@@ -12,6 +12,8 @@ export const FileSchema: any = z
   })
   .strict();
 
+export const FileNewSchema = FileSchema.omit({ id: true });
+
 export const FileUpdateSchema = FileSchema.extend({
   id: z.string().uuid(),
   typeKey: z.string().optional(),
@@ -47,6 +49,7 @@ export type FileUpdateType = z.infer<typeof FileUpdateSchema>;
 export type FilesResponseType = z.infer<typeof FilesResponseSchema>;
 export type FileResponseType = z.infer<typeof FileResponseSchema>;
 export type FilesCountType = z.infer<typeof FilesCountSchema>;
+export type FileNewType = z.infer<typeof FileNewSchema>;
 
 export const deserializeFile = (file: FileType): FileModel => {
   return new FileModel(file);
