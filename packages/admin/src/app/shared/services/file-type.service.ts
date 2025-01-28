@@ -12,6 +12,7 @@ import {
   deserializeFileType,
   FileTypeResponseType,
   FileTypeResponseSchema,
+  FileTypeUpdateType,
 } from '../schemas/file-type.schema';
 
 @Injectable({
@@ -73,6 +74,55 @@ export class FileTypeService {
           const parsedResponse = FileTypeResponseSchema.parse(response);
           return { data: deserializeFileType(parsedResponse.data) };
         }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  update(
+    file: FileTypeUpdateType,
+  ): Observable<FileTypeResponseType | ErrorResponseType> {
+    return this.http
+      .patch<FileTypeResponseType>(
+        `${environment.apiUrl}/files/types/${file.id}`,
+        file,
+      )
+      .pipe(
+        map((response: FileTypeResponseType) => {
+          const parsedResponse = FileTypeResponseSchema.parse(response);
+          return { data: deserializeFileType(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  create(
+    fileType: FileTypeType,
+  ): Observable<FileTypeResponseType | ErrorResponseType> {
+    return this.http
+      .post<FileTypeResponseType>(`${environment.apiUrl}/files/types`, fileType)
+      .pipe(
+        map((response: FileTypeResponseType) => {
+          const parsedResponse = FileTypeResponseSchema.parse(response);
+          return { data: deserializeFileType(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
+  delete(
+    fileTypeId: string,
+  ): Observable<FileTypeResponseType | ErrorResponseType> {
+    return this.http
+      .delete<FileTypeResponseType>(
+        `${environment.apiUrl}/files/types/${fileTypeId}`,
+      )
+      .pipe(
         catchError(error => {
           return defaultErrorResponseHandler(error);
         }),
