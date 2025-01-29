@@ -38,6 +38,10 @@ export default class FileTypeService {
     const newFileType = new FileType().fill(createData).useTransaction(trx)
     await newFileType.save()
 
+    if (tags && tags.length > 0) {
+      await setTagsForObject(trx, newFileType.id, 'event_types', tags, false)
+    }
+
     return newFileType
   }
 
