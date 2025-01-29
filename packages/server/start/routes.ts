@@ -15,6 +15,7 @@ const CohortsController = () => import('#controllers/cohorts_controller')
 const ConfigController = () => import('#controllers/config_controller')
 const FactTypesController = () => import('#controllers/fact_types_controller')
 const FactsController = () => import('#controllers/facts_controller')
+const FormsController = () => import('#controllers/forms_controller')
 const RolesController = () => import('#controllers/roles_controller')
 const UsersController = () => import('#controllers/users_controller')
 const PeopleController = () => import('#controllers/people_controller')
@@ -127,6 +128,14 @@ router
             router.get('facts/count', [FactsController, 'count']).as('facts.count')
             router.post('facts/bulk', [FactsController, 'bulk']).as('facts.bulk')
             router.resource('facts', FactsController).apiOnly()
+          })
+          .use(middleware.auth())
+
+        // Form Management
+        router
+          .group(() => {
+            router.get('forms/count', [FormsController, 'count']).as('forms.count')
+            router.resource('forms', FormsController).apiOnly()
           })
           .use(middleware.auth())
 
