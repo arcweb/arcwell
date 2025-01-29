@@ -82,4 +82,25 @@ export class FileService {
         }),
       );
   }
+
+  uploadFile(
+    file: File,
+    typeKey: string,
+  ): Observable<ErrorResponseType | null> {
+    const url = `${environment.apiUrl}/files/upload`;
+    const data = new FormData();
+    data.append('file', file, file.name);
+    data.append('typeKey', typeKey);
+    return this.http.post(url, data).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
+
+  downloadFile(id: string): Observable<Blob | ErrorResponseType> {
+    return this.http.get(`${environment.apiUrl}/files/${id}/download`, {
+      responseType: 'blob',
+    });
+  }
 }
