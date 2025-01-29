@@ -1,5 +1,6 @@
 import { fileAccessValidator, fileUploadValidator } from '#validators/file'
 import { HttpContext } from '@adonisjs/core/http'
+import fs from 'node:fs'
 import File from '#models/file'
 import db from '@adonisjs/lucid/services/db'
 import app from '@adonisjs/core/services/app'
@@ -11,20 +12,21 @@ export default class FilesController {
    * @summary Allows upload of files that are not specific
    * @description Upload a file
    */
-  async upload({ auth, params, response, request }: HttpContext) {
+  async upload({ auth, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(fileUploadValidator)
     const file = request.file('file')
-    // TODO: organize the files directory and assign to file
-    // file.move()
+    const typeKey = request.input('typeKey')
 
     if (file) {
+      await file.move(app.makePath(`uploads/${typeKey}`))
       return db.transaction(async (trx) => {
         const newFile = await File.create({
           name: file.fileName,
           size: file.size.toString(),
           extension: file.extname,
           url: file.filePath ?? file.tmpPath,
+          typeKey: typeKey,
         })
         return { data: newFile }
       })
@@ -36,7 +38,7 @@ export default class FilesController {
    * @summary Allows download of files in the system
    * @description Download a file
    */
-  async download({ auth, params, response, request }: HttpContext) {
+  async download({ auth, response, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(fileAccessValidator)
     const cleanRequest = request.only(['name'])
@@ -54,16 +56,14 @@ export default class FilesController {
    * @summary Allows deletion of a file
    * @description Delete a file
    */
-  async delete({ auth, params, response, request }: HttpContext) {
+  async delete({ auth, response, request }: HttpContext) {
     await auth.authenticate()
     await request.validateUsing(fileAccessValidator)
     const cleanRequest = request.only(['name'])
 
     const file = await File.findByOrFail('name', cleanRequest.name)
 
-    // TODO: investigate the adonis file system delete command
-    //adonisFile.delete()
-
+    await fs.unlinkSync(file.url)
     await file.delete()
 
     response.status(204).send('')
