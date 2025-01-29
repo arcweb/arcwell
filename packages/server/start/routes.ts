@@ -151,6 +151,8 @@ router
             router.get('files', [FilesController, 'download']).as('files.download')
             router.delete('files', [FilesController, 'delete']).as('files.delete')
           })
+          .as('files')
+          .prefix('files')
           .use(middleware.auth())
 
         // Data API
@@ -195,15 +197,6 @@ router
           })
           .as('config')
           .prefix('config')
-
-        router
-          .group(() => {
-            router.put('', [FilesController, 'upload']).as('upload')
-            router.get('', [FilesController, 'download']).as('download')
-            router.delete('', [FilesController, 'delete']).as('delete')
-          })
-          .as('files')
-          .prefix('files')
       })
       .prefix('v1')
       .as('v1')

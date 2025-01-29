@@ -2,10 +2,10 @@ import { generateTypeKey } from '#helpers/generate_type_key'
 import { column, hasMany, manyToMany, afterDelete, beforeSave } from '@adonisjs/lucid/orm'
 import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
-import AwBaseModel from './aw_base_model'
+import AwBaseModel from '#models/aw_base_model'
 import DimensionSchema from './dimension_schema'
-import File from './file'
-import Tag from './tag'
+import File from '#models/file'
+import Tag from '#models/tag'
 
 export default class FileType extends AwBaseModel {
   @column({ isPrimary: true })

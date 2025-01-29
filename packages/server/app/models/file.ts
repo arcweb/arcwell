@@ -1,9 +1,9 @@
 import { afterDelete, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
-import AwBaseModel from './aw_base_model'
+import AwBaseModel from '#models/aw_base_model'
 import { DateTime } from 'luxon'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
-import Tag from './tag'
-import FileType from './file_type'
+import Tag from '#models/tag'
+import FileType from '#models/file_type'
 
 export default class File extends AwBaseModel {
   @column({ isPrimary: true })
