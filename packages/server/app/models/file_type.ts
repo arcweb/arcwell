@@ -4,8 +4,7 @@ import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import AwBaseModel from './aw_base_model'
 import DimensionSchema from './dimension_schema'
-import Fact from './fact'
-import FactType from './fact_type'
+import File from './file'
 import Tag from './tag'
 
 export default class FileType extends AwBaseModel {
@@ -21,8 +20,8 @@ export default class FileType extends AwBaseModel {
   @column({ meta: { type: 'string' } })
   declare description: string
 
-  @hasMany(() => Fact, { foreignKey: 'typeKey', localKey: 'key' })
-  declare facts: HasMany<typeof Fact>
+  @hasMany(() => File, { foreignKey: 'typeKey', localKey: 'key' })
+  declare files: HasMany<typeof File>
 
   @column()
   declare dimensionSchemas: DimensionSchema[]
@@ -42,12 +41,12 @@ export default class FileType extends AwBaseModel {
   declare tags: ManyToMany<typeof Tag>
 
   @afterDelete()
-  static async detachTags(factType: FactType) {
-    await factType.related('tags').detach()
+  static async detachTags(fileType: FileType) {
+    await fileType.related('tags').detach()
   }
 
   @beforeSave()
-  static async generateKeyAndJson(type: FactType) {
+  static async generateKeyAndJson(type: FileType) {
     // generate a key based on the name if one is not provided
     if (!type.key) {
       type.key = generateTypeKey(type.name)

@@ -17,6 +17,7 @@ export enum FeatureMenuItemNames {
   Events = 'Events',
   Facts = 'Facts',
   Tags = 'Tags',
+  Files = 'Files',
 }
 
 export const featureMenuConfig: FeatureMenuItem[] = [
@@ -102,7 +103,16 @@ export const featureMenuConfig: FeatureMenuItem[] = [
     name: 'Files',
     path: 'files',
     icon: 'faFolderOpen',
-    subfeatures: [],
+    subfeatures: [
+      {
+        name: 'File Types',
+        path: 'types',
+      },
+      {
+        name: 'All Files',
+        path: 'list',
+      },
+    ],
   },
   // TODO: do we want settings to be absolute paths?
   {

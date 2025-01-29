@@ -144,6 +144,15 @@ router
           })
           .use(middleware.auth())
 
+        // Files Management
+        router
+          .group(() => {
+            router.put('files', [FilesController, 'upload']).as('files.upload')
+            router.get('files', [FilesController, 'download']).as('files.download')
+            router.delete('files', [FilesController, 'delete']).as('files.delete')
+          })
+          .use(middleware.auth())
+
         // Data API
         router
           .group(() => {
