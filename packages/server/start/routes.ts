@@ -152,7 +152,7 @@ router
             router.get('files/count', [FilesController, 'count']).as('files.count')
             router.get('files/:id', [FilesController, 'show']).as('files.show')
             router.get('files', [FilesController, 'index']).as('files.index')
-            router.put('files', [FilesController, 'upload']).as('files.upload')
+            router.post('files/upload', [FilesController, 'upload']).as('files.upload')
             router.get('files/download', [FilesController, 'download']).as('files.download')
             router.delete('files', [FilesController, 'delete']).as('files.delete')
           })

@@ -31,8 +31,8 @@
 
     <mat-form-field appearance="outline">
       <mat-label>File Name</mat-label>
-      <input matInput formControlName="fileName" />
-      @if (fileForm.controls.fileName.hasError('required')) {
+      <input matInput formControlName="name" />
+      @if (fileForm.controls.name.hasError('required')) {
         <mat-error>
           File Name is
           <strong>required</strong>
@@ -47,13 +47,18 @@
           hidden="true"
           type="file"
           formControlName="file"
-          (change)="fileInputChanged($event)"
-          accept=".csv"
+          (change)="fileInputChanged($event); $event.stopPropagation()"
+          accept=".txt,.png,.svg,.jpeg,.csv"
         />
         <span class="file-name">
           {{ selectedFile?.name ?? 'Choose File' }}
         </span>
-        <button mat-flat-button color="primary" (click)="fileInput.click()">
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="fileInput.click(); $event.stopPropagation()"
+        >
           <fa-icon
             aria-label="attach"
             [icon]="faPaperclip"
@@ -83,9 +88,7 @@
         mat-flat-button
         type="submit"
         class="default-button"
-        [disabled]="
-          !fileStore.inEditMode() || !fileForm.valid || !fileForm.dirty
-        "
+        [disabled]="!fileStore.inEditMode() || !fileForm.valid"
       >
         Save
       </button>

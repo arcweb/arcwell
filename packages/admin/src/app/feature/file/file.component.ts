@@ -62,7 +62,7 @@ export class FileComponent implements OnInit {
   editingRow = -1;
 
   fileForm = new FormGroup({
-    fileName: new FormControl<string>(
+    name: new FormControl<string>(
       {
         value: '',
         disabled: true,
@@ -76,20 +76,14 @@ export class FileComponent implements OnInit {
       },
       Validators.required,
     ),
-    url: new FormControl<string | null>(
-      {
-        value: null,
-        disabled: true,
-      },
-      Validators.required,
-    ),
-    file: new FormControl<File | null>(
-      {
-        value: null,
-        disabled: true,
-      },
-      Validators.required,
-    ),
+    url: new FormControl<string | null>({
+      value: null,
+      disabled: true,
+    }),
+    file: new FormControl<File | null>({
+      value: null,
+      disabled: true,
+    }),
   });
 
   selectedFile?: File;
@@ -97,6 +91,7 @@ export class FileComponent implements OnInit {
 
   fileInputChanged(event: any) {
     this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
   }
 
   constructor() {
@@ -126,7 +121,7 @@ export class FileComponent implements OnInit {
         this.fileStore.initialize(this.detailId).then(() => {
           this.fileForm.patchValue({
             fileType: this.fileStore.file()?.fileType,
-            fileName: this.fileStore.file()?.fileName,
+            name: this.fileStore.file()?.name,
           });
         });
       }
@@ -136,16 +131,16 @@ export class FileComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {
         if ((event as ControlEvent) instanceof FormSubmittedEvent) {
-          if (this.fileStore.inEditMode()) {
-            this.fileStore.updateFile(this.fileForm.value);
-          } else {
+          if (this.fileStore.inCreateMode()) {
             if (this.fileForm.valid) {
               this.fileStore.uploadFile(
-                this.fileForm.controls.fileName.value ?? '',
+                this.fileForm.controls.name.value ?? '',
                 this.fileForm.controls.fileType.value,
                 this.selectedFile!,
               );
             }
+          } else {
+            this.fileStore.updateFile(this.fileForm.value);
           }
         }
       });
@@ -162,7 +157,7 @@ export class FileComponent implements OnInit {
       if (this.fileStore.inEditMode()) {
         this.fileForm.patchValue({
           fileType: this.fileStore.file()?.fileType,
-          fileName: this.fileStore.file()?.fileName,
+          name: this.fileStore.file()?.name,
         });
       }
     }
