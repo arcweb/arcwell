@@ -7,7 +7,7 @@ import { TransactionClientContract } from '@adonisjs/lucid/types/database'
  * Mangages file information in the DB but not the actual files held in adonis
  */
 
-export default class FilesController {
+export default class FileService {
   /**
    * Creates a new File record in the database.
    *

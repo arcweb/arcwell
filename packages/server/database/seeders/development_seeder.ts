@@ -14,6 +14,7 @@ import { CohortFactory } from '#database/factories/cohort_factory'
 import { PersonTypeFactory } from '#database/factories/person_type_factory'
 import { ResourceTypeFactory } from '#database/factories/resource_type_factory'
 import { EventTypeFactory } from '#database/factories/event_type_factory'
+import { FileTypeFactory } from '#database/factories/file_type_factory'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'test']
@@ -264,6 +265,15 @@ export default class extends BaseSeeder {
         { key: 'weight', value: 150 },
         { key: 'heart_rate', value: 88 },
       ],
+    }).create()
+
+    await FileTypeFactory.merge({
+      key: 'bulk',
+      name: 'bulk',
+    }).create()
+    await FileTypeFactory.merge({
+      key: 'example',
+      name: 'example',
     }).create()
   }
 }

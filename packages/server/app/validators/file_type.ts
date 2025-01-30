@@ -1,6 +1,6 @@
 import { TYPE_KEY_PATTERN } from '#constants/validation_constants'
 import vine from '@vinejs/vine'
-import { dimensionSchemas } from './dimension'
+import { dimensionSchemas } from '#validators/dimension'
 
 export const createFileTypeSchema = vine.object({
   key: vine.string().trim().regex(TYPE_KEY_PATTERN).minLength(3).optional(),

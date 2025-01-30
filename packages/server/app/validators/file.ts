@@ -19,7 +19,13 @@ export const fileUploadSchema = vine.object({
 export const fileUploadValidator = vine.compile(fileUploadSchema)
 
 export const fileAccessSchema = vine.object({
-  fileName: vine.string().trim(),
+  name: vine.string().trim(),
 })
 
 export const fileAccessValidator = vine.compile(fileAccessSchema)
+
+export const fileUpdateSchema = vine.object({
+  name: vine.string().trim(),
+})
+
+export const fileUpdateValidator = vine.compile(fileUpdateSchema)

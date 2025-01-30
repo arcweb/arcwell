@@ -9,7 +9,10 @@ export default class extends BaseSchema {
       table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
       table.string('key').unique().notNullable()
       table.string('name').notNullable()
+      table.jsonb('dimensions').defaultTo('{}').notNullable()
       table.jsonb('tags').defaultTo('[]').notNullable()
+
+      table.index(['tags'], 'file_types_tags_gin', 'gin')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')

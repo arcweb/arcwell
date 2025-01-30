@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -47,23 +47,43 @@ export class FileListComponent {
 
   displayedColumns: string[] = ['fileType', 'name', 'url', 'createdAt'];
 
-  bulkImport() {
-    throw new Error('Method not implemented.');
+  constructor() {
+    effect(() => {
+      this.dataSource.data = this.filesListStore.files();
+    });
+    this.typeKey$.subscribe(typeKey => {
+      this.filesListStore.load({
+        limit: this.filesListStore.limit(),
+        offset: 0,
+        typeKey: typeKey,
+      });
+    });
+
+    this.refreshService.refreshTrigger$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.filesListStore.load({
+          limit: this.filesListStore.limit(),
+          offset: this.filesListStore.offset(),
+          typeKey: this.filesListStore.typeKey(),
+        });
+      });
   }
 
-  rowClick($event: FileModel) {
-    throw new Error('Method not implemented.');
+  rowClick(row: FileModel) {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { detail_id: row.id },
+    });
   }
-  sortChange($event: Sort) {
-    throw new Error('Method not implemented.');
-  }
-  viewEvent($event: string) {
-    throw new Error('Method not implemented.');
-  }
-  viewResource($event: string) {
-    throw new Error('Method not implemented.');
-  }
-  viewPerson($event: string) {
-    throw new Error('Method not implemented.');
+  sortChange(event: Sort) {
+    this.filesListStore.load({
+      limit: this.filesListStore.limit(),
+      offset: this.filesListStore.offset(),
+      sort: event.active,
+      order: event.direction,
+      pageIndex: this.filesListStore.pageIndex(),
+      typeKey: this.filesListStore.typeKey(),
+    });
   }
 }

@@ -25,6 +25,8 @@ import { DashboardComponent } from '@feature/dashboard/dashboard.component';
 import { UserComponent } from '../users/user/user.component';
 import { FileListComponent } from '../file-list/file-list.component';
 import { FileComponent } from '../file/file.component';
+import { FileTypeComponent } from '../file-type/file-type.component';
+import { FileTypesComponent } from '../file-types/file-types.component';
 
 export const MAIN_NAVIGATION_ROUTES: Route[] = [
   {
@@ -164,6 +166,13 @@ export const MAIN_NAVIGATION_ROUTES: Route[] = [
       {
         path: 'tags',
         redirectTo: 'tags/list',
+      },
+      {
+        path: 'files/types',
+        component: FileTypesComponent,
+        data: {
+          detailComponent: FileTypeComponent,
+        },
       },
       {
         path: 'files/list/:type_key',
