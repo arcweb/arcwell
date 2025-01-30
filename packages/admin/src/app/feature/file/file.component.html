@@ -40,25 +40,54 @@
       }
     </mat-form-field>
 
-    <div class="file-select">
-      <input
-        #csvInput
-        hidden="true"
-        type="file"
-        formControlName="file"
-        (change)="fileInputChanged($event)"
-        accept=".csv"
-      />
-      <span class="file-name">
-        {{ selectedFile?.name ?? 'Choose File' }}
-      </span>
-      <button mat-flat-button color="primary" (click)="csvInput.click()">
-        <fa-icon
-          aria-label="attach"
-          [icon]="faPaperclip"
-          size="xl"
-          class="dialog-icon"
-        ></fa-icon>
+    @if (fileStore.inCreateMode()) {
+      <div class="file-select">
+        <input
+          #fileInput
+          hidden="true"
+          type="file"
+          formControlName="file"
+          (change)="fileInputChanged($event)"
+          accept=".csv"
+        />
+        <span class="file-name">
+          {{ selectedFile?.name ?? 'Choose File' }}
+        </span>
+        <button mat-flat-button color="primary" (click)="fileInput.click()">
+          <fa-icon
+            aria-label="attach"
+            [icon]="faPaperclip"
+            size="xl"
+            class="dialog-icon"
+          ></fa-icon>
+        </button>
+      </div>
+    } @else {
+      <mat-form-field appearance="outline">
+        <mat-label>Url</mat-label>
+        <input matInput formControlName="url" [disabled]="true" />
+      </mat-form-field>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!fileStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !fileStore.inEditMode() || !fileForm.valid || !fileForm.dirty
+        "
+      >
+        Save
       </button>
     </div>
   </form>

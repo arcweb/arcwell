@@ -125,6 +125,7 @@ export const FileStore = signalStore(
               fileTypes: fileTypesResponse.data,
               isReady: true,
               inCreateMode: true,
+              inEditMode: true,
             },
             setFulfilled(),
           );

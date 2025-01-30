@@ -28,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
+import { DetailStore } from '../detail/detail.store';
 
 @Component({
   selector: 'aw-file',
@@ -48,10 +49,8 @@ import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
   styleUrl: './file.component.scss',
 })
 export class FileComponent implements OnInit {
-  onDelete() {
-    throw new Error('Method not implemented.');
-  }
   readonly destroyRef = inject(DestroyRef);
+  readonly detailStore = inject(DetailStore);
   fileStore = inject(FileStore);
   faPaperclip = faPaperclip;
   dialog = inject(MatDialog);
@@ -71,6 +70,13 @@ export class FileComponent implements OnInit {
       Validators.required,
     ),
     fileType: new FormControl<FileTypeType | null>(
+      {
+        value: null,
+        disabled: true,
+      },
+      Validators.required,
+    ),
+    url: new FormControl<string | null>(
       {
         value: null,
         disabled: true,
@@ -147,5 +153,21 @@ export class FileComponent implements OnInit {
 
   compareFileTypes(pt1: FileTypeType, pt2: FileTypeType): boolean {
     return pt1 && pt2 ? pt1.id === pt2.id : false;
+  }
+
+  onCancel() {
+    if (this.fileStore.inCreateMode()) {
+      this.detailStore.clearDetailId();
+    } else {
+      if (this.fileStore.inEditMode()) {
+        this.fileForm.patchValue({
+          fileType: this.fileStore.file()?.fileType,
+          fileName: this.fileStore.file()?.fileName,
+        });
+      }
+    }
+  }
+  onDelete() {
+    throw new Error('Method not implemented.');
   }
 }
