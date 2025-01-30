@@ -36,7 +36,7 @@ const initialState: FilesListState = {
   offset: 0,
   totalData: 0,
   pageIndex: 0,
-  sort: 'familyName',
+  sort: 'name',
   order: 'asc',
   typeKey: '',
 };

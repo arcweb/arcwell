@@ -7,6 +7,7 @@ import {
   FileResponseSchema,
   FileResponseType,
   FilesCountType,
+  FilesResponseSchema,
   FilesResponseType,
   FileType,
 } from '../schemas/file.schema';
@@ -46,10 +47,10 @@ export class FileService {
       .get<FilesResponseType>(`${environment.apiUrl}/files`, { params })
       .pipe(
         map((response: FilesResponseType) => {
-          FileResponseSchema.parse(response);
+          FilesResponseSchema.parse(response);
 
           return {
-            data: response.data.map((file: FileType) => file),
+            data: response.data.map((file: FileType) => deserializeFile(file)),
             meta: response.meta,
           };
         }),
