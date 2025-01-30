@@ -27,6 +27,7 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
+const FileTypesController = () => import('#controllers/file_types_controller')
 const FilesController = () => import('#controllers/files_controller')
 
 router
@@ -147,6 +148,7 @@ router
         // Files Management
         router
           .group(() => {
+            router.resource('files/types', FileTypesController).apiOnly()
             router.put('files', [FilesController, 'upload']).as('files.upload')
             router.get('files', [FilesController, 'download']).as('files.download')
             router.delete('files', [FilesController, 'delete']).as('files.delete')
