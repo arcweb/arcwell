@@ -27,6 +27,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 
 @Component({
   selector: 'aw-file',
@@ -55,7 +56,7 @@ export class FileComponent implements OnInit {
   faPaperclip = faPaperclip;
   dialog = inject(MatDialog);
 
-  @Input() fileId!: string;
+  @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
 
   tagsForCreate: string[] = [];
@@ -112,6 +113,19 @@ export class FileComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.detailId) {
+      if (this.detailId === CREATE_PARTIAL_URL) {
+        this.fileStore.initializeForCreate();
+      } else {
+        this.fileStore.initialize(this.detailId).then(() => {
+          this.fileForm.patchValue({
+            fileType: this.fileStore.file()?.fileType,
+            fileName: this.fileStore.file()?.fileName,
+          });
+        });
+      }
+    }
+
     this.fileForm.events
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => {

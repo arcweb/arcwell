@@ -166,6 +166,13 @@ export const MAIN_NAVIGATION_ROUTES: Route[] = [
         redirectTo: 'tags/list',
       },
       {
+        path: 'files/list/:type_key',
+        component: FileListComponent,
+        data: {
+          detailComponent: FileComponent,
+        },
+      },
+      {
         path: 'files/list',
         component: FileListComponent,
         data: {
