@@ -73,6 +73,20 @@ export class FileService {
       );
   }
 
+  updateFile(file: FileType): Observable<FileResponseType | ErrorResponseType> {
+    return this.http
+      .put<FileResponseType>(`${environment.apiUrl}/files/${file.id}`, file)
+      .pipe(
+        map((response: FileResponseType) => {
+          const parsedResponse = FileResponseSchema.parse(response);
+          return { data: deserializeFile(parsedResponse.data) };
+        }),
+        catchError(error => {
+          return defaultErrorResponseHandler(error);
+        }),
+      );
+  }
+
   count(): Observable<FilesCountType | ErrorResponseType> {
     return this.http
       .get<FilesCountType>(`${environment.apiUrl}/files/count`)
@@ -84,6 +98,7 @@ export class FileService {
   }
 
   uploadFile(
+    name: string,
     file: File,
     typeKey: string,
   ): Observable<ErrorResponseType | null> {
@@ -91,6 +106,7 @@ export class FileService {
     const data = new FormData();
     data.append('file', file, file.name);
     data.append('typeKey', typeKey);
+    data.append('name', name);
     return this.http.post(url, data).pipe(
       catchError(error => {
         return defaultErrorResponseHandler(error);

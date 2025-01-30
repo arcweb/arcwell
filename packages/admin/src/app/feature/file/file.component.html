@@ -1,1 +1,65 @@
-<p>file works!</p>
+@if (fileStore.isReady()) {
+  <aw-detail-header
+    detailName="File"
+    [inEditMode]="fileStore.inEditMode()"
+    [inCreateMode]="fileStore.inCreateMode()"
+    (toggleEditMode)="fileStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="fileForm">
+    @if (fileStore.isErrored()) {
+      <aw-error-container [errors]="fileStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>File Type</mat-label>
+      <mat-select formControlName="fileType" [compareWith]="compareFileTypes">
+        @for (fileType of fileStore.fileTypes(); track fileType.id) {
+          <mat-option [value]="fileType">
+            {{ fileType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (fileForm.controls.fileType.hasError('required')) {
+        <mat-error>
+          File Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>File Name</mat-label>
+      <input matInput formControlName="fileName" />
+      @if (fileForm.controls.fileName.hasError('required')) {
+        <mat-error>
+          File Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="file-select">
+      <input
+        #csvInput
+        hidden="true"
+        type="file"
+        formControlName="file"
+        (change)="fileInputChanged($event)"
+        accept=".csv"
+      />
+      <span class="file-name">
+        {{ selectedFile?.name ?? 'Choose File' }}
+      </span>
+      <button mat-flat-button color="primary" (click)="csvInput.click()">
+        <fa-icon
+          aria-label="attach"
+          [icon]="faPaperclip"
+          size="xl"
+          class="dialog-icon"
+        ></fa-icon>
+      </button>
+    </div>
+  </form>
+}

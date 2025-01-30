@@ -13,22 +13,15 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import {
-  patchState,
-  signalStore,
-  type,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
-import { async, firstValueFrom, forkJoin } from 'rxjs';
-import { string, any } from 'zod';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { firstValueFrom, forkJoin } from 'rxjs';
 
 export type UploadStatus = 'none' | 'pending' | 'success' | 'error';
 
 interface FileState {
   file: FileType | null;
   dimensionsCopy: DimensionType[] | [];
-  filetypes: FileTypeType[];
+  fileTypes: FileTypeType[];
   isReady: boolean;
   inEditMode: boolean;
   inCreateMode: boolean;
@@ -38,7 +31,7 @@ interface FileState {
 const initialState: FileState = {
   file: null,
   dimensionsCopy: [],
-  filetypes: [],
+  fileTypes: [],
   isReady: false,
   inEditMode: false,
   inCreateMode: false,
@@ -91,23 +84,22 @@ export const FileStore = signalStore(
             store,
             {
               file: fileResponse.data,
-              filetypes: filetypesResponse.data,
+              fileTypes: filetypesResponse.data,
               isReady: true,
             },
             setFulfilled(),
           );
         }
       },
-      async uploadFile(apiRoute: string, type: any, file: File) {
+      async uploadFile(name: string, type: any, file: File) {
         patchState(store, { ...initialState }, setPending());
-        const resp = await firstValueFrom(fileService.uploadFile(file, type));
+        const resp = await firstValueFrom(
+          fileService.uploadFile(name, file, type),
+        );
         if (resp.errors) {
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
 
-          toastService.sendMessage(
-            `Failed to upload file to ${apiRoute}`,
-            ToastLevel.ERROR,
-          );
+          toastService.sendMessage(`Failed to upload file`, ToastLevel.ERROR);
         }
       },
       async initializeForCreate() {
@@ -130,7 +122,7 @@ export const FileStore = signalStore(
           patchState(
             store,
             {
-              filetypes: fileTypesResponse.data,
+              fileTypes: fileTypesResponse.data,
               isReady: true,
               inCreateMode: true,
             },
@@ -162,6 +154,19 @@ export const FileStore = signalStore(
 
           toastService.sendMessage(
             `Failed to get file ${fileId}`,
+            ToastLevel.ERROR,
+          );
+        }
+      },
+
+      async updateFile(file: FileType) {
+        patchState(store, { ...initialState }, setPending());
+        const resp = await firstValueFrom(fileService.updateFile(file));
+        if (resp.errors) {
+          patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            `Failed to update file ${file.id}`,
             ToastLevel.ERROR,
           );
         }

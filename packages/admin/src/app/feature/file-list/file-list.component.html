@@ -1,9 +1,8 @@
 <aw-table-header
-  [tableName]="featureStore.activeSubfeature()?.name || 'Facts'"
+  [tableName]="featureStore.activeSubfeature()?.name || 'Files'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
   [enableFilter]="filesListStore.files().length > 0"
   [enableSearch]="filesListStore.files().length > 0"
-  (bulkInput)="bulkImport()"
 ></aw-table-header>
 
 @if (filesListStore.isErrored()) {
