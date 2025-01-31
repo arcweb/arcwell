@@ -19,7 +19,7 @@ export default class extends BaseSchema {
     })
 
     this.schema.createTable(this.fileTableName, (table) => {
-      table.increments('id')
+      table.uuid('id').primary().defaultTo(this.raw('gen_random_uuid()'))
 
       table.string('name').notNullable()
       table.string('extension').notNullable()
