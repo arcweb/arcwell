@@ -48,7 +48,7 @@
           type="file"
           formControlName="file"
           (change)="fileInputChanged($event); $event.stopPropagation()"
-          accept=".txt,.png,.svg,.jpeg,.csv"
+          accept=".txt,.png,.svg,.jpeg,.csv,.pdf,.JPEG,.docx"
         />
         <span class="file-name">
           {{ selectedFile?.name ?? 'Choose File' }}

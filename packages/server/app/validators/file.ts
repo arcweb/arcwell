@@ -11,7 +11,7 @@ export const bulkUploadValidator = vine.compile(bulkUploadSchema)
 
 export const fileUploadSchema = vine.object({
   file: vine.file({
-    extnames: ['txt', 'png', 'svg', 'jpeg', 'csv'],
+    extnames: ['txt', 'png', 'svg', 'jpeg', 'csv', 'pdf', 'JPEG', 'docx'],
   }),
   typeKey: vine.string().trim(), // the file type key
 })

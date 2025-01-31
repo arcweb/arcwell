@@ -135,7 +135,7 @@ export class FileComponent implements OnInit {
             if (this.fileForm.valid) {
               this.fileStore.uploadFile(
                 this.fileForm.controls.name.value ?? '',
-                this.fileForm.controls.fileType.value,
+                this.fileForm.controls.fileType.value?.key,
                 this.selectedFile!,
               );
             }
