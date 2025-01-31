@@ -26,8 +26,8 @@ export default class extends BaseSchema {
       table.string('url').notNullable()
       table.string('size').notNullable()
 
-      table.uuid('file_type_id').notNullable()
-      table.foreign('file_type_id').references('file_types.id')
+      table.string('type_key').notNullable()
+      table.foreign('type_key').references('file_types.key')
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
