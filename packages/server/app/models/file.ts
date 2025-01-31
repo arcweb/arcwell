@@ -1,9 +1,10 @@
-import { afterDelete, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
+import { afterDelete, belongsTo, column, manyToMany, scope } from '@adonisjs/lucid/orm'
 import AwBaseModel from '#models/aw_base_model'
 import { DateTime } from 'luxon'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
 import Tag from '#models/tag'
 import FileType from '#models/file_type'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
 
 export default class File extends AwBaseModel {
   @column({ isPrimary: true })
@@ -45,4 +46,8 @@ export default class File extends AwBaseModel {
   static async detachTags(file: File) {
     await file.related('tags').detach()
   }
+
+  static fullFile = scope((query: ModelQueryBuilderContract<typeof File>) => {
+    query.preload('tags').preload('fileType')
+  })
 }

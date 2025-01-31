@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FileModel } from '../models/file.model';
+import { FileTypeSchema } from './file-type.schema';
 
 export const FileSchema: any = z
   .object({
@@ -9,6 +10,7 @@ export const FileSchema: any = z
     url: z.string(),
     extension: z.string(),
     size: z.string(),
+    fileType: z.lazy(() => FileTypeSchema.optional()),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })

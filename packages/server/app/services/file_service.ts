@@ -9,6 +9,21 @@ import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 
 export default class FileService {
   /**
+   * Retrieves a full File record by ID with its associated tags.
+   *
+   * @param id - The ID of the File to retrieve.
+   * @param trx - Optional transaction object.
+   * @returns A Promise that resolves to the File with preloaded tags.
+   * @throws Will throw an error if the File is not found.
+   */
+  public static async getFullFile(id: string, trx?: TransactionClientContract): Promise<File> {
+    return File.query(trx ? { client: trx } : {})
+      .where('id', id)
+      .withScopes((scopes) => scopes.fullFile())
+      .firstOrFail()
+  }
+
+  /**
    * Creates a new File record in the database.
    *
    * @param trx - The transaction object to run the database operations.

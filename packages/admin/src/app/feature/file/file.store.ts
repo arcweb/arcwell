@@ -172,6 +172,22 @@ export const FileStore = signalStore(
           );
         }
       },
+
+      async deleteFile() {
+        patchState(store, { ...initialState }, setPending());
+        console.log('STORE: Deleting file');
+        const resp = await firstValueFrom(
+          fileService.deleteFile(store.file().id),
+        );
+        if (resp.errors) {
+          patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
+
+          toastService.sendMessage(
+            `Failed to delete file ${store.file().id}`,
+            ToastLevel.ERROR,
+          );
+        }
+      },
     }),
   ),
 );

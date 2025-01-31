@@ -120,4 +120,13 @@ export class FileService {
       responseType: 'blob',
     });
   }
+
+  deleteFile(id: string): Observable<ErrorResponseType | void> {
+    console.log('SERV: Deleting file');
+    return this.http.delete<void>(`${environment.apiUrl}/files/${id}`).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
+  }
 }

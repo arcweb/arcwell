@@ -68,7 +68,7 @@ export default class FilesController {
   async show({ params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     return {
-      data: await File.findOrFail(params.id),
+      data: await FileService.getFullFile(params.id),
     }
   }
 
@@ -90,7 +90,9 @@ export default class FilesController {
         cleanRequest.name,
         request.input('tags')
       )
-      return { data: updatedFile }
+      return {
+        data: await FileService.getFullFile(updatedFile.id),
+      }
     })
   }
 
@@ -109,14 +111,20 @@ export default class FilesController {
     if (file) {
       await file.move(app.makePath(`uploads/${typeKey}`))
       return db.transaction(async (trx) => {
-        const newFile = await File.create({
-          name: name,
-          size: file.size.toString(),
-          extension: file.extname,
-          url: file.filePath ?? file.tmpPath,
-          typeKey: typeKey,
-        })
-        return { data: newFile }
+        const newFile = await FileService.createFile(
+          trx,
+          {
+            name: name,
+            size: file.size.toString(),
+            extension: file.extname,
+            url: file.filePath ?? file.tmpPath,
+            typeKey: typeKey,
+          },
+          request.input('tags')
+        )
+        return {
+          data: await FileService.getFullFile(newFile.id),
+        }
       })
     }
   }
@@ -144,16 +152,11 @@ export default class FilesController {
    * @summary Allows deletion of a file
    * @description Delete a file
    */
-  async delete({ auth, response, request }: HttpContext) {
-    await auth.authenticate()
-    await request.validateUsing(fileAccessValidator)
-    const cleanRequest = request.only(['name'])
-
-    const file = await File.findByOrFail('name', cleanRequest.name)
-
+  async delete({ response, params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
+    const file = await File.findOrFail(params.id)
     await fs.unlinkSync(file.url)
     await file.delete()
-
     response.status(204).send('')
   }
 }

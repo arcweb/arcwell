@@ -29,6 +29,7 @@ import { MatSelect } from '@angular/material/select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { DetailStore } from '../detail/detail.store';
+import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
 
 @Component({
   selector: 'aw-file',
@@ -51,9 +52,9 @@ import { DetailStore } from '../detail/detail.store';
 export class FileComponent implements OnInit {
   readonly destroyRef = inject(DestroyRef);
   readonly detailStore = inject(DetailStore);
+  readonly dialog = inject(MatDialog);
   fileStore = inject(FileStore);
   faPaperclip = faPaperclip;
-  dialog = inject(MatDialog);
 
   @Input() detailId!: string;
   @Input() typeKey: string | undefined = undefined;
@@ -118,7 +119,9 @@ export class FileComponent implements OnInit {
       if (this.detailId === CREATE_PARTIAL_URL) {
         this.fileStore.initializeForCreate();
       } else {
+        console.log('COMP: Initializing file', this.detailId);
         this.fileStore.initialize(this.detailId).then(() => {
+          console.log('COMP: File initialized', this.fileStore.file());
           this.fileForm.patchValue({
             fileType: this.fileStore.file()?.fileType,
             name: this.fileStore.file()?.name,
@@ -163,6 +166,19 @@ export class FileComponent implements OnInit {
     }
   }
   onDelete() {
-    throw new Error('Method not implemented.');
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm delete',
+        question: 'Are you sure you want to delete this file?',
+        okButtonText: 'Delete',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        console.log('COMP: Deleting file');
+        this.fileStore.deleteFile();
+      }
+    });
   }
 }
