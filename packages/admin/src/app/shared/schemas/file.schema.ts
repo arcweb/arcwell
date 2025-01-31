@@ -7,6 +7,8 @@ export const FileSchema: any = z
     typeKey: z.string(),
     name: z.string(),
     url: z.string(),
+    extension: z.string(),
+    size: z.string(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })
@@ -18,7 +20,9 @@ export const FileUpdateSchema = FileSchema.extend({
   id: z.string().uuid(),
   typeKey: z.string().optional(),
   name: z.string(),
-  url: z.string(),
+  url: z.string().optional(),
+  extension: z.string().optional(),
+  size: z.string().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
@@ -62,6 +66,8 @@ export const serializeFile = (file: FileModel): FileType => {
     typeKey: file.typeKey,
     name: file.name,
     url: file.url,
+    extension: file.extension,
+    size: file.size,
     createdAt: file.createdAt?.toISO() ?? undefined,
     updatedAt: file.updatedAt?.toISO() ?? undefined,
   };

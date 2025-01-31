@@ -13,7 +13,7 @@ export default class File extends AwBaseModel {
   declare typeKey: string
 
   @belongsTo(() => FileType, { foreignKey: 'typeKey', localKey: 'key' })
-  declare factType: BelongsTo<typeof FileType>
+  declare fileType: BelongsTo<typeof FileType>
 
   @column()
   declare name: string
