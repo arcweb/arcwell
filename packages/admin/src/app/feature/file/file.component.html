@@ -1,0 +1,130 @@
+@if (fileStore.isReady()) {
+  <aw-detail-header
+    detailName="File"
+    [inEditMode]="fileStore.inEditMode()"
+    [inCreateMode]="fileStore.inCreateMode()"
+    (toggleEditMode)="fileStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="fileForm">
+    @if (fileStore.isErrored()) {
+      <aw-error-container [errors]="fileStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>File Type</mat-label>
+      <mat-select formControlName="fileType" [compareWith]="compareFileTypes">
+        @for (fileType of fileStore.fileTypes(); track fileType.id) {
+          <mat-option [value]="fileType">
+            {{ fileType.name }}
+          </mat-option>
+        }
+      </mat-select>
+      @if (fileForm.controls.fileType.hasError('required')) {
+        <mat-error>
+          File Type is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>File Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (fileForm.controls.name.hasError('required')) {
+        <mat-error>
+          File Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    @if (fileStore.inCreateMode()) {
+      <div class="file-select">
+        <input
+          #fileInput
+          hidden="true"
+          type="file"
+          formControlName="file"
+          (change)="fileInputChanged($event); $event.stopPropagation()"
+          accept=".txt,.png,.svg,.jpeg,.csv,.pdf,.JPEG,.docx"
+        />
+        <span class="file-name">
+          {{ selectedFile?.name ?? 'Choose File' }}
+        </span>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          (click)="fileInput.click(); $event.stopPropagation()"
+        >
+          <fa-icon
+            aria-label="attach"
+            [icon]="faPaperclip"
+            size="xl"
+            class="dialog-icon"
+          ></fa-icon>
+        </button>
+      </div>
+    }
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!fileStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="!fileStore.inEditMode() || !fileForm.valid"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!fileStore.inCreateMode()) {
+    <div class="uneditable-file-form">
+      <div
+        class="detail-title-button-container font-weight-regular-bolder card-title"
+      >
+        <h4>File Info (non-editable)</h4>
+        <mat-divider class="info-divider"></mat-divider>
+        <form [formGroup]="fileInfoForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Url</mat-label>
+            <input matInput formControlName="url" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Size</mat-label>
+            <input matInput formControlName="size" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Extension</mat-label>
+            <input matInput formControlName="extension" />
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+
+    <div class="download-button-container">
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="onDownload()"
+      >
+        Download
+      </button>
+    </div>
+  }
+}

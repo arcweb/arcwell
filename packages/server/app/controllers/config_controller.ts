@@ -25,6 +25,7 @@ import UserService from '#services/user_service'
 import Person from '#models/person'
 import PersonService from '#services/person_service'
 import { filterableModels } from '#config/filter'
+import FileType from '#models/file_type'
 
 export default class ConfigController {
   /**
@@ -88,6 +89,12 @@ export default class ConfigController {
     // TODO: Add tag types when they are implemented
     // const tagTypeQuery = await TagType.query()
 
+    const fileTypeQuery = await FileType.query().select('name', 'key').orderBy('name', 'asc')
+    const fileTypeSubFeatures: SubfeatureMenuItem[] = fileTypeQuery.map((fileType) => ({
+      name: fileType.name,
+      path: `list/${fileType.key}`,
+    }))
+
     const featureMenuConfigWithTypes: FeatureMenuItem[] = featuresBaseMenuConfig.map(
       (feature: FeatureMenuItem) => {
         if (feature.name === FeatureMenuItemNames.People) {
@@ -98,6 +105,8 @@ export default class ConfigController {
           feature.subfeatures = [...feature.subfeatures, ...eventTypeSubfeatures]
         } else if (feature.name === FeatureMenuItemNames.Facts) {
           feature.subfeatures = [...feature.subfeatures, ...factTypeSubFeatures]
+        } else if (feature.name === FeatureMenuItemNames.Files) {
+          feature.subfeatures = [...feature.subfeatures, ...fileTypeSubFeatures]
         }
         return feature
       }

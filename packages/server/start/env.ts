@@ -39,4 +39,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   SMTP_PASSWORD: Env.schema.string(),
   SMTP_FROM_ADDRESS: Env.schema.string({ format: 'email' }),
   SMTP_FROM_NAME: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the drive package
+  |----------------------------------------------------------
+  */
+  ARCWELL_SERVER_DRIVE_DISK: Env.schema.enum(['fs'] as const),
 })

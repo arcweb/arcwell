@@ -16,6 +16,7 @@ env:
   ARCWELL_REGISTER_ENABLED: true
   ARCWELL_SERVER_CORS_ORIGINS: "http://localhost:4200,0.0.0.0:4200,127.0.0.1:4200,http://localhost:3333"
   ARCWELL_SERVER_DEBUG_ERRORS: false
+  ARCWELL_SERVER_DRIVE_DISK: 'fs'
   DB_DATABASE: arcwell_test
   DB_HOST: db
   DB_PASSWORD: arcwell

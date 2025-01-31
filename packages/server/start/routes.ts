@@ -27,6 +27,8 @@ const TagsController = () => import('#controllers/tags_controller')
 const HealthChecksController = () => import('#controllers/health_checks_controller')
 import AutoSwagger from 'adonis-autoswagger'
 import swagger from '#config/swagger'
+const FileTypesController = () => import('#controllers/file_types_controller')
+const FilesController = () => import('#controllers/files_controller')
 
 router
   // API Outer Wrapper
@@ -141,6 +143,21 @@ router
             router.get('tags/count', [TagsController, 'count']).as('tags.count')
             router.resource('tags', TagsController).apiOnly()
           })
+          .use(middleware.auth())
+
+        // Files Management
+        router
+          .group(() => {
+            router.resource('files/types', FileTypesController).apiOnly()
+            router.get('files/count', [FilesController, 'count']).as('files.count')
+            router.get('files/:id', [FilesController, 'show']).as('files.show')
+            router.get('files', [FilesController, 'index']).as('files.index')
+            router.post('files/upload', [FilesController, 'upload']).as('files.upload')
+            router.put('files/:id', [FilesController, 'update']).as('files.update')
+            router.get('files/download', [FilesController, 'download']).as('files.download')
+            router.delete('files/:id', [FilesController, 'delete']).as('files.delete')
+          })
+          .as('files')
           .use(middleware.auth())
 
         // Data API

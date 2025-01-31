@@ -24,6 +24,7 @@ import {
   faTags,
   faGear,
   faUsers,
+  faFolderOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
@@ -74,6 +75,7 @@ export class FeaturesMenuComponent {
     faRectangleList: faRectangleList,
     faTags: faTags,
     faGear: faGear,
+    faFolderOpen: faFolderOpen,
   };
 
   constructor() {

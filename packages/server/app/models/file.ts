@@ -1,0 +1,53 @@
+import { afterDelete, belongsTo, column, manyToMany, scope } from '@adonisjs/lucid/orm'
+import AwBaseModel from '#models/aw_base_model'
+import { DateTime } from 'luxon'
+import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
+import Tag from '#models/tag'
+import FileType from '#models/file_type'
+import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+
+export default class File extends AwBaseModel {
+  @column({ isPrimary: true })
+  declare id: string
+
+  @column({ meta: { type: 'string' } })
+  declare typeKey: string
+
+  @belongsTo(() => FileType, { foreignKey: 'typeKey', localKey: 'key' })
+  declare fileType: BelongsTo<typeof FileType>
+
+  @column()
+  declare name: string
+
+  @column()
+  declare extension: string
+
+  @column()
+  declare url: string
+
+  @column()
+  declare size: string
+
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime
+
+  @manyToMany(() => Tag, {
+    pivotTimestamps: true,
+    pivotTable: 'tag_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'tag_id',
+  })
+  declare tags: ManyToMany<typeof Tag>
+
+  @afterDelete()
+  static async detachTags(file: File) {
+    await file.related('tags').detach()
+  }
+
+  static fullFile = scope((query: ModelQueryBuilderContract<typeof File>) => {
+    query.preload('tags').preload('fileType')
+  })
+}
