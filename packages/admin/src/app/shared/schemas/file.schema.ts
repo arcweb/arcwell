@@ -11,6 +11,7 @@ export const FileSchema: any = z
     extension: z.string(),
     size: z.string(),
     fileType: z.lazy(() => FileTypeSchema.optional()),
+    tags: z.array(z.string()).optional(),
     createdAt: z.string().datetime({ offset: true }).optional(),
     updatedAt: z.string().datetime({ offset: true }).optional(),
   })

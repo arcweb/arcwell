@@ -152,6 +152,7 @@ export const FileStore = signalStore(
         const resp = await firstValueFrom(fileService.getFile(fileId));
         if (resp.errors) {
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
+          console.log('FILE RESPONSE ERRORS', resp.errors);
 
           toastService.sendMessage(
             `Failed to get file ${fileId}`,

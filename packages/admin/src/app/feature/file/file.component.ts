@@ -119,12 +119,12 @@ export class FileComponent implements OnInit {
       if (this.detailId === CREATE_PARTIAL_URL) {
         this.fileStore.initializeForCreate();
       } else {
-        console.log('COMP: Initializing file', this.detailId);
         this.fileStore.initialize(this.detailId).then(() => {
           console.log('COMP: File initialized', this.fileStore.file());
           this.fileForm.patchValue({
             fileType: this.fileStore.file()?.fileType,
             name: this.fileStore.file()?.name,
+            url: this.fileStore.file()?.url,
           });
         });
       }
