@@ -134,7 +134,6 @@ export class FileComponent implements OnInit {
         this.fileStore.initializeForCreate();
       } else {
         this.fileStore.initialize(this.detailId).then(() => {
-          console.log('COMP: File initialized', this.fileStore.file());
           this.fileForm.patchValue({
             fileType: this.fileStore.file()?.fileType,
             name: this.fileStore.file()?.name,
@@ -197,5 +196,9 @@ export class FileComponent implements OnInit {
         this.fileStore.deleteFile();
       }
     });
+  }
+
+  onDownload() {
+    this.fileStore.downloadFile();
   }
 }

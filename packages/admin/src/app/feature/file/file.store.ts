@@ -24,7 +24,7 @@ import {
 import { firstValueFrom, forkJoin } from 'rxjs';
 import { DetailStore } from '@feature/detail/detail.store';
 
-export type UploadStatus = 'none' | 'pending' | 'success' | 'error';
+export type FileStatus = 'none' | 'pending' | 'success' | 'error';
 
 interface FileState {
   file: FileType | null;
@@ -33,7 +33,9 @@ interface FileState {
   isReady: boolean;
   inEditMode: boolean;
   inCreateMode: boolean;
-  uploadStatus?: UploadStatus;
+  uploadStatus?: FileStatus;
+  downloadUrl?: string;
+  downloadStatus?: FileStatus;
 }
 
 const initialState: FileState = {
@@ -44,6 +46,8 @@ const initialState: FileState = {
   inEditMode: false,
   inCreateMode: false,
   uploadStatus: 'none',
+  downloadUrl: undefined,
+  downloadStatus: 'none',
 };
 
 export const FileStore = signalStore(
@@ -155,20 +159,31 @@ export const FileStore = signalStore(
       async toggleEditMode() {
         patchState(store, { inEditMode: !store.inEditMode() });
       },
-      async downloadFile(fileId: string) {
-        patchState(store, { ...initialState }, setPending());
-        const resp = await firstValueFrom(fileService.downloadFile(fileId));
+      async downloadFile() {
+        patchState(store, { downloadStatus: 'pending' }, setPending());
+        console.log('DOWNLOADING FILE', store.file().id);
+        const resp = await firstValueFrom(
+          fileService.downloadFile(store.file().id),
+        );
         if (resp.errors) {
-          patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
+          patchState(
+            store,
+            { downloadStatus: 'error' },
+            setErrors(resp.errors),
+          );
 
           toastService.sendMessage(
-            `Failed to download file ${fileId}`,
+            `Failed to download file ${store.file().fileId}`,
             ToastLevel.ERROR,
           );
         } else {
-          patchState(store, { file: resp.data }, setFulfilled());
+          patchState(
+            store,
+            { downloadUrl: resp.data, downloadStatus: 'success' },
+            setFulfilled(),
+          );
           toastService.sendMessage(
-            `File ${fileId} downloaded`,
+            `File ${store.file().fileId} downloaded`,
             ToastLevel.SUCCESS,
           );
         }

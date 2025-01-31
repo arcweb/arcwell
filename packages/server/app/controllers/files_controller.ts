@@ -1,4 +1,5 @@
 import { fileAccessValidator, fileUpdateValidator, fileUploadValidator } from '#validators/file'
+import drive from '@adonisjs/drive/services/main'
 import { HttpContext } from '@adonisjs/core/http'
 import fs from 'node:fs'
 import File from '#models/file'
@@ -9,6 +10,7 @@ import FileType from '#models/file_type'
 import { buildApiQuery } from '#helpers/query_builder'
 import { paramsUUIDValidator } from '#validators/common'
 import FileService from '#services/file_service'
+import { cuid } from '@adonisjs/core/helpers'
 
 export default class FilesController {
   /**
@@ -109,7 +111,8 @@ export default class FilesController {
     const name = request.input('name')
 
     if (file) {
-      await file.move(app.makePath(`uploads/${typeKey}`))
+      const uploadedUrl = `uploads/${typeKey}/${cuid()}.${file.extname}`
+      await file.moveToDisk(uploadedUrl)
       return db.transaction(async (trx) => {
         const newFile = await FileService.createFile(
           trx,
@@ -117,7 +120,7 @@ export default class FilesController {
             name: name,
             size: file.size.toString(),
             extension: file.extname,
-            url: file.filePath ?? file.tmpPath,
+            url: uploadedUrl,
             typeKey: typeKey,
           },
           request.input('tags')
@@ -134,17 +137,17 @@ export default class FilesController {
    * @summary Allows download of files in the system
    * @description Download a file
    */
-  async download({ auth, response, request }: HttpContext) {
-    await auth.authenticate()
-    await request.validateUsing(fileAccessValidator)
-    const cleanRequest = request.only(['name'])
+  async download({ params }: HttpContext) {
+    await paramsUUIDValidator.validate(params)
 
-    const file = await File.findByOrFail('name', cleanRequest.name)
+    const file = await File.findOrFail(params.id)
+    const publicUrl = await drive.use().getUrl(file.url)
 
-    // TODO: the path will need to be investigated
-    const absPath = app.makePath('downloaded', normalize(file.url))
-
-    return response.download(absPath)
+    return {
+      data: {
+        url: publicUrl,
+      },
+    }
   }
 
   /**
@@ -155,7 +158,7 @@ export default class FilesController {
   async delete({ response, params }: HttpContext) {
     await paramsUUIDValidator.validate(params)
     const file = await File.findOrFail(params.id)
-    await fs.unlinkSync(file.url)
+    await fs.unlinkSync(`storage/${file.url}`)
     await file.delete()
     response.status(204).send('')
   }

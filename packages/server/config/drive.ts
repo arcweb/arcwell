@@ -20,7 +20,3 @@ const driveConfig = defineConfig({
 })
 
 export default driveConfig
-
-declare module '@adonisjs/drive/types' {
-  export interface DriveDisks extends InferDriveDisks<typeof driveConfig> {}
-}

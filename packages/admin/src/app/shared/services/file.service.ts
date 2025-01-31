@@ -119,9 +119,11 @@ export class FileService {
   }
 
   downloadFile(id: string): Observable<Blob | ErrorResponseType> {
-    return this.http.get(`${environment.apiUrl}/files/${id}/download`, {
-      responseType: 'blob',
-    });
+    return this.http.get(`${environment.apiUrl}/files/${id}/download`).pipe(
+      catchError(error => {
+        return defaultErrorResponseHandler(error);
+      }),
+    );
   }
 
   deleteFile(id: string): Observable<ErrorResponseType | void> {
