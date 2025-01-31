@@ -90,28 +90,30 @@
     </div>
   </form>
 
-  <div class="uneditable-file-form">
-    <div
-      class="detail-title-button-container font-weight-regular-bolder card-title"
-    >
-      <h4>File Info (non-editable)</h4>
-      <mat-divider class="info-divider"></mat-divider>
-      <form [formGroup]="fileInfoForm">
-        <mat-form-field appearance="outline">
-          <mat-label>Url</mat-label>
-          <input matInput formControlName="url" />
-        </mat-form-field>
+  @if (!fileStore.inCreateMode()) {
+    <div class="uneditable-file-form">
+      <div
+        class="detail-title-button-container font-weight-regular-bolder card-title"
+      >
+        <h4>File Info (non-editable)</h4>
+        <mat-divider class="info-divider"></mat-divider>
+        <form [formGroup]="fileInfoForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Url</mat-label>
+            <input matInput formControlName="url" />
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Size</mat-label>
-          <input matInput formControlName="size" />
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Size</mat-label>
+            <input matInput formControlName="size" />
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Extension</mat-label>
-          <input matInput formControlName="extension" />
-        </mat-form-field>
-      </form>
+          <mat-form-field appearance="outline">
+            <mat-label>Extension</mat-label>
+            <input matInput formControlName="extension" />
+          </mat-form-field>
+        </form>
+      </div>
     </div>
-  </div>
+  }
 }

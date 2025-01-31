@@ -194,7 +194,6 @@ export class FileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        console.log('COMP: Deleting file');
         this.fileStore.deleteFile();
       }
     });

@@ -155,7 +155,7 @@ router
             router.post('files/upload', [FilesController, 'upload']).as('files.upload')
             router.put('files/:id', [FilesController, 'update']).as('files.update')
             router.get('files/download', [FilesController, 'download']).as('files.download')
-            router.delete('files', [FilesController, 'delete']).as('files.delete')
+            router.delete('files/:id', [FilesController, 'delete']).as('files.delete')
           })
           .as('files')
           .use(middleware.auth())

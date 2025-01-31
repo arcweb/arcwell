@@ -1,11 +1,12 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { ToastLevel } from '@app/shared/models';
 import { DimensionType } from '@app/shared/schemas/dimension.schema';
 import { FileTypeType } from '@app/shared/schemas/file-type.schema';
 import { FileType, FileUpdateType } from '@app/shared/schemas/file.schema';
 import { FileTypeService } from '@app/shared/services/file-type.service';
 import { FileService } from '@app/shared/services/file.service';
+import { RefreshService } from '@app/shared/services/refresh.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import {
   setErrors,
@@ -13,8 +14,15 @@ import {
   setPending,
   withRequestStatus,
 } from '@app/shared/store/request-status.feature';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { firstValueFrom, forkJoin } from 'rxjs';
+import { DetailStore } from '@feature/detail/detail.store';
 
 export type UploadStatus = 'none' | 'pending' | 'success' | 'error';
 
@@ -48,6 +56,8 @@ export const FileStore = signalStore(
       fileService = inject(FileService),
       fileTypeService = inject(FileTypeService),
       toastService = inject(ToastService),
+      refreshService = inject(RefreshService),
+      detailStore = inject(DetailStore),
     ) => ({
       async initialize(fileId: string) {
         patchState(store, { ...initialState }, setPending());
@@ -100,6 +110,17 @@ export const FileStore = signalStore(
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
 
           toastService.sendMessage(`Failed to upload file`, ToastLevel.ERROR);
+        } else {
+          patchState(
+            store,
+            { file: resp.data, inEditMode: false, inCreateMode: false },
+            setFulfilled(),
+          );
+          toastService.sendMessage(`File uploaded`, ToastLevel.SUCCESS);
+          // refresh the list
+          refreshService.triggerRefresh();
+          // navigate to the new item
+          detailStore.routeToNewDetailId(resp.data.id);
         }
       },
       async initializeForCreate() {
@@ -144,6 +165,12 @@ export const FileStore = signalStore(
             `Failed to download file ${fileId}`,
             ToastLevel.ERROR,
           );
+        } else {
+          patchState(store, { file: resp.data }, setFulfilled());
+          toastService.sendMessage(
+            `File ${fileId} downloaded`,
+            ToastLevel.SUCCESS,
+          );
         }
       },
 
@@ -157,6 +184,12 @@ export const FileStore = signalStore(
           toastService.sendMessage(
             `Failed to get file ${fileId}`,
             ToastLevel.ERROR,
+          );
+        } else {
+          patchState(store, { file: resp.data }, setFulfilled());
+          toastService.sendMessage(
+            `File ${fileId} retrieved`,
+            ToastLevel.SUCCESS,
           );
         }
       },
@@ -172,6 +205,18 @@ export const FileStore = signalStore(
             `Failed to update file ${file.id}`,
             ToastLevel.ERROR,
           );
+        } else {
+          patchState(
+            store,
+            { file: resp.data, inEditMode: false },
+            setFulfilled(),
+          );
+          toastService.sendMessage(
+            `File ${file.id} updated`,
+            ToastLevel.SUCCESS,
+          );
+          // refresh the list
+          refreshService.triggerRefresh();
         }
       },
 
@@ -180,15 +225,25 @@ export const FileStore = signalStore(
         const resp = await firstValueFrom(
           fileService.deleteFile(store.file().id),
         );
-        if (resp.errors) {
+        if (resp && resp.errors) {
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
 
           toastService.sendMessage(
             `Failed to delete file ${store.file().id}`,
             ToastLevel.ERROR,
           );
+        } else {
+          patchState(store, { file: null }, setFulfilled());
+          toastService.sendMessage(`File deleted`, ToastLevel.SUCCESS);
+          // refresh the list
+          refreshService.triggerRefresh();
+          // navigate to the list
+          detailStore.clearDetailId();
         }
       },
     }),
   ),
+  withComputed(({ file }) => ({
+    tagStrings: computed(() => file()?.tags?.map((tag: string) => tag) ?? []),
+  })),
 );
