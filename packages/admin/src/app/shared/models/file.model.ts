@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { FileNewType, FileType } from '../schemas/file.schema';
+import { FileTypeModel } from './file-type.model';
 
 export class FileModel {
   public id?: string;
@@ -8,6 +9,8 @@ export class FileModel {
   public url: string;
   public extension: string;
   public size: string;
+  public fileType?: FileType;
+  public tags?: string[];
   public createdAt?: DateTime;
   public updatedAt?: DateTime;
 
@@ -20,7 +23,11 @@ export class FileModel {
     this.url = data.url;
     this.extension = data.extension;
     this.size = data.size;
-    this.createdAt = data.createdAt;
-    this.updatedAt = data.updatedAt;
+    this.tags = data.tags;
+
+    if (data.fileType) this.fileType = new FileTypeModel(data.fileType);
+
+    if (data.createdAt) this.createdAt = DateTime.fromISO(data.createdAt);
+    if (data.updatedAt) this.updatedAt = DateTime.fromISO(data.updatedAt);
   }
 }

@@ -123,7 +123,7 @@ export default class FilesController {
           request.input('tags')
         )
         return {
-          data: await FileService.getFullFile(newFile.id),
+          data: await FileService.getFullFile(newFile.id, trx),
         }
       })
     }
