@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { ToastLevel } from '@app/shared/models';
 import { DimensionType } from '@app/shared/schemas/dimension.schema';
 import { FileTypeType } from '@app/shared/schemas/file-type.schema';
-import { FileType } from '@app/shared/schemas/file.schema';
+import { FileType, FileUpdateType } from '@app/shared/schemas/file.schema';
 import { FileTypeService } from '@app/shared/services/file-type.service';
 import { FileService } from '@app/shared/services/file.service';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -161,8 +161,9 @@ export const FileStore = signalStore(
         }
       },
 
-      async updateFile(file: FileType) {
-        patchState(store, { ...initialState }, setPending());
+      async updateFile(file: FileUpdateType) {
+        patchState(store, setPending());
+        file.id = store.file().id;
         const resp = await firstValueFrom(fileService.updateFile(file));
         if (resp.errors) {
           patchState(store, { uploadStatus: 'error' }, setErrors(resp.errors));
@@ -175,8 +176,7 @@ export const FileStore = signalStore(
       },
 
       async deleteFile() {
-        patchState(store, { ...initialState }, setPending());
-        console.log('STORE: Deleting file');
+        patchState(store, setPending());
         const resp = await firstValueFrom(
           fileService.deleteFile(store.file().id),
         );

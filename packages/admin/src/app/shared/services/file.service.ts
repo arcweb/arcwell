@@ -10,6 +10,7 @@ import {
   FilesResponseSchema,
   FilesResponseType,
   FileType,
+  FileUpdateType,
 } from '../schemas/file.schema';
 import { environment } from '../../../environments/environment';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
@@ -74,7 +75,9 @@ export class FileService {
       );
   }
 
-  updateFile(file: FileType): Observable<FileResponseType | ErrorResponseType> {
+  updateFile(
+    file: FileUpdateType,
+  ): Observable<FileResponseType | ErrorResponseType> {
     return this.http
       .put<FileResponseType>(`${environment.apiUrl}/files/${file.id}`, file)
       .pipe(

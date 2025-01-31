@@ -30,6 +30,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CREATE_PARTIAL_URL } from '@app/shared/constants/admin.constants';
 import { DetailStore } from '../detail/detail.store';
 import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/confirmation/confirmation-dialog.component';
+import { size } from 'lodash-es';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'aw-file',
@@ -38,6 +40,7 @@ import { ConfirmationDialogComponent } from '@app/shared/components/dialogs/conf
     DetailHeaderComponent,
     ErrorContainerComponent,
     MatButton,
+    MatDivider,
     MatOption,
     MatSelect,
     ReactiveFormsModule,
@@ -77,11 +80,22 @@ export class FileComponent implements OnInit {
       },
       Validators.required,
     ),
+    file: new FormControl<File | null>({
+      value: null,
+      disabled: true,
+    }),
+  });
+
+  fileInfoForm = new FormGroup({
     url: new FormControl<string | null>({
       value: null,
       disabled: true,
     }),
-    file: new FormControl<File | null>({
+    extension: new FormControl<string | null>({
+      value: null,
+      disabled: true,
+    }),
+    size: new FormControl<number | null>({
       value: null,
       disabled: true,
     }),
@@ -124,7 +138,11 @@ export class FileComponent implements OnInit {
           this.fileForm.patchValue({
             fileType: this.fileStore.file()?.fileType,
             name: this.fileStore.file()?.name,
+          });
+          this.fileInfoForm.patchValue({
             url: this.fileStore.file()?.url,
+            extension: this.fileStore.file()?.extension,
+            size: this.fileStore.file()?.size,
           });
         });
       }

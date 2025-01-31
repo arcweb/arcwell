@@ -81,17 +81,17 @@ export default class FilesController {
     await request.validateUsing(fileUpdateValidator)
     await paramsUUIDValidator.validate(params)
 
-    const cleanRequest = request.only(['name'])
+    const cleanRequest = request.only(['name', 'fileType'])
 
     return db.transaction(async (trx) => {
       const updatedFile = await FileService.updateFile(
         trx,
         params.id,
-        cleanRequest.name,
+        cleanRequest,
         request.input('tags')
       )
       return {
-        data: await FileService.getFullFile(updatedFile.id),
+        data: await FileService.getFullFile(updatedFile.id, trx),
       }
     })
   }

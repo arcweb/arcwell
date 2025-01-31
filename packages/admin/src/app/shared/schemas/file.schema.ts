@@ -23,9 +23,6 @@ export const FileUpdateSchema = FileSchema.extend({
   id: z.string().uuid(),
   typeKey: z.string().optional(),
   name: z.string(),
-  url: z.string().optional(),
-  extension: z.string().optional(),
-  size: z.string().optional(),
   createdAt: z.string().datetime({ offset: true }).optional(),
   updatedAt: z.string().datetime({ offset: true }).optional(),
 }).strict();
