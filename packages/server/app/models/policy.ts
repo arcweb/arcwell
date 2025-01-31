@@ -12,7 +12,7 @@ export default class Policy extends AwBaseModel {
   declare name: string
 
   @column()
-  declare capabilities: string
+  declare capabilities: Record<string, boolean>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

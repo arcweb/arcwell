@@ -42,7 +42,6 @@ export default class Group extends AwBaseModel {
     pivotTable: 'group_object',
     pivotForeignKey: 'group_id',
     pivotRelatedForeignKey: 'object_id',
-    // pivotColumns: ['object_type'],
   })
   declare people: ManyToMany<typeof Person>
 

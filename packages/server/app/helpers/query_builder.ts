@@ -13,6 +13,7 @@ const defaultSearchFields: Record<string, string[]> = {
   cohorts: ['name'],
   event_types: ['name'],
   fact_types: ['name'],
+  groups: ['name'],
   people: ['family_name', 'given_name'],
   person_types: ['name'],
   resources: ['name'],

@@ -12,6 +12,7 @@ import { validateDimensions } from '#validators/dimension'
 import { throwCustomHttpError } from '#exceptions/handler_helper'
 import { parseBulkCsv } from '#helpers/bulk_parsing'
 import { bulkUploadValidator } from '#validators/bulk'
+import FactPolicy from '#policies/fact_policy'
 
 export default class FactsController {
   /**
@@ -36,9 +37,13 @@ export default class FactsController {
    * @description Retrieve a list of Fact records. This method is best used for administrative and management functions. Consider the Data API for querying facts with dimension for statistical and review purposes.
    * @paramUse(sortable, filterable)
    */
-  async index({ request }: HttpContext) {
+  async index({ bouncer, request, response }: HttpContext) {
     const queryData = request.qs()
     const typeKey = queryData['typeKey']
+
+    if (await bouncer.with(FactPolicy).denies('index')) {
+      return response.forbidden('Cannot index facts')
+    }
 
     let [query, countQuery] = await buildApiQuery({
       modelQuery: Fact.query(),
@@ -71,8 +76,12 @@ export default class FactsController {
    * @summary Create Fact
    * @description Create a Fact within Arcwell's data system. This method is intended for administrative and management use. Consider the Data API for inserting facts with dimension for application and statistical purposes.
    */
-  async store({ request }: HttpContext) {
+  async store({ bouncer, response, request }: HttpContext) {
     await request.validateUsing(createFactValidator)
+
+    if (await bouncer.with(FactPolicy).denies('store')) {
+      return response.forbidden('Cannot index facts')
+    }
 
     const cleanRequest = request.only([
       'typeKey',

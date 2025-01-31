@@ -41,7 +41,7 @@ Major features are introduced with this release, including:
 * Arcwell Server - provides REST API, data models, integration docs
 * Arcwell Admin - management interface application
 * Major top-level record system: People, Cohorts, Resources, Events, Facts
-* Initial User management, stub work for Roles, Permissions
+* Initial User management, stub work for Roles, Permission_names
 * Examples of implementation efforts:
   * Clinical Survey cross-platform mobile application
   * Terraform definitions for AWS cloud hosted infrastructure

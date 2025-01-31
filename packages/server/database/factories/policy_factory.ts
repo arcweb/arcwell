@@ -6,7 +6,7 @@ export const PolicyFactory = factory
   .define(Policy, async ({ faker }) => {
     return {
       name: faker.commerce.productName(),
-      capabilities: '{}',
+      capabilities: '{"policyName1": {"value": true}, "policyName2": {"value": false}}',
     }
   })
   .relation('roles', () => RoleFactory)
