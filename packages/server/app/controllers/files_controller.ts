@@ -8,7 +8,6 @@ import { normalize } from 'node:path'
 import FileType from '#models/file_type'
 import { buildApiQuery } from '#helpers/query_builder'
 import { paramsUUIDValidator } from '#validators/common'
-import auth from '#config/auth'
 import FileService from '#services/file_service'
 
 export default class FilesController {
@@ -105,12 +104,13 @@ export default class FilesController {
     await request.validateUsing(fileUploadValidator)
     const file = request.file('file')
     const typeKey = request.input('typeKey')
+    const name = request.input('name')
 
     if (file) {
       await file.move(app.makePath(`uploads/${typeKey}`))
       return db.transaction(async (trx) => {
         const newFile = await File.create({
-          name: file.fileName,
+          name: name,
           size: file.size.toString(),
           extension: file.extname,
           url: file.filePath ?? file.tmpPath,

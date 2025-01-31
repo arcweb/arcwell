@@ -45,7 +45,7 @@ export class FileListComponent {
 
   dataSource = new MatTableDataSource<FileModel>();
 
-  displayedColumns: string[] = ['fileType', 'name', 'url', 'createdAt'];
+  displayedColumns: string[] = ['fileType', 'name', 'url', 'size', 'createdAt'];
 
   constructor() {
     effect(() => {
