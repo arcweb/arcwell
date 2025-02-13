@@ -7,12 +7,13 @@ const ROLE_URL = '/roles'
 test.group('Router roles', () => {
   test('role index test', async ({ assert, client }) => {
     const adminUser = await User.findBy('email', 'admin@example.com')
+
     const response = await client.get(ROLE_URL).loginAs(adminUser!)
 
     response.assertStatus(200)
     const data = response.body()
-    assert.equal(data.data.length, 1)
-    assert.equal(data.meta.count, 1)
+    assert.equal(data.data.length, 2)
+    assert.equal(data.meta.count, 2)
   })
 
   test('role index test no auth', async ({ client }) => {
