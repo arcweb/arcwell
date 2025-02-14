@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Sorting bug on Resources list
+- Bug when searching for a person to add to Event, Form, or Cohort
 
 ## [0.1.0] - 2024-10-21
 
@@ -40,7 +41,7 @@ Major features are introduced with this release, including:
 * Arcwell Server - provides REST API, data models, integration docs
 * Arcwell Admin - management interface application
 * Major top-level record system: People, Cohorts, Resources, Events, Facts
-* Initial User management, stub work for Roles, Permissions
+* Initial User management, stub work for Roles, Permission_names
 * Examples of implementation efforts:
   * Clinical Survey cross-platform mobile application
   * Terraform definitions for AWS cloud hosted infrastructure

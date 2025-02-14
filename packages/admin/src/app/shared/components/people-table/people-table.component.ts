@@ -1,13 +1,9 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ViewChild,
-  effect,
   inject,
   input,
   output,
-  viewChild,
 } from '@angular/core';
 import {
   MatCell,

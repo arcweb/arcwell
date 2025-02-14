@@ -10,5 +10,15 @@ export default class extends BaseSeeder {
         builder.merge([{ name: 'DefaultAdmin', capabilities: '{}' }])
       )
       .create()
+    await RoleFactory.merge({ name: 'Basic' })
+      .with('policies', 1, (builder) =>
+        builder.merge([
+          {
+            name: 'DefaultAdmin',
+            capabilities: '{"createFactsExample": true, "policyName2": false}',
+          },
+        ])
+      )
+      .create()
   }
 }

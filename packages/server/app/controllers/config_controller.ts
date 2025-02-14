@@ -40,6 +40,7 @@ export default class ConfigController {
         registrationEnabled: env.get('ARCWELL_REGISTER_ENABLED'),
         cors: env.get('ARCWELL_SERVER_CORS_ORIGINS'),
         debugError: env.get('ARCWELL_SERVER_DEBUG_ERRORS'),
+        enableGroupSecurity: true,
       },
       mail: {
         host: env.get('SMTP_HOST'),

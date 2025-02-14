@@ -157,6 +157,8 @@ export class EventComponent implements OnInit {
 
           const eventFormPayload: EventType = {
             eventType: formValue.eventType,
+            startedAt: formValue.startedAt,
+            endedAt: formValue.endedAt,
             dimensions: formValue.dimensionsCopy ?? [],
             personId: this.isObjectModel(formValue.person)
               ? formValue.person.id

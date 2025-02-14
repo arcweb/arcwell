@@ -10,6 +10,7 @@ import Person from '#models/person'
 import Tag from '#models/tag'
 import AwBaseModel from '#models/aw_base_model'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import Group from '#models/group'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -65,6 +66,14 @@ export default class User extends compose(AwBaseModel, AuthFinder) {
     pivotRelatedForeignKey: 'tag_id',
   })
   declare tags: ManyToMany<typeof Tag>
+
+  @manyToMany(() => Group, {
+    pivotTimestamps: true,
+    pivotTable: 'group_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'group_id',
+  })
+  declare groups: ManyToMany<typeof Group>
 
   @afterDelete()
   static async detachTags(user: User) {

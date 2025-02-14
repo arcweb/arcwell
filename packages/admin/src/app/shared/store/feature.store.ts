@@ -5,7 +5,7 @@ import {
   setPending,
   setFulfilled,
 } from '@shared/store/request-status.feature';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FeatureModel } from '@shared/models/feature.model';
 import { FeatureService } from '@shared/services/feature.service';
@@ -101,6 +101,7 @@ export const FeatureStore = signalStore(
           patchState(store, setFulfilled());
         }
       },
+      isLoading: computed(() => store.requestStatus() === 'pending'),
     }),
   ),
 );

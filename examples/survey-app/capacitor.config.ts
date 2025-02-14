@@ -6,7 +6,7 @@ loadEnv();
 
 const config: CapacitorConfig = {
   appId: process.env['CAPACITOR_APP_ID'] || 'io.ionic.starter',
-  appName: process.env['CAPACITOR_APP_NAME'] || 'starter-app',
+  appName: process.env['CAPACITOR_APP_NAME'] || 'Arcwell Surveys',
   webDir: 'www',
   plugins: {
     Keyboard: {

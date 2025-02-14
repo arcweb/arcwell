@@ -13,5 +13,5 @@
 */
 
 export const policies = {
-  RollPolicy: () => import('#policies/roll_policy'),
+  FactPolicy: () => import('#policies/fact_policy'),
 }

@@ -160,7 +160,7 @@ export class ObjectSelectorFormFieldComponent
           .getPeople({
             limit: 20,
             offset: 0,
-            search: [{ field: 'familyName', searchString: query }],
+            search: [{ field: 'family_name', searchString: query }],
             typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
@@ -183,7 +183,7 @@ export class ObjectSelectorFormFieldComponent
             limit: 20,
             offset: 0,
             notInCohort: this.objectIdForFiltering(),
-            search: [{ field: 'familyName', searchString: query }],
+            search: [{ field: 'family_name', searchString: query }],
             typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {
