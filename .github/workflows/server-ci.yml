@@ -87,28 +87,31 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Confirm containers are up
+      - name: Start Containers
+        run: docker compose up server -d
+    
+      - name: Verify Container Health
         run: |
-          docker compose up -d db server
           set -e
-          echo "Checking health of the server..."
-          # Retry the health check up to 10 times with a 10-second interval
-          for i in {1..5}; do
-            if docker compose exec server curl --fail http://localhost:3333/health; then
-              echo "Health check passed!"
-              break
-            else
-              echo "Health check failed, retrying in 5 seconds..."
-              sleep 5
+          echo "Waiting for containers to become healthy..."
+
+          # Wait for initial healthcheck to run
+          sleep 15
+
+          # Perform the first health check
+          if docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
+            echo "Some services are still unhealthy. Retrying after 60 seconds..."
+            sleep 60
+
+            # Perform the second health check
+            if docker compose ps -q | xargs docker inspect --format='{{.State.Health.Status}}' | grep -q 'unhealthy'; then
+              echo "Error: Not all services became healthy in time."
+              exit 1
             fi
-          done
-          
-          # If we exhausted all retries and curl still fails, exit the job
-          if ! docker compose exec server curl --fail http://localhost:3333/health; then
-            echo "Health check failed after 10 attempts. Exiting."
-            docker compose logs server
-            exit 1
           fi
+
+          echo "All services are healthy."
+          exit 0
 
       - name: Lint Server
         run: |

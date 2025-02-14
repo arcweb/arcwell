@@ -9,7 +9,10 @@ services:
       - '5432:5432'
     restart: on-failure
     healthcheck:
-      test: 'exit 0'
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     networks:
       - data
 
@@ -26,12 +29,14 @@ services:
       ARCWELL_INSTANCE_NAME:
       ARCWELL_INSTANCE_ID:
       ARCWELL_REGISTER_ENABLED:
+
       # Arcwell Configuration:
       ARCWELL_NODE:
       ARCWELL_KEY:
       ARCWELL_SERVER_CORS_ORIGINS:
-      ARCWELL_SERVER_DEBUG_ERRORS: # AdonisJS Configuration:
+      ARCWELL_SERVER_DEBUG_ERRORS:
 
+      # AdonisJS Configuration:
       TZ:
       PORT:
       HOST:
@@ -42,8 +47,9 @@ services:
       DB_PORT:
       DB_USER:
       DB_PASSWORD:
-      DB_DATABASE: # Mail Delivery:
+      DB_DATABASE:
 
+      # Mail Delivery:
       SMTP_HOST:
       SMTP_PORT:
       SMTP_USER:
@@ -54,7 +60,8 @@ services:
       - application
       - data
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   admin:
     build:
@@ -67,8 +74,10 @@ services:
     networks:
       - application
     depends_on:
-      - db
-      - server
+      db:
+        condition: service_healthy
+      server:
+        condition: service_healthy
 
 networks:
   application:

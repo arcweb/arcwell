@@ -19,8 +19,8 @@ FROM base AS develop-base
 USER node
 WORKDIR /home/node/app
 
-# Check every 30s to ensure this service returns HTTP 200
-HEALTHCHECK --interval=60s CMD node healthcheck.js
+# Check every 60s to ensure this service returns HTTP 200
+HEALTHCHECK --interval=60s --start-period=10s CMD node healthcheck.js
 
 # Install development tools (curl, etc.)
 USER root

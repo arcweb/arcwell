@@ -45,6 +45,9 @@ COPY --chown=node:node . .
 #
 FROM base as develop
 
+# Check every 60s to ensure this service returns HTTP 200
+HEALTHCHECK --interval=60s --start-period=10s CMD node healthcheck.js
+
 # Install Chromium for Karma tests and other dependencies
 USER root
 RUN apt-get update
