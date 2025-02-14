@@ -1,0 +1,244 @@
+@if (groupStore.isReady()) {
+  <aw-detail-header
+    detailName="Group"
+    [inEditMode]="groupStore.inEditMode()"
+    [inCreateMode]="groupStore.inCreateMode()"
+    (toggleEditMode)="groupStore.toggleEditMode()"
+    (delete)="onDelete()"
+  ></aw-detail-header>
+
+  <form [formGroup]="groupForm">
+    @if (groupStore.isErrored()) {
+      <aw-error-container [errors]="groupStore.errors()" />
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>name</mat-label>
+      <input matInput placeholder="Name" formControlName="name" />
+      @if (groupForm.controls.name.hasError('required')) {
+        <mat-error>
+          Name is
+          <strong>required</strong>
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-button-container">
+      <button
+        mat-button
+        type="button"
+        (click)="onCancel()"
+        class="default-button"
+        [disabled]="!groupStore.inEditMode()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-flat-button
+        type="submit"
+        class="default-button"
+        [disabled]="
+          !groupStore.inEditMode() || !groupForm.valid || !groupForm.dirty
+        "
+      >
+        Save
+      </button>
+    </div>
+  </form>
+
+  @if (!groupStore.inCreateMode()) {
+    <div class="accordion-area">
+      <h5>Related</h5>
+      <mat-accordion multi="true">
+        <!-- TODO: Think about refactoring these if the lists are made into one component.
+             The main barrier to refactoring now is the table is different for each type. -->
+        <!-- Events -->
+        <mat-expansion-panel [disabled]="groupStore.eventsCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-panel-title">Events</mat-panel-title>
+            <mat-panel-description class="group-panel-description">
+              {{ groupStore.eventsCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-events-table
+            [dataSource]="eventsDataSource"
+            [displayedColumns]="eventsColumns"
+            [matSortActive]="this.groupStore.eventsListOptions().sort"
+            [matSortDirection]="this.groupStore.eventsListOptions().order"
+            [length]="this.groupStore.eventsCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.groupStore.eventsListOptions().limit"
+            [pageIndex]="this.groupStore.eventsListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'events',
+                groupStore.eventsListOptions().sort,
+                groupStore.eventsListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('events', $event)"
+            (onSortChanged)="
+              sortChange(
+                'events',
+                groupStore.eventsListOptions().limit,
+                groupStore.eventsListOptions().offset,
+                groupStore.eventsListOptions().pageIndex,
+                $event
+              )
+            "
+            (onViewResourceClicked)="viewResource($event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-events-table>
+        </mat-expansion-panel>
+
+        <!-- Facts -->
+        <mat-expansion-panel [disabled]="groupStore.factsCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-panel-title">Facts</mat-panel-title>
+            <mat-panel-description class="group-panel-description">
+              {{ groupStore.factsCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-facts-table
+            [dataSource]="factsDataSource"
+            [displayedColumns]="factsColumns"
+            [matSortActive]="this.groupStore.factsListOptions().sort"
+            [matSortDirection]="this.groupStore.factsListOptions().order"
+            [length]="this.groupStore.factsCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.groupStore.factsListOptions().limit"
+            [pageIndex]="this.groupStore.factsListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'facts',
+                groupStore.factsListOptions().sort,
+                groupStore.factsListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('facts', $event)"
+            (onSortChanged)="
+              sortChange(
+                'facts',
+                groupStore.factsListOptions().limit,
+                groupStore.factsListOptions().offset,
+                groupStore.factsListOptions().pageIndex,
+                $event
+              )
+            "
+            (onViewEventClicked)="viewEvent($event)"
+            (onViewResourceClicked)="viewResource($event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-facts-table>
+        </mat-expansion-panel>
+
+        <!-- People -->
+        <mat-expansion-panel [disabled]="groupStore.peopleCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-panel-title">People</mat-panel-title>
+            <mat-panel-description class="group-panel-description">
+              {{ groupStore.peopleCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-people-table
+            [dataSource]="peopleDataSource"
+            [displayedColumns]="peopleColumns"
+            [matSortActive]="this.groupStore.peopleListOptions().sort"
+            [matSortDirection]="this.groupStore.peopleListOptions().order"
+            [length]="this.groupStore.peopleCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.groupStore.peopleListOptions().limit"
+            [pageIndex]="this.groupStore.peopleListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'people',
+                groupStore.peopleListOptions().sort,
+                groupStore.peopleListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('people', $event)"
+            (onSortChanged)="
+              sortChange(
+                'people',
+                groupStore.peopleListOptions().limit,
+                groupStore.peopleListOptions().offset,
+                groupStore.peopleListOptions().pageIndex,
+                $event
+              )
+            "
+          ></aw-people-table>
+        </mat-expansion-panel>
+
+        <!-- Resources -->
+        <mat-expansion-panel [disabled]="groupStore.resourcesCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-panel-title">
+              Resources
+            </mat-panel-title>
+            <mat-panel-description class="group-panel-description">
+              {{ groupStore.resourcesCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-resources-table
+            [dataSource]="resourcesDataSource"
+            [displayedColumns]="resourcesColumns"
+            [matSortActive]="this.groupStore.resourcesListOptions().sort"
+            [matSortDirection]="this.groupStore.resourcesListOptions().order"
+            [length]="this.groupStore.resourcesCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.groupStore.resourcesListOptions().limit"
+            [pageIndex]="this.groupStore.resourcesListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'resources',
+                groupStore.resourcesListOptions().sort,
+                groupStore.resourcesListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('resources', $event)"
+            (onSortChanged)="
+              sortChange(
+                'resources',
+                groupStore.resourcesListOptions().limit,
+                groupStore.resourcesListOptions().offset,
+                groupStore.resourcesListOptions().pageIndex,
+                $event
+              )
+            "
+          ></aw-resources-table>
+        </mat-expansion-panel>
+
+        <!-- Users -->
+        <mat-expansion-panel [disabled]="groupStore.usersCount() < 1">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-panel-title">Users</mat-panel-title>
+            <mat-panel-description class="group-panel-description">
+              {{ groupStore.usersCount() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <aw-users-table
+            [dataSource]="usersDataSource"
+            [displayedColumns]="usersColumns"
+            [length]="this.groupStore.usersCount()"
+            [pageSizes]="pageSizes"
+            [pageSize]="this.groupStore.usersListOptions().limit"
+            [pageIndex]="this.groupStore.usersListOptions().pageIndex"
+            (onPageChanged)="
+              pageChange(
+                'users',
+                groupStore.usersListOptions().sort,
+                groupStore.usersListOptions().order,
+                $event
+              )
+            "
+            (onRowClicked)="rowClick('users', $event)"
+            (onViewPersonClicked)="viewPerson($event)"
+          ></aw-users-table>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  }
+}

@@ -17,6 +17,7 @@ import Resource from '#models/resource'
 import AwBaseModel from '#models/aw_base_model'
 import Dimension from '#models/dimension'
 import { ModelQueryBuilderContract } from '@adonisjs/lucid/types/model'
+import Group from '#models/group'
 
 export default class Event extends AwBaseModel {
   @column({ isPrimary: true })
@@ -65,6 +66,14 @@ export default class Event extends AwBaseModel {
     pivotRelatedForeignKey: 'tag_id',
   })
   declare tags: ManyToMany<typeof Tag>
+
+  @manyToMany(() => Group, {
+    pivotTimestamps: true,
+    pivotTable: 'group_object',
+    pivotForeignKey: 'object_id',
+    pivotRelatedForeignKey: 'group_id',
+  })
+  declare groups: ManyToMany<typeof Group>
 
   @afterDelete()
   static async detachTags(event: Event) {

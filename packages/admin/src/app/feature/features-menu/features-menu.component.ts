@@ -22,6 +22,7 @@ import {
   faCubes,
   faRectangleList,
   faTags,
+  faUserGroup,
   faGear,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
@@ -73,6 +74,7 @@ export class FeaturesMenuComponent {
     faCubes: faCubes,
     faRectangleList: faRectangleList,
     faTags: faTags,
+    faUserGroup: faUserGroup,
     faGear: faGear,
   };
 
