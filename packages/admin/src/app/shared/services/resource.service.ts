@@ -15,6 +15,8 @@ import { ResourceType } from '@app/shared/schemas/resource.schema';
 import { defaultErrorResponseHandler } from '@shared/helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
 import { buildSearchParams } from '../helpers/basic-search.helper';
+import { FeatureFilter } from '../interfaces/feature-filter';
+import { buildFilterParams } from '../helpers/filter-api-call.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +31,7 @@ export class ResourceService {
     order?: string;
     typeKey?: string;
     search?: { field: string; searchString: string }[];
+    filters?: FeatureFilter[];
   }): Observable<ResourcesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -44,6 +47,9 @@ export class ResourceService {
 
     if (props.search && props.search.length > 0) {
       params = buildSearchParams(props.search, params);
+    }
+    if (props.filters && props.filters.length > 0) {
+      params = buildFilterParams(props.filters, params);
     }
     if (props.sort && props.order) {
       params = params.set('sort', props.sort);

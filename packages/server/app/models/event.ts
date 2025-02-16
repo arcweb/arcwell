@@ -26,16 +26,16 @@ export default class Event extends AwBaseModel {
   @column()
   declare dimensions: Dimension[]
 
-  @column({ meta: { type: 'string' } })
+  @column({ meta: { type: 'string', title: 'Type Key' } })
   declare typeKey: string
 
   @belongsTo(() => EventType, { foreignKey: 'typeKey', localKey: 'key' })
   declare eventType: BelongsTo<typeof EventType>
 
-  @column.dateTime()
+  @column.dateTime({ meta: { title: 'Started At' } })
   declare startedAt: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ meta: { title: 'Ended At' } })
   declare endedAt: DateTime
 
   @column()

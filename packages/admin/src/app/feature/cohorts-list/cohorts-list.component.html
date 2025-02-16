@@ -2,10 +2,13 @@
   [tableName]="featureStore.activeSubfeature()?.name || 'Cohorts'"
   [enableFilter]="
     cohortsListStore.cohorts().length > 0 ||
-    cohortsListStore.search().length > 0
+    cohortsListStore.search().length > 0 ||
+    cohortsListStore.filters().length > 0
   "
   [enableImport]="false"
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (cohortsListStore.isErrored()) {

@@ -1,0 +1,22 @@
+.filter-builder-row {
+  display: flex;
+  gap: 20px;
+
+  .field-input {
+    width: 30%;
+  }
+
+  .operator-input {
+    width: 30%;
+  }
+
+  .value-input {
+    width: 30%;
+  }
+}
+
+.event-icon {
+  position: absolute;
+  right: 0;
+  top: 18px;
+}

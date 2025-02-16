@@ -15,6 +15,8 @@ import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { ErrorResponseType } from '@schemas/error.schema';
 import { environment } from '../../../environments/environment';
 import { buildSearchParams } from '../helpers/basic-search.helper';
+import { FeatureFilter } from '../interfaces/feature-filter';
+import { buildFilterParams } from '../helpers/filter-api-call.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +30,7 @@ export class PersonTypeService {
     sort?: string;
     order?: string;
     search?: { field: string; searchString: string }[];
+    filters?: FeatureFilter[];
   }): Observable<PersonTypesResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -43,6 +46,9 @@ export class PersonTypeService {
     }
     if (props.search && props.search.length > 0) {
       params = buildSearchParams(props.search, params);
+    }
+    if (props.filters && props.filters.length > 0) {
+      params = buildFilterParams(props.filters, params);
     }
 
     return this.http

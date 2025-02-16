@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-fact-types',
@@ -60,6 +61,7 @@ export class FactTypesComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   dataSource = new MatTableDataSource<FactTypeModel>();
 
@@ -81,6 +83,7 @@ export class FactTypesComponent {
           order: this.factTypesStore.order(),
           pageIndex: this.factTypesStore.pageIndex(),
           search: this.factTypesStore.search(),
+          filters: this.factTypesStore.filters(),
         });
       });
   }
@@ -92,11 +95,33 @@ export class FactTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  filtersChanged() {
     this.factTypesStore.load({
       limit: this.factTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('fact_types', searchText),
+      search: this.factTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
+  searchTextChanged() {
+    this.factTypesStore.load({
+      limit: this.factTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature(
+        'fact_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
+      filters: this.factTypesStore.filters(),
     });
   }
 
@@ -108,6 +133,7 @@ export class FactTypesComponent {
       order: event.direction,
       pageIndex: this.factTypesStore.pageIndex(),
       search: this.factTypesStore.search(),
+      filters: this.factTypesStore.filters(),
     });
   }
 }

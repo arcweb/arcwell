@@ -24,6 +24,10 @@ import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FeatureSearchAndFilterStore } from './feature-search-and-filter.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FilterBuilderComponent } from '../filter-builder/filter-builder.component';
+import { MatCardModule } from '@angular/material/card';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
+import { cloneDeep } from 'lodash-es';
 
 @Component({
   selector: 'aw-feature-search-and-filter',
@@ -40,6 +44,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     FormsModule,
     MatFormField,
     MatInput,
+    FilterBuilderComponent,
+    MatCardModule,
   ],
   templateUrl: './feature-search-and-filter.component.html',
   styleUrl: './feature-search-and-filter.component.scss',
@@ -51,7 +57,12 @@ export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
   destroyRef = inject(DestroyRef);
   @ViewChild('searchInput') searchInput!: ElementRef;
 
-  onSearchTextChanged = output<string>();
+  onCleared = output();
+  onSearchTextChanged = output();
+  onFiltersChanged = output();
+
+  filterFormActive = false;
+  filterToEditIndex: number | undefined = undefined;
 
   constructor() {
     effect(() => {
@@ -74,16 +85,62 @@ export class FeatureSearchAndFilterComponent implements OnInit, AfterViewInit {
       .subscribe((searchText: string) => {
         if (searchText != this.featureSearchAndFilterStore.searchText()) {
           this.featureSearchAndFilterStore.setSearchText(searchText);
-          this.onSearchTextChanged.emit(searchText);
+          this.onSearchTextChanged.emit();
         }
       });
   }
 
   ngAfterViewInit() {
-    this.searchInput.nativeElement.focus();
+    if (
+      (this.featureSearchAndFilterStore.currentFeature() !== 'events' &&
+        this.featureSearchAndFilterStore.currentFeature() !== 'facts') ||
+      this.featureSearchAndFilterStore.currentSubFeature() === 'types'
+    )
+      this.searchInput.nativeElement.focus();
   }
 
-  onClear() {
+  clear() {
+    this.featureSearchAndFilterStore.resetSearchAndFilters();
     this.searchTextCtrl.setValue('');
+    this.onCleared.emit();
+  }
+
+  deleteFilter(filterIndex: number) {
+    const filters = cloneDeep(this.featureSearchAndFilterStore.filters());
+    filters.splice(filterIndex, 1);
+    this.featureSearchAndFilterStore.setFilters(filters);
+    this.onFiltersChanged.emit();
+  }
+
+  editFilter(filterIndex: number) {
+    this.filterToEditIndex = filterIndex;
+    this.filterFormActive = true;
+  }
+
+  filterCanceled() {
+    this.filterFormActive = false;
+    this.filterToEditIndex = undefined;
+  }
+
+  filterSaved(filter: FeatureFilter) {
+    const filters = cloneDeep(this.featureSearchAndFilterStore.filters());
+    if (this.filterToEditIndex !== undefined) {
+      // Editing
+      filters[this.filterToEditIndex] = filter;
+    } else {
+      filters.push(filter);
+    }
+    this.featureSearchAndFilterStore.setFilters(filters);
+    this.filterToEditIndex = undefined;
+    this.filterFormActive = false;
+    this.onFiltersChanged.emit();
+  }
+
+  truncateValue(value: string, length: number) {
+    if (value.length >= length) {
+      return value.substring(0, length) + '...';
+    } else {
+      return value;
+    }
   }
 }

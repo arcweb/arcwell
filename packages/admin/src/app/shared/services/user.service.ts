@@ -16,6 +16,8 @@ import { ErrorResponseType } from '@schemas/error.schema';
 import { defaultErrorResponseHandler } from '../helpers/response-format.helper';
 import { environment } from '../../../environments/environment';
 import { buildSearchParams } from '../helpers/basic-search.helper';
+import { FeatureFilter } from '../interfaces/feature-filter';
+import { buildFilterParams } from '../helpers/filter-api-call.helper';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +29,7 @@ export class UserService {
     limit?: number,
     offset?: number,
     search?: { field: string; searchString: string }[],
+    filters?: FeatureFilter[],
   ): Observable<UsersResponseType[] | ErrorResponseType> {
     let params = new HttpParams();
 
@@ -38,6 +41,9 @@ export class UserService {
     }
     if (search && search.length > 0) {
       params = buildSearchParams(search, params);
+    }
+    if (filters && filters.length > 0) {
+      params = buildFilterParams(filters, params);
     }
 
     return this.http

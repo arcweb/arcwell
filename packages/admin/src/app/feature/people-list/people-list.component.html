@@ -1,12 +1,15 @@
 <aw-table-header
   [tableName]="featureStore.activeSubfeature()?.name || 'People'"
   [createLinkQueryParams]="{ type_key: typeKey$ | async }"
-  [enableSearch]="peopleListStore.people().length > 0"
   (bulkInput)="bulkImport()"
   [enableFilter]="
-    peopleListStore.people().length > 0 || peopleListStore.search().length > 0
+    peopleListStore.people().length > 0 ||
+    peopleListStore.search().length > 0 ||
+    peopleListStore.filters().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (peopleListStore.isErrored()) {

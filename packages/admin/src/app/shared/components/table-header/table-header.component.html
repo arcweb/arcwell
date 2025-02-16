@@ -18,23 +18,11 @@
       Add New
     </button>
     @if (enableFilter()) {
-      <!-- TODO: Remove disabling of button from Events and Facts once we have any filter developed -->
       <button
         mat-button
         matTooltip="Filter"
         (click)="filterOpen = !filterOpen"
-        [disabled]="
-          (featureSearchAndFilterStore.currentFeature() === 'events' ||
-            featureSearchAndFilterStore.currentFeature() === 'facts') &&
-          featureSearchAndFilterStore.currentSubFeature() !== 'types'
-        "
         class="table-header-button label-medium font-weight-regular"
-        [ngClass]="{
-          disabled:
-            (featureSearchAndFilterStore.currentFeature() === 'events' ||
-              featureSearchAndFilterStore.currentFeature() === 'facts') &&
-            featureSearchAndFilterStore.currentSubFeature() !== 'types',
-        }"
         [matBadge]="activeFilterCount()"
         [matBadgeHidden]="activeFilterCount() < 1"
       >
@@ -50,18 +38,14 @@
         cdkConnectedOverlay
         [cdkConnectedOverlayOrigin]="trigger"
         [cdkConnectedOverlayOpen]="filterOpen"
-        [cdkConnectedOverlayPositions]="[
-          {
-            originX: 'end',
-            originY: 'bottom',
-            overlayX: 'end',
-            overlayY: 'top',
-          },
-        ]"
-        [cdkConnectedOverlayOffsetY]="filterOffsetY"
+        [cdkConnectedOverlayOffsetX]="filterOffsetX"
+        [cdkConnectedOverlayWidth]="filterWidth"
       >
         <aw-feature-search-and-filter
-          (onSearchTextChanged)="searchTextChanged($event)"
+          class="filter-overlay"
+          (onSearchTextChanged)="searchTextChanged()"
+          (onFiltersChanged)="filtersChanged()"
+          (onCleared)="filtersCleared()"
         ></aw-feature-search-and-filter>
       </ng-template>
     }

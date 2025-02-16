@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-resource-types',
@@ -60,6 +61,7 @@ export class ResourceTypesComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
 
   dataSource = new MatTableDataSource<ResourceTypeModel>();
 
@@ -82,6 +84,7 @@ export class ResourceTypesComponent {
           order: this.resourceTypesStore.order(),
           pageIndex: this.resourceTypesStore.pageIndex(),
           search: this.resourceTypesStore.search(),
+          filters: this.resourceTypesStore.filters(),
         });
       });
   }
@@ -93,11 +96,33 @@ export class ResourceTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  filtersChanged() {
     this.resourceTypesStore.load({
       limit: this.resourceTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('resource_types', searchText),
+      search: this.resourceTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
+  searchTextChanged() {
+    this.resourceTypesStore.load({
+      limit: this.resourceTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature(
+        'resource_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
+      filters: this.resourceTypesStore.filters(),
     });
   }
 
@@ -109,6 +134,7 @@ export class ResourceTypesComponent {
       order: event.direction,
       pageIndex: this.resourceTypesStore.pageIndex(),
       search: this.resourceTypesStore.search(),
+      filters: this.resourceTypesStore.filters(),
     });
   }
 }

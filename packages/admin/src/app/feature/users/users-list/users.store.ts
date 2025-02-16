@@ -1,6 +1,7 @@
 import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 import { UserModel } from '@app/shared/models';
 import { UserService } from '@app/shared/services/user.service';
 import {
@@ -25,6 +26,7 @@ interface UserState {
   totalData: number;
   pageIndex: number;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: UserState = {
@@ -34,6 +36,7 @@ const initialState: UserState = {
   totalData: 0,
   pageIndex: 0,
   search: [],
+  filters: [],
 };
 
 export const UsersStore = signalStore(
@@ -45,14 +48,15 @@ export const UsersStore = signalStore(
       limit: number,
       offset: number,
       search?: { field: string; searchString: string }[],
+      filters: FeatureFilter[] = [],
     ) {
       patchState(
         store,
-        { ...initialState, limit, offset, search },
+        { ...initialState, limit, offset, search, filters },
         setPending(),
       );
       const resp = await firstValueFrom(
-        userService.getAllUsers(limit, offset, search),
+        userService.getAllUsers(limit, offset, search, filters),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -76,7 +80,12 @@ export const UsersStore = signalStore(
         setPending(),
       );
       const resp = await firstValueFrom(
-        userService.getAllUsers(store.limit(), store.offset(), store.search()),
+        userService.getAllUsers(
+          store.limit(),
+          store.offset(),
+          store.search(),
+          store.filters(),
+        ),
       );
 
       if (resp.errors) {

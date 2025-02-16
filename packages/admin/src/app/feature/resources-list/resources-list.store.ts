@@ -16,6 +16,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models';
 import { ResourceTypeType } from '@app/shared/schemas/resource-type.schema';
 import { ResourceTypeService } from '@app/shared/services/resource-type.service';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface ResourceListState {
   resources: ResourceModel[];
@@ -28,6 +29,7 @@ interface ResourceListState {
   order: SortDirection;
   typeKey: string;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: ResourceListState = {
@@ -41,6 +43,7 @@ const initialState: ResourceListState = {
   order: 'asc',
   typeKey: '',
   search: [],
+  filters: [],
 };
 
 export const ResourcesListStore = signalStore(
@@ -62,6 +65,7 @@ export const ResourcesListStore = signalStore(
         pageIndex?: number;
         typeKey?: string;
         search?: { field: string; searchString: string }[];
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -123,6 +127,7 @@ export const ResourcesListStore = signalStore(
             order: store.order(),
             typeKey: store.typeKey(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 

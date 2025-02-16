@@ -14,10 +14,10 @@ export default class PersonType extends AwBaseModel {
   @column()
   declare key: string
 
-  @column({ meta: { type: 'string' } })
+  @column({ meta: { type: 'string', title: 'Name' } })
   declare name: string
 
-  @column({ meta: { type: 'string' } })
+  @column({ meta: { type: 'string', title: 'Description' } })
   declare description: string
 
   @column()

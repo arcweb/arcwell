@@ -2,6 +2,7 @@ import { withDevtools } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 import { ToastLevel } from '@app/shared/models';
 import { EventModel } from '@app/shared/models/event.model';
 import { EventTypeType } from '@app/shared/schemas/event-type.schema';
@@ -27,6 +28,7 @@ interface EventsListState {
   sort: string;
   order: SortDirection;
   typeKey: string;
+  filters: FeatureFilter[];
 }
 
 const initialState: EventsListState = {
@@ -39,6 +41,7 @@ const initialState: EventsListState = {
   sort: 'startedAt',
   order: 'asc',
   typeKey: '',
+  filters: [],
 };
 
 export const EventsListStore = signalStore(
@@ -59,6 +62,7 @@ export const EventsListStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         typeKey?: string;
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -119,6 +123,7 @@ export const EventsListStore = signalStore(
             sort: store.sort(),
             order: store.order(),
             typeKey: store.typeKey(),
+            filters: store.filters(),
           }),
         );
 

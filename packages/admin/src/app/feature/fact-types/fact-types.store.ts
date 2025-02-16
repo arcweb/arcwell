@@ -21,6 +21,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { SortDirection } from '@angular/material/sort';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ToastLevel } from '@app/shared/models/toast-message.model';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface FactTypesState {
   factTypes: FactTypeModel[];
@@ -31,6 +32,7 @@ interface FactTypesState {
   sort: string;
   order: SortDirection;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: FactTypesState = {
@@ -42,6 +44,7 @@ const initialState: FactTypesState = {
   sort: 'name',
   order: 'asc',
   search: [],
+  filters: [],
 };
 
 export const FactTypesStore = signalStore(
@@ -61,6 +64,7 @@ export const FactTypesStore = signalStore(
         order?: SortDirection;
         pageIndex?: number;
         search?: { field: string; searchString: string }[];
+        filters?: FeatureFilter[];
       }) {
         patchState(
           store,
@@ -102,6 +106,7 @@ export const FactTypesStore = signalStore(
             limit: store.limit(),
             offset: store.offset(),
             search: store.search(),
+            filters: store.filters(),
           }),
         );
 

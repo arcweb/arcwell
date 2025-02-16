@@ -15,6 +15,7 @@ import { TableHeaderComponent } from '@app/shared/components/table-header/table-
 import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 @Component({
   selector: 'aw-cohorts-list',
   standalone: true,
@@ -38,6 +39,7 @@ export class CohortsListComponent {
   private activatedRoute = inject(ActivatedRoute);
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   pageSizes = [10, 20, 50];
 
   // TODO: Technically there wouldn't be route params here so should this be set up differently?
@@ -57,7 +59,7 @@ export class CohortsListComponent {
     });
 
     this.typeKey$.subscribe(() => {
-      this.cohortsListStore.load(this.cohortsListStore.limit(), 0, []);
+      this.cohortsListStore.load(this.cohortsListStore.limit(), 0, [], []);
     });
 
     this.refreshService.refreshTrigger$
@@ -67,6 +69,7 @@ export class CohortsListComponent {
           this.cohortsListStore.limit(),
           this.cohortsListStore.offset(),
           this.cohortsListStore.search(),
+          this.cohortsListStore.filters(),
         );
       });
   }
@@ -78,11 +81,28 @@ export class CohortsListComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  filtersChanged() {
     this.cohortsListStore.load(
       this.cohortsListStore.limit(),
       0,
-      buildBasicSearchForFeature('cohorts', searchText),
+      this.cohortsListStore.search(),
+      this.featureSearchAndFilterStore.filters(),
+    );
+  }
+
+  filtersCleared() {
+    this.cohortsListStore.load(this.cohortsListStore.limit(), 0, [], []);
+  }
+
+  searchTextChanged() {
+    this.cohortsListStore.load(
+      this.cohortsListStore.limit(),
+      0,
+      buildBasicSearchForFeature(
+        'cohorts',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
+      this.cohortsListStore.filters(),
     );
   }
 }

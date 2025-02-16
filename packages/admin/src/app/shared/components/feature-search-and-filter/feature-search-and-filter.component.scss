@@ -4,3 +4,57 @@
   border: solid 1px #ccc;
   border-radius: 5px;
 }
+
+.filter-area {
+  margin-bottom: 20px;
+
+  .filter-title {
+    font-size: 18px;
+    margin-bottom: 7px;
+  }
+
+  .filter-card {
+    font-size: 14px;
+    height: 33px;
+    background-color: #e9f2ff;
+    margin-bottom: 5px;
+
+    .mat-mdc-card-content:last-child {
+      padding-bottom: 8px;
+    }
+
+    .mat-mdc-card-content:first-child {
+      padding-top: 8px;
+    }
+
+    .filter-value {
+      color: #004487;
+    }
+
+    .filter-card-icons {
+      position: absolute;
+      right: 6px;
+      top: 4px;
+
+      .mat-icon {
+        cursor: pointer;
+      }
+
+      .delete {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+
+.align-center {
+  text-align: center;
+
+  a {
+    color: rgb(3 129 235);
+  }
+}
+
+.search-input {
+  width: 100%;
+}

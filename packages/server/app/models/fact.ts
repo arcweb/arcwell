@@ -15,7 +15,7 @@ export default class Fact extends AwBaseModel {
   @column({ isPrimary: true })
   declare id: string
 
-  @column({ meta: { type: 'string' } })
+  @column({ meta: { type: 'string', title: 'Type Key' } })
   declare typeKey: string
 
   @column()
@@ -33,7 +33,7 @@ export default class Fact extends AwBaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
-  @column.dateTime()
+  @column.dateTime({ meta: { title: 'Observed At' } })
   declare observedAt: DateTime
 
   @column()

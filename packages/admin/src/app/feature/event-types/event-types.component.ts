@@ -26,6 +26,7 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.helper';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 @Component({
   selector: 'aw-event-types',
   standalone: true,
@@ -56,6 +57,7 @@ import { buildBasicSearchForFeature } from '@app/shared/helpers/basic-search.hel
 })
 export class EventTypesComponent {
   public eventTypesStore = inject(EventTypesStore);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   readonly refreshService = inject(RefreshService);
@@ -81,6 +83,7 @@ export class EventTypesComponent {
           order: this.eventTypesStore.order(),
           pageIndex: this.eventTypesStore.pageIndex(),
           search: this.eventTypesStore.search(),
+          filters: this.eventTypesStore.filters(),
         });
       });
   }
@@ -92,11 +95,33 @@ export class EventTypesComponent {
     });
   }
 
-  searchTextChanged(searchText: string) {
+  filtersChanged() {
     this.eventTypesStore.load({
       limit: this.eventTypesStore.limit(),
       offset: 0,
-      search: buildBasicSearchForFeature('event_types', searchText),
+      search: this.eventTypesStore.search(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: 0,
+      search: [],
+      filters: [],
+    });
+  }
+
+  searchTextChanged() {
+    this.eventTypesStore.load({
+      limit: this.eventTypesStore.limit(),
+      offset: 0,
+      search: buildBasicSearchForFeature(
+        'event_types',
+        this.featureSearchAndFilterStore.searchText(),
+      ),
+      filters: this.eventTypesStore.filters(),
     });
   }
 
@@ -108,6 +133,7 @@ export class EventTypesComponent {
       order: event.direction,
       pageIndex: this.eventTypesStore.pageIndex(),
       search: this.eventTypesStore.search(),
+      filters: this.eventTypesStore.filters(),
     });
   }
 }

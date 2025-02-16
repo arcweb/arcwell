@@ -2,9 +2,12 @@
   tableName="Resource Types"
   [enableFilter]="
     resourceTypesStore.resourceTypes().length > 0 ||
-    resourceTypesStore.search().length > 0
+    resourceTypesStore.search().length > 0 ||
+    resourceTypesStore.filters().length > 0
   "
-  (onSearchTextChanged)="searchTextChanged($event)"
+  (onSearchTextChanged)="searchTextChanged()"
+  (onFiltersChanged)="filtersChanged()"
+  (onFiltersCleared)="filtersCleared()"
 ></aw-table-header>
 
 @if (resourceTypesStore.isErrored()) {

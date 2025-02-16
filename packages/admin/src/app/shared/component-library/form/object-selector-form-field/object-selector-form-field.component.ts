@@ -237,7 +237,6 @@ export class ObjectSelectorFormFieldComponent
           .getEvents({
             limit: 20,
             offset: 0,
-            search: [{ field: 'id', searchString: query }],
             typeKey: this.typeKeySignal()['key'],
           })
           .subscribe(resp => {

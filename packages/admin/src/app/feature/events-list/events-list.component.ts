@@ -30,6 +30,8 @@ import { RefreshService } from '@app/shared/services/refresh.service';
 import { NoRecordsComponent } from '@app/shared/components/no-records/no-records.component';
 import { MatDialog } from '@angular/material/dialog';
 import { BulkImportDialogComponent } from '@app/shared/components/dialogs/bulk-import/bulk-import-dialog.component';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
+import { FeatureSearchAndFilterStore } from '@app/shared/components/feature-search-and-filter/feature-search-and-filter.store';
 
 @Component({
   selector: 'aw-events-list',
@@ -69,6 +71,7 @@ export class EventsListComponent {
   readonly featureStore = inject(FeatureStore);
   readonly refreshService = inject(RefreshService);
   readonly dialog = inject(MatDialog);
+  readonly featureSearchAndFilterStore = inject(FeatureSearchAndFilterStore);
   typeKey$ = this.activatedRoute.params.pipe(
     takeUntilDestroyed(),
     map(({ type_key: typeKey }) => typeKey),
@@ -91,10 +94,23 @@ export class EventsListComponent {
     });
     // load the events list based on the route parameters if they exist
     this.typeKey$.subscribe(typeKey => {
+      // Check if the filter store has filters set for the current feature type. If so,
+      // set filters. This typekey pipe fires before the navigation pipe in features-menu.component.ts
+      // that flushes the filterstore if the feature changed, so the feature type must be checked against
+      // here.
+      let filters: FeatureFilter[] = [];
+      if (
+        this.featureSearchAndFilterStore.currentFeature() == 'events' &&
+        this.featureSearchAndFilterStore.currentSubFeature() != 'types' &&
+        this.featureSearchAndFilterStore.filters().length > 0
+      ) {
+        filters = this.featureSearchAndFilterStore.filters();
+      }
       this.eventsListStore.load({
         limit: this.eventsListStore.limit(),
         offset: 0,
-        typeKey: typeKey,
+        typeKey,
+        filters,
       });
     });
 
@@ -105,6 +121,7 @@ export class EventsListComponent {
           limit: this.eventsListStore.limit(),
           offset: this.eventsListStore.offset(),
           typeKey: this.eventsListStore.typeKey(),
+          filters: this.eventsListStore.filters(),
         });
       });
   }
@@ -116,6 +133,24 @@ export class EventsListComponent {
     });
   }
 
+  filtersChanged() {
+    this.eventsListStore.load({
+      limit: this.eventsListStore.limit(),
+      offset: 0,
+      typeKey: this.eventsListStore.typeKey(),
+      filters: this.featureSearchAndFilterStore.filters(),
+    });
+  }
+
+  filtersCleared() {
+    this.eventsListStore.load({
+      limit: this.eventsListStore.limit(),
+      offset: 0,
+      typeKey: this.eventsListStore.typeKey(),
+      filters: [],
+    });
+  }
+
   sortChange(event: Sort) {
     this.eventsListStore.load({
       limit: this.eventsListStore.limit(),
@@ -124,6 +159,7 @@ export class EventsListComponent {
       order: event.direction,
       pageIndex: this.eventsListStore.pageIndex(),
       typeKey: this.eventsListStore.typeKey(),
+      filters: this.eventsListStore.filters(),
     });
   }
 

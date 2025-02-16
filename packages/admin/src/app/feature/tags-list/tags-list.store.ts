@@ -17,6 +17,7 @@ import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { TagModel } from '@app/shared/models/tag.model';
 import { TagService } from '@app/shared/services/tag.service';
+import { FeatureFilter } from '@app/shared/interfaces/feature-filter';
 
 interface TagsListState {
   tags: TagModel[];
@@ -25,6 +26,7 @@ interface TagsListState {
   totalData: number;
   pageIndex: number;
   search: { field: string; searchString: string }[];
+  filters: FeatureFilter[];
 }
 
 const initialState: TagsListState = {
@@ -34,6 +36,7 @@ const initialState: TagsListState = {
   totalData: 0,
   pageIndex: 0,
   search: [],
+  filters: [],
 };
 
 export const TagsListStore = signalStore(
@@ -45,14 +48,15 @@ export const TagsListStore = signalStore(
       limit: number,
       offset: number,
       search?: { field: string; searchString: string }[],
+      filters: FeatureFilter[] = [],
     ) {
       patchState(
         store,
-        { ...initialState, limit, offset, search },
+        { ...initialState, limit, offset, search, filters },
         setPending(),
       );
       const resp = await firstValueFrom(
-        tagService.getTags({ limit, offset, search }),
+        tagService.getTags({ limit, offset, search, filters }),
       );
       if (resp.errors) {
         patchState(store, setErrors(resp.errors));
@@ -80,6 +84,7 @@ export const TagsListStore = signalStore(
           limit: store.limit(),
           offset: store.offset(),
           search: store.search(),
+          filters: store.filters(),
         }),
       );
 
